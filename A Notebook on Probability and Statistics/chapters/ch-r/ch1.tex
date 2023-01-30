@@ -1,0 +1,1494 @@
+\chapter{R Basics} \label{ch:r1}
+
+This chapter introduces R language basics, including the import (from files or databases), tidying, transformation, modeling, verification, and visualization of data. The use of R language in machine learning is also briefly covered.
+
+Given that R is less popular than the more well-known and widely appreciated Python and MATLAB among engineering background researchers, this chapter serves as a basic introduction to R, before digging into its use in data science.
+
+The first part of the chapter from Section \ref{ch:r1:sec:rinstallation} to Section \ref{ch:r1:sec:ggplot} introduces the basic grammar and visualization tools, and the second part of the chapter from Section \ref{ch:r1:sec:datapreparation} onwards more advanced practice of R.
+
+\section{R and RStudio Installation} \label{ch:r1:sec:rinstallation}
+
+\textit{R} is a programming language for statistical computing and visualization. It is widely used among statisticians and data miners for developing statistical software and carrying out data analysis. R is free and can be downloaded from \cite{r}, where more details about R can also be found.
+
+\textit{RStudio}, also known as \textit{Posit}, is an IDE widely used for R programming and testing. RStudio IDE is open-source and free of charge for personal use. It can be downloaded from \cite{rstudio}.
+
+Download R and RStudio from the aforementioned web sites, and install them sequentially.
+
+\section{R Packages Management} \label{ch:r1:sec:rpackage}
+
+Before introducing the syntax, libraries, data frames and tools of R, it is worth introducing package management methods in R.
+
+R packages, both built-in and third-party, provide power functions, data, and compiled codes for data analysis and visualization in a well-defined format. The packages can be published and shared online. CRAN is by far the most popular platform to store and share R packages.
+
+To install or remove a package, use
+\begin{lstlisting}
+install.packages("<package>")
+remove.packages("<package>")
+\end{lstlisting}
+respectively. For example,
+\begin{lstlisting}
+install.packages("pacman")
+\end{lstlisting}
+
+To load a package, use
+\begin{lstlisting}
+library(<package>)
+\end{lstlisting}
+for example
+\begin{lstlisting}
+library(pacman)
+\end{lstlisting}
+After loading a package, the data frames and functions defined in that package can be used normally. Otherwise, to refer to a data frame or a function, the package name has to be used as a prefix as \verb|<package>::<resource>|, which is inconvenient if the resource is used frequently.
+
+To unload a package, use
+\begin{lstlisting}
+detach("package:<package>", unload = TRUE)
+\end{lstlisting}
+for example
+\begin{lstlisting}
+detach("package:pacman", unload = TRUE)
+\end{lstlisting}
+
+The above methods work for both built-in packages (which often does not require installation) and third-party packages.
+
+There are third-party packages that provides package management functions. The package \verb|pacman| is an example of such package. With \verb|pacman| installed and loaded, use the following commands to install, load and unload packages respectively.
+\begin{lstlisting}
+p_install(<package>, ...) # install
+p_load(<package>, ...) # install and load
+p_unload(<package>, ...) # unload
+p_unload(all) # unload all
+\end{lstlisting}
+An example of using \verb|pacman| to load packages are given as follows.
+\begin{lstlisting}
+pacman::p_load(
+pacman, # package management
+dplyr, # data manipulation
+GGally, # data visualization
+ggplot2, # data visualization
+ggthemes, # data visualization
+ggvis, # data visualization
+httr, # url and http
+lubridate, # date and time manipulation
+plotly, # data visualization
+rio, # io
+rmarkdown, # documentation
+shiny, # web apps development
+stringr, # string operation
+tidyr # data tidying
+)
+\end{lstlisting}
+where notice that the above command can be executed before the loading of \verb|pacman| itself, which is the reason \verb|pacman::p_load()| prefix is used. These packages are commonly used in R projects. A brief explanation to them are given as comments following \verb|#|. Notice that the first time installation of all the above packages may take a few minutes.
+
+RStudio provides a graphical interface to manage packages as shown in Fig. \ref{ch:r1:fig:rstudio_package_management}.
+\begin{figure}
+\centering
+\includegraphics[width=350pt]{chapters/ch-r/figures/rstudio_package_management.png}
+\caption{Graphical interface to manage packages provided by RStudio.} \label{ch:r1:fig:rstudio_package_management}
+\end{figure}
+
+\section{R Programming Basics} \label{ch:r1:sec:rprogramming}
+
+This section introduces the basics of R programming, including the data types and syntax for basic R commands.
+
+As the fundamentals, it is worth introducing here that R is case sensitive. Use \verb|#| to lead a comment in R. Use \verb|print()| to print a variable on the console. Typing the name of a variable often also prints it out, with a few exceptions such as when in a loop. Finally, use \verb|?| followed by a function or a data frame name to check the help document for that function or data frame.
+
+\subsection{Data Types}
+
+R provides many data types. Commonly used data types are summarized in Table \ref{ch:r1:tab:datatype}, where notice that \verb|<-| is used to assign a value to a variable. Use \verb|typeof()| to check the type of a variable. Alternatively, use \verb|is.numeric()|, \verb|is.integer()|, \verb|is.double()|, \verb|is.character()|, etc., to check whether a variable belongs to a particular data type.
+\begin{table}
+  \centering \caption{Commonly used data types.}\label{ch:r1:tab:datatype}
+  \begin{tabularx}{\textwidth}{llX}
+    \hline
+    Data Type & Syntax (Example) & Description \\ \hline
+    integer & \verb|n <- 2L| & An integer. Define an integer by a value followed by \verb|L|. \\
+    double & \verb|x <- 2| & An double float value. \\
+    complex & \verb|z <- 3+2i| & A complex value. \\
+    character & \verb|a <- "a"| & A character or a string. \\
+    logical & \verb|q <- T| & A boolean value. Use \verb|T|, \verb|TRUE| and \verb|F|, \verb|FALSE| to represent true and false repectively. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+Examples of assigning variables and checking their types are given as follows.
+\begin{lstlisting}
+> n <- 2L
+> typeof(n)
+[1] "integer"
+
+> x <- 2
+> typeof(x)
+[1] "double"
+
+> z <- 3+2i
+> typeof(z)
+[1] "complex"
+
+> a <- "h"
+> typeof(a)
+[1] "character"
+
+> q <- T
+> typeof(q)
+[1] "logical"
+\end{lstlisting}
+
+To transform data from one type to another, use \verb|as.<data-type>()|. Examples of transforming data types are given as follows.
+\begin{lstlisting}
+> n1 <- as.integer(2)
+> typeof(n1)
+[1] "integer"
+
+> n2 <- as.integer("2")
+> typeof(n2)
+[1] "integer"
+
+> x1 <- as.double(2L)
+> typeof(x1)
+[1] "double"
+
+> x2 <- as.double("2")
+> typeof(x2)
+[1] "double"
+
+> z1 <- as.complex("3+2i")
+> typeof(z1)
+[1] "complex"
+
+> a1 <- as.character(2L)
+> typeof(a1)
+[1] "character"
+
+> a2 <- as.character(2)
+> typeof(a2)
+[1] "character"
+\end{lstlisting}
+
+R supports arithmetic calculations of variables, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%| (integer division), \verb|%%| (modulus) and \verb|^| exponential. Examples of arithmetic calculations are given as follows.
+\begin{lstlisting}
+> a <- 16
+> b <- 3
+> add <- a + b
+> sub <- a - b
+> multi <- a * b
+> division <- a / b
+> int_division <- a %/% b
+> modulus <- a %% b
+> exponent <- a ^ b
+> add
+[1] 19
+> sub
+[1] 13
+> multi
+[1] 48
+> division
+[1] 5.333333
+> int_division
+[1] 5
+> modulus
+[1] 1
+> exponent
+[1] 4096
+\end{lstlisting}
+
+R supports built-in and third-party functions which extend the capability of data manipulation. There is a rich set of functions for numerical calculations, string operations, probability density calculations and statistics analysis. Some of them are summarized in Tables \ref{ch:r1:tab:numericalcalculation}, \ref{ch:r1:tab:logicalcomparison}, \ref{ch:r1:tab:stringoperation}, \ref{ch:r1:tab:probabilityfunction} and \ref{ch:r1:tab:statisticsfunction}.
+
+\begin{table}
+  \centering \caption{Numerical calculations.}\label{ch:r1:tab:numericalcalculation}
+  \begin{tabularx}{\textwidth}{lX}
+    \hline
+    Syntax (Example) & Description \\ \hline
+    \verb|abs(x)| & Absolute value. \\
+    \verb|sqrt(x)| & Square root. \\
+    \verb|ceiling(x)| & Smallest larger/equal integer. \\
+    \verb|floor(x)| & Largest smaller/equal integer. \\
+    \verb|trunc(x)| & Integer part of a variable. \\
+    \verb|round(x, n=0)| & Round to $n$ digit after decimal. \\
+    \verb|sin(x)| & Trigonometric sin function. \\
+    \verb|cos(x)| & Trigonometric cos function. \\
+    \verb|tan(x)| & Trigonometric tan function. \\
+    \verb|log(x)| & Natural logarithm. \\
+    \verb|log10(x)| & Common logarithm. \\
+    \verb|exp(x)| & Exponent. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\begin{table}
+  \centering \caption{Logical comparisons.}\label{ch:r1:tab:logicalcomparison}
+  \begin{tabularx}{\textwidth}{lX}
+    \hline
+    Syntax (Example) & Description \\ \hline
+    \verb|x == y| & Equal. \\
+    \verb|x != y| & Not equal. \\
+    \verb|x > y|, \verb|x < y| & Greater than; less than. \\
+    \verb|x >= y|, \verb|x <= y| & Greater than or equal to; less than or equal to. \\
+    \verb|!x| & Not. \\
+    \verb|x & y| & And. \\
+    \verb$x | y$ & Or. \\
+    \verb|isTRUE(x)| & Is true. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\begin{table}
+  \centering \caption{String operations.}\label{ch:r1:tab:stringoperation}
+  \begin{tabularx}{\textwidth}{lX}
+    \hline
+    Syntax (Example) & Description \\ \hline
+    \verb|substr(s, n1, n2)| & Segment of a string, from the $n_1$-th character to $n_2$-th character, both characters included. \\
+    \verb|grep(p, s)| & Searching of a pattern in a string. \\
+    \verb|sub(s1, s2, s)| & Find and replace patterns in a string. \\
+    \verb|paste(s1, s2, ..., p="")| & Concatenate strings with selected pattern to separate them. \\
+    \verb|strsplit(s, p)| & Split string into multiple strings at selected split points. \\
+    \verb|tolower(s)| & Convert to lower case. \\
+    \verb|toupper(s)| & Convert to upper case. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\begin{table}
+	\centering \caption{Probability density related operations.}\label{ch:r1:tab:probabilityfunction}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Syntax (Example) & Description \\ \hline
+		\verb|dnorm(x, m=0, std=1)| & Calculate the PDF of Gaussian distribution. \\
+		\verb|pnorm(x, m=0, std=1)| & Calculate the CDF of Gaussian distribution. \\
+		\verb|qnorm(x, m=0, std=1)| & Inverse function of \verb|pnorm()|. \\
+		\verb|rnorm(n, m=0, std=1)| & Generate Gaussian distribution samples. \\
+		\verb|dbinom(n, size, p)| & Calculate the probability of a binominal distribution. \\
+		\verb|pbinom(n, size, p)| & Calculate the comulative probability of a binominal distribution. \\
+		\verb|qbinom(x, size, p)| & Inverse function of \verb|pbinom()|. \\
+		\verb|rbinom(n, size, p)| & Generate binominal distribution samples. \\
+		\verb|dpois(x, lambda)| & Calculate the probability of a Poisson distribution. \\
+		\verb|ppois(n, lambda)| & Calculate the comulative probability of a Poisson distribution. \\
+		\verb|qpois(x, lambda)| & Inverse function of \verb|ppois()|. \\
+		\verb|rpois(n, lambda)| & Generate Poisson distribution samples. \\
+		\verb|dunif(x, min=0, max=1)| & Calculate the PDF of uniform distribution. \\
+		\verb|punif(x, min=0, max=1)| & Calculate the CDF of uniform distribution. \\
+		\verb|qunif(x, min=0, max=1)| & Inverse function of \verb|punif()|. \\
+		\verb|runif(n, min=0, max=1)| & Generate uniform distribution samples. \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\begin{table}
+	\centering \caption{Aggregate and statistics functions.}\label{ch:r1:tab:statisticsfunction}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Syntax (Example) & Description \\ \hline
+		\verb|mean(l)| & Mean. \\
+		\verb|sd(l)| & Standard deviation. \\
+		\verb|median(l)| & Median. \\
+		\verb|range(l)| & Minimum and maximum. \\
+		\verb|min(l)| & Minimum. \\
+		\verb|max(l)| & Maximum. \\
+		\verb|sum(l)| & Sum \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\subsection{Conditionals and Loops}
+
+The \verb|if| statement syntax is given as follows.
+\begin{lstlisting}
+if(<condition>){
+	<command>
+} else if(<condition>){
+	<command>
+} else{
+	<command>
+}
+\end{lstlisting}
+An example of using \verb|if| statement is givne below.
+\begin{lstlisting}
+> x <- rnorm(1)
+> if(x > 0){
+	+   y <- x
+	+ } else if(x < 0){
+	+   y <- -x
+	+ } else{
+	+   y <- 0
+	+ }
+> print(x)
+[1] -1.981445
+> print(y)
+[1] 1.981445
+\end{lstlisting}
+
+The \verb|for| loop syntax is given as follows.
+\begin{lstlisting}
+for(<variable> in <vector>){
+	<command>
+}
+\end{lstlisting}
+where the \verb|<vector>| can be a list of not only numbers but also characters. Examples of using \verb|for| loop are given below.
+\begin{lstlisting}
+> for(i in 1:5){
+	+     print(i)
+	+ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+
+> for(i in c("a", "b", "c")){
+	+     print(i)
+	+ }
+[1] "a"
+[1] "b"
+[1] "c"
+\end{lstlisting}
+
+The \verb|while| loop syntax is given as follows.
+\begin{lstlisting}
+while(<condition>){
+    <command>
+}
+\end{lstlisting}
+An example of using \verb|while| loop is given below.
+\begin{lstlisting}
+> counter <- 0
+> while(counter < 5){
++     print(counter)
++     counter <- counter + 1
++ }
+[1] 0
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+\end{lstlisting}
+
+An example of using the above to verify the law of the large number is given below.
+\begin{lstlisting}
+> N <- 1000000
+> counter <- 0
+> for(i in rnorm(N)){
+	+   if(-1 < i & i < 1){
+		+     counter <- counter + 1
+		+   }
+	+ }
+> answer <- counter / N # expected: 0.682689492
+> print(answer)
+[1] 0.682407
+\end{lstlisting}
+
+\subsection{User-Defined Functions}
+
+Define a simple function as follows. Note to run the codes where the function is described before calling the function.
+\begin{lstlisting}
+<function-name> <- function(<input>[=<default>], ...){
+	<command>
+	[return(<variable>)]
+}
+\end{lstlisting}
+
+\subsection{Vectors}
+
+There are different types of vectors in R. The commonly used vector types include numeric vector (including both double and integer vector) and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type. A single number or character is stored as a vector of length 1.
+
+Notice that the index of a vector in R starts from 1 instead of 0. This is different with many other computer languages.
+
+Use the following syntax to create a vector.
+\begin{lstlisting}
+<vector> <- c(<value>, ...)
+\end{lstlisting}
+where \verb|<value>| can be single element or a vector. For example,
+\begin{lstlisting}
+> l <- c(1,2,3,4,5)
+> print(l)
+[1] 1 2 3 4 5
+> typeof(l)
+[1] "double"
+\end{lstlisting}
+
+Alternative ways to create a vector are given as follows. Use sequence to create a vector as follows.
+\begin{lstlisting}
+<vector> <- seq(<from>, <to>, <by=1>)
+<vector> <- <from>:<to> # equivalent to seq() with by=1
+\end{lstlisting}
+
+Use replica to create a vector as follows.
+\begin{lstlisting}
+<vector> <- rep(<value>, <repeate>)
+\end{lstlisting}
+where \verb|<value>| can be a numeric number, a character, or a vector. For example,
+\begin{lstlisting}
+> l <- rep(c("a", "b", "cde"), 2)
+> print(l)
+[1] "a"   "b"   "cde" "a"   "b"   "cde"
+\end{lstlisting}
+Replica can also be used to create empty vector vy \verb|rep(NA, n)|.
+
+A character vector can also be created by splitting strings using \verb|strsplit()|. For example,
+\begin{lstlisting}
+> a <- "Hello World!"
+> b <- strsplit(a, "")
+> print(b)
+[[1]]
+[1] "H" "e" "l" "l" "o" " " "W" "o" "r" "l" "d" "!"
+\end{lstlisting}
+
+To access the element in a vector, use \verb|<vector>[<index>]|. Again, notice that the first element in a vector has the index of 1 instead of 0. The index can be an integer, or a list of integer such as a sequence. Examples are given below.
+\begin{lstlisting}
+> s <- c("a", "b", "c", "d", "e", "f", "g")
+> s[1]
+[1] "a"
+> s[7]
+[1] "g"
+> s[2:5]
+[1] "b" "c" "d" "e"
+> s[c(1L, 3L, 5L)] # s[c(1.1, 3.5, 5.9)] gives the same result; data type auto transferred
+[1] "a" "c" "e"
+\end{lstlisting}
+Notice that accessing a single element in a vector is rarely used in practice, because most operations in R are done by the vector basis. Vectorization operation, also known as single-instruction-multiple-data operation, significantly speeds up the calculation in R, which is quite commonly seen in high-layer languages such as R and Python. This is due to the intepreting and wrapping techniques a high-layer language uses to communicate with the underlying low-layer languages, and also the support many processors have for parallel computing.
+
+Most, if not all, of the numerical calculations, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%|, \verb|^|. Examples are given below.
+\begin{lstlisting}
+> a <- c(1,2,3,4,5)
+> b <- c(5,4,3,2,1)
+> a + b
+[1] 6 6 6 6 6
+> a - b
+[1] -4 -2  0  2  4
+> a * b
+[1] 5 8 9 8 5
+> a / b
+[1] 0.2 0.5 1.0 2.0 5.0
+> a %/% b
+[1] 0 0 1 2 5
+> a %% b
+[1] 1 2 0 0 0
+> a ^ b
+[1]  1 16 27 16  5
+\end{lstlisting}
+
+It is also possible to apply logic operations using vectors. Examples are given below.
+\begin{lstlisting}
+> a <- c(1,2,3,4,5)
+> b <- c(5,4,3,2,1)
+> a < b
+[1]  TRUE  TRUE FALSE FALSE FALSE
+> a > b
+[1] FALSE FALSE FALSE  TRUE  TRUE
+> a == b
+[1] FALSE FALSE  TRUE FALSE FALSE
+\end{lstlisting}
+
+When the sizes of the vectors are not consistent, the shorter vector will repeat and populate to align with the longer vector. Examples are given below.
+\begin{lstlisting}
+> a <- c(1,10)
+> b <- c(1,2,3,4)
+> a + b
+[1]  2 12  4 14
+> a - b
+[1]  0  8 -2  6
+> a * b
+[1]  1 20  3 40
+> a / b
+[1] 1.0000000 5.0000000 0.3333333 2.5000000
+> a %/% b
+[1] 1 5 0 2
+> a %% b
+[1] 0 0 1 2
+> a ^ b
+[1]     1   100     1 10000
+\end{lstlisting}
+
+The vector can also play as the input argument or output return of a function, which can be difficult for some computer languages by nature. Again, a scalar is treated as a vector with length 1 in R.
+
+An example of using the above to analyze the profit of a company is given below.
+\begin{lstlisting}
+> revenue <- round(rnorm(12, 10000, 500), 2)
+> expenses <- round(rnorm(12, 9500, 500), 2)
+>
+> # profit for each month
+> profit.month <- revenue - expenses
+> print(profit.month)
+[1] -861.33  974.12  665.84  275.72 2374.99 1231.07  953.87  396.83 -536.62 1202.72  529.28  522.62
+> # profit after tax for each month (tax rate 30%)
+> profit.month.aftertax <- 0.3*profit.month
+> print(profit.month.aftertax)
+[1] -258.399  292.236  199.752   82.716  712.497  369.321  286.161  119.049 -160.986  360.816  158.784  156.786
+> # profit margin for each month
+> profit.month.margin <- round(100 * profit.month.aftertax / revenue, 2)
+> print(profit.month.margin)
+[1] -2.85  2.69  1.97  0.84  6.88  3.40  2.99  1.16 -1.71  3.25  1.60  1.56
+> # is good month
+> profit.month.aftertax > mean(profit.month.aftertax)
+[1] FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE
+> # is bad month
+> profit.month.aftertax < mean(profit.month.aftertax)
+[1]  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE
+> # is the best month
+> profit.month.aftertax == max(profit.month.aftertax)
+[1] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+> # is the worst month
+> profit.month.aftertax == min(profit.month.aftertax)
+[1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+\end{lstlisting}
+
+\subsection{Matrices}
+
+A matrix in R is a recording of a table of data. Matrices are important because they are how data is often naturally organized, and they are also the build blocks of data frame in R.
+
+A demonstration of a matrix in R is given by Fig. \ref{ch:r1:fig:r_table_demo}. Let the matrix be named \verb|A|. The elements in the matrix can be accessed by the name of the table followed by the index coordinates. For example, in the figure, \verb|A[1,1]| refers the first element and \verb|A[4,6]| the last element.
+
+It is possible to refer to an entire row or column. For example, use \verb|A[1,]| to represent the first row of the matrix, by not specifying the column index. The same applies to the column.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/r_table_demo.png}
+	\caption{A demonstration of a matrix in R.} \label{ch:r1:fig:r_table_demo}
+\end{figure}
+
+Notice that all elements in a matrix must have the same data type.
+
+A matrix can be created from scratch by stacking rows as follows. First, consider creating rows in the matrix. Then, use \verb|rbind()| to bind rows. Finally, give names to each column and row.
+\begin{lstlisting}
+# build rows
+<row1> <- c(<value11>, ..., <value1n>)
+...
+<rowm> <- c(<valuem1>, ..., <valuemn>)
+# build matrix
+<matrix> <- rbind(<row1>, ..., <rowm>)
+# (optional) clean rows
+rm(<row1>, ..., <rowm>)
+# give names
+colnames(<matrix>) <- c("<column-name1>", ..., "<column-namen>")
+rownames(<matrix>) <- c("<row-name1>", ..., "<row-namem>")
+\end{lstlisting}
+
+There are alternative ways, other than \verb|rbind()|, to create a matrix. For example, \verb|matrix()| convert a vector into a matrix. Similar with \verb|rbind()|, \verb|cbind()| binds the columns to form a matrix. Examples to create matrices using different methods are given below.
+\begin{lstlisting}
+> A <- matrix(1:9, 3, 3)
+> print(A)
+[,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+> B <- rbind(c(1, 4, 7), c(2, 5, 8), c(3, 6, 9))
+> print(B)
+[,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+> C <- cbind(c(1, 2, 3), c(4, 5, 6), c(7, 8, 9))
+> print(C)
+[,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+\end{lstlisting}
+
+The name of the columns and rows can also be used to access an element, just by replacing the index with the name (with quotation mark) of the associated column or row. The same applies to vectors, as they can be treated as a one dimensional matrix. More details about naming a vector and columns and rows of a matrix are illustrated as follows.
+
+To check the names relevant to a matrix, use \verb|names(<vector>)|, \verb|rownames(<matrix>)| and \verb|colnames(<matrix>)|, depending on dealing with either a vector or a matrix. These commands can also be used to assign names. Examples are given below.
+\begin{lstlisting}
+> v <- c(1, 2, 3, 4, 5)
+> names(v) <- c("e1", "e2", "e3", "e4", "e5") 	
+> print(v)
+e1 e2 e3 e4 e5
+1  2  3  4  5
+> print(v[3])
+e3
+3
+> print(v["e3"])
+e3
+3
+> A <- matrix(1:9, 3, 3)
+> colnames(A) <- c("col1", "col2", "col3")
+> rownames(A) <- c("row1", "row2", "row3")
+> print(A)
+col1 col2 col3
+row1    1    4    7
+row2    2    5    8
+row3    3    6    9
+> print(A[2,2])
+[1] 5
+> print(A["row2", "col2"])
+[1] 5
+> print(A[2,])
+col1 col2 col3
+2    5    8
+> print(A["row2",])
+col1 col2 col3
+2    5    8
+> print(A[,2])
+row1 row2 row3
+4    5    6
+> print(A[,"col2"])
+row1 row2 row3
+4    5    6
+\end{lstlisting}
+
+To remove the names, simply assign \verb|NULL| to the name.
+
+Like the vector, operators are defined in matrix level as well. For example, for two matrices with the same shape, numerical operations such as  \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%| and \verb|^| can be implemented.
+
+R provides flexible and powerful data visualization tools, many of which more advanced than what is to be introduced in this section. This section introduces a simple matrix visualization function called \verb|matplot()|, which plots the columns of a matrix against each other.
+
+To demonstrate \verb|matplot()|, consider the following example.
+\begin{lstlisting}
+professor <- c(1130, 1026, 893, 922, 776)
+student <- c(2, 14, 24, 49, 46)
+citation <- rbind(professor, student)
+colnames(citation) <- c("2018", "2019", "2020", "2021", "2022")
+rownames(citation) <- c("Professor", "Student")
+print(citation)
+citation.ratio <- citation
+citation.ratio["Professor",] <- round(citation["Professor",] / mean(citation["Professor",]) * 100, 1)
+citation.ratio["Student",] <- round(citation["Student",] / mean(citation["Student",]) * 100, 1)
+print(citation.ratio)
+matplot(
+	2018:2022, # x axis
+	t(citation.ratio), # y axis
+	type="b", # line and point selection
+	pch = 15:16, # point shape
+	col = 1:2, # color
+	xlab = "Year",
+	ylab = "Citations Moving Ratio (%)"
+)
+legend("bottomright", inset = 0.01, legend = rownames(citation.ratio), pch = 15:16, col = 1:2, horiz = F)
+\end{lstlisting}
+where \verb|t()| used inside \verb|matplot()| calculates the transpose of a matrix. Save the above in a script and execute the code, to get the following Fig. \ref{ch:r1:fig:matplot_demo}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/matplot_demo.png}
+	\caption{A demonstration of using \texttt{matplot} to plot trends.} \label{ch:r1:fig:matplot_demo}
+\end{figure}
+
+Notice that \verb|matplot()| is not widely used in particular in R.
+
+As introduced earlier, a matrix or a vector can be split and segmented to form a smaller matrix or vector. It is worth mentioning that when a single column or row is selected, R will automatically treated the return as a vector instead of a matrix. An example is given below. When a matrix downgrades to a vector, the row name (if it has only one row), or the column name (if it has only one column) will be removed.
+\begin{lstlisting}
+> A <- matrix(1:9, 3, 3)
+> is.matrix(A)
+[1] TRUE
+> is.vector(A)
+[1] FALSE
+> is.matrix(A[1,])
+[1] FALSE
+> is.vector(A[1,])
+[1] TRUE
+\end{lstlisting}
+
+To get consistent results, when segmenting matrix to get a single row or column vector, deliberately ask R to not drop the matrix dimensions. This can be done as follows. By doing this, the names assigned to columns and rows preserve.
+\begin{lstlisting}
+> A <- matrix(1:9, 3, 3)
+> is.matrix(A[1,,drop=F]) # select a row/column
+[1] TRUE
+> is.matrix(A[2,3,drop=F]) # select an element
+[1] TRUE
+\end{lstlisting}
+
+An example of using the above to analyze the performance of players through a series of basketball games are given below.
+\begin{lstlisting}
+# generate table
+player_name <- c("player1", "player2", "player3")
+match_name <- c("match1", "match2", "match3", "match4", "match5", "match6", "match7", "match8", "match9", "match10")
+penalty_attempt <- abs(matrix(round(rnorm(3*10, 5, 2)), 3, 10))
+penalty_point <- abs(penalty_attempt - matrix(abs(round(rnorm(3*10, 1, 1))), 3, 10))
+throw_attempt <- abs(matrix(round(rnorm(3*10, 15, 3)), 3, 10))
+total_point <- abs(3*throw_attempt - abs(matrix(round(rnorm(3*10, 5, 1)), 3, 10))) + penalty_point
+rownames(penalty_attempt) <- player_name
+colnames(penalty_attempt) <- match_name
+rownames(penalty_point) <- player_name
+colnames(penalty_point) <- match_name
+rownames(throw_attempt) <- player_name
+colnames(throw_attempt) <- match_name
+rownames(total_point) <- player_name
+colnames(total_point) <- match_name
+
+# claim function
+myplot <- function(table, xlab, ylab){
+    row_name = rownames(table)
+    column_name = colnames(table)
+    matplot(
+    	1:length(column_name), # x axis
+    	t(table), # y axis
+    	type="b", # line and point selection
+    	pch = 1:length(row_name), # point shape
+    	col = 1:length(row_name), # color
+    	xlab = xlab,
+    	ylab = ylab
+    )
+    legend("bottomleft", inset = 0.01, legend = row_name, pch = 1:length(row_name), col = 1:length(row_name), horiz = F)
+}
+
+# plot
+myplot(penalty_point / penalty_attempt, "match", "penalty success rate") # penalty successful rate
+myplot((total_point - penalty_point) / throw_attempt, "match", "average gained point per throw") # average point gained per throw
+\end{lstlisting}
+
+The results of the above codes are given in Figs. \ref{ch:r1:fig:basket_exp1}, \ref{ch:r1:fig:basket_exp2}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/basket_exp1.png}
+	\caption{Plot of penalty success rate of the 3 players in 10 matches.} \label{ch:r1:fig:basket_exp1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/basket_exp2.png}
+	\caption{Plot of average point gained per throw attempt for the 3 players in 10 matches.} \label{ch:r1:fig:basket_exp2}
+\end{figure}
+
+\section{Data Frames} \label{ch:r1:sec:df}
+
+Data frame, just like vector and matrix, is another data structure defined in R.
+
+Both matrix and data frame use a table structure to store data, but data frame does not require all data to be with the same data type. Therefore, data frame is by nature the most closest format to represent a data structure from the real life. The aforementioned flexibility makes it maybe the most important and commonly used data structure in R.
+
+In many applications and sample examples, data are stored and processed in data frame structure. When importing data from the real world, such as from a CSV file, the data is often read into a data frame before further processing.
+
+\subsection{Data Import}
+
+One of the most common sources of data is CSV files. R provides convenient functions to read data from CSV files into data frames. Use the following commands to import data from a CSV file into a data frame.
+
+The following command pops up a separate window that allows the user to choose a CSV file manually.
+\begin{lstlisting}
+<data-frame> <- read.csv(file.choose()) # manual selection
+\end{lstlisting}
+
+The following commands import a specified CSV file.
+\begin{lstlisting}
+setwd("<directory>") # navigate to the directory of the csv file
+<data-frame> <- read.csv("<csv-file>.csv")
+\end{lstlisting}
+where notice that \verb|getwd()| and \verb|setwd()| are used to get and set current working directory, respectively.
+
+\subsection{Basic Operations}
+
+There are a few ways to access an element in a data frame. The methods used for accessing matrix element, including
+\begin{lstlisting}
+<df>[<row-index>, <column-index>]
+<df>[<row-index>, "<column-name>"]
+\end{lstlisting}
+still work fine. Do notice that different from a matrix, the rows in a data frame have only indices but not names, while columns have both indices and names. In the case of data frame, \verb|$| can be used to access a column as follows.
+\begin{lstlisting}
+<df>$<column-name> # equivalent to <df>[, <column-name>]
+\end{lstlisting}
+which returns all elements in the column as a vector. The row index \verb|[<row-index>]| can follow up to further specify an element if necessary.
+
+Table \ref{ch:r1:tab:dataframeexplore} summarizes the commonly used commands for data frame exploration, such as checking its shape and data types.
+\begin{table}
+  \centering \caption{Commonly used commands for data frame exploration.}\label{ch:r1:tab:dataframeexplore}
+  \begin{tabularx}{\textwidth}{lX}
+    \hline
+    Syntax (Example) & Description \\ \hline
+    \verb|nrow(df)| & Number of rows. \\
+    \verb|ncol(df)| & Number of columns. \\
+    \verb|head(df, n=6L)| & Display the first few rows. \\
+    \verb|tail(df, n=6L)| & Display the last few columns. \\
+    \verb|str(df)| & A summary of the data frame, including the structure of each column. \\
+    \verb|summary(df)| & A summary of the data frame, including some of its statistics features. \\
+    \verb|levels(df$<column>)| & The level of the column. \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+An example of applying the above functions to \verb|iris| data frame from the built-in \verb|datasets| package is given below.
+\begin{lstlisting}
+> library(datasets)
+> nrow(iris)
+[1] 150
+> ncol(iris)
+[1] 5
+> head(iris)
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2  setosa
+3          4.7         3.2          1.3         0.2  setosa
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+6          5.4         3.9          1.7         0.4  setosa
+> tail(iris)
+    Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+145          6.7         3.3          5.7         2.5 virginica
+146          6.7         3.0          5.2         2.3 virginica
+147          6.3         2.5          5.0         1.9 virginica
+148          6.5         3.0          5.2         2.0 virginica
+149          6.2         3.4          5.4         2.3 virginica
+150          5.9         3.0          5.1         1.8 virginica
+> str(iris)
+'data.frame':	150 obs. of  5 variables:
+ $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+ $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+ $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+ $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+ $ Species     : Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...
+> summary(iris)
+  Sepal.Length    Sepal.Width     Petal.Length    Petal.Width          Species
+ Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100   setosa    :50
+ 1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300   versicolor:50
+ Median :5.800   Median :3.000   Median :4.350   Median :1.300   virginica :50
+ Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199
+ 3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800
+ Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500
+> levels(iris$Species) # only works discrete-value columns
+[1] "setosa"     "versicolor" "virginica"
+\end{lstlisting}
+
+Data frame sub-setting works similarly with matrix. A sub-setting of multiple rows and columns of a data frame is a data frame. Notice that unlike the matrix case where if only one row is segmented the return is treated as a vector by default, in the case of a data frame the structure preserves. When a single column is segmented, however, in both matrix and data frame scenarios, the result will be treated as a vector by default, and \verb|drop=F| can be used to preserve data frame structure.
+
+An example is given below.
+\begin{lstlisting}
+> library(datasets)
+> print(iris[1:5,])
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2  setosa
+3          4.7         3.2          1.3         0.2  setosa
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+> print(iris[1,])
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+> is.data.frame(iris[1,])
+[1] TRUE
+> print(iris[,1]) # equivalent to print(iris@Sepal.Length)
+  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1
+ [25] 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4 5.2 5.5 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6
+ [49] 5.3 5.0 7.0 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5.0 5.9 6.0 6.1 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1
+ [73] 6.3 6.1 6.4 6.6 6.8 6.7 6.0 5.7 5.5 5.5 5.8 6.0 5.4 6.0 6.7 6.3 5.6 5.5 5.5 6.1 5.8 5.0 5.6 5.7
+ [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6.0
+[121] 6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8
+[145] 6.7 6.7 6.3 6.5 6.2 5.9
+> is.data.frame(iris[,1])
+[1] FALSE
+> print(iris[,1,drop=F]) # preserve data frame
+    Sepal.Length
+1            5.1
+2            4.9
+3            4.7
+... # WRAPPED # ...
+148          6.5
+149          6.2
+150          5.9
+> is.data.frame(iris[,1,drop=F])
+[1] TRUE
+\end{lstlisting}
+
+To add a new column to an existing data frame, just assign values to a new column name as follows.
+\begin{lstlisting}
+<df>$<new-column> <- <vector>
+\end{lstlisting}
+if there is a mismatch in size, \verb|<vector>| will be cycled.
+
+Ro remove a column, assign \verb|NULL| to all the elements in that column as follows.
+\begin{lstlisting}
+<df>$<column> <- NULL
+\end{lstlisting}
+
+\subsection{Filtering}
+
+Filtering is about selecting specific rows from a data frame that meet specific criteria. A true-false vector can be used as a filter as follows.
+\begin{lstlisting}
+<filter-name> <- <true-false-vector> # use true-false vector as filter
+<df>[filter,] # implement filter on data frame
+\end{lstlisting}
+An example is given below.
+\begin{lstlisting}
+> library(datasets)
+> filter <- iris$Sepal.Length >= 7
+> print(iris[filter,])
+    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+51           7.0         3.2          4.7         1.4 versicolor
+103          7.1         3.0          5.9         2.1  virginica
+106          7.6         3.0          6.6         2.1  virginica
+108          7.3         2.9          6.3         1.8  virginica
+110          7.2         3.6          6.1         2.5  virginica
+118          7.7         3.8          6.7         2.2  virginica
+119          7.7         2.6          6.9         2.3  virginica
+123          7.7         2.8          6.7         2.0  virginica
+126          7.2         3.2          6.0         1.8  virginica
+130          7.2         3.0          5.8         1.6  virginica
+131          7.4         2.8          6.1         1.9  virginica
+132          7.9         3.8          6.4         2.0  virginica
+136          7.7         3.0          6.1         2.3  virginica
+> filter <- iris$Sepal.Length >= 7 & iris$Sepal.Width >= 3.5
+> print(iris[filter,])
+    Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+110          7.2         3.6          6.1         2.5 virginica
+118          7.7         3.8          6.7         2.2 virginica
+132          7.9         3.8          6.4         2.0 virginica
+\end{lstlisting}
+As shown above, it is possible to use \verb|&|, \verb$|$ to form a more complex filter. The commands can be merged together as follows.
+\begin{lstlisting}
+> print(iris[iris$Sepal.Length >= 7,])
+    Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+51           7.0         3.2          4.7         1.4 versicolor
+103          7.1         3.0          5.9         2.1  virginica
+106          7.6         3.0          6.6         2.1  virginica
+108          7.3         2.9          6.3         1.8  virginica
+110          7.2         3.6          6.1         2.5  virginica
+118          7.7         3.8          6.7         2.2  virginica
+119          7.7         2.6          6.9         2.3  virginica
+123          7.7         2.8          6.7         2.0  virginica
+126          7.2         3.2          6.0         1.8  virginica
+130          7.2         3.0          5.8         1.6  virginica
+131          7.4         2.8          6.1         1.9  virginica
+132          7.9         3.8          6.4         2.0  virginica
+136          7.7         3.0          6.1         2.3  virginica
+> nrow(iris[iris$Sepal.Length >= 7,]) # count the result number
+[1] 13
+\end{lstlisting}
+
+\subsection{Building Data Frames}
+
+To create a data frame from scratch, use function \verb|data.frame()| as follows.
+\begin{lstlisting}
+<df> <- data.frame(<vector>, ...) # add a column
+colnames(<df>) <- c("<column-name>", ...)
+\end{lstlisting}
+or
+\begin{lstlisting}
+<df> <- data.frame(<column-name> = <vector>, ...)
+\end{lstlisting}
+
+An example is given below, where a data frame of mortgage price at 3 types of areas, namely ``CBD'', ``city'' and ``suburbs'', are is created. Arbitrary data is used.
+\begin{lstlisting}
+# create data frame
+vec_region <- c(rep("CBD", 100), rep("City", 100), rep("Suburbs", 100))
+vec_size_cbd <- rnorm(100, 75, 10)
+vec_size_city <- rnorm(100, 100, 15)
+vec_size_suburbs <- rnorm(100, 150, 25)
+vec_size = c(vec_size_cbd, vec_size_city, vec_size_suburbs)
+vec_price_cbd <- vec_size_cbd*rnorm(100, 12500, 2500)
+vec_price_city <- vec_size_city*rnorm(100, 7500, 1000)
+vec_price_suburbs <- vec_size_suburbs*rnorm(100, 5000, 1000)
+vec_price <- c(vec_price_cbd, vec_price_city, vec_price_suburbs)
+mortgage_price <- data.frame(Region = vec_region, Size = vec_size, Price = vec_price)
+rm(vec_region, vec_size_cbd, vec_size_city, vec_size_suburbs, vec_size, vec_price_cbd, vec_price_city, vec_price_suburbs, vec_price)
+\end{lstlisting}
+which gives the following result
+\begin{lstlisting}
+> head(mortgage_price)
+  Region     Size     Price
+1    CBD 81.84889 1154873.0
+2    CBD 77.78946  831468.7
+3    CBD 84.60477  735265.2
+4    CBD 62.42625  829977.5
+5    CBD 65.42723  933851.3
+6    CBD 82.43867 1208589.0
+\end{lstlisting}
+
+A data frame can also be created from two existing data frames by merging them together. It works like the ``JOIN'' function in SQL, and in this sense it supports all ``INNER JOIN'', ``LEFT JOIN'', ``RIGHT JOIN'' and ``OUTER JOIN''. The syntax is given below.
+\begin{lstlisting}
+<df> <- merge(
+    <df1>,
+    <df2>,
+    by.x = <column-in-df1>,
+    by.y = <column-in-df2>,
+    all=FALSE,
+    all.x = all, # left join, by default FALSE
+    all,y = all, # right join, by default FALSE
+    sort = TRUE # sort by the join column
+)
+\end{lstlisting}
+In case the two data frames have duplicated columns other than the joining columns pair, use \verb|<df>$<column> <- NULL| to unnecessary columns.
+
+\section{Basic Data Visualizations Using \texttt{qplot()}} \label{ch:r1:sec:qplot}
+
+The package \verb|ggplot2| provides useful tools for visualization of a data frame. For example, both \verb|qplot()| and \verb|ggplot()| in \verb|ggplot2| provide plot function. Notice that in the late versions of \verb|ggplot2|, \verb|qplot()| is deprecated to encourage using of the more powerful \verb|ggplot()|. With that been said, both functions are smart and flexible enough to produce many different types of plots.
+
+An example of \verb|qplot()| is given below, just to show some of its capability. Run the following codes, and Fig. \ref{ch:r1:fig:qplot_demo} is displayed. It can be seen that \verb|qplot()| is smart enough to automatically choose plot dype, background color, etc., to simplify the plot function.
+\begin{lstlisting}
+library(datasets)
+library(ggplot2)
+qplot(
+    data=iris,
+    x=Sepal.Length*Sepal.Width,
+    y=Petal.Length*Petal.Width,
+    color=Species,
+    size=I(3),
+    xlab = "Sepal Area",
+    ylab = "Petal Area"
+)
+\end{lstlisting}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/qplot_demo.png}
+	\caption{A demonstration of \texttt{qplot}.} \label{ch:r1:fig:qplot_demo}
+\end{figure}
+
+As a recap, the \verb|mortgage_price| data frame created previously can be visualized as follows. Figures \ref{ch:r1:fig:mortgage_demo1} and \ref{ch:r1:fig:mortgage_demo2} can be obtained.
+\begin{lstlisting}
+library(ggplot2)
+rm(list=ls())
+# create data frame
+vec_region <-  rep(c("CBD","City","Suburbs"),each = 100)
+vec_size_cbd <- rnorm(100, 75, 10)
+vec_size_city <- rnorm(100, 100, 15)
+vec_size_suburbs <- rnorm(100, 150, 25)
+vec_size = c(vec_size_cbd, vec_size_city, vec_size_suburbs)
+vec_price_cbd <- vec_size_cbd*rnorm(100, 12500, 2500)
+vec_price_city <- vec_size_city*rnorm(100, 7500, 1000)
+vec_price_suburbs <- vec_size_suburbs*rnorm(100, 5000, 1000)
+vec_price <- c(vec_price_cbd, vec_price_city, vec_price_suburbs)
+mortgage_price <- data.frame(Region = vec_region, Size = vec_size, Price = vec_price)
+rm(vec_region, vec_size_cbd, vec_size_city, vec_size_suburbs, vec_size, vec_price_cbd, vec_price_city, vec_price_suburbs, vec_price)
+# processing
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+# plot
+qplot(data=mortgage_price, x=Size, y=Price, color=Region, geom=c("point", "smooth"))
+qplot(data=mortgage_price, x=Region, y=Price.Unit, geom="boxplot")
+\end{lstlisting}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_demo1.png}
+	\caption{A demonstration of \texttt{qplot} on mortgage price data frame.} \label{ch:r1:fig:mortgage_demo1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_demo2.png}
+	\caption{A second demonstration of \texttt{qplot} on mortgage price data frame.} \label{ch:r1:fig:mortgage_demo2}
+\end{figure}
+
+\section{Advanced Data Visualizations Using \texttt{ggplot()}} \label{ch:r1:sec:ggplot}
+
+Function \verb|ggplot()| is the main data visualization tool in \verb|ggolot2| package. It provides very flexible approaches for data plotting.
+
+\subsection{Grammar of Graphics}
+
+As proposed by Leland Wilkinson's Grammar of Graphics, a chart shall contain multiple independent and reusable layers including ``data'' (as data in data frames), ``aesthetics'' (how data maps to the chart, i.e., the logic of the plot; for example sample dots, curve, color block, or length of lines/bars), ``geometries'' (the actual color and shape of each element on the chart), ``statistics'' (information derived from the data being represented in the chart), ``facets'' (subplots of the same style align together for comparison), ``coordinates'' (the meaning and range of axis) and ``theme'' (overall design, such as title, label, etc.). A demonstrative Fig. \ref{ch:r1:fig:chart_layer} is given to illustrate the different layers in a chart.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/chart_layer.png}
+	\caption{Multiple layers in chart design.} \label{ch:r1:fig:chart_layer}
+\end{figure}
+
+\subsection{Data, Aesthetics and Geometries Layers}
+
+Function \verb|ggplot()| is a very good practice of implementing the above chart design and plotting philosophy. A simple example for \verb|ggplot()|, just for quick demonstration purpose, is given below.
+\begin{lstlisting}
+p <- ggplot(data=<df>, aes(x=<column>, y=<column>, color=<column>, size=<column>))
+p <- p + geom_point()
+p
+\end{lstlisting}
+where \verb|aes()| is used to build mappings in the aesthetics.
+
+An interesting fact when using \verb|ggplot()| is that, when adding a layer to the chat, the layer is literally added to \verb|ggplot()|. In the program, this step by step build up an object, where \verb|ggplot()| provides the most basic layers. Therefore, the above simple example is equivalent to
+\begin{lstlisting}
+p <- ggplot(data=<df>, aes(x=<column>, y=<column>, color=<column>, size=<column>))
+p + geom_point()
+p + geom_line() # another selection of geometries choice
+p + geom_line() + geom_point() # overlying both geometries choices
+p + geom_point(aes(size=<another-column>)) # overwrite aesthetics settings.
+\end{lstlisting}
+and the added layers are able to inherit the aesthetics settings, if it is not overwritten. And speaking of overwriting, even the x and y axis can be overwritten. The displaying name of the labels can be overwritten by stack \verb|xlab("")| and \verb|ylab("")| into the chart.
+
+Function \verb|ggplot()| provides many choices for geometries. The most commonly used ones are summarized in Table \ref{ch:r1:tab:geoms}.
+\begin{table}
+  \centering \caption{Commonly used commands for data frame exploration.}\label{ch:r1:tab:geoms}
+  \begin{tabularx}{\textwidth}{lX}
+    \hline
+    \textbf{Geom} & \textbf{Description} \\ \hline
+    \verb|geom_point()|   & Scatter plots and dot plots. \\
+    \verb|geom_line()|    & Line plots.   \\
+    \verb|geom_bar()|     & Bar plots. \\
+    \verb|geom_histogram()| & Histograms. \\
+    \verb|geom_boxplot()| & Box plots. \\
+    \verb|geom_violin()| & Violin plots.\\
+    \verb|geom_density()| & Density plots.\\
+    \verb|geom_density2d()| & 2-dimensional Density plots.\\
+    \verb|geom_text()| & Text Annotation.\\
+    \verb|geom_label()| & Label on the observations.\\ \hline
+    \end{tabularx}
+\end{table}
+
+\subsection{Statistics Layers}
+
+Similar to the case of geometries layers, statistics layers can also be stacked to \verb|ggplot()|. As introduced earlier, statistics layers are often ``add-on'' layers that derives statistical features from the data and provide additional insights to the users.
+
+Many functions in Table \ref{ch:r1:tab:geoms} are statistics layer built-in, such as \verb|geom_boxplot()| which by nature is a statistics result presentation in the first place. Regression functions such as \verb|geom_smooth()| also reveals statistical insights of the data. More details of these functions are as follows.
+
+Consider using \verb|geom_boxplot()| to visualize the \verb|mortgage_price| data frame that was used in the previous section. Examples are given below.
+\begin{lstlisting}
+library(ggplot2)
+# create data frame
+vec_region <-  rep(c("CBD","City","Suburbs"), each = 100)
+vec_size_cbd <- rnorm(100, 75, 10)
+vec_size_city <- rnorm(100, 100, 15)
+vec_size_suburbs <- rnorm(100, 150, 25)
+vec_size = c(vec_size_cbd, vec_size_city, vec_size_suburbs)
+vec_price_cbd <- vec_size_cbd*rnorm(100, 12500, 2500)
+vec_price_city <- vec_size_city*rnorm(100, 7500, 1000)
+vec_price_suburbs <- vec_size_suburbs*rnorm(100, 5000, 1000)
+vec_price <- c(vec_price_cbd, vec_price_city, vec_price_suburbs)
+mortgage_price <- data.frame(Region = vec_region, Size = vec_size, Price = vec_price)
+rm(vec_region, vec_size_cbd, vec_size_city, vec_size_suburbs, vec_size, vec_price_cbd, vec_price_city, vec_price_suburbs, vec_price)
+# processing
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+# plot
+p <- ggplot(data=mortgage_price, aes(x=Region, y=Price.Unit, color=Region)) + ggtitle("Mortgage uprice per area VS region") + xlab("Region") + ylab("Price per area")
+p + geom_boxplot() + geom_jitter(aes(size=Size, color=Region), alpha=0.25)
+\end{lstlisting}
+and the result is shown in Fig. \ref{ch:r1:fig:mortgage_barplot_demo}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_barplot_demo.png}
+	\caption{An example of box plot of the mortgage price data frame using \texttt{ggplot()} and \texttt{geom_boxplot()}.} \label{ch:r1:fig:mortgage_barplot_demo}
+\end{figure}
+Notice that \verb|ggtitle()|, \verb|xlab()|, \verb|ylab()|, \verb|alpha| are used in the plot. They are self-explanatory. A new geometry \verb|geom_jitter()| is used, which works similarly with \verb|geom_point()| except the additional vibration in the horizontal axis which makes the points clearer to see.
+
+Function \verb|geom_smooth()| is widely used for curve fitting. An example is given below.
+\begin{lstlisting}
+library(ggplot2)
+# generate data
+t <- 1:500
+var1 <- 1.5*t + rnorm(500, 0, 100)
+var2 <- 0.5*t + rnorm(500, 200, 10) + t^1.3*rnorm(500, 0, 0.1)
+df <- data.frame(t=t, x=var1, y=var2)
+# plot data
+p <- ggplot(data=df) +
+ggtitle("Plot of x and y VS t.") +
+xlab("t") +
+ylab("x and y") +
+geom_point(aes(x=t, y=x), color="blue", shape=1, size=1.5) +
+geom_smooth(aes(x=t, y=x), color="blue") +
+geom_point(aes(x=t, y=y), color="red", shape=2, size=1.5) +
+geom_smooth(aes(x=t, y=y), color="red")
+p
+\end{lstlisting}
+Do note that aesthetics needs to be given to \verb|geom_smooth()| in the above example. This is because aesthetics is not given in the base \verb|ggolot()|. Notice that \verb|geom_smooth()| can inherit aesthetics from the previous \verb|ggplot()|, but not from the previous \verb|geom_point()|. The plot is given by Fig. \ref{ch:r1:fig:geom_smooth_demo}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/geom_smooth_demo.png}
+	\caption{An example of using \texttt{geom_smooth()} for scatter point fitting.} \label{ch:r1:fig:geom_smooth_demo}
+\end{figure}
+
+More functions similar to \verb|geom_smooth()| are summarized in Table \ref{ch:r1:tab:linefit}.
+\begin{table}
+	\centering \caption{Functions that fit smooth lines to scatter points.}\label{ch:r1:tab:linefit}
+	\begin{tabularx}{\textwidth}{lX}
+	\hline
+	Function & Description \\ \hline
+	\verb|loess()| & Non-parametric method for fitting a smooth line to a scatter plot using locally weighted regression algorithm.\\
+	\verb|smooth.spline()| & Fits a smoothing spline to the data, which is a type of regression spline where the degree of smoothing is chosen automatically by cross-validation.\\
+	\verb|lm()| & Linear Model, fits a linear relationship between independent and dependent variables by minimizing the residuals between the data points and the line.\\
+	\verb|glm()| & Generalized Linear Model, similar to linear model, but it allows different distribution of error other than normal.\\
+	\verb|gam()| & Generalized Additive Model, it is similar to GLM, but it allows non-parametric smooth functions to be added to the linear predictor.\\
+	\verb|geom_smooth()| & A function in ggplot2 that is used to add a smooth line to a scatter plot, it uses method = "loess" by default but also allow to use other smoothing method like lm, gam etc.\\
+	\hline
+	\end{tabularx}
+\end{table}
+
+\subsection{Facets Layers}
+
+The facets layer allows subplot of data. Consider the following example, where the distribution of mortgage price is studied using histogram. The following code can be used to plot the result in a single plot without the facets layer. The plot is given in Fig. \ref{ch:r1:fig:mortgage_histogram_demo}.
+\begin{lstlisting}
+library(ggplot2)
+# create data frame
+Region = rep(c("CBD","City","Suburbs"), each = 500)
+vec_size =  list(vec_size_cbd = rnorm(500, 75, 10), vec_size_city = rnorm(500, 100, 15), vec_size_suburbs = rnorm(500, 150, 25))
+vec_price = list(vec_price_cbd = vec_size$vec_size_cbd*rnorm(500, 12500, 2500),
+                 vec_price_city = vec_size$vec_size_city*rnorm(500, 7500, 1000),
+                 vec_price_suburbs = vec_size$vec_size_suburbs*rnorm(500, 5000, 1000))
+mortgage_price <- data.frame(Region = Region,
+                             Size = unlist(vec_size),
+                             Price = unlist(vec_price))
+mortgage_price$Region <- as.factor(mortgage_price$Region)
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+# plot data
+p <- ggplot(data=mortgage_price, aes(x=Price.Unit))
+p + geom_histogram(aes(fill=Region), bins=50, color="black", alpha=0.5, position="identity") +
+  ggtitle("Mortgage price per unit area in different regions.") +
+  xlab("Price per unit area") +
+  ylab("Number of house")
+\end{lstlisting}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_histogram_demo.png}
+	\caption{An example of histogram plot of house price per unit area in different regions in a single plot.} \label{ch:r1:fig:mortgage_histogram_demo}
+\end{figure}
+
+To use facets layer, revise the code as follows. Notice that \verb|facet_grid()| is added to the plot, and its input \verb|<column>~.| or \verb|.~<column>| (it is okay to use \verb|<column1>~<column2>| as well) decide the design of the subplots (how to arrange the rows and columns of the subplots).
+\begin{lstlisting}
+library(ggplot2)
+# create data frame
+Region = rep(c("CBD","City","Suburbs"), each = 500)
+vec_size =  list(vec_size_cbd = rnorm(500, 75, 10),
+                 vec_size_city = rnorm(500, 100, 15),
+                 vec_size_suburbs = rnorm(500, 150, 25))
+vec_price = list(vec_price_cbd = vec_size$vec_size_cbd*rnorm(500, 12500, 2500),
+                 vec_price_city = vec_size$vec_size_city*rnorm(500, 7500, 1000),
+                 vec_price_suburbs = vec_size$vec_size_suburbs*rnorm(500, 5000, 1000))
+mortgage_price <- data.frame(Region = Region,
+                             Size = unlist(vec_size),
+                             Price = unlist(vec_price))
+mortgage_price$Region <- as.factor(mortgage_price$Region)
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+# plot data
+p <- ggplot(data=mortgage_price, aes(x=Price.Unit))
+p <- p + geom_histogram(aes(fill=Region), bins=50, color="black", alpha=0.5, position="identity") +
+  ggtitle("Mortgage price per unit area in different regions.") +
+  xlab("Price per unit area") +
+  ylab("Number of house")
+p
+p + facet_grid(Region~.) # put subplots for different regions in rows
+p + facet_grid(.~Region) # put subplots for different regions in columns
+\end{lstlisting}
+
+The results are given in Figs. \ref{ch:r1:fig:mortgage_histogram_demo_f1} and \ref{ch:r1:fig:mortgage_histogram_demo_f2}, depending on the subplot designs.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_histogram_demo_f1.png}
+	\caption{Use facets to plot the histogram of price per unit are of the house in different regions (subplots in rows).} \label{ch:r1:fig:mortgage_histogram_demo_f1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_histogram_demo_f2.png}
+	\caption{Use facets to plot the histogram of price per unit are of the house in different regions (subplots in columns).} \label{ch:r1:fig:mortgage_histogram_demo_f2}
+\end{figure}
+
+\subsection{Coordinates Layers}
+
+Coordinate control is important. The coordinate layer allows setting limits to the axis and zooming in to the chart. An example of adding coordinates layers to a plot is given as follows. The same mortgage price data frame is used for illustration.
+\begin{lstlisting}
+library(ggplot2)
+# create data frame
+Region = rep(c("CBD","City","Suburbs"), each = 500)
+vec_size =  list(vec_size_cbd = rnorm(500, 75, 10),
+                 vec_size_city = rnorm(500, 100, 15),
+                 vec_size_suburbs = rnorm(500, 150, 25))
+vec_price = list(vec_price_cbd = vec_size$vec_size_cbd*rnorm(500, 12500, 2500),
+                 vec_price_city = vec_size$vec_size_city*rnorm(500, 7500, 1000),
+                 vec_price_suburbs = vec_size$vec_size_suburbs*rnorm(500, 5000, 1000))
+mortgage_price <- data.frame(Region = Region,
+                             Size = unlist(vec_size),
+                             Price = unlist(vec_price))
+mortgage_price$Region <- as.factor(mortgage_price$Region)
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+# plot data
+p <- ggplot(data=mortgage_price, aes(x=Size, y=Price))
+p <- p + geom_point(aes(color=Region))
+p + xlim(50, 200) + ylim(400000, 1200000) # first chart
+p + coord_cartesian(xlim=c(50, 200), ylim = c(400000, 1200000)) # second chart
+\end{lstlisting}
+where notice that two charts are generated. The first chart using \verb|xlim()|, \verb|ylim| removes all samples outside the boundary from the chart. While in the second chart using \verb|coord_cartesian()|, all samples preserves and the chart zooms in towards the boundary. The results are given in Figs. \ref{ch:r1:fig:coordinate_demo1} and \ref{ch:r1:fig:coordinate_demo2}, respectively. The difference can be observed near the boundary.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/coordinate_demo1.png}
+	\caption{Add coordinates layer using \texttt{xlim()} and \texttt{ylim()}.} \label{ch:r1:fig:coordinate_demo1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/coordinate_demo2.png}
+	\caption{Add coordinates layer using \texttt{coord_cartesian()}.} \label{ch:r1:fig:coordinate_demo2}
+\end{figure}
+
+\subsection{Themes Layers}
+
+Theme layers mainly refer to titles, labels, and other comments on the chart that help with understanding the content of the chart. As already demonstrated in previous examples, use \verb|xlab()|, \verb|ylab()| to add labels, \verb|ggtitle()| to add title.
+
+Use \verb|theme()| to change the themes of the labels. An example is given below.
+\begin{lstlisting}
+library(ggplot2)
+# create data frame
+Region = rep(c("CBD","City","Suburbs"), each = 500)
+vec_size =  list(vec_size_cbd = rnorm(500, 75, 10), vec_size_city = rnorm(500, 100, 15), vec_size_suburbs = rnorm(500, 150, 25))
+vec_price = list(vec_price_cbd = vec_size$vec_size_cbd*rnorm(500, 12500, 2500),
+                 vec_price_city = vec_size$vec_size_city*rnorm(500, 7500, 1000),
+                 vec_price_suburbs = vec_size$vec_size_suburbs*rnorm(500, 5000, 1000))
+mortgage_price <- data.frame(Region = Region,
+                             Size = unlist(vec_size),
+                             Price = unlist(vec_price))
+mortgage_price$Region <- as.factor(mortgage_price$Region)
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+# plot data
+p <- ggplot(data=mortgage_price, aes(x=Price.Unit))
+p <- p + geom_histogram(aes(fill=Region), bins=50, color="black", alpha=0.5, position="identity")
+p + ggtitle("Mortgage price per unit area in different regions.") +
+  xlab("Price per unit area") +
+  ylab("Number of house") +
+  theme(axis.title.x = element_text(color = "DarkGreen", size=15),
+        axis.title.y = element_text(color = "DarkRed", size=15),
+        axis.text.x = element_text(size=10),
+        axis.text.y = element_text(size=10),
+        legend.title = element_text(size=10),
+        legend.text = element_text(size=8),
+        legend.position = c(1,1), # right top corner of chart
+        legend.justification = c(1,1), # legend align point
+        plot.title = element_text(color = "DarkBlue", size = 15)
+  )
+\end{lstlisting}
+
+The resulted chart is given in Fig. \ref{ch:r1:fig:mortgage_histogram_theme}. Compare it with Fig. \ref{ch:r1:fig:mortgage_histogram_demo} to see the differences by applying \verb|theme()| in the themes layer.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_histogram_theme.png}
+	\caption{Mortgage price chart with theme.} \label{ch:r1:fig:mortgage_histogram_theme}
+\end{figure}
+
+\section{Data Preparation} \label{ch:r1:sec:datapreparation}
+
+\subsection{Data Type Conversion}
+
+Data preparation including data tidy is one of the most tedious and time consuming parts when using R for data analysis. The section introduces useful techniques helpful with data preparation.
+
+It is importnt that the data types of all the columns meet expectation, especially for numeric and factor (categorical) data types. Use \verb|str(<df>)| to check the column data types of a data frame, and convert data types as follows.
+\begin{lstlisting}
+<df>$<column> <- factor(<df>$<column>) # character/numeric to factor
+<df>$<column> <- as.numeric(<df>$<column>) # character to numeric
+<df>$<column> <- as.numeric(as.character(<df>$<column>)) # factor to numeric
+\end{lstlisting}
+
+Notice that when converting factor type to other types, R may deal with the factor using the underlying ``factorization integers'' instead of the factor item names. An example is given below. It can be seen that the original \verb|5.1|, after being converted to factor then back to numeric, becomes \verb|9|. This is because the factorization integer for \verb|5.1| is \verb|9|, as given by printing \verb|my_factor| to the console.
+\begin{lstlisting}
+> library(datasets)
+> iris$Sepal.Length
+  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7
+ [17] 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4
+ [33] 5.2 5.5 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6
+ [49] 5.3 5.0 7.0 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5.0 5.9 6.0 6.1
+ [65] 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6.0 5.7
+ [81] 5.5 5.5 5.8 6.0 5.4 6.0 6.7 6.3 5.6 5.5 5.5 6.1 5.8 5.0 5.6 5.7
+ [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4
+[113] 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6.0 6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1
+[129] 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8
+[145] 6.7 6.7 6.3 6.5 6.2 5.9
+> my_factor <- factor(iris$Sepal.Length)
+> my_numeric <- as.numeric(my_factor)
+> my_numeric
+  [1]  9  7  5  4  8 12  4  8  2  7 12  6  6  1 16 15 12  9 15  9 12  9
+ [23]  4  9  6  8  8 10 10  5  6 12 10 13  7  8 13  7  2  9  8  3  2  8
+ [45]  9  6  9  4 11  8 28 22 27 13 23 15 21  7 24 10  8 17 18 19 14 25
+ [67] 14 16 20 14 17 19 21 19 22 24 26 25 18 15 13 13 16 18 12 18 25 21
+ [89] 14 13 13 19 16  8 14 15 15 20  9 15 21 16 29 21 23 33  7 31 25 30
+[111] 23 22 26 15 16 22 23 34 34 18 27 14 34 21 25 30 20 19 22 30 32 35
+[133] 22 21 19 34 21 22 18 27 25 27 16 26 25 25 21 23 20 17
+> typeof(my_factor)
+[1] "integer"
+> my_factor
+  [1] 5.1 4.9 4.7 4.6 5   5.4 4.6 5   4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7
+ [17] 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5   5   5.2 5.2 4.7 4.8 5.4
+ [33] 5.2 5.5 4.9 5   5.5 4.9 4.4 5.1 5   4.5 4.4 5   5.1 4.8 5.1 4.6
+ [49] 5.3 5   7   6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5   5.9 6   6.1
+ [65] 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6   5.7
+ [81] 5.5 5.5 5.8 6   5.4 6   6.7 6.3 5.6 5.5 5.5 6.1 5.8 5   5.6 5.7
+ [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4
+[113] 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6   6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1
+[129] 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6   6.9 6.7 6.9 5.8 6.8
+[145] 6.7 6.7 6.3 6.5 6.2 5.9
+35 Levels: 4.3 4.4 4.5 4.6 4.7 4.8 4.9 5 5.1 5.2 5.3 5.4 5.5 ... 7.9
+\end{lstlisting}
+
+When converting factor to other types, special caution is required. To convert a factor to other types such as numeric, consider converting it to character first as given in the following example.
+\begin{lstlisting}
+> my_numeric <- as.numeric(as.character(my_factor))
+> my_numeric
+  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7
+ [17] 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4
+ [33] 5.2 5.5 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6
+ [49] 5.3 5.0 7.0 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5.0 5.9 6.0 6.1
+ [65] 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6.0 5.7
+ [81] 5.5 5.5 5.8 6.0 5.4 6.0 6.7 6.3 5.6 5.5 5.5 6.1 5.8 5.0 5.6 5.7
+ [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4
+[113] 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6.0 6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1
+[129] 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8
+[145] 6.7 6.7 6.3 6.5 6.2 5.9
+\end{lstlisting}
+where \verb|my_factor| is generated previously.
+
+It is possible for some columns in the data frame to look like a factor and a character string, but indeed should be handled as numeric values. For example, \verb|S$6,125.50| in many occasions should be treated just as \verb|6125.0|. These factor or character values cannot be converted to numeric values directly.
+
+In such cases, consider using \verb|sub()| or \verb|gsub()| to replace patterns in a character, then convert it into numeric values. Notice that \verb|sub()| replaces only the first encounter of the pattern, while \verb|gsub()| replaces all the encounters. An example of using \verb|gsub()| is given below.
+\begin{lstlisting}
+> money_character <- c("S$6,273.15", "S$215.3", "S$8,987,756.00")
+> typeof(money)
+[1] "character"
+> a <- gsub(",", "", money) # replace "," with ""
+> a <- gsub("S\\$", "", a) # replace "S$" with ""
+> money_numeric <- as.numeric(a)
+> money_numeric
+[1]    6273.15     215.30 8987756.00
+> typeof(money_numeric)
+[1] "double"
+\end{lstlisting}
+where notice that \verb|$| is a special character defined in R, and to escape from that \verb|\\$| is used. Notice that applying \verb|sub()| and \verb|gsub()| on a factor automatically converts it to character as a hidden step.
+
+\subsection{Handling Missing Data}
+
+There can be missing data in the data frame. There are a few ways to deal with missing data as follows.
+\begin{itemize}
+	\item If the missing data can be derived from other columns, derive the missing data and fill in the blanks.
+	\item If the missing data does not affect the rest analysis, leave it blank.
+	\item Delete the row.
+	\item Use interpolations to fill in the blank.
+	\item Use correlations and similarities to fill in the blank.
+	\item Argument a new column add a ``data-missing'' flag to that row.
+\end{itemize}
+
+If the missing data can be derived from other columns, derive the missing data and fill in the blanks.
+
+In R, \verb|NA| is a special variable used to indicate a missing value, and it is by itself of logical data type in addition to \verb|TURE| and \verb|FALSE|. Operations involving \verb|NA| often return \verb|NA|. Examples are given below.
+\begin{lstlisting}
+> typeof(NA)
+[1] "logical"
+> TRUE == 1 # TRUE is equivalent with 1
+[1] TRUE
+> TRUE == 2
+[1] FALSE
+> FALSE == 0 # FALSE is equivalent with 0
+[1] TRUE
+> FALSE == -1
+[1] FALSE
+> TRUE == FALSE
+[1] FALSE
+> NA == NA
+[1] NA
+> NA == TRUE
+[1] NA
+> NA == FALSE
+[1] NA
+\end{lstlisting}
+
+Use the following to filter for all rows with/without at least one \verb|NA|.
+\begin{lstlisting}
+<df>[complete.cases(<df>),] # all complete rows
+<df>[!complete.cases(<df>),] # all incomplete rows
+\end{lstlisting}
+where \verb|complete.cases(<df>)| returns a list made up of \verb|TRUE| and \verb|FALSE| indicating whether the associated row is complete or now.
+
+Sometimes a blank string \verb|""| that we would expected to be treated as \verb|NA| is not treated as so. To fix that, while importing the data frame (say, from a CSV file), use the following
+\begin{lstlisting}
+df <- read.csv("<csv-name>", na.string=c("<pattern>", ...))
+\end{lstlisting}
+where \verb|"<pattern>"| are the patterns in the original file to be replaced by \verb|NA|, for instance, \verb|""|, \verb|"ERROR"|, etc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Connectivity with Data Sources} \label{ch:r1:sec:datasource}
+
+This section introduces the connectivity of R to the data sources, such as a file, or a database.
+
+
+
+
+
+
+

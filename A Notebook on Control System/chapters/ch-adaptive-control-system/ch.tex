@@ -1,0 +1,381 @@
+\chapter{Adaptive Control System} \label{ch:acs}
+
+Adaptive controller is generally referred to a controller with adjustable parameters and associated mechanism to adjust such parameters, to conform to new circumstances.
+
+Comparing with most of the other control systems, an adaptive control system does not require a very precise modeling of the plant. More precisely, an adaptive control system can adapt the control gains to the unknown or time-varying plant and maintain the stability of the closed-loop system.
+
+The main references of this chapter include:
+\begin{itemize}
+	\item Åström, K.J. and Wittenmark, B., 2013. Adaptive control. Courier Corporation \cite{aastrom2013adaptive}.
+\end{itemize}
+
+\section{Introduction}
+
+Adaptive controller is generally referred to a controller with adjustable parameters and associated mechanism to adjust such parameters, to conform to new circumstances.
+
+Due to the parameter adjustment mechanism, the controller becomes non-linear. For example, while a conventional PID controller is linear, an adaptive PID controller is nonlinear since the $P(t)$, $I(t)$ and $D(t)$ are variables instead of constant gains.
+
+In practice, an adaptive controller is often a modified version of a conventional controller just like the adaptive PID controller example. There are often 2 types of feedback loops in an adaptive control system: the original loops that comes with the conventional controller, and the additional loops to adjust the parameters of the conventional controller. A demonstrative figure is given in Fig. \ref{ch:acs:fig:adaptive_control_schema_general}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=300pt]{chapters/ch-adaptive-control-system/figures/adaptive_control_schema_general.png}
+	\caption{Adaptive control system general schema.} \label{ch:acs:fig:adaptive_control_schema_general}
+\end{figure}
+
+\subsection{A Brief History of Adaptive Control System}
+
+The first adaptive control system application was designed for autopilots of a high-performance aircraft, where the conventional control system was found to work for one condition but not for the other. Gain scheduling was adopted to solve this problem.
+
+Later on more sophisticated adaptive control systems that utilizes state-space model and stability theory were introduced. Stochastic control theory and system identification techniques were developed side-by-side.
+
+The proof of stability of the adaptive control system, especially universal stability of the system, started to draw attention. The proof can be done often only with strong restrictions. People started to investigate the connection and difference of robust control and system identification with adaptive control and system identification. Computer controlled system and artificial neural network started to emerge and people realized the connection between adaptive control and computer learning.
+
+Adaptive control system commercialization started in 1980s, and are used in handling process dynamics and disturbances, and to provide automatic tuning of controller parameters.
+
+\subsection{Conventional Control System}
+
+The most conventional way of designing a control system is as follows.
+
+\begin{enumerate}
+	\item Assume a linear model of the plant at the operating point.
+	\item Calculate or estimate the parameters of the plant model.
+	\item Design a closed-loop control system for the plant.
+\end{enumerate}
+
+The control system designed following the above approach is usually intrinsically insensitive to modeling error and disturbance to some extend (due to the closed-loop implementation). But there are difficulties that could cause variation and troubles.
+
+\begin{itemize}
+	\item \textbf{Nonlinear actuator} is one of the sources of modeling uncertainty, making the control system work only on/near the pre-determined operating point, but not universally.
+	\item \textbf{Flow and speed variations} in the pipes of a system, if exist, can change from time to time. The different flow and speed can cause changes in the process dynamics, thus change the plant model.
+	\item \textbf{Environmental dynamics and uncertainties} often draw significant concerns in control. For example, the aircraft flying at different height and speed suffers from different environmental conditions. The same applies to ship steering at different speed.
+\end{itemize}
+
+\subsection{Adaptive Control Schema}
+
+Different adaptive control schemes have been designed to tackle the above issues. The commonly used ones are briefly introduced here.
+
+\vspace{0.1in}
+\noindent \textbf{Gain Scheduling}
+\vspace{0.1in}
+
+Measurement feedback may correlate well with changes in the process dynamics. The idea of gain scheduling is to map the process dynamic parameters with the control parameters, by either a function manner or a table lookup manner, i.e., schedule the control parameters to compensate the the process dynamics.
+
+A demonstrative figure is given in Fig. \ref{ch:acs:fig:gain_scheduling_schema}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=300pt]{chapters/ch-adaptive-control-system/figures/gain_scheduling_schema.png}
+	\caption{Gain scheduling schema.} \label{ch:acs:fig:gain_scheduling_schema}
+\end{figure}
+
+Gain scheduling is one of the most intuitive adaptive control schema, and has the earliest use case among all.
+
+\vspace{0.1in}
+\noindent \textbf{Model-Reference Adaptive System (MRAS)}
+\vspace{0.1in}
+
+In this scenario, a reference model is built that generates the “ideal” output of the closed-loop system given the reference point. This is often a virtual model that does not suffer from disturbances and error.
+
+The MRAS then uses the output of both the actual plant and the reference model to calculate the controller parameter adjustment mechanism to minimize the difference between the outputs of the two models.
+
+A demonstrative figure is given in Fig. \ref{ch:acs:fig:mars_schema}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=300pt]{chapters/ch-adaptive-control-system/figures/mars_schema.png}
+	\caption{MARS schema.} \label{ch:acs:fig:mars_schema}
+\end{figure}
+
+The MRAS is somewhat like a learning system. Usually, there is a “adaptation rate” (just like the learning rate) that controls the adapting speed.
+
+\vspace{0.1in}
+\noindent \textbf{Self-Tuning Regulator (STR)}
+\vspace{0.1in}
+
+The idea of STR is to estimate the system process and design and change the whole control system in real-time. Unlike the gain scheduling approach and MRAS where parameter adjustment mechanism is calculated in real-time, in STR approach, the controller designing problem is solved in real-time. From this sense, STR can be taken as the “high-end” gain scheduling problem.
+
+A demonstrative figure is given in Fig. \ref{ch:acs:fig:str_schema}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=300pt]{chapters/ch-adaptive-control-system/figures/str_schema.png}
+	\caption{STR schema.} \label{ch:acs:fig:str_schema}
+\end{figure}
+
+STR can be made very flexible, because it is essentially a new control system design from scratch each time the environment changes.
+
+\vspace{0.1in}
+\noindent \textbf{Dual Control}
+\vspace{0.1in}
+
+The aforementioned adaptive control schemas do not taken into account the stochastics and statistics of the measurement and estimation uncertainty.
+
+To analyze the performance of the system under estimation uncertainty and to develop control algorithm that can optimize the system performance under such uncertainty, nonlinear stochastic control theory needs to be used, which leads to the notion of dual control.
+
+A demonstrative figure is given in Fig. \ref{ch:acs:fig:dual_schema}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=300pt]{chapters/ch-adaptive-control-system/figures/dual_schema.png}
+	\caption{Dual control schema.} \label{ch:acs:fig:dual_schema}
+\end{figure}
+
+This control system is essentially a nonlinear controller with a robust/adaptive filter that estimates the process dynamics and the states of the plant, together with statistics information of the estimates.
+
+\subsection{A Typical Adaptive Control Problem Formulation}
+
+For simplicity, consider the following LTI plant realizations.
+
+Continuous time domain state space model:
+\begin{eqnarray}
+	\dot{x}(t) &=& Ax(t) + Bu(t) \nonumber \\
+	y(t) &=& Cx(t) \nonumber
+\end{eqnarray}
+
+Continuous time domain transfer function model:
+\begin{eqnarray}
+	G(s) = \dfrac{B(s)}{A(s)} = \dfrac{b_0s^m + b_1s^{m-1} + \ldots + b_m}{s^n + a_1s^{n-1} + \ldots + a_n} \nonumber
+\end{eqnarray}
+
+Continuous time domain input-output model (with $p$ the differential operator, $p=\frac{d}{dt}$):
+\begin{eqnarray}
+	y(t) &=& G(p)u(t) \nonumber
+\end{eqnarray}
+
+Discrete time domain state-space model:
+\begin{eqnarray}
+	x(k+1) = Ax(k) + Bu(k) \nonumber \\
+	y(k) = Cx(k) \nonumber
+\end{eqnarray}
+
+Discrete time domain transfer function:
+\begin{eqnarray}
+	G(z) = \dfrac{B(z)}{A(z)} = \dfrac{b_0z^m + b_qz^{m-1} + \ldots + b_m}{z^n + a_1z^{n-1} + \ldots + a_n} \nonumber
+\end{eqnarray}
+
+Discrete time domain input-output model (with $q$ the forward shift operator, $qy(t) = y(t+1)$):
+\begin{eqnarray}
+	y(k) &=& H(q)u(k) \nonumber
+\end{eqnarray}
+
+The above models may be describing the same plant, with different level of details. For example, when dealing with transfer function and input-output models, the initial condition of the system is often ignored. When dealing with discrete time domain plant model, it is open a sampled system derived from the original system.
+
+If the parameters in the models are known, it is straight forward to design a closed-loop controller for them. This is called the underlying design problem. The adaptive control problem, on the other hand, is to design a controller without knowing the parameters. In response, the controller comes with adjustable control gains and associated adjustment mechanism.
+
+A typical adaptive controller design shall include the following procedures:
+\begin{enumerate}
+	\item Characterize the desired closed-loop behavior.
+	\item Determine a suitable control law with adjustable parameters.
+	\item Design adjustment mechanism.
+	\item Implement the control law with the parameters adjusted using the adjustment mechanism.
+\end{enumerate}
+
+Some successful use cases for adaptive control systems include
+\begin{itemize}
+	\item Automatic tuning controller, such as the PID automatic tuning controller. In practice, all conventional control systems can benefit from automatic parameter tuning, if done correctly.
+	\item Gain scheduling, which is the standard technique used in flight control system for high-performance aircraft, and is becoming increasingly popular in industrial process control.
+	\item Continuous adaptation control for continuously varying system.
+	\item ``Human-in-the-loop'' control system.
+\end{itemize}
+
+Since adaptive control system is often more costly and complicated than a conventional constant-gain controller, it should be used wisely and not abused. If the dynamics of the system are manageable, consider using parametric model based control algorithm rather than the adaptive control system, the later of which is usually more complicated.
+
+\section{Parameter Estimation}
+
+Parameter estimation (or more generally, system identification) is widely used, either directly or indirectly, in many adaptive control schemas. An obvious example is STR, where the process dynamics estimation is built into the controller. Parameter estimation also happens implicitly in MRAS.
+
+The key factors in system identification include the following.
+\begin{itemize}
+	\item Selection of model structure.
+	\item Experiment design.
+	\item Parameter and state estimation.
+	\item Validation.
+\end{itemize}
+
+One thing to notice is that in adaptive control scope, the plant is assumed to change continuously, thus the parameter estimation needs to be done in a recursive manner.
+
+\subsection{Least Squares Estimation}
+
+Karl Friedrich Gauss defines LS estimation problem as follows.
+
+\begin{VF}
+\textbf{LS estimation:}
+\\
+\\
+\noindent The parameters in the model should be chose such that the sum of the squares of the differences between the observed and the computed values, multiplied by numbers that measure the degree of precision, is a minimum.
+\end{VF}
+
+Notice that from the above definition, if all observations share the same degree of precision, the multipliers to all observations shall be the same, otherwise they should be different. Conventionally, the later case is referred as ``Weighted LS (WLS) estimation'' where each multiplier is called the ``weight'' associated with the observation. The more precise an observation, the higher its associated weight. On the other hand, the former case where all observations share the same precision is referred as LS estimation.
+
+To reduce confusion, from now on LS estimation and WLS estimation are used to refer to the former and later cases, respectively.
+
+Formulate LS estimation problem on a LTI system as follows. Let $\theta_i, i=1,...,n$ be $n$ unknown parameters in the model and $y(j), j=1,...,m$ be $m$ measurements collected from the mode. It is required that $m\geq n$. Variable $\phi_i(j)$ is called a regression variable (or a regressor) that links the measurements with the model parameters, so that
+\begin{eqnarray}
+	y(j) &=& \phi_1(j)\theta_1 + \phi_2(j)\theta_2 + \ldots + \phi_n(j)\theta_n + \epsilon(j) \label{eq:lsform1}
+\end{eqnarray}
+where $\epsilon(j)$ is assumed to be independent measurement noise associated with $y(j)$. Equation \eqref{eq:lsform1} is called a regression model. Putting \eqref{eq:lsform1} into matrix form gives
+\begin{eqnarray}
+	y &=& \Phi \theta + \epsilon \label{eq:lsform2}
+\end{eqnarray}
+where
+\begin{eqnarray}
+	y &=& \left[\begin{array}{ccc}
+	              y(1) & \ldots & y(m)
+	            \end{array}\right]^T \nonumber \\
+	\Phi &=& \left[\begin{array}{ccc}
+		\phi_1(1) & \ldots & \phi_n(1) \\
+		\vdots & \ddots & \vdots \\
+		\phi_1(m) & \ldots & \phi_n(m)
+	\end{array}\right] \nonumber \\
+	\theta &=& \left[\begin{array}{ccc}
+	                   \theta_1 & \ldots & \theta_n
+	                 \end{array}\right]^T \nonumber \\
+    \epsilon &=& \left[\begin{array}{ccc}
+                         \epsilon(1) & \ldots & \epsilon(m)
+                       \end{array}\right]^T \nonumber
+\end{eqnarray}
+with $y$ the measurement vector, $\Phi$ the regression model matrix, and $\theta$ the unknown system parameter vector.
+
+LS estimation of $\theta$ in \eqref{eq:lsform2} is formulated as follows. Select estimation $\hat{\theta} = [\hat{\theta}_1, ..., \hat{\theta}_n]^T$ so that the following cost function $V(\hat{\theta})$ is minimized.
+\begin{eqnarray}
+  V(\hat{\theta}) &=& \dfrac{1}{2}\sum_{i=1}^{m}e(i)^2 \label{eq:lscost}
+\end{eqnarray}
+where
+\begin{eqnarray}
+  e(i) &=& y(i) - \left(\phi_1(i)\hat{\theta}_1 + \phi_2(i)\hat{\theta}_2 + \ldots + \phi_n(i)\hat{\theta}_n\right) \nonumber \\
+  &=& y(i) - \phi(i)^T\hat{\theta} \label{eq:lsmeasresidual2}
+\end{eqnarray}
+with
+\begin{eqnarray}
+  \phi(i)^T &=& \left[\begin{array}{ccc}
+                        \phi_1(i) & \ldots & \phi_n(i)
+                      \end{array}\right]^T \nonumber
+\end{eqnarray}
+which is the $i$th row of $\Phi$. Variable $e(i)$ is called the residual.
+
+Put everything into matrix format. Equation \eqref{eq:lscost} becomes
+\begin{eqnarray}
+	V(\hat{\theta}) &=& \dfrac{1}{2}\sum_{i=1}^{m} \left(y(i) - \phi(i)^T\hat{\theta}\right)^2 \nonumber \\
+	&=& \dfrac{1}{2}(y - \Phi\hat{\theta})^T(y - \Phi\hat{\theta}) \label{eq:lsform3}
+\end{eqnarray}
+Denote $e = [e(1), ..., e(m)]^T$. From \eqref{eq:lsmeasresidual2},
+\begin{eqnarray}
+  e &=& y - \Phi\hat{\theta} \label{eq:lsmeasresidual1}
+\end{eqnarray}
+and \eqref{eq:lsform3} becomes
+\begin{eqnarray}
+	V(\hat{\theta}) &=& \dfrac{1}{2}e^Te \label{eq:lsform4}
+\end{eqnarray}
+
+The quadratic optimization problem given in \eqref{eq:lsform4} has the following unique analytical solution. Differentiating \eqref{eq:lsform4} w.r.t. $\theta$ gives (using numerator-layout notation)
+\begin{eqnarray}
+	\dfrac{dV(\hat{\theta})}{d\theta} &=& \dfrac{dV(\hat{\theta})}{de}\dfrac{de}{d\theta} \label{eq:lsform5} \\
+	&=& -e^T\Phi \label{eq:lsform6}
+\end{eqnarray}
+Equating \eqref{eq:lsform6} to zero gives the minimum of \eqref{eq:lsform4} as follows.
+\begin{eqnarray}
+  -e^T\Phi &=& 0 \label{eq:lsform7}
+\end{eqnarray}
+Substituting \eqref{eq:lsmeasresidual1} into \eqref{eq:lsform7} gives
+\begin{eqnarray}
+- \left(y - \Phi\hat{\theta}\right)^T\Phi &=& 0 \nonumber \\
+- \Phi^T\left(y - \Phi\hat{\theta}\right) &=& 0 \nonumber \\
+ \Phi^T\Phi\hat{\theta} &=& \Phi^T y \nonumber \\
+ \hat{\theta} &=& \left(\Phi^T\Phi\right)^{-1}\Phi^Ty \label{eq:lsform8}
+\end{eqnarray}
+provided that $\Phi^T\Phi$ is nonsingular, which is known as the excitation condition. Equation \eqref{eq:lsform8} is the solution to the LS estimation problem in \eqref{eq:lscost}.
+
+\begin{mdframed}
+\textbf{A Quick Note on Matrix Differentiation}
+\\
+\\
+In numerator-layout notion, the scalar $V(\hat{\theta})$ differentiated w.r.t. the vector $e$ in \eqref{eq:lsform5} is given by
+\begin{eqnarray}
+	\dfrac{dV(\hat{\theta})}{de} &=& \left[\begin{array}{ccc}
+		\dfrac{dV(\hat{\theta})}{de(1)} & \ldots & \dfrac{dV(\hat{\theta})}{de(m)}
+	\end{array}\right] \nonumber \\
+	&=& \left[\begin{array}{ccc}
+		e(1) & \ldots & e(m)
+	\end{array}\right] \nonumber \\
+&=& e^T \nonumber
+\end{eqnarray}
+
+The vector $e$ differentiated w.r.t. the vector $\theta$ is given by
+\begin{eqnarray}
+\dfrac{de}{d\theta} &=& \left[\begin{array}{ccc}
+                                \dfrac{de(1)}{d\theta_1} & \ldots & \dfrac{de(m)}{d\theta_n} \\
+                                \vdots & \ddots & \vdots \\
+                                \dfrac{de(m)}{d\theta_1} & \ldots & \dfrac{de(m)}{d\theta_n}
+                              \end{array}\right] \nonumber \\
+                              &=& \left[\begin{array}{ccc}
+                                -\phi_1(1) & \ldots & -\phi_n(1) \\
+                                \vdots & \ddots & \vdots \\
+                                -\phi_1(m) & \ldots & -\phi_n(m)
+                              \end{array}\right] \nonumber \\
+                              &=& -\Phi \nonumber
+\end{eqnarray}
+where
+\begin{eqnarray}
+\dfrac{de(i)}{d\theta_j} &=& -\phi_j(i) \nonumber
+\end{eqnarray}
+because of \eqref{eq:lsmeasresidual2}.
+
+Therefore,
+\begin{eqnarray}
+  \dfrac{dV(\hat{\theta})}{d\theta} = \dfrac{dV(\hat{\theta})}{de}\dfrac{de}{d\theta} = -e^T\Phi \nonumber
+\end{eqnarray}
+which is \eqref{eq:lsform6}.
+\end{mdframed}
+
+A WLS estimation problem can be formulated similarly, by changing \eqref{eq:lscost} with
+\begin{eqnarray}
+  V(\hat{\theta}) &=& \dfrac{1}{2}\sum_{i=1}^{m}w(i)e(i)^2 \nonumber
+\end{eqnarray}
+
+The solution to a WLS estimation can be similarly derived and the result is
+\begin{eqnarray}
+  \hat{\theta} &=& \left(\Phi^TW\Phi\right)^{-1}\Phi^TWy \nonumber
+\end{eqnarray}
+where $W = \textup{diag}(w(1), ...,w(m))$.
+
+\subsection{Statistics Properties of LS Estimation}
+
+In the discussions below, We will assume that all measurement noise $\epsilon(i), i=1,...,m$ are i.i.d. noise, whose mean and variance are zero and $\sigma^2$ respectively.
+
+Substituting \eqref{eq:lsform2} into \eqref{eq:lsform8} gives
+\begin{eqnarray}
+  \hat{\theta} &=& \left(\Phi^T\Phi\right)^{-1}\Phi^T\left(\Phi\theta + \epsilon\right) \nonumber \\
+  &=& \theta + \left(\Phi^T\Phi\right)^{-1}\Phi^T\epsilon \label{eq:lsform9}
+\end{eqnarray}
+
+Using \eqref{eq:lsform9}, the following statistics properties of LS estimation can be drawn.
+\begin{eqnarray}
+  E\left[\hat{\theta}\right] &=& \theta \nonumber \\
+  \textup{Cov}\left[\hat{\theta}\right] &=& E\left[\hat{\theta}\hat{\theta}^T\right] \nonumber \\
+  &=& \sigma^2\left(\Phi^T\Phi\right)^{-1} \nonumber
+\end{eqnarray}
+which suggests that the estimator is zero mean, and the variance of the noise $\sigma^2$ can potentially be estimated from the state estimate $\hat{\theta}$. Details are given as follows. Substituting \eqref{eq:lsform2}, \eqref{eq:lsform8} into \eqref{eq:lsmeasresidual1} gives
+\begin{eqnarray}
+  e &=& \left(I - \Phi\left(\Phi^T\Phi\right)^{-1}\Phi^T\right)\epsilon \label{eq:lsform10}
+\end{eqnarray}
+Using \eqref{eq:lsform10},
+\begin{eqnarray}
+  E\left[ee^T\right] &=& \sigma^2\left(I - \Phi\left(\Phi^T\Phi\right)^{-1}\Phi^T\right)\left(I - \Phi\left(\Phi^T\Phi\right)^{-1}\Phi^T\right)^T \label{eq:lsform11}
+\end{eqnarray}
+Taking the trace of matrix from both sides of \eqref{eq:lsform11} gives
+\begin{eqnarray}
+  E\left[e^Te\right] &=& (m-n)\sigma^2 \label{eq:lsform12}
+\end{eqnarray}
+From \eqref{eq:lsform4} and \eqref{eq:lsform12},
+\begin{eqnarray}
+  \sigma^2 &=& \dfrac{2}{m-n}E\left[V(\hat{\theta})\right] \nonumber
+\end{eqnarray}
+can be used to estimate the variance of the noise.
+
+
+
+
+
+
+

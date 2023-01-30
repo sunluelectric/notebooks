@@ -1,0 +1,72 @@
+% ---
+% sunlu
+% ---
+\input{../style/documentclass.tex}
+\input{../style/packages.tex}
+\input{../style/preamble.tex}
+
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\title{A Notebook on Control System}
+\author{Lu Sun, and many more.}
+
+\maketitle
+
+\input{../frontmatter/dedication.tex}
+\tableofcontents
+\input{../frontmatter/foreword.tex}
+\include{frontmatter/preface}
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\part{Classic Control System}
+
+\include{chapters/ch-classic-control-system/ch}
+
+\include{chapters/ch-multivariable-control-system/ch}
+
+\part{Modern Control System}
+
+\include{chapters/ch-modern-control-system/ch}
+
+\include{chapters/ch-computer-control-system/ch}
+
+\part{Advanced Control System}
+
+\include{chapters/ch-optimal-robust-control-system/ch}
+
+\include{chapters/ch-model-predictive-control-system/ch}
+
+\include{chapters/ch-adaptive-control-system/ch}
+
+\part{System Identification}
+
+\include{chapters/ch-system-identification/ch}
+
+\include{chapters/ch-optimal-robust-state-estimation/ch}
+
+\include{chapters/ch-adaptive-state-estimation/ch}
+
+\part{Artificial Intelligence}
+
+\include{chapters/ch-artificial-intelligence/ch}
+
+\part{Advanced Topics}
+
+\include{chapters/ch-fuzzy-control-system/ch}
+
+\include{chapters/ch-multiagent-control-system/ch}
+
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\printindex
+
+\end{document}

@@ -1,0 +1,57 @@
+% ---
+% This LaTeX template is obtained from ``https://www.overleaf.com/talex/templates/tagged/book'' under ``Krantz book template''
+% The template is downloaded from the above website on March 15, 2021.
+% ---
+\documentclass[krantz1,ChapterTOCs]{krantz}
+\usepackage{fixltx2e,fix-cm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{makeidx}
+\usepackage{multicol}
+\usepackage{multirow}
+%\usepackage[dvips]{hyperref}
+
+\usepackage{footnote}
+
+
+\frenchspacing
+\tolerance=5000
+
+\makeindex
+
+\include{frontmatter/preamble} %place custom commands and macros here
+
+\begin{document}
+
+\frontmatter
+
+\title{A Notebook on Algebra}
+\author{Lu Sun, and many more.}
+
+\maketitle
+
+\include{frontmatter/dedication}
+%\cleardoublepage
+%\setcounter{page}{7} %previous pages will be reserved for frontmatter to be added in later.
+\tableofcontents
+\include{frontmatter/foreword}
+\include{frontmatter/preface}
+\listoffigures
+\listoftables
+%\include{frontmatter/contributor}
+%\include{frontmatter/symbollist}
+
+\mainmatter
+
+\part{Linear Algebra}
+
+\part{Abstract algebra}
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\printindex
+
+\end{document}

@@ -1,0 +1,64 @@
+% ---
+% sunlu
+% ---
+\input{../style/documentclass.tex}
+\input{../style/packages.tex}
+\input{../style/preamble.tex}
+
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\title{A Notebook on Probability, Statistics, and Data Analysis}
+\author{Lu Sun, and many more.}
+
+\maketitle
+
+\input{../frontmatter/dedication.tex}
+\tableofcontents
+\input{../frontmatter/foreword.tex}
+\include{frontmatter/preface}
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\part{Probability}
+
+\include{chapters/ch-probability-basics/ch}
+
+\include{chapters/ch-random-variables/ch}
+
+\include{chapters/ch-joint-distributions/ch}
+
+\part{Statistics}
+
+\include{chapters/ch-sampling/ch}
+
+\include{chapters/ch-estimation/ch}
+
+\include{chapters/ch-regression/ch}
+
+\include{chapters/ch-hypothesis-testing/ch}
+
+\include{chapters/ch-bayesian-methods/ch}
+
+
+\part{Tools for Data Science}
+
+\include{chapters/ch-r/ch1}
+
+\include{chapters/ch-r/ch2}
+
+\include{chapters/ch-python/ch}
+
+\include{chapters/ch-matlab/ch}
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\printindex
+
+\end{document}

@@ -1,0 +1,110 @@
+% ---
+% sunlu
+% ---
+\input{../style/documentclass.tex}
+\input{../style/packages.tex}
+\input{../style/preamble.tex}
+
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\title{A Notebook on Linux Operating System}
+\author{Lu Sun, and many more.}
+
+\maketitle
+
+\input{../frontmatter/dedication.tex}
+\tableofcontents
+\input{../frontmatter/foreword.tex}
+\include{frontmatter/preface}
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\part{Linux Basics}
+
+% Linux as an Operating System
+\include{chapters/ch-brief-introduction-to-linux/ch}
+
+% Shells Basics
+\include{chapters/ch-shell-basics/ch}
+
+% Text file Editing
+\include{chapters/ch-text-file-editing/ch}
+
+% Managing files
+\include{chapters/ch-file-management/ch}
+
+% Managing Software
+\include{chapters/ch-software-management/ch}
+
+% Managing Task
+\include{chapters/ch-process-management/ch}
+
+% Programming on Linux
+\include{chapters/ch-programming-on-linux/ch}
+
+\part{Linux Advanced}
+
+% Linux admin basics
+\include{chapters/ch-linux-administration/ch}
+
+% Managing Disks
+\include{chapters/ch-disk-management/ch}
+
+% Shell Advanced
+\include{chapters/ch-shell-advanced/ch}
+
+% Software Management Advanced
+\include{chapters/ch-software-management-advanced/ch}
+
+\part{Server Management}
+
+% General Introduction to Linux server administration
+
+% Network configuration
+
+% Managing service and printer
+
+% Managing Web server, FTP, NFS and Samba
+
+% Database
+\include{chapters/ch-database/ch}
+
+% Server troubleshooting
+
+% VM and docker
+\include{chapters/ch-virtualization-and-containerization/ch}
+
+\part{Linux Security}
+
+% Linux Security
+
+% Security Enhanced Linux
+
+% Firewall
+
+\part{Linux on Cloud}
+
+% General introduction to cloud computing
+
+\include{chapters/ch-cloud-computing/ch}
+
+% Amazon Web Service solution architecture and development
+
+\include{chapters/ch-aws/ch}
+
+\part{Appendix}
+
+\include{appendix/ap}
+
+\bibliographystyle{ieeetr}
+\bibliography{reference}
+
+\printindex
+
+\end{document}
