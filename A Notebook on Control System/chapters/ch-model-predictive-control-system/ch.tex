@@ -1,1 +1,23 @@
 \chapter{Model Predictive Control System} \label{ch:mpcs}
+
+Model predictive controller belongs to the family of optimal controllers. Given the plant model and a control signal, the behavior of the system can be forecast. The logic behind MPC is that it finds the control signal of the present whose associated forecast is optimized.
+
+Comparing with other optimal controller, such as the famous and intuitive LQG controller, MPC has a better adaption to different kinds of restrictions. This makes MPC extremely popular in industry. 
+
+The references of this chapter include:
+\begin{itemize}
+	\item Rawlings, J.B., Mayne, D.Q. and Diehl, M., 2017. Model predictive control: theory, computation, and design (Vol. 2). Madison, WI: Nob Hill Publishing. \cite{rawlings2017model}.
+\end{itemize}
+
+\section{Introduction}
+
+The MPC uses system dynamic model to forecast system behavior, and optimize the forecast to produce the best decision at the current moment.
+
+From the above description, we can see that the there are at least 3 key factors of MPC:
+\begin{itemize}
+	\item Model of the plant.
+	\item The current state (initial state) of model.
+	\item The control signal.
+\end{itemize}
+where the model structure is derived from assumptions, the parameters of the model obtained by parameter estimation, and the current state of the model obtained by state estimation. Finally, an optimization problem with varieties of restrictions is proposed to generate the control signal.
+

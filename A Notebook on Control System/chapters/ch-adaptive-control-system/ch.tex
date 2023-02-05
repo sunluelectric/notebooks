@@ -4,7 +4,7 @@ Adaptive controller is generally referred to a controller with adjustable parame
 
 Comparing with most of the other control systems, an adaptive control system does not require a very precise modeling of the plant. More precisely, an adaptive control system can adapt the control gains to the unknown or time-varying plant and maintain the stability of the closed-loop system.
 
-The main references of this chapter include:
+The references of this chapter include:
 \begin{itemize}
 	\item Åström, K.J. and Wittenmark, B., 2013. Adaptive control. Courier Corporation \cite{aastrom2013adaptive}.
 \end{itemize}
@@ -250,7 +250,7 @@ with
 \begin{eqnarray}
   \phi(i)^T &=& \left[\begin{array}{ccc}
                         \phi_1(i) & \ldots & \phi_n(i)
-                      \end{array}\right]^T \nonumber
+                      \end{array}\right] \label{eq:lsmeasresidual3}
 \end{eqnarray}
 which is the $i$th row of $\Phi$. Variable $e(i)$ is called the residual.
 
@@ -355,7 +355,7 @@ Using \eqref{eq:lsform9}, the following statistics properties of LS estimation c
   \textup{Cov}\left[\hat{\theta}\right] &=& E\left[\hat{\theta}\hat{\theta}^T\right] \nonumber \\
   &=& \sigma^2\left(\Phi^T\Phi\right)^{-1} \nonumber
 \end{eqnarray}
-which suggests that the estimator is zero mean, and the variance of the noise $\sigma^2$ can potentially be estimated from the state estimate $\hat{\theta}$. Details are given as follows. Substituting \eqref{eq:lsform2}, \eqref{eq:lsform8} into \eqref{eq:lsmeasresidual1} gives
+which suggests that the estimator is zero mean. With the fixed number $n$ of parameters to be estimated, the estimation variance decreases as the number $m$ of observations increases, and the variance converges to zero eventually. The variance of the noise $\sigma^2$ can potentially be estimated from the state estimate $\hat{\theta}$. Details are given as follows. Substituting \eqref{eq:lsform2}, \eqref{eq:lsform8} into \eqref{eq:lsmeasresidual1} gives
 \begin{eqnarray}
   e &=& \left(I - \Phi\left(\Phi^T\Phi\right)^{-1}\Phi^T\right)\epsilon \label{eq:lsform10}
 \end{eqnarray}
@@ -372,6 +372,182 @@ From \eqref{eq:lsform4} and \eqref{eq:lsform12},
   \sigma^2 &=& \dfrac{2}{m-n}E\left[V(\hat{\theta})\right] \nonumber
 \end{eqnarray}
 can be used to estimate the variance of the noise.
+
+\subsection{Recursive LS Estimation}
+
+Recursive state estimation allows ``updating'' the state estimate each time a new measurement set becomes available. It takes advantages of previously calculated state estimate with less measurements, instead of calculating everything from scratch, which is also known as the batch estimation. Recursive estimation saves computational and memory burden than the batch estimation. Given that observations are often naturally obtained sequentially in real time, recursive estimation has a large demand in practice.
+
+Let each measurement be obtained associated with a incremental time stamp $k=1, 2, ...$. While the number of parameters to be estimated remains constant $n$, the number of measurement $m$ is dynamic and replaced by the notion $k$.
+
+It is worth mentioning that the size of $\Phi$ in \eqref{eq:lsform2} grows with $k$, in the sense that each time a new measurement becomes available, $\Phi$ grows by one row. For convenience, $\Phi(k)$ is used to describe $\Phi$ in \eqref{eq:lsform2} when there are $k$ measurements.
+
+As more and more measurements come in, the state estimate $\hat{\theta}$ also evolves and become more and more accurate. Denote $\hat{\theta}(k)$ the state estimate when up to $k$ measurements are available, $k \geq n$.
+
+In recursive estimation schema, the estimator is formulated as a Markov process, and the state estimate $\hat{\theta}(k+1)$ is formulated as a function of $\hat{\theta}(k)$ and $y(k+1)$, and does not directly involve the earlier state estimates $\hat{\theta}(k-1), \hat{\theta}(k-2), ...$ or measurements $y(k), y(k-1), ...$. This is possible because the information of $\hat{\theta}(k-1), \hat{\theta}(k-2), ...$ and $y(k), y(k-1), ...$ are integrated into $\hat{\theta}(k)$.
+
+The derivation of the recursive estimation is as follows. Notice that $\phi(i)^T$ in \eqref{eq:lsmeasresidual3} is the $i$th row of $\Phi(k)$, hence
+\begin{eqnarray}
+  \Phi(k)^T\Phi(k) &=& \sum_{i=1}^{k} \phi(i)\phi(i)^T \label{eq:recursivels1}
+\end{eqnarray}
+Assume that the excitation condition holds. Denote $P(k) = \left(\Phi(k)^T\Phi(k)\right)^{-1}$, or equivalently $P(k)^{-1} = \Phi(k)^T\Phi(k)$. Use \eqref{eq:recursivels1},
+\begin{eqnarray}
+  P(k+1)^{-1} &=& P(k)^{-1} + \phi(k+1)\phi(k+1)^T \label{eq:recursivels2}
+\end{eqnarray}
+which can be calculated recursively.
+
+Rewrite \eqref{eq:lsform8} as follows.
+\begin{eqnarray}
+  \hat{\theta}(k) &=& \left(\sum_{i=1}^{k} \phi(i)\phi(i)^T\right)^{-1}\sum_{i=1}^{k}\phi(i)y(i) \nonumber \\
+                  &=& P(k)\sum_{i=1}^{k}\phi(i)y(i) \nonumber \\
+  \hat{\theta}(k+1) &=& \left(\sum_{i=1}^{k+1} \phi(i)\phi(i)^T\right)^{-1}\sum_{i=1}^{k+1}\phi(i)y(i) \nonumber \\
+                    &=& P(k+1)\left(\sum_{i=1}^{k}\phi(i)y(i) + \phi(k+1)y(k+1)\right) \nonumber \\
+                    &=& P(k+1)\left(P(k)^{-1}\hat{\theta}(k) + \phi(k+1)y(k+1)\right) \nonumber \\
+                    &=& P(k+1)\left(\left(P(k+1)^{-1} - \phi(k+1)\phi(k+1)^T\right)\hat{\theta}(k) \right. \nonumber \\
+                     && \left. + \phi(k+1)y(k+1)\right) \nonumber \\
+                    &=& \hat{\theta}(k) \nonumber \\ && + P(k+1)\phi(k+1)\left(y(k+1) - \phi(k+1)^T\hat{\theta}(k)\right) \label{eq:recursivels3}
+\end{eqnarray}
+
+Equation \eqref{eq:recursivels2} and \eqref{eq:recursivels3} give the recursive LS estimation. Notice that the \eqref{eq:recursivels2} gives the recursive calculation of $P(k)^{-1}$. The recursive calculation of $P(k)$ can be easily derived from \eqref{eq:recursivels2} using matrix inversion lemma as follows.
+\begin{eqnarray}
+P(k+1) &=& P(k) - P(k)\phi(k+1) \nonumber \\ && \times \left(I + \phi(k+1)^TP(k)\phi(k+1)\right)^{-1}\phi(k+1)^TP(k) \nonumber \\
+P(k+1)\phi(k+1) &=& P(k)\phi(k+1) \nonumber \\ && \times \left(I - \left(I + \phi(k+1)^TP(k)\phi(k+1)\right)^{-1}\right. \nonumber \\ &&  \left. \times \phi(k+1)^TP(k)\phi(k+1)\right) \nonumber \\
+&=& P(k)\phi(k+1)\left(I + \phi(k+1)^TP(k)\phi(k+1)\right)^{-1} \nonumber \\ && \times \left(\left(I + \phi(k+1)^TP(k)\phi(k+1)\right) \right. \nonumber \\ && \left. - \phi(k+1)^TP(k)\phi(k+1)\right) \nonumber \\
+&=& P(k)\phi(k+1)\left(I + \phi(k+1)^TP(k)\phi(k+1)\right)^{-1} \nonumber
+\end{eqnarray}
+where notice that in the above equations the identity matrix $I$ under the scope of our discussion should be $1$, as the measurement at any instant, $y(k)$, is a scalar. We followed the convention using $I$ because in practice, the measurement at any instant can be a vector. Hopefully this explanation helps to clear some confusion.
+
+Denote $K(k) = P(k)\phi(k)$ the Kalman gain, and residual $\varepsilon(k+1) = y(k+1) - \phi(k+1)^T\hat{\theta}(x)$ the innovation vector, where $\phi(k+1)^T\hat{\theta}(x)$ can be interpreted as a ``guess'' of $y(k+1)$ using the state estimate $\hat{\theta}(x)$. Recursive LS estimation can be taken as a special case of Kalman filter where (a) measurement $y(k)$ is a scalar; (b) process matrix is unit matrix; (c) input and process noise are both zero.
+
+\subsection{LS Estimation with Time-Varying Parameters}
+
+If the parameter is time varying and has a solid dynamic model, considering using Kalman filter and other parametric model based estimators. If not, consider two scenarios: (a) parameters changes abruptly and infrequently; (b) parameters changes slowly and continuously.
+
+Consider case (a). In this case, the abrupt changes can be detected from the magnitude of the innovation vector. The innovation vector covariance is jointly decided by the measurement noise and the state estimate precision. When the parameter is constant, the covariance matrix converges to a certain value that can be calculated analytically. A simple test can be used to detect when the innovation vector violates the statistics assumption, indicating that there is an abrupt parameters change.
+
+In such case, just ``reset'' the system by assuming the new measurement is the first set of measurement collected by the system. In practice, this can be achieved equivalently by reset $P(k-1)$ and/or $P(k)$ to a diagonal matrix with large elements.
+
+Consider case (b). One way to handle this parameter change is to use moving horizon estimation, or introducing a forgetting factor into the cost function. An example of introducing forgetting factor is given as follows. In \eqref{eq:lsform3}, set
+\begin{eqnarray}
+  V(\hat{\theta}) &=& \dfrac{1}{2}\sum_{i=1}^{k} \lambda^{k-i}\left(y(i) - \phi(i)^T\hat{\theta}\right)^2 \label{eq:recursivels4}
+\end{eqnarray}
+where $0 < \lambda < 1$ is a forgetting factor, and the method given in \eqref{eq:recursivels4} is called exponential forgetting. By introducing the forgetting factor, the contribution of innovation introduced by early measurements and state estimates to the cost function is reduced, thus reducing their impact on the state estimates.
+
+The batch and recursive algorithms to calculate the state estimates for \eqref{eq:recursivels4} can be derived similarly. Some key derivations are given below.
+
+Equation \eqref{eq:lsform8} becomes
+\begin{eqnarray}
+\hat{\theta} &=& \left(\Phi^T\Lambda\Phi\right)^{-1}\Phi^T\Lambda y \nonumber \\
+\Lambda &=& \textup{diag}\left(\begin{array}{cccc}
+                                 \lambda^{m-1} & \ldots & \lambda & 1
+                               \end{array}\right) \nonumber
+\end{eqnarray}
+
+Equation \eqref{eq:recursivels2} becomes
+\begin{eqnarray}
+P(k)^{-1} &=& \Phi(k)^T\Lambda \Phi(k) \nonumber \\
+P(k+1)^{-1} &=& \lambda P(k)^{-1} + \phi(k+1)\phi(k)^T \nonumber
+\end{eqnarray}
+Applying matrix inversion lemma to the above equation gives
+\begin{eqnarray}
+P(k+1) &=& \dfrac{1}{\lambda}P(k) - \dfrac{1}{\lambda}P(k)\phi(k+1) \nonumber \\ && \times \left(\lambda I + \phi(k+1)^TP(k)\phi(k+1)\right)^{-1}\phi(k+1)^TP(k) \nonumber \\
+K(k+1) &=& P(k+1) \phi(k+1) \nonumber \\
+&=&  P(k)\phi(k+1)\left(\lambda I + \phi(k+1)^TP(k)\phi(k+1)\right)^{-1} \nonumber
+\end{eqnarray}
+
+Equation \eqref{eq:recursivels3} has the same eventual form of
+\begin{eqnarray}
+  \hat{\theta}(k+1) &=& \hat{\theta}(k) + P(k+1)\phi(k+1)\left(y(k+1) - \phi(k+1)^T\hat{\theta}(x)\right) \nonumber
+\end{eqnarray}
+
+\subsection{Simplified LS Estimation: Projection Algorithm, SA, and LMS}
+
+The recursive LS algorithm \eqref{eq:recursivels2} and \eqref{eq:recursivels3} requires the updates of $P(k)$ which involves matrix inversion, where $P(k)$ has a size of $n\times n$, and $n$ r2 the number of parameters to be estimated. When $n$ is large, this calculation can be time consuming.
+
+Consider interpreting the cost function \eqref{eq:lsform3} as follows.
+\begin{eqnarray}
+    \hat{\theta}(k) &=& \arg \min_{\hat{\theta}} V_k(\hat{\theta})
+    = \arg \min_{\hat{\theta}} \dfrac{1}{2}\sum_{i=1}^{k} \left(y(i) - \phi(i)^T\hat{\theta}\right)^2 \label{eq:projalgob} \\
+    \hat{\theta}(k+1) &=& \arg \min_{\hat{\theta}} V_{k+1}(\hat{\theta})
+    = \arg \min_{\hat{\theta}} \dfrac{1}{2}\sum_{i=1}^{k+1} \left(y(i) - \phi(i)^T\hat{\theta}\right)^2 \label{eq:projalgo1}
+\end{eqnarray}
+where
+\begin{eqnarray}
+  V_i(\hat{\theta}) &=& \dfrac{1}{2}\sum_{j=1}^{i} \left(y(j) - \phi(j)^T\hat{\theta}\right)^2 \nonumber
+\end{eqnarray}
+is the cost function formulated using the first $i$ measurements $y(1), ..., y(i)$.
+
+Formulating \eqref{eq:projalgo1} as a function of $V_k(\hat{\theta})$ gives
+\begin{eqnarray}
+  \hat{\theta}(k+1) &=& \arg \min_{\hat{\theta}} \left[ V_k(\hat{\theta}) + \dfrac{1}{2} \left(y(k+1) - \phi(k+1)^T\hat{\theta}\right)^2\right] \label{eq:projalgo2}
+\end{eqnarray}
+We already know that $\hat{\theta}(k)$ minimizes $V_k(\hat{\theta})$ from \eqref{eq:projalgob}, and $V_k(\hat{\theta})$ happens to be the first term in \eqref{eq:projalgo2}. Therefore, \eqref{eq:projalgo2} is essentially an optimization problem that concerns the following terms
+\begin{eqnarray}
+  \lVert \hat{\theta} - \hat{\theta}(k) \rVert \label{eq:projalgo3}
+\end{eqnarray}
+and
+\begin{eqnarray}
+\lVert y(k+1) - \phi(k+1)^T\hat{\theta} \rVert \label{eq:projalgo4}
+\end{eqnarray}
+where $\lVert \cdot \rVert$ denotes the Euclidean norm of a vector, and the weights associated with the two terms in the optimization problem are determined by the covariance of the state estimate and measurement noise.
+
+Consider a modification to the optimization problem in \eqref{eq:projalgo2} as follows. Let \eqref{eq:projalgo3} be the only term in the optimization, and \eqref{eq:projalgo4} be a equality constraint, i.e.,
+\begin{eqnarray}
+    \textup{min} && \dfrac{1}{2} \left(\hat{\theta} - \hat{\theta}(k)\right)^T\left(\hat{\theta} - \hat{\theta}(k)\right) \label{eq:projalgo5} \\
+    \textup{s.t.} && y(k+1) - \phi(k+1)^T\hat{\theta} = 0 \label{eq:projalgo52}
+\end{eqnarray}
+Notice that this modified optimization problem given by \eqref{eq:projalgo5} does not necessarily give the same result as the original problem in \eqref{eq:projalgo2}. This is because $ \hat{\theta}(k+1)$ in \eqref{eq:projalgo2} may not meet the equality constraint. Nevertheless, \eqref{eq:projalgo5} is an approximation to $\hat{\theta}(k+1)$ in \eqref{eq:projalgo2}.
+
+Optimization \eqref{eq:projalgo5} can be solved using Lagrange multiplier method. Details are neglected here, and the result is given by
+\begin{eqnarray}
+  \hat{\theta}(k+1) &=& \hat{\theta}(k) + \dfrac{\phi(k+1)}{\phi(k+1)^T\phi(k+1)}\left(y(k+1) - \phi(k+1)^T\hat{\theta}(k)\right) \nonumber \\ && \label{eq:projalgo6}
+\end{eqnarray}
+
+Parameters $0 < \gamma < 2$ and $\alpha > 0$ are added to \eqref{eq:projalgo6} as shown below. The motivations of adding $\gamma$ and $\alpha$ are to make it possible to change the step length of the parameter adjustment and to avoid a potential problem what would occur when $\phi(k+1)=0$.
+\begin{eqnarray}
+  \hat{\theta}(k+1) &=& \hat{\theta}(k) + \dfrac{\gamma\phi(k+1)}{\alpha + \phi(k+1)^T\phi(k+1)}\left(y(k+1) - \phi(k+1)^T\hat{\theta}(k)\right) \nonumber \\ && \label{eq:projalgo7}
+\end{eqnarray}
+which is known as the projection algorithm. The choice $0 < \gamma < 2$ guarantees the convergency of \eqref{eq:projalgo7}.
+
+One may think the quality constraint \eqref{eq:projalgo52} is too strong. When measurement error is considered, a modified version of \eqref{eq:projalgo6} is given below.
+\begin{eqnarray}
+\hat{\theta}(k+1) &=& \hat{\theta}(k) + \dfrac{\phi(k+1)}{\sum_{i=1}^{k+1}\phi(i)^T\phi(i)}\left(y(k+1) - \phi(k+1)^T\hat{\theta}(k)\right) \nonumber \\ && \label{eq:projalgo8}
+\end{eqnarray}
+which is known as the stochastic approximation (SA) algorithm.
+
+A further simplification to \eqref{eq:projalgo7} and \eqref{eq:projalgo8} is given below.
+\begin{eqnarray}
+\hat{\theta}(k+1) &=& \hat{\theta}(k) + \gamma\phi(k+1)\left(y(k+1) - \phi(k+1)^T\hat{\theta}(k)\right) \nonumber
+\end{eqnarray}
+which is known as the least mean square (LMS) algorithm.
+
+\subsection{Models}
+
+The LS estimation algorithm can be applied to the models introduced in this section. By assuming a model, experiments can be designed and empirical data can be collected which serves as the input to the LS estimation algorithm. The parameters of the model can then be decided.
+
+The initial states of the plant is ignored for now. In practice, with the model and parameters known, state estimation is carried out to determine the state of the system.
+
+\vspace{0.1in}
+\noindent \textbf{Finite Impulse Response (FIR) Model}
+\vspace{0.1in}
+
+An LTI system can be uniquely characterized by its impulse response. A demonstrative figure is given in Fig. \ref{ch:acs:fig:fir_demo}. For an asymptotically stable system, the transient will converge to zero exponentially fast, depending on the position of the poles in the transfer function.
+\begin{figure}
+	\centering
+	\includegraphics[width=350pt]{chapters/ch-adaptive-control-system/figures/fir_demo.png}
+	\caption{LTI system impulse response.} \label{ch:acs:fig:fir_demo}
+\end{figure}
+
+Consider sampling the outputs of Fig. \ref{ch:acs:fig:fir_demo} in discrete time domain. The input at $k$, i.e., $u(k)$, would affect the consequent outputs $y(k+1), y(k+2), ...$, and depending on the sampling period and the time constant of the system, the sequence can be very long until $y$ converges to zero, as shown in the equation below.
+
+
+
+
+
+
+
+
+
+
 
 
 
