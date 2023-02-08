@@ -1,8 +1,8 @@
 \chapter{Model Predictive Control System} \label{ch:mpcs}
 
-Model predictive controller belongs to the family of optimal controllers. Given the plant model and a control signal, the behavior of the system can be forecast. The logic behind MPC is that it finds the control signal of the present whose associated forecast is optimized.
+Model predictive controller belongs to the family of optimal controllers. Given the plant model and a control signal, the behavior of the system can be foreseen. MPC finds the control signal at the present whose associated forecast is optimized.
 
-Comparing with other optimal controller, such as the famous and intuitive LQG controller, MPC has a better adaption to different kinds of restrictions. This makes MPC extremely popular in industry. 
+Comparing with other optimal controllers such as LQG, MPC has a better adaption to different kinds of restrictions. This makes MPC extremely popular in industry. From this perspective, many optimal controllers can be taken as special cases of MPC.
 
 The references of this chapter include:
 \begin{itemize}
@@ -11,13 +11,78 @@ The references of this chapter include:
 
 \section{Introduction}
 
+\subsection{MPC Basics}
+
 The MPC uses system dynamic model to forecast system behavior, and optimize the forecast to produce the best decision at the current moment.
 
 From the above description, we can see that the there are at least 3 key factors of MPC:
 \begin{itemize}
-	\item Model of the plant.
-	\item The current state (initial state) of model.
+	\item Model of the plant, both structure and parameters.
+	\item The current state (initial state) of the plant model.
 	\item The control signal.
 \end{itemize}
-where the model structure is derived from assumptions, the parameters of the model obtained by parameter estimation, and the current state of the model obtained by state estimation. Finally, an optimization problem with varieties of restrictions is proposed to generate the control signal.
+where the model structure is derived from assumptions, the parameters obtained by parameter estimation, and the current state of the model obtained by state estimation. Finally, an optimization problem with varieties of restrictions is proposed to generate the control signal.
+
+\subsection{Models}
+
+The model in an MPC plays the most important role. Many types of models are used to describe the plant in the MPC scope. 
+
+Depending on the plant, the model can be either in continuous time domain or in discrete time domain; either state-space or input-output; either centralized or discrete (discrete models are used when the behavior of the system is not spatially uniform); and either deterministic or stochastic.
+
+Different mathematics tools are used to describe and solve MPC problems of different types of models.
+
+\subsection{Constraints}
+
+MPC has a good adaption to different types of constraints. The constraints can be largely divided into two categories, namely physical constraints and performance constraints.
+
+Input signal $u(k)$ related constraints are often physical constraints. It describes physical limits of the system. If the controller does not respect these constraints, the physics enforce them. An example of a physical constraint is the maximum input power to a motor.
+
+State vector $x(k)$ and output $y(k)$ related constraints are often performance constraints. They describe the desirable performance of the system, and they may or may not be achievable in practice. MPC is able to find out whether the performance constraints are achievable or not. Should the performance constraints not be achievable, they need to be modified and downgraded.
+
+Input signal related constraints are often given in the following format.
+\begin{eqnarray}
+	\left[\begin{array}{c}
+		-I \\ I
+	\end{array}\right]u(k) &\leq& \left[\begin{array}{c}
+	-u_{\textup{min}} \\ u_{\textup{max}}
+\end{array}\right] \nonumber
+\end{eqnarray}
+
+State vector related constraints are often given in the following format.
+\begin{eqnarray}
+	Fx(k) &\leq& f \nonumber
+\end{eqnarray}
+
+When augmented state vector is used, it is possible to combine the input and the state vector together to form constraints with more flexibility. For example, let
+\begin{eqnarray}
+	\tilde{x}(k) &=& \left[\begin{array}{c}
+		x(k) \\ u(k-1)
+	\end{array}\right] \nonumber
+\end{eqnarray}
+Then the following constraint
+\begin{eqnarray}
+	\left[\begin{array}{cc}
+		0 & -I \\ 0 & I
+	\end{array}\right]\tilde{x}(k) + \left[\begin{array}{c}
+	I \\ -I
+\end{array}\right]u(k) &\leq& \left[\begin{array}{c}
+\Delta_{\textup{max}} \\ -\Delta_{\textup{min}}
+\end{array}\right] \nonumber
+\end{eqnarray}
+essentially translates to
+\begin{eqnarray}
+	\Delta_{\textup{min}} \leq u(k) - u(k-1) \leq \Delta_{\textup{max}} \nonumber
+\end{eqnarray}
+which can become handy sometimes.
+
+It is also possible to limit the state vector and/or the input to be integers or discrete values, which is not commonly seen in other optimal controllers.
+
+\subsection{Examples and Solutions}
+
+
+
+
+
+
+
 

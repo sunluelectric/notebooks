@@ -537,7 +537,14 @@ An LTI system can be uniquely characterized by its impulse response. A demonstra
 	\caption{LTI system impulse response.} \label{ch:acs:fig:fir_demo}
 \end{figure}
 
-Consider sampling the outputs of Fig. \ref{ch:acs:fig:fir_demo} in discrete time domain. The input at $k$, i.e., $u(k)$, would affect the consequent outputs $y(k+1), y(k+2), ...$, and depending on the sampling period and the time constant of the system, the sequence can be very long until $y$ converges to zero, as shown in the equation below.
+Consider sampling the outputs of Fig. \ref{ch:acs:fig:fir_demo} in discrete time domain. The input at $k$, i.e., $u(k)$, would affect the consequent outputs $y(k+1), y(k+2), ...$. This sequence can go infinitely long in theory, but in practice we only consider the first finite number of outputs before $y$ settles to zero. The length of the sequence is determined by the sampling period and the time constant of the system.
+
+Due to the superposition of the LTI system, the above also indicates that output of the system at $k$, i.e., $y(k)$, is affected by the past input signals $u(k-1), u(k-2), ...$, as given by the following equation. Likewise, only finite number of inputs are included in the equation.
+\begin{eqnarray}
+	y(k) &=& b_1u(k-1) + b_2u(k-2) + \ldots + b_nu(k-n) \label{eq:firmodel}
+\end{eqnarray}
+
+Equation \eqref{eq:firmodel} is known as the FIR model of a system. It has $n$ parameters to be estimated, and it fits well into the LS estimation schema described by \eqref{eq:lsform1}.
 
 
 
