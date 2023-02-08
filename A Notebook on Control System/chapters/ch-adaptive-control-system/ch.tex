@@ -530,14 +530,14 @@ The initial states of the plant is ignored for now. In practice, with the model 
 \noindent \textbf{Finite Impulse Response (FIR) Model}
 \vspace{0.1in}
 
-An LTI system can be uniquely characterized by its impulse response. A demonstrative figure is given in Fig. \ref{ch:acs:fig:fir_demo}. For an asymptotically stable system, the transient will converge to zero exponentially fast, depending on the position of the poles in the transfer function.
+An LTI system can be uniquely characterized by its impulse response. A demonstrative figure is given in Fig. \ref{ch:acs:fig:impulse_second_demo}. For an asymptotically stable system, the transient will converge to zero exponentially fast, depending on the position of the poles in the transfer function.
 \begin{figure}
 	\centering
-	\includegraphics[width=350pt]{chapters/ch-adaptive-control-system/figures/fir_demo.png}
-	\caption{LTI system impulse response.} \label{ch:acs:fig:fir_demo}
+	\includegraphics[width=350pt]{chapters/ch-adaptive-control-system/figures/impulse_second_demo.eps}
+	\caption{LTI system impulse response demonstration.} \label{ch:acs:fig:impulse_second_demo}
 \end{figure}
 
-Consider sampling the outputs of Fig. \ref{ch:acs:fig:fir_demo} in discrete time domain. The input at $k$, i.e., $u(k)$, would affect the consequent outputs $y(k+1), y(k+2), ...$. This sequence can go infinitely long in theory, but in practice we only consider the first finite number of outputs before $y$ settles to zero. The length of the sequence is determined by the sampling period and the time constant of the system.
+Consider sampling the outputs of Fig. \ref{ch:acs:fig:impulse_second_demo} in discrete time domain. The input at $k$, i.e., $u(k)$, would affect the consequent outputs $y(k+1), y(k+2), ...$. This sequence can go infinitely long in theory, but in practice we only consider the first finite number of outputs before $y$ settles to zero. The length of the sequence is determined by the sampling period and the time constant of the system.
 
 Due to the superposition of the LTI system, the above also indicates that output of the system at $k$, i.e., $y(k)$, is affected by the past input signals $u(k-1), u(k-2), ...$, as given by the following equation. Likewise, only finite number of inputs are included in the equation.
 \begin{eqnarray}
