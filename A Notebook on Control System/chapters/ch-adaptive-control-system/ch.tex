@@ -154,7 +154,7 @@ Discrete time domain transfer function:
 	G(z) = \dfrac{B(z)}{A(z)} = \dfrac{b_0z^m + b_qz^{m-1} + \ldots + b_m}{z^n + a_1z^{n-1} + \ldots + a_n} \nonumber
 \end{eqnarray}
 
-Discrete time domain input-output model (with $q$ the forward shift operator, $qy(t) = y(t+1)$):
+Discrete time domain input-output model (with $q$ the forward shift operator, $qy(k) = y(k+1)$):
 \begin{eqnarray}
 	y(k) &=& H(q)u(k) \nonumber
 \end{eqnarray}
@@ -546,12 +546,22 @@ Due to the superposition of the LTI system, the above also indicates that output
 
 Equation \eqref{eq:firmodel} is known as the FIR model of a system. It has $n$ parameters to be estimated, and it fits well into the LS estimation schema described by \eqref{eq:lsform1}.
 
+\vspace{0.1in}
+\noindent \textbf{General Transfer Function Model}
+\vspace{0.1in}
 
+Consider a more general LTI model described by the following input-output relations.
+\begin{eqnarray}
+  A(q)y(k) &=& B(q)u(k) \label{eq:generaltf1} \\
+  A(q) &=& q^n + a_1q^{n-1} + \ldots + a_n \nonumber \\
+  B(q) &=& b_1q^{m-1} + b_2q^{m-2} + \ldots + b_m \nonumber
+\end{eqnarray}
+where $q$ is the forward shift operator $qy(k) = y(k+1)$. The goal of the parameter estimation is to estimate parameters $a_i, i=1,...,n$ and $b_i, i=1,...,m$.
 
-
-
-
-
+Rewrite \eqref{eq:generaltf1} as follows.
+\begin{eqnarray}
+  y(k) &=& - a_1y(k-1) - a_2y(k-2) - \ldots - a_ny(k-n) \nonumber \\ && + b_1u(k-1) + b_2u(k-2) + \ldots + b_mu(k-m) \nonumber
+\end{eqnarray}
 
 
 
