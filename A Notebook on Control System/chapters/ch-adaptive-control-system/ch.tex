@@ -552,7 +552,7 @@ Equation \eqref{eq:firmodel} is known as the FIR model of a system. It has $n$ p
 
 Consider a more general LTI model described by the following input-output relations.
 \begin{eqnarray}
-  A(q)y(k) &=& B(q)u(k) \label{eq:generaltf1} \\
+  A(q)y(k) &=& B(q)u(k) \nonumber \\
   A(q) &=& q^n + a_1q^{n-1} + \ldots + a_n \nonumber \\
   B(q) &=& b_1q^{m-1} + b_2q^{m-2} + \ldots + b_m \nonumber
 \end{eqnarray}
@@ -560,8 +560,37 @@ where $q$ is the forward shift operator $qy(k) = y(k+1)$. The goal of the parame
 
 Rewrite \eqref{eq:generaltf1} as follows.
 \begin{eqnarray}
-  y(k) &=& - a_1y(k-1) - a_2y(k-2) - \ldots - a_ny(k-n) \nonumber \\ && + b_1u(k-1) + b_2u(k-2) + \ldots + b_mu(k-m) \nonumber
+  y(k) &=& - a_1y(k-1) - a_2y(k-2) - \ldots - a_ny(k-n) \nonumber \\ && + b_1u(k-1) + b_2u(k-2) + \ldots + b_mu(k-m) \label{eq:generaltf1}
 \end{eqnarray}
+
+In \eqref{eq:generaltf1}, treat $y(k-1), ..., y(k-n)$ and $u(k-1), ..., u(k-m)$ as regressors and a LS estimation problem can be formulated.
+
+\vspace{0.1in}
+\noindent \textbf{Nonlinear Model}
+\vspace{0.1in}
+
+LS estimation can be applied to nonlinear models as long as the output to the parameters to be estimated are of linear relationship. An example is given as follows. Consider
+\begin{eqnarray}
+  y(k) + ay(k-1) &=& b_1u(k-1) + b_2 \textup{sin}\left(u(k-2)\right) \nonumber
+\end{eqnarray}
+This is a nonlinear model due to the sine function applied to $u(k-2)$. However, it has no impact on parameter estimation, as $y(k)$ is linear to $a$, $b_1$ and $b_2$. The nonlinear portion is wrapped into the regressor.
+
+\vspace{0.1in}
+\noindent \textbf{Stochastic Model}
+\vspace{0.1in}
+
+LS estimation is designed to handle independent and identically distributed Gaussian noise. This indicates that the noise should be white noise, i.e., $\epsilon(i)$ and $\epsilon(j)$, $i\neq j$ shall be independent. In addition, the noise shall not correlate with the regressor by any means.
+
+In the case where the noise are not while, i.e., $\epsilon(i)$ and $\epsilon(j)$ correlates for some $i \neq j$, it is possible to get the parameters estimate as follows. Formulate the system dynamic model as
+\begin{eqnarray}
+  A(q)y(k) &=& B(q)u(k) + C(q)\varepsilon(k) \nonumber
+\end{eqnarray}
+where $\varepsilon(k)$ are re-formulated i.i.d. noise and $C(q)$ is used to describe the correlation of the noise. The parameters in $C(q)$ will be estimated together with $A(q)$ and $B(q)$ to get a sense of the bandwidth of the original noise $\epsilon(k)$.
+
+
+
+
+
 
 
 

@@ -15,27 +15,20 @@ The MPC uses system dynamic model to forecast system behavior, and optimize the 
 
 From the above description, we can see that the there are at least 3 key factors of MPC:
 \begin{itemize}
-	\item Model of the plant, both structure and parameters.
-	\item The current state (initial state) of the plant model.
-	\item The control signal.
+	\item Plant model and constraints, to be derived from the plant.
+    \item Plant model parameters, to be obtained via parameter estimation.
+	\item Plant current state, to be obtained via state estimation.
+	\item Optimal control, to be obtained by defining the performance index and solving the functional.
 \end{itemize}
-where the model structure is derived from assumptions, the parameters obtained by parameter estimation, and the current state of the model obtained by state estimation. Finally, an optimization problem with varieties of restrictions is proposed to generate the control signal.
+where the model derived from assumptions, its parameters obtained by parameter estimation. Plant current state is obtained by state estimation. Finally, an optimization problem with varieties of restrictions is proposed to generate the control signal.
 
-\subsection{Models}
+\subsection{Model and Constraints}
 
-The model in an MPC plays the most important role. Many types of models are used to describe the plant in the MPC scope.
+The model in an MPC plays the most important role. Many types of models are used to describe the plant in the MPC scope. Depending on the plant, the model can be either in continuous time domain or in discrete time domain; either state-space or input-output; either centralized or discrete (discrete models are used when the behavior of the system is not spatially uniform); and either deterministic or stochastic. Different mathematics tools are used to describe and solve MPC problems of different types of models.
 
-Depending on the plant, the model can be either in continuous time domain or in discrete time domain; either state-space or input-output; either centralized or discrete (discrete models are used when the behavior of the system is not spatially uniform); and either deterministic or stochastic.
+MPC has a good adaption to different types of constraints. The constraints can be largely divided into two categories, namely physical constraints and performance constraints. Input signal $u(k)$ related constraints are often physical constraints. It describes physical limits of the system. If the controller does not respect these constraints, the physics enforce them. An example of a physical constraint is the maximum input power to a motor.
 
-Different mathematics tools are used to describe and solve MPC problems of different types of models.
-
-\subsection{Constraints}
-
-MPC has a good adaption to different types of constraints. The constraints can be largely divided into two categories, namely physical constraints and performance constraints.
-
-Input signal $u(k)$ related constraints are often physical constraints. It describes physical limits of the system. If the controller does not respect these constraints, the physics enforce them. An example of a physical constraint is the maximum input power to a motor.
-
-State vector $x(k)$ and output $y(k)$ related constraints are often performance constraints. They describe the desirable performance of the system, and they may or may not be achievable in practice. MPC is able to find out whether the performance constraints are achievable or not. Should the performance constraints not be achievable, they need to be modified and downgraded.
+State vector $x(k)$ and output $y(k)$ related constraints, on the other hand, are often performance constraints. They describe the desirable performance of the system, and they may or may not be achievable in practice. MPC is able to find out whether the performance constraints are achievable or not. Should the performance constraints not be achievable, they need to be modified and downgraded.
 
 Input signal related constraints are often given in the following format.
 \begin{eqnarray}
@@ -75,12 +68,18 @@ which can become handy sometimes.
 
 It is also possible to limit the state vector and/or the input to be integers or discrete values, which is not commonly seen in other optimal controllers.
 
-\subsection{Simple Examples}
+\subsection{Parameter Estimation and State Estimation}
 
-In this section, a linear quadratic regulator problem is used to demonstrate MPC. Notice that although LQR is often regarded as a stand alone optimal control problem, there is no harm to introduce LQR as a simplified MPC problem, just for demonstration purpose.
+The most commonly used parameter estimation method is the least squares estimation. The most commonly used state estimation method is the Kalman filter. Both least squares estimator and Kalman filter are linear filters and they are designed optimal for Gaussian noise. Least squares estimator can be implemented in a recursive manner, in which case it becomes a special case of Kalman filter mathematically.
+
+It is possible to add ``forget factor'' to least squares estimator or Kalman filter. A window with fixed length is specified. When a new measurement set becomes available, the earliest measurement in the window will be removed, thus its impact on the state estimate eliminated. This leads to the moving horizon estimation (in contrast, the conventional Kalman filter implementation is also known as growing-memory estimation), which is less efficient but more robust to time-varying in the system.
+
+\subsection{Optimal Control}
+
+The optimal control to the plant vary with the definition of the cost function and constraints. In this section, for simplicity, a linear quadratic regulator problem is used to demonstrate MPC. Notice that although LQR is often regarded as a stand alone optimal control problem, there is no harm to introduce LQR as a simplified MPC problem, just for demonstration purpose.
 
 \vspace{0.1in}
-\noindent \textbf{LQR Formulation}
+\noindent \textbf{Finite LQR Formulation}
 \vspace{0.1in}
 
 Consider the following dynamic model in discrete time domain. Current timestamp is $k=0$. For simplicity, it is assumed that the model is known and the state is measurable precisely, thus there is no need to build an estimator for the model or the state.
@@ -107,7 +106,7 @@ where $Q\geq 0$, $P_f \geq0$ and $R>0$ are symmetric matrices of user's choice. 
 \noindent \textbf{A Brief Introduction to Dynamic Programming}
 \vspace{0.1in}
 
-The aforementioned optimization problem in \eqref{eq:lqrexp3} can be solved via variety of ways. Consider using dynamic programming (DP). 
+The aforementioned optimization problem in \eqref{eq:lqrexp3} can be solved via variety of ways. Consider using dynamic programming (DP).
 
 A brief introduction to DP is given as follows. For illustration of DP, consider the following simple optimization problem.
 \begin{eqnarray}
@@ -131,7 +130,7 @@ x^* &=& \arg\min_{x} f(x, y^*) \nonumber
 Solving using DP as above can simplifies the problem, especially When only part of the optimal variable values is required (for example, only $y^*$ is required).
 
 \vspace{0.1in}
-\noindent \textbf{Solution to the LQR Problem}
+\noindent \textbf{Solution to the Finite LQR Problem}
 \vspace{0.1in}
 
 The LQR problem in \eqref{eq:lqrexp3} is essentially something similar with \eqref{eq:dpdemo1}. The initial state $x(0)$ is a constant in the optimization problem, the control signals $u(0), ..., u(N-1)$ to be optimized, and the coupling introduced by the system dynamics \eqref{eq:lqrexp1}. The ultimate goal of the optimization problem is to determine $u(0)$.
@@ -141,7 +140,7 @@ Similarly, the optimization is divided into multiple stages, where in each stage
   V^{\textup{sub}}(N-1) &=& \dfrac{1}{2}\left(x(N-1)^TQx(N-1) + u(N-1)^TRu(N-1)\right) \nonumber \\ && + \dfrac{1}{2}x(N)^TP_fx(N) \nonumber \\
   \textup{s.t.} && x(N) = Ax(N-1) + Bu(N-1) \nonumber
 \end{eqnarray}
-where $x(N-1)$ is taken as a constant from another stage. 
+where $x(N-1)$ is taken as a constant from another stage.
 
 Solving $u(N-1)$ as a function of $x(N-1)$ gives
 \begin{eqnarray}
@@ -152,7 +151,7 @@ Solving $u(N-1)$ as a function of $x(N-1)$ gives
 where $K_{N-1}$ and $\Pi_{N-1}$ are two intermediate parameters calculated as follows.
 \begin{eqnarray}
 K_{N-1} &=& -(B^TP_fB + R)^{-1}B^TP_fA \nonumber \\
-\Pi_{N-1} &=& Q + A^TP_fA-A^TP_fB(B^TP_fB+R)^{-1}B^TP_fA \nonumber 
+\Pi_{N-1} &=& Q + A^TP_fA-A^TP_fB(B^TP_fB+R)^{-1}B^TP_fA \nonumber
 \end{eqnarray}
 
 Consider the next stage optimization problem as follows.
@@ -160,5 +159,56 @@ Consider the next stage optimization problem as follows.
   V^{\textup{sub}}(N-2) &=& \dfrac{1}{2}\left(x(N-2)^TQx(N-2) + u(N-2)^TRu(N-2)\right) \nonumber \\
   \textup{s.t.} && x(N-1) = Ax(N-2) + Bu(N-2) \nonumber
 \end{eqnarray}
-where $x(N-2)$ is taken as constant and $u^*(N-2)$ is to be found.
+where $x(N-2)$ is taken as constant and $u^*(N-2)$ is to be found. The solution is given by
+\begin{eqnarray}
+  u^*(N-2) &=& K_{N-2}x(N-2) \nonumber \\
+  x(N-1) &=& (A+BK_{N-2})x(N-2) \nonumber \\
+  V^{\textup{sub}}(N-2) &=& \dfrac{1}{2}x(N-2)^T\Pi_{N-2}x(N-2) \nonumber
+\end{eqnarray}
+where
+\begin{eqnarray}
+K_{N-2} &=& -(B^T\Pi_{N-1}B + R)^{-1}B^T\Pi_{N-1}A \nonumber \\
+\Pi_{N-1} &=& Q + A^T\Pi_{N-1}A-A^T\Pi_{N-1}B(B^T\Pi_{N-1}B+R)^{-1}B^T\Pi_{N-1}A \nonumber
+\end{eqnarray}
+
+It is clear by now that the above calculations can be done recursively to obtain $u^*(0)$. Notice that all the control signals have the following form
+\begin{eqnarray}
+  u^*(k) &=& K_{k}x(k) \nonumber
+\end{eqnarray}
+which implies that the optimal control can be taken as a classic state-space feedback controller with time-varying control gains.
+
+\vspace{0.1in}
+\noindent \textbf{Infinite LQR Problem}
+\vspace{0.1in}
+
+Since the recursive calculation is done $N$ times to calculate $K_{N-1},...,K_0$, apparently different value of $N$ results in different $K_0$. It is worth mentioning that optimal control does not suggest stable control. In other words, it is possible for a specific system plant, specific choice of $Q$, $R$, $P_f$, and specific $N$, to lead to an unstable closed loop system, i.e., $A+BK_0$ with eigenvalues larger than 1.
+However, it is guaranteed that when $N\rightarrow \infty$, $K_0$ converges, and $A+BK_0$ is always stable. This introduces the infinite LQR problem, where the cost function corresponding with \eqref{eq:lqrexp3} is changed to
+\begin{eqnarray}
+  V\left(x(0), u\right) &=& \dfrac{1}{2}\sum_{k=0}^{\infty}\left(x(k)^TQx(k) + u(k)^TRu(k)\right) \nonumber
+\end{eqnarray}
+Infinite LQR can be taken as a special case of finite LQR where $N\rightarrow\infty$.
+
+We have been making an underlying assumption that the original plant is controllable. This means that the system can be driven from any initial state to $x=0$ in finite time. Apply this concept to infinite LQR problem. This implies that in the beginning finite steps of this infinite control sequence, the state should have already been regulated to zero.
+
+Since the control gain $K(k), k=N-1, N-2, ...$ converges to $K$, the first infinite control gains would be $K$. Therefore, it can be concluded that the infinite LQR suggests the control gain to remain $K$ until all states becomes zero. Therefore, the infinite LQR problem results in constant control gain rather than time-varying control gains as in the finite LQR problem. The control gain can be obtained by solving the Riccati equation of $\Pi$ as follows.
+\begin{eqnarray}
+  K &=& -(B^T\Pi B + R)^{-1}B^T\Pi A \nonumber \\
+  \Pi &=& Q + A^T\Pi A-A^T\Pi B(B^T\Pi B+R)^{-1}B^T\Pi A \nonumber
+\end{eqnarray}
+
+\subsection{Commonly Seen MPC Objectives}
+
+The most commonly seen MPC objectives are tracking, state regulation, and disturbance rejection. 
+\begin{itemize}
+  \item Tracking: the output of the plant shall follow the given reference point (not necessarily to be a constant) as close as possible.
+  \item State regulation: the state vector of the plant shall converge to a given steady-state as soon as possible, while not violating system restrictions.
+  \item Disturbance rejection: the plant shall maintain its operating point under unknown stochastic noise and disturbances.
+\end{itemize}
+
+
+
+
+
+
+
 
