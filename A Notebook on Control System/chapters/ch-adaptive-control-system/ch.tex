@@ -459,7 +459,7 @@ Equation \eqref{eq:recursivels3} has the same eventual form of
   \hat{\theta}(k+1) &=& \hat{\theta}(k) + P(k+1)\phi(k+1)\left(y(k+1) - \phi(k+1)^T\hat{\theta}(x)\right) \nonumber
 \end{eqnarray}
 
-\subsection{Simplified LS Estimation: Projection Algorithm, SA, and LMS}
+\subsection{Simplified LS Estimation Methods}
 
 The recursive LS algorithm \eqref{eq:recursivels2} and \eqref{eq:recursivels3} requires the updates of $P(k)$ which involves matrix inversion, where $P(k)$ has a size of $n\times n$, and $n$ r2 the number of parameters to be estimated. When $n$ is large, this calculation can be time consuming.
 
@@ -520,7 +520,7 @@ A further simplification to \eqref{eq:projalgo7} and \eqref{eq:projalgo8} is giv
 \end{eqnarray}
 which is known as the least mean square (LMS) algorithm.
 
-\subsection{Models}
+\subsection{Plant Models for LS Estimation}
 
 The LS estimation algorithm can be applied to the models introduced in this section. By assuming a model, experiments can be designed and empirical data can be collected which serves as the input to the LS estimation algorithm. The parameters of the model can then be decided.
 
@@ -541,7 +541,7 @@ Consider sampling the outputs of Fig. \ref{ch:acs:fig:impulse_second_demo} in di
 
 Due to the superposition of the LTI system, the above also indicates that output of the system at $k$, i.e., $y(k)$, is affected by the past input signals $u(k-1), u(k-2), ...$, as given by the following equation. Likewise, only finite number of inputs are included in the equation.
 \begin{eqnarray}
-	y(k) &=& b_1u(k-1) + b_2u(k-2) + \ldots + b_nu(k-n) \label{eq:firmodel}
+	y(k) &=& b_1u(k-1) + b_2u(k-2) + \ldots + b_nu(k-n) + \epsilon(k) \label{eq:firmodel}
 \end{eqnarray}
 
 Equation \eqref{eq:firmodel} is known as the FIR model of a system. It has $n$ parameters to be estimated, and it fits well into the LS estimation schema described by \eqref{eq:lsform1}.
@@ -583,15 +583,46 @@ LS estimation is designed to handle independent and identically distributed Gaus
 
 In the case where the noise are not while, i.e., $\epsilon(i)$ and $\epsilon(j)$ correlates for some $i \neq j$, it is possible to get the parameters estimate as follows. Formulate the system dynamic model as
 \begin{eqnarray}
-  A(q)y(k) &=& B(q)u(k) + C(q)\varepsilon(k) \nonumber
+  A(q)y(k) &=& B(q)u(k) + C(q)\varepsilon(k) \nonumber \\
+  y(k) &=& -a_1y(k-1) - \ldots - a_ny(k-n) \nonumber \\ && + b_1u(k-1) + \ldots b_mu(k-m) \nonumber \\ && + c_1\varepsilon(k-1) + \ldots + c_n\varepsilon(k-n) \label{eq:stochasticls}
 \end{eqnarray}
 where $\varepsilon(k)$ are re-formulated i.i.d. noise and $C(q)$ is used to describe the correlation of the noise. The parameters in $C(q)$ will be estimated together with $A(q)$ and $B(q)$ to get a sense of the bandwidth of the original noise $\epsilon(k)$.
 
+Notice that \eqref{eq:stochasticls} is different from \eqref{eq:generaltf1} because $\varepsilon$ on the right side of \eqref{eq:stochasticls} is unknown, while everything on the right side of \eqref{eq:generaltf1} is known. To tackle this issue, measurement residual is used to approximate $\varepsilon$, i.e.,
+\begin{eqnarray}
+  e(k) &=& y(k) - \psi(k-1)^T\hat{\theta}(k-1) \label{eq:els1} \\
+  \psi(k-1) &=& \left[\begin{array}{ccc}
+                          -y(k-1) & \ldots & -y(k-n)
+                        \end{array}\right. \nonumber \\
+              & & \left.\begin{array}{ccc}
+                          u(k-1) & \ldots & u(k-m)
+                        \end{array}\right. \nonumber \\
+              & & \left.\begin{array}{ccc}
+                          e(k-1) & \ldots & e(k-n)
+                        \end{array}\right]^T \nonumber \\
+  \theta &=& \left[\begin{array}{ccccccccc}
+                   a_1 & \ldots & a_n & b_1 & \ldots & b_m & c_1 & \ldots & c_n
+                 \end{array}\right]^T \nonumber
+\end{eqnarray}
+is used as a replacement of $\varepsilon(k)$ when formulating the parameter estimation. Notice that $\hat{\theta}(k-1)$ is the most recent parameter estimation update before receiving $y(k)$. This method is known as the extended least square estimation.
 
+There is a similar alternative where the residual $e(k)$ is estimated using another regression model
+\begin{eqnarray}
+\hat{C}(q)e(k) &=& \hat{A}(q)y(k) - \hat{B}(q)u(k) \nonumber
+\end{eqnarray}
+instead of \eqref{eq:els1}. This is known as the recursive maximum likelihood method.
 
+\subsection{Practical Issues in Parameter Estimation}
 
+The precision of the parameter estimate is largely affected by practical issues such as experimental conditions. In performing system identification automatically as in adaptive control, the precision can be crucial to the performance of the control system. This section studies the influence of the practical issues to the parameter estimate precision.
 
+\vspace{0.1in}
+\noindent \textbf{Excitation Condition in FIR Model}
+\vspace{0.1in}
 
+As introduced earlier, to carry out parameter estimation for an FIR model given by \eqref{eq:firmodel}, a common way is to supply a series of control signal to the model, and use the output of the model to do LS estimation. The control signal needs to be designed strategically so that the excitation condition is satisfied.
+
+Substitute \eqref{eq:firmodel} into \eqref{eq:lsform1} and \eqref{eq:lsform2} to get the excitation condition for the FIR model as follows.
 
 
 

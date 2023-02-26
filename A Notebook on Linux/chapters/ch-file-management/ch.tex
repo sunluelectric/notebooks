@@ -13,12 +13,12 @@ The root directory is denoted by a single forward slash ``\verb|/|''. All sub di
 \end{lstlisting}
 where the first \verb|/| in each row represents the root directory, and sequential \verb|/| represents entering a subdirectory.
 
-Upon Linux installation, a file hierarchy is by default created under the root directory. A user can create new files under this hierarchy framework, but should not change the framework itself. The hierarchy is given in Fig. \ref{ch:fm:fig:hierarchy}. Notice that ``\verb|/|'' in the figure, as introduced, stands for the root directory, and ``\verb|root|'' in the figure is a subdirectory under \verb|/| whose directory name is ``root'' and it is used store root user related documents. They are two different directories.
+Upon Linux installation, a file hierarchy is by default created under the root directory. A user can create new files under this hierarchy framework, but should not change the framework itself. The hierarchy is given in Fig. \ref{ch:fm:fig:hierarchy}. Notice that different Linux distributions may differ slightly on how the architecture looks like. The ``\verb|/|'' in the figure, as introduced, stands for the root directory, and ``\verb|root|'' in the figure is a subdirectory under \verb|/| whose directory name is ``root'' and it is used store root user related documents. They are two different directories.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=250pt]{chapters/ch-file-management/figures/linux_file_hierarchy.png}
-	\caption{Linux file system hierarchy.} \label{ch:fm:fig:hierarchy}
+	\caption{An example of Linux file system hierarchy.} \label{ch:fm:fig:hierarchy}
 \end{figure}
 
 A (regular) user's home directory is often located at \verb|/home/<user name>|. When logging in as a regular user, his home directory is shorten by the tilde \verb|~| for convenience. Hence, for example \verb|ls ~| will list down the files and directories under his home directory.
@@ -217,12 +217,12 @@ It is possible though, that removed items using \verb|rm| be recovered by expert
 $ shred --help
 \end{lstlisting}
 
-\subsection{Use of Metacharacters}
+\subsection{Use of Wildcard Characters}
 
-When performing moving, copying, removing or otherwise acting on files, metacharacters can be used to make the work more efficient sometimes. For example, \verb|ls a*| will list all items in the current directory that starts with letter ``a''. Commonly used metacharacters are summarized in Table .
+When performing moving, copying, removing or otherwise acting on files, wildcard characters can be used to make the work more efficient sometimes. For example, \verb|ls a*| will list all items in the current directory that starts with letter ``a''. Commonly used metacharacters are summarized in Table \ref{ch:fm:tab:metacharacters}.
 
 \begin{table}
-  \centering \caption{Commonly used metacharacters.}\label{ch:fm:tab:metacharacters}
+  \centering \caption{Commonly used wildcard characters.}\label{ch:fm:tab:metacharacters}
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
@@ -298,7 +298,7 @@ There are roughly 3 types of searching commands that a user would use frequently
 
 There can be multiple ways to reach each of the above goals. Details are as follows.
 
-\subsection{Look for a Command}
+\subsection{Looking for a Command}
 
 Use \verb|type| to look for a command as follows.
 \begin{lstlisting}
@@ -315,7 +315,7 @@ $ type ls
 ls is aliased to `ls --color=auto'
 \end{lstlisting}
 
-\subsection{Look for a File by Metadata}
+\subsection{Looking for a File by Metadata}
 
 Many Linux distributions come with built-in command \verb|locate| that can be used to quickly locate a file by (a fraction of) its path as follows. Notice that as long as a file or directory's full path contains the searched content, there is a chance that it will appear in the result. As a result, if the name of a directory is used for searching, all the items in that directory will likely to appear in the result (as their full paths contain the name of the directory).
 \begin{lstlisting}
