@@ -1,1 +1,177 @@
 \chapter{Fuzzy Control System} \label{ch:fcs}
+
+Fuzzy logics provide a way of quantitatively describing and calculating concepts without clear boundaries or attributes without precise values. In contrast to classical control methods where everything is numbered precisely, fuzzy controllers tolerate the use of objective terms such as ``somewhat'', ``good'', ``bad'', ``high'', ``low'', ``very high'', ``very low'' to describe attributes. This makes fuzzy controller the most close to a human knowledge base.
+
+Different from ANN which is highly data driven and requires a lot of samples and computations to train the network, a fuzzy controller requires only a knowledge base with customized fuzzy interfaces. ANN may reveal the building bricks a human brain, while fuzzy control system reveals how a human interpret the knowledge that he learns from past experience and use it in his daily life. 
+
+This feature of a fuzzy control system is a bless and a curse at the same time. Fuzzy control system functions without training, thus is handy when there are few training samples. On the other hand, this also means that it cannot benefit from the accumulation of the samples and it is lack of evolving capability comparing with ANN and other evolutionary algorithms.
+
+\section{Fuzzy Set and Fuzzy Relation}
+
+\subsection{Fuzzy Set Basics}
+
+The fundamentals of fuzzy logics and fuzzy control systems are built on fuzzy set and membership function. Fuzzy set is NOT a set from mathematical perspective, but a projection from a set to a real number between $[0, 1]$. The function used in the projection is called the member function of the fuzzy set.
+
+Consider set $A$ with either finite or infinite elements. Define a projection $\mu_{\tilde{A}}$ from $A$ to $[0, 1]$ as follows. 
+\begin{eqnarray}
+	\mu_{\tilde{A}} &:& A \rightarrow [0, 1] \nonumber
+\end{eqnarray}
+This projection, together with its domain (also known as the universe of a fuzzy set) define a fuzzy set. The projection $\mu_{\tilde{A}}$ is called the membership function of the fuzzy set. The value of $\mu_{\tilde{A}}(e)$ for $e\in \tilde{A}$ describes in what extend $e$ belongs to $\tilde{A}$.
+
+It is clear from the definition the difference between a set and a fuzzy set. For a set, an element either belongs to the set or does not belong to the set, which can be described by
+\begin{eqnarray}
+	\mu_{A}(e) = \left\{\begin{array}{cc}
+		1 & e \in A \\
+		0 & e \notin A
+	\end{array}\right. \nonumber
+\end{eqnarray}
+where $\mu_{A}$ is a binary function, fuzzy set defines a continuous functions $\mu_{\tilde{A}}$ which can take any value between $[0,1]$. From this stand, a fuzzy set is an extension to a set.
+
+An example of a fuzzy set is given below. Let $A\geq 0$ be the age of a person in the considered domain. Define 2 fuzzy sets, ``young adult'' as $\tilde{A}_1$ and ``middle-aged adult'' as $\tilde{A}_2$, with membership function defined in Fig. \ref{ch:fcs:fig:fuzzysetexp}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/fuzzysetexp.eps}
+	\caption{Membership function of fuzzy sets ``young adult'' and ``middle-aged adult''.} \label{ch:fcs:fig:fuzzysetexp}
+\end{figure}
+
+From Fig. \ref{ch:fcs:fig:fuzzysetexp}, we can see how a person is categorized according to the age. For example, a 5-year-old child is by no means a young adult or an adult, as $\mu_{A_1}=\mu_{A_2}(5)=0$ from the figure. A 15-year-old can be considered ``quite'' a young adult, with $\mu_{A_1}=0.7$.
+
+The maximum value of a membership function is defined as the height of the fuzzy set. In many occasions the height is $1$, but it is not always the case. An element whose associated membership function equals to half of the height is called the crossover point.
+
+It is possible to set up a threshold for the membership function, and derive a set from a fuzzy set as follows.
+\begin{eqnarray}
+	\tilde{A}_\alpha &=& \left\{e \middle| \mu_{\tilde{A}} (e) \geq \alpha \right\} \nonumber
+\end{eqnarray} 
+Notice that $\tilde{A}_\alpha$ is a set (not a fuzzy set) of the original fuzzy set, known as the cut set. A fuzzy set can have infinite number of cut sets by choosing different $\alpha$. A fuzzy set can be derived from all its cut sets as follows.
+\begin{eqnarray}
+	\tilde{A} &=& \bigcup_{\alpha \in [0, 1]} \alpha A_\alpha \nonumber
+\end{eqnarray} 
+where $\alpha A_\alpha$ is a fuzzy set defined on $ A_\alpha$ with constant membership function value $\alpha$.
+
+Following the same concept, define the support and core of a fuzzy set as follows, respectively.
+\begin{eqnarray}
+	\textup{supp}(\tilde{A}) &=& \left\{ e \middle| \mu_{\tilde{A}}(e) > 0 \right\} \nonumber \\
+	C(\tilde{A}) &=& \left\{ e \middle| \mu_{\tilde{A}}(e) = 1 \right\} \nonumber
+\end{eqnarray}
+
+\subsection{Fuzzy Set Operations}
+
+Operations such as union and intersection are defined on fuzzy sets. They are summarized in Table \ref{ch:fcs:tab:fuzzysetoperation}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{lll}
+		\hline
+		Operation & Symbol & Membership Function \\
+		\hline
+		Union & $\tilde{A} \cup \tilde{B}$ & $\mu_{\tilde{A} \cup \tilde{B}}(e) = \max(\mu_{\tilde{A}}(e), \mu_{\tilde{B}}(e))$ \\
+		Intersection & $\tilde{A} \cap \tilde{B}$ & $\mu_{\tilde{A} \cap \tilde{B}}(e) = \min(\mu_{\tilde{A}}(e), \mu_{\tilde{B}}(e))$ \\
+		Complement & $\tilde{A}'$ & $\mu_{\tilde{A}'}(x) = 1 - \mu_{\tilde{A}}(x)$ \\
+		\hline
+	\end{tabular}
+	\caption{Commonly used fuzzy set operations.}
+	\label{ch:fcs:tab:fuzzysetoperation}
+\end{table}
+
+\subsection{Commonly Used Membership Functions}
+
+Membership functions can be chosen flexibly as long as it is bounded by $[0, 1]$ for each element. There are some commonly used ones that has been proved useful in general problems as shown in Fig. \ref{ch:fcs:fig:commonmf}. They, together with their combinations, are widely used in fuzzy control system design.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=350pt]{chapters/ch-fuzzy-control-system/figures/commonmf.png}
+	\caption{Commonly used membership functions.} \label{ch:fcs:fig:commonmf}
+\end{figure}
+
+
+
+
+
+\subsection{Fuzzy Relation}
+
+In set theory, a relation of two elements is defined using sets. For example, let $a, b \in \mathbb{R}$. Let a customized relation ``$\oplus$'' be defined on $\mathbb{R} \times \mathbb{R} = \mathbb{R}^2$. We can say $a \oplus b$ if and only if there is a set defined on $\mathbb{R}^2$ associated with ``$\oplus$'' relation, and $(a,b)$ is in that set. Here ``$\times$'' denotes the Cartesian product.
+
+Fuzzy relation is defined likewise, except that the set is replaced with fuzzy set as follows. Let $u\in U$, $v \in V$ be two variables with the same or different domains, and $D=U \times V$. The fuzzy relation of ``$\oplus$'' of two elements $u$ and $v$ is defined by the following fuzzy set
+\begin{eqnarray}
+	\mu_{\tilde{D}} (u,v) &\in& [0, 1] \nonumber
+\end{eqnarray}
+associated with ``$\oplus$''.
+
+It is possible to use a matrix to record the fuzzy relations, in which case the matrix is called a fuzzy matrix as it is made up of membership functions.
+
+The relation can be derived from chains. For example, consider relation $P$ defined one $X \times Y$, and $Q$ on $Y \times Z$. A relation on $X, Z$ can be derived. One way is to use
+\begin{eqnarray}
+	\mu_{X \times Z}(x, z) &=& \sup \left[\min\left(\mu_{X\times Y}(x, y), \mu_{Y\times Z} (y, z)\right)\right] \nonumber
+\end{eqnarray} 
+
+
+
+\section{Fuzzy Control System}
+
+xxx
+
+\section{Fuzzy Modeling and Fuzzy System Identification}
+
+xxx
+
+\section{Examples}
+
+A motivating example is given in Section \ref{ch:fcs:sec:example:subsec:motivating} to introduce the basic use of fuzzy logics calculations.
+
+\subsection{Motivating: Calculate Tips in a Restaurant} \label{ch:fcs:sec:example:subsec:motivating}
+
+Consider the example given below.
+
+\begin{shortbox}
+\Boxhead{A Motivating Example}
+
+The tips that a customer pays to the waiter/waitress in a restaurant depends on the quality of the food and the service. It often has a lower and upper bound of $5\%$ to $25\%$ of the bill. When the quality of both the food and the service is exceptional, the tips will more likely to be close to $25\%$, vise versa, as shown in Fig. \ref{ch:fcs:fig:expmotivating}.
+
+There is no matrix that quantifies the quality of the food, nor the service. It is more about how the customer feels objectively. Neither is there a fixed guidance that maps them to the tips, i.e., some customers may take food and service equality important, while others may think one more significant than the other.
+
+Try to describe tips as a function of food and service quality.
+
+\end{shortbox}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/expmotivating.png}
+	\caption{Tips relate to food and service quality.} \label{ch:fcs:fig:expmotivating}
+\end{figure}
+
+Solving the above problem using conventional methods requires precise modeling of how the customer's utility relates to food and service quality. An example is given below, where the utilities the customer gets from the service and food qualities modeled using an exponential function and a linear function, respectively. Finally, the tips are determined by a weighted sum of the utilities.
+\begin{eqnarray}
+	u_1 &=& \dfrac{e^{x_1}-1}{e-1} \nonumber \\
+	u_2 &=& x_2 \nonumber \\
+	u &=& 0.8 u_1 + 0.2 u_2 \nonumber \\
+	\textup{tips} &=& (0.25-0.05)u + 0.05 \nonumber
+\end{eqnarray}
+where $x_1\in [0,1]$ and $x_2 \in [0,1]$ are used to characterize the service and food qualities, respectively. The result is given in plotted in Fig. \ref{ch:fcs:fig:motivatingexp_conventional}. It can be seen that although this is a common practical problem of daily life and a human can solve it almost immediately, the modeling and realization of the solution using conventional control method can be difficult. The conventional method, in this case, is non-intuitive and differs largely from how human would naturally handle this problem.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/motivatingexp_conventional.eps}
+	\caption{Tips as a deterministic function of service and food qualities.} \label{ch:fcs:fig:motivatingexp_conventional}
+\end{figure}
+
+MATLAB fuzzy control toolbox provides variety of tools to design and demonstrate fuzzy controllers. For the aforementioned problem, a built-in fuzzy interface system (FIS) named ``tipper'' is defined. A fuzzy inference is the process of formulating the mapping from a given input to an output using fuzzy logics. More details of FIS is introduced elsewhere in this chapter.
+
+In tipper, 3 fizzy variables (2 inputs, 1 output) and 3 rules are defined. The result is plotted in Fig. \ref{ch:fcs:fig:motivatingexp_fis}. By comparing Figs. \ref{ch:fcs:fig:motivatingexp_conventional} and \ref{ch:fcs:fig:motivatingexp_fis}, it can be seen that fuzzy logics can interpret ``good service'', ``bad service'', etc., in a more intuitive way close to human, and it can formulate more complicated behavior with simpler setup. It requires rules instead of tons of samples (for training) to form this behavior.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/motivatingexp_fis.eps}
+	\caption{Tips as a deterministic function of service and food qualities using fuzzy logic.} \label{ch:fcs:fig:motivatingexp_fis}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
