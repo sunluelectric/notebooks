@@ -1,35 +1,33 @@
 \chapter{Fuzzy Control System} \label{ch:fcs}
 
-Fuzzy logics provide a way of quantitatively describing and calculating concepts without clear boundaries or attributes without precise values. In contrast to classical control methods where everything is numbered precisely, fuzzy controllers tolerate the use of objective terms such as ``somewhat'', ``good'', ``bad'', ``high'', ``low'', ``very high'', ``very low'' to describe attributes. This makes fuzzy controller the most close to a human knowledge base.
+Fuzzy logics provide a way of quantitatively interpreting and calculating attributes or reasonings described by vague languages. In contrast to classical control methods where variables are numbered precisely and control laws described clearly by mathematical equations, a fuzzy controller uses objective terms such as ``good'', ``bad'', ``high'', ``low'', ``very'', ``a little'' to describe variables, and use rules ``if something then something'' to determine the control signals. This makes a fuzzy controller naturally good at realizing human knowledge base into practice.
 
-Different from ANN which is highly data driven and requires a lot of samples and computations to train the network, a fuzzy controller requires only a knowledge base with customized fuzzy interfaces. ANN may reveal the building bricks a human brain, while fuzzy control system reveals how a human interpret the knowledge that he learns from past experience and use it in his daily life.
-
-This feature of a fuzzy control system is a bless and a curse at the same time. Fuzzy control system functions without training, thus is handy when there are few training samples. On the other hand, this also means that it cannot benefit from the accumulation of the samples and it is lack of evolving capability comparing with ANN and other evolutionary algorithms.
+Different from ANN which is highly data driven and requires a lot of samples and computations to train a network, a fuzzy controller is an expert-based system that requires only the membership functions used for fuzzification of variables and a set of rules for inference. ANN may reveal the building bricks of a human brain, while fuzzy control system reflects how a human interprets the knowledge that he learns from past experience and uses in his daily life. This feature of a fuzzy control system is a bless and a curse at the same time. Fuzzy control system does not rely on training, thus is handy when there are few training samples. On the other hand, this also means that it cannot benefit from the accumulation of the samples and it is lack of evolving capability comparing with ANN and other evolutionary algorithms.
 
 \section{Fuzzy Set and Fuzzy Relation}
 
-Fuzzy set is not a set in the conventional way, but a projection derived from a set. Fuzzy set and fuzzy relation are the building blocks for fuzzy logics. Details are given in the remaining of this section.
+Fuzzy set is not a set from mathematical perspective, but a projection derived from a set. Fuzzy set and fuzzy relation are the fundamentals of fuzzy logics. Details are given in the remaining of this section.
 
-\subsection{Fuzzy Set Basics}
+\subsection{Fuzzy Set}
 
-The fundamentals of fuzzy logics and fuzzy control systems are built on fuzzy set and membership function. Fuzzy set is NOT a set from mathematical perspective, but a projection from a set to a real number between $[0, 1]$. The function used in the projection is called the member function of the fuzzy set.
+The fundamentals of fuzzy logics and fuzzy control systems are built on fuzzy set and membership function. Fuzzy set is not a set from mathematical perspective, but a projection from a set to a real number between $[0, 1]$. The function used in the projection is called the member function of the fuzzy set.
 
-Consider set $A$ with either finite or infinite elements. Define a projection $\mu_{\utilde{A}}$ from $A$ to $[0, 1]$ as follows.
+Consider set $U$ with finite or infinite cardinality. Define a projection $\mu_{\utilde{A}}$ from $x \in U$ to $[0, 1]$ as follows.
 \begin{eqnarray}
-	\mu_{\utilde{A}} &:& A \rightarrow [0, 1] \nonumber
+	\mu_{\utilde{A}} &:& x \in U \rightarrow [0, 1] \nonumber
 \end{eqnarray}
-This projection, together with its domain (also known as the universe of a fuzzy set) define a fuzzy set. The projection $\mu_{\utilde{A}}$ is called the membership function of the fuzzy set. The value of $\mu_{\utilde{A}}(e)$ for $e\in \utilde{A}$ describes in what extent $e$ belongs to $\utilde{A}$.
+This projection, together with its domain (also known as the universe of a fuzzy set) defines a fuzzy set. The projection $\mu_{\utilde{A}}$ is called the membership function of the fuzzy set $\utilde{A}$. The value of $\mu_{\utilde{A}}(x)$ for $x \in U$ describes in what extent $x$ belongs to $\utilde{A}$.
 
 It is clear from the definition the difference between a set and a fuzzy set. For a set, an element either belongs to the set or does not belong to the set, which can be described by
 \begin{eqnarray}
-	\mu_{A}(e) = \left\{\begin{array}{cc}
-		1 & e \in A \\
-		0 & e \notin A
+	\mu_{A}(x) = \left\{\begin{array}{cc}
+		1 & x \in A \\
+		0 & x \notin A
 	\end{array}\right. \nonumber
 \end{eqnarray}
-where $\mu_{A}$ is a binary function, fuzzy set defines a continuous functions $\mu_{\utilde{A}}$ which can take any value between $[0,1]$. From this stand, a fuzzy set is an extension to a set.
+where $\mu_{A}$ is a binary function. In contrast, fuzzy set defines a continuous functions $\mu_{\utilde{A}}$ which can take any value between $[0,1]$. From this stand, a fuzzy set is an extension to a set.
 
-An example of a fuzzy set is given below. Let $A\geq 0$ be the age of a person in the considered domain. Define 2 fuzzy sets, ``young adult'' as $\utilde{A}_1$ and ``middle-aged adult'' as $\utilde{A}_2$, with membership function defined in Fig. \ref{ch:fcs:fig:fuzzysetexp}.
+An example of a fuzzy set is given below. Let $U\geq 0$ be the age of a person. Define 2 fuzzy sets, ``young adult'' as $\utilde{A}$ and ``middle-aged adult'' as $\utilde{B}$, with membership function defined in Fig. \ref{ch:fcs:fig:fuzzysetexp}.
 
 \begin{figure}
 	\centering
@@ -37,32 +35,32 @@ An example of a fuzzy set is given below. Let $A\geq 0$ be the age of a person i
 	\caption{Membership function of fuzzy sets ``young adult'' and ``middle-aged adult''.} \label{ch:fcs:fig:fuzzysetexp}
 \end{figure}
 
-From Fig. \ref{ch:fcs:fig:fuzzysetexp}, we can see how a person is categorized according to the age. For example, a 5-year-old child is by no means a young adult or an adult, as $\mu_{A_1}=\mu_{A_2}(5)=0$ from the figure. A 15-year-old can be considered ``quite'' a young adult, with $\mu_{A_1}=0.7$.
+From Fig. \ref{ch:fcs:fig:fuzzysetexp}, we can see how a person is categorized according to the age. For example, a 5-year-old child is by no means a young adult or an adult, as $\mu_{A}=\mu_{B}(5)=0$ from the figure. A 27-year-old can be considered ``quite'' a young adult, with $\mu_{A}=0.8$, and ``somehow'' adult, with $\mu_{A}=0.3$.
 
 The maximum value of a membership function is defined as the height of the fuzzy set. In many occasions the height is $1$, but it is not always the case. An element whose associated membership function equals to half of the height is called the crossover point.
 
 It is possible to set up a threshold for the membership function, and derive a set from a fuzzy set as follows.
 \begin{eqnarray}
-	\utilde{A}_\alpha &=& \left\{e \middle| \mu_{\utilde{A}} (e) \geq \alpha \right\} \nonumber
+	\utilde{A}_\alpha &=& \left\{x \middle| \mu_{\utilde{A}} (e) \geq \alpha \right\} \nonumber
 \end{eqnarray}
-Notice that $\utilde{A}_\alpha$ is a set (not a fuzzy set) of the original fuzzy set, known as the cut set. A fuzzy set can have infinite number of cut sets by choosing different $\alpha$. A fuzzy set can be derived from all its cut sets as follows.
+Notice that $\utilde{A}_\alpha$ is a set (not a fuzzy set) known as the cut set of $\utilde{A}$. A fuzzy set can have infinite number of cut sets by choosing different $\alpha$. A fuzzy set can be derived from all its cut sets as follows.
 \begin{eqnarray}
 	\utilde{A} &=& \bigcup_{\alpha \in [0, 1]} \alpha A_\alpha \nonumber
 \end{eqnarray}
-where $\alpha A_\alpha$ is a fuzzy set defined on $ A_\alpha$ with constant membership function value $\alpha$.
+where $\alpha A_\alpha$ is a fuzzy set defined on $A_\alpha$ with, universe $A_\alpha$ and membership function value $\alpha$. The $\cup$ calculates the union of fuzzy sets, more of which is introduced later.
 
-Following the same concept, define the support and core of a fuzzy set as follows, respectively.
+Define the support and core of a fuzzy set as follows, respectively.
 \begin{eqnarray}
-	\textup{supp}(\utilde{A}) &=& \left\{ e \middle| \mu_{\utilde{A}}(e) > 0 \right\} \nonumber \\
-	C(\utilde{A}) &=& \left\{ e \middle| \mu_{\utilde{A}}(e) = 1 \right\} \nonumber
+	\textup{supp}(\utilde{A}) &=& \left\{x \middle| \mu_{\utilde{A}}(x) > 0 \right\} \nonumber \\
+	C(\utilde{A}) &=& \left\{x \middle| \mu_{\utilde{A}}(x) = 1 \right\} \nonumber
 \end{eqnarray}
 
 A fuzzy set $\utilde{A}$ can be represented by its base set $A$ together with associated membership functions $\mu_{\utilde{A}}$. Alternatively, use the following
 \begin{eqnarray}
-	\utilde{A} &=& \sum_{i} \dfrac{\mu_{\utilde{A}}(e_i)}{e_i} \nonumber \\
-	\utilde{A} &=& \int_{E} \dfrac{\mu_{\utilde{A}}(e)}{e} \nonumber
+	\utilde{A} &=& \sum_{i} \dfrac{\mu_{\utilde{A}}(x_i)}{x_i} \nonumber \\
+	\utilde{A} &=& \int_{E} \dfrac{\mu_{\utilde{A}}(x)}{x} \nonumber
 \end{eqnarray}
-to represent a fuzzy set with discrete and continuous universe, respectively. Notice that in the above representation, ``$\cdot / \cdot$'' is not a division, and $\sum$, $\int$ are not summation and integration (although there are some connections), but just a conventional notation used in the fuzzy set.
+to represent a fuzzy set with discrete and continuous universe, respectively. Notice that in the above representation, ``$/$'', ``$\sum$'', and ``$\int$'' are not division, summation and integration, but just conventional notations used in the fuzzy set theory.
 
 \subsection{Fuzzy Set Operations}
 
@@ -101,7 +99,7 @@ Membership functions can be chosen flexibly as long as it is bounded by $[0, 1]$
 	\caption{Commonly used membership functions.} \label{ch:fcs:fig:commonmf}
 \end{figure}
 
-MATLAB provides built in functions to generate the functions in \ref{ch:fcs:fig:commonmf}, such as \verb|trimf| for triangular membership function, \verb|trapmf| for trapezoidal function, \verb|gaussmf| for Gaussian, and \verb|gbellmf| for generalized-bell function, respectively. There are other membership functions built-in to MATLAB as well.
+MATLAB provides built-in functions to generate the functions in \ref{ch:fcs:fig:commonmf}, such as \verb|trimf| for triangular membership function, \verb|trapmf| for trapezoidal function, \verb|gaussmf| for Gaussian, and \verb|gbellmf| for generalized-bell function, respectively. There are other membership functions built-in to MATLAB as well.
 
 \subsection{Fuzzy Relation}
 
@@ -122,17 +120,16 @@ The relation can be derived from chains. For example, consider relation $P$ defi
 
 \section{Fuzzy Control System}
 
-Fuzzy control system is a practice of utilizing fuzzy logics in engineering. It mainly includes fuzzification of the system, fuzzy interface, and fuzzy control system design. Details are covered in the remaining of this section.
+Fuzzy control system is a practice of utilizing fuzzy logics in engineering. It mainly includes fuzzification of the physical measurement signals to fuzzy variables, fuzzy inference, and defuzzification of the fuzzy variables to physical control signals. Membership functions are used in the fuzzification and defuzzification of signals, and rules are used in the fuzzy inference.
 
-\subsection{Basic Concepts}
+A simple schema of a fuzzy control system is given in Fig. \ref{ch:fcs:fig:fuzzyschemasimple}. Details are covered in the remaining of this section.
 
-A proposition refers to a mathematical statement, either being true or false. For example, $0 \in \mathbb{Z}$ is a true statement as zero belongs to the integer set. As another example, give $x=5$, $x \geq 3$ is a true statement.
-
-Fuzzy proposition refers to ``ambiguous'' statements, that it is not a proposition from a mathematical perspective as it cannot be told whether true or false. An example is ``$x$ is large''. Instead of true/false, a fuzzy proposition is described by $\beta \in [0, 1]$ that describes to what extent the statement is considered as true. In the aforementioned example, if we define ``large'' as a fuzzy set, then fuzzy proposition ``$x$ is large'' is to the extent of $\beta = \mu_{\textup{large}}(x)$ true.
-
-A reasoning is often formulated by ``if <proposition 1> then <proposition 2>''. The reasoning indicates that if the first proposition is true, so is the second proposition. The reasoning itself is also a proposition, as $A \rightarrow B$ is equivalent to $\bar{A}\cup (A\cap B)$. Under the fuzzy logic scope, the propositions are fuzzy propositions. An example is ``if service quality is good, tips is high''. Apparently, ``good'' is defined as a fuzzy set.
-
-A reasoning can be taken as a rule. Rules are the basic representations of knowledge base in fuzzy control system, where each rule can be taken as an input from the expert.
+\begin{figure}
+	\centering
+	\includegraphics[width=350pt]{chapters/ch-fuzzy-control-system/figures/fuzzyschemasimple.png}
+	\caption{A simple schema for a fuzzy control system.}
+	\label{ch:fcs:fig:fuzzyschemasimple}
+\end{figure}
 
 \subsection{Fuzzification}
 
@@ -154,20 +151,20 @@ xxx
 
 xxx
 
-\section{Examples}
+\section{Fuzzy Control System Design Using MATLAB}
 
-A motivating example is given to introduce the basic use of fuzzy logics calculations. Several examples are given consecutively to demonstrate how to use MATLAB fuzzy logic toolbox to build fuzzy controllers.
+MATLAB fuzzy logic toolbox provides tools to define membership functions and fuzzy inference systems. They are introduced in this section via examples.
 
-\subsection{Motivating: Calculate Tips in a Restaurant}
+\subsection{Example: Calculate Tips in a Restaurant}
 
 Consider the example given below.
 
 \begin{shortbox}
 \Boxhead{A Motivating Example}
 
-The tips that a customer pays to the waiter/waitress in a restaurant depends on the quality of the food and the service. It often has a lower and upper bound of $5\%$ to $25\%$ of the bill. When the quality of both the food and the service is exceptional, the tips will more likely to be close to $25\%$, vise versa, as shown in Fig. \ref{ch:fcs:fig:expmotivating}.
+The tips that a customer pays to the waiter/waitress in a restaurant depends on the quality of the food and the service as demonstrated in Fig. \ref{ch:fcs:fig:expmotivating}.
 
-There is no matrix that quantifies the quality of the food, nor the service. It is more about how the customer feels objectively. Neither is there a fixed guidance that maps them to the tips, i.e., some customers may take food and service equality important, while others may think one more significant than the other.
+There is no quantitative standard for the quality of the food, nor the service. It is more about the feelings of the customers. Neither is there a fixed guidance that maps them to the tips, i.e., some customers may take food and service equality important, while others may think one more significant than the other.
 
 Try to describe tips as a function of food and service quality.
 
@@ -240,10 +237,34 @@ Use the following to calculate the membership function of $\utilde{C}$ as illust
 	c = c/max(c);
 \end{lstlisting}
 
-\subsection{Fuzzy Approximation}
+\subsection{Linguistic Variables}
 
-Fuzzy approximation tries to describe complicated functions using sets of  fuzzy rules.
+Fuzzy linguistic system is the language a fuzzy control system uses to record rules and communicate with a human expert knowledge base.
 
+Consider the statement ``sampling frequency is low''. To make sense from this statement, a universe named ``frequency'' must exist, where a fuzzy set ``low frequency'' is defined, whose membership might look like the red curve in Fig. \ref{ch:fcs:fig:explinguistic1}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/explinguistic1.png}
+	\caption{Low, medium and high frequency membership functions in common sense.}
+	\label{ch:fcs:fig:explinguistic1}
+\end{figure}
+
+In Fig. \ref{ch:fcs:fig:explinguistic1}, the considered variable is sampling frequency. The linguistic variables are ``low'', ``medium'' and ``high''. The range of the variable is $[0, 2] (\textup{Hz})$ as far as this problem concerns. Finally, the membership functions of the linguistic variables are given by the curves.
+
+These four features, $(x, T, u, m)$, define a linguistic variable systematically, where $x$, $T$, $u$ and $m$ denote the universe variable name, the linguistic variable name, the range of the universe variable, and the membership of the linguistic variable, respectively.
+
+Interfaces are required to translate from physical signals into fuzzy variables, and backwards from fuzzy variables into physical signals, based on the defined membership functions. They are often regarded as ``fuzzification'' and ``defuzzification'' interfaces, respectively.
+
+\subsection{Fuzzy Inference}
+
+``IF-THEN'' is used to define fuzzy rules, which form the base of the inference system. A commonly used syntax is ``if $x$ is $A$, then $y$ is $B$'', where ``$x$ is $A$'' is the premise, and ``$y$ is $B$'' the consequent. In the case of conventional proposition, the premise ``$x$ is $A$'' is either ``true'' or ``false''. In fuzzy logics, however, the premise can be ``to some extent true''. With the fuzzy variables and fuzzy inference system designed properly, the controller should be able to comprehend to what extend the premise is true, and what actions to take consequently.
+
+Take Fig. \ref{ch:fcs:fig:explinguistic1} as an example. Assume that the input to the system is ``sampling frequency $=0.6Hz$''. A rule is defined that says ``if sampling frequency is low, increase sampling frequency by 50\%''. The controller should be able to draw the conclusion that ``frequency is low'' from the sampling frequency $0.6Hz$ via the fuzzy inference, and increase sampling frequency. Another example is ``if service is good and food is good, then tips is good'', as shown in Fig. \ref{ch:fcs:fig:motivatingexp_fis}.
+
+In a practical fuzzy system, multiple rules are defined. The system should be able to select the best fit entry from the rules. Each rule may be associated with multiple input fuzzy variables, with propositions connected by logic connectors ``AND'', ``OR'', or ``NOT''. The membership function of the joint proposition can be derived from those with individual propositions, using rules such as defined in Table \ref{ch:fcs:tab:fuzzysetoperation}.
+
+The above procedures are summarized in Fig. \ref{ch:fcs:fig:fuzzyschemasimple}. Notice that for multivariable system the input and output physical signals are vectors. Each element in the vectors shall associate with a fuzzy variable. It is also possible to translate multiple fizzy output variables into a single physical output signal, to give it a bit more precision.
 
 
 
