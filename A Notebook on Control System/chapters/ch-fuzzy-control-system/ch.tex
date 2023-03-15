@@ -151,129 +151,292 @@ xxx
 
 xxx
 
+\section{Fuzzy System Auto-tuning}
+
+The performance of a fuzzy control system is mainly determined by the choice of membership functions, inference rules and defuzzification methods. In the case where there is no such an expert that can carefully design everything, a data-driven approach can be implemented that automatically tunes the parameters setup in a fuzzy control system for the optimal performance. 
+
+Notice that the auto-tuning does not change the fact that a fuzzy control system is a rule-based expert system. Therefore, the advantage of fuzzy system being intuitive to interpret persists.
+
+Nowadays, the most popular data-driven approach for data analysis is artificial neural network. It is possible to use ANN to find the optimal parameters of a fuzzy system, hence, fuzzy neural networks. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Fuzzy Control System Design Using MATLAB}
 
 MATLAB fuzzy logic toolbox provides tools to define membership functions and fuzzy inference systems. They are introduced in this section via examples.
 
-\subsection{Example: Calculate Tips in a Restaurant}
+\subsection{Example: Vibration Detection}
 
-Consider the example given below.
+Consider the example given below. Design and implement the system in MATLAB as follows.
 
 \begin{shortbox}
-\Boxhead{A Motivating Example}
+\Boxhead{Vibration Detection from Measurement Signal}
 
-The tips that a customer pays to the waiter/waitress in a restaurant depends on the quality of the food and the service as demonstrated in Fig. \ref{ch:fcs:fig:expmotivating}.
+Oscillation has been detected from a continuously sampled signal. The oscillation might be caused by system process dynamics, system vibration, or measurement noise. The oscillation frequency and amplitude together help to reveal the cause of the oscillation, specifically the likelihood that the oscillation is caused by system vibration.
 
-There is no quantitative standard for the quality of the food, nor the service. It is more about the feelings of the customers. Neither is there a fixed guidance that maps them to the tips, i.e., some customers may take food and service equality important, while others may think one more significant than the other.
+The input to the system is the oscillating measurement signal sampled at $1Hz$. An FFT is applied to the signal to get the oscillation frequency and amplitude, which lay in the range of $[0, 0.5] (Hz)$ and $[0, 10]$, respectively. The oscillation frequency and amplitude is then sent to the fuzzy controller.
 
-Try to describe tips as a function of food and service quality.
+In the fuzzy controller, the two signals are fuzzifized to form fuzzy variables. The fuzzy variables are passed to the fuzzy inference system, where rules are defined to determine the likelihood that the oscillation is caused by vibration, which is also a fuzzy variable. Finally, the likelihood fuzzy variable is defuzzifized to obtain the vibration likelihood, which should be a variable in $[0,1]$.
 
 \end{shortbox}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/expmotivating.png}
-	\caption{Tips relate to food and service quality.} \label{ch:fcs:fig:expmotivating}
-\end{figure}
+\vspace{0.1in}
+\noindent \textbf{Membership Functions for Input and Outputs}
+\vspace{0.1in}
 
-Solving the above problem using conventional methods requires precise modeling of how the customer's utility relates to food and service quality. An example is given below, where the utilities the customer gets from the service and food qualities modeled using an exponential function and a linear function, respectively. Finally, the tips are determined by a weighted sum of the utilities.
-\begin{eqnarray}
-	u_1 &=& \dfrac{e^{x_1}-1}{e-1} \nonumber \\
-	u_2 &=& x_2 \nonumber \\
-	u &=& 0.8 u_1 + 0.2 u_2 \nonumber \\
-	\textup{tips} &=& (0.25-0.05)u + 0.05 \nonumber
-\end{eqnarray}
-where $x_1\in [0,1]$ and $x_2 \in [0,1]$ are used to characterize the service and food qualities, respectively. The result is given in plotted in Fig. \ref{ch:fcs:fig:motivatingexp_conventional}. It can be seen that although this is a common practical problem of daily life and a human can solve it almost immediately, the modeling and realization of the solution using conventional control method can be difficult. The conventional method, in this case, is non-intuitive and differs largely from how human would naturally handle this problem.
+The first step in solving this problem is to understand how an human expert would interpret oscillation frequency and amplitude, and derive the likelihood from them. Take oscillation frequency as an example. It is agreed on that a frequency that is too low or too high may indicate something other than vibration. For example, frequency lower than $0.05Hz$ will be categorized as ``low''. Similarly, frequency higher than $0.4Hz$ is probably too ``high'' for vibration. Frequency around $0.2Hz$ is the ``fine'' frequency, which increases the likelihood of vibration.
+
+Imagine asking many experts on how they categorize each frequency $0.01Hz, 0.02Hz, ..., 0.5Hz$ into one of the 3 categories ``low'', ``fine'' or ``high''. Consider using the interview results to form the membership for the 3 categories as given in Fig. \ref{ch:fcs:fig:exp_vibration_detection_mf_freq}. The curves in Fig. \ref{ch:fcs:fig:exp_vibration_detection_mf_freq} is obtained by fitting the ``percentage of agreement'' using trapezoidal functions. Figure \ref{ch:fcs:fig:exp_vibration_detection_mf_freq} can be interpreted as in what extend one would agree that the specified frequency shall belong to a category.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/motivatingexp_conventional.eps}
-	\caption{Tips as a deterministic function of service and food qualities.} \label{ch:fcs:fig:motivatingexp_conventional}
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_mf_freq.eps}
+	\caption{Membership functions for 3 fuzzy sets ``low'', ``fine'' and ``high'' defined on input signal oscillation frequency.}
+	\label{ch:fcs:fig:exp_vibration_detection_mf_freq}
 \end{figure}
 
-MATLAB fuzzy control toolbox provides variety of tools to design and demonstrate fuzzy controllers. For the aforementioned problem, a built-in fuzzy interface system (FIS) named ``tipper'' is defined. A fuzzy inference is the process of formulating the mapping from a given input to an output using fuzzy logics. More details of FIS is introduced elsewhere in this chapter.
-
-In tipper, 3 fizzy variables (2 inputs, 1 output) and 3 rules are defined. The result is plotted in Fig. \ref{ch:fcs:fig:motivatingexp_fis}. By comparing Figs. \ref{ch:fcs:fig:motivatingexp_conventional} and \ref{ch:fcs:fig:motivatingexp_fis}, it can be seen that fuzzy logics can interpret ``good service'', ``bad service'', etc., in a more intuitive way close to human, and it can formulate more complicated behavior with simpler setup. It requires rules instead of tons of samples (for training) to form this behavior.
+The same applies to the oscillation amplitude, where 2 categories are defined, namely ``low'' and ``fine'', as shown by Fig. \ref{ch:fcs:fig:exp_vibration_detection_mf_amp}. Instead of using trapezoidal functions, generalized bell functions are used to fit the interview results.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/motivatingexp_fis.eps}
-	\caption{Tips as a deterministic function of service and food qualities using fuzzy logic.} \label{ch:fcs:fig:motivatingexp_fis}
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_mf_amp.eps}
+	\caption{Membership functions for 2 fuzzy sets ``low'' and ``fine'' defined on input signal oscillation amplitude.}
+	\label{ch:fcs:fig:exp_vibration_detection_mf_amp}
 \end{figure}
 
-\subsection{Defining Membership Functions for Fuzzy Sets}
+With the above defined membership functions, each frequency and amplitude can be translated into a fuzzy variable using fuzzification. For example, frequency $0.12Hz$ is $[0.3, 0.7, 0]$ where the three values in the vector represents the membership functions values of the given frequency mapping to each fuzzy set.
 
-Consider the following example.
+The output of the system is the likelihood of vibration of the system, scaled by a parameter in $[0, 1]$. Define 4 fuzzy sets, namely ``very likely'', ``likely'', ``unlikely'', ``very unlikely'', as shown in Fig. \ref{ch:fcs:fig:exp_vibration_detection_mf_likelihood}.
 
-\begin{shortbox}
-	\Boxhead{Fuzzy Sets Creation}
-	
-	Define the following fuzzy sets in MATLAB. Let both $\utilde{A}$, $\utilde{B}$ be fuzzy sets with triangular membership function. Let $\utilde{C} = \utilde{A} + \utilde{B}$ whose elements are obtained by adding elements in $\utilde{A}$ and $\utilde{B}$.
-	
-\end{shortbox}
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_mf_likelihood.eps}
+	\caption{Membership functions for 4 fuzzy sets ``very unlikely'', ``unlikely'', ``likely'' and ``very likely'', defined on input signal oscillation amplitude.}
+	\label{ch:fcs:fig:exp_vibration_detection_mf_likelihood}
+\end{figure}
 
-Create $\utilde{A}$ and $\utilde{B}$ as follows. Their membership function is plotted in Fig. \ref{ch:fcs:fig:exp_createfuzzyset} as the red and blue lines, respectively.
-\begin{lstlisting}[style=Matlab-editor]
-x = 0:0.01:10;
-trimf_a = @(x) 0.9*trimf(x, [1, 2, 3]);
-trimf_b = @(x) trimf(x, [2, 5, 6]);
-a = trimf_a(x);
-b = trimf_b(x);
+With the above defined membership functions, each likelihood fuzzy variable can be translated into the likelihood of the occurrence of vibration via defuzzification. For example, likelihood fuzzy variable $[0, 0.1, 0.3, 0.9]$ means that the the likelihood is not at all ``very unlikely'', a tiny little bit ``unlikely'', somewhat ``likely'', and quite much ``very likely''. Intuitively, this should translate into a high likelihood around $0.7\sim 0.9$ using Fig. \ref{ch:fcs:fig:exp_vibration_detection_mf_likelihood}.
+
+There are different ways of translating the output fuzzy variables into a physical signal, such as ``centroid'', ``bisector'', ``middle of maximum'', etc. More details can be found in MATLAB help document under ``defuzzification methods''. For example, $[0, 0.1, 0.3, 0.9]$ would translate into $0.73$ using membership function given in Fig. \ref{ch:fcs:fig:exp_vibration_detection_mf_likelihood} using centroid method, and $0.79$ if using bisector method instead.
+
+\vspace{0.1in}
+\noindent \textbf{Inference}
+\vspace{0.1in}
+
+Fuzzy inference system is rule-based. Examples of the rules may include the following. Notice that in this example, all combinations of oscillation frequency and amplitude are listed. This is not always necessary in practice. Some of the rules may seem conflict with each other. This does not matter as the fuzzy controller will balance the weight of each output fuzzy set.
+\begin{itemize}
+	\item If oscillation frequency is fine and oscillation amplitude is fine, likelihood of vibration is very likely.
+	\item If oscillation frequency is fine and oscillation amplitude is low, likelihood of vibration is likely.
+	\item If oscillation frequency is high and oscillation amplitude is fine, likelihood of vibration is likely.
+	\item If oscillation frequency is high and oscillation amplitude is low, likelihood of vibration is unlikely.
+	\item If oscillation frequency is low and oscillation amplitude is fine, likelihood of vibration is likely.
+	\item If oscillation frequency is low and oscillation amplitude is low, likelihood of vibration is very unlikely.
+	\item If oscillation amplitude is fine, likelihood of vibration is likely.
+\end{itemize}
+
+It is worth mentioning that ``AND'', ``OR'', ``NOT'' can be used in the propositions, as shown above, for example ``frequency is fine AND amplitude is fine''. The membership function of ``frequency is fine AND amplitude is fine'' can be derived from the two individual membership functions following rules defined in Table \ref{ch:fcs:tab:fuzzysetoperation} or its alternatives.
+
+The output fuzzy sets are the ``pools'' that collect scores. The input is checked against each rule, which add scores to its associated pools. The scores form the value output fuzzy variable.
+
+\vspace{0.1in}
+\noindent \textbf{Realization}
+\vspace{0.1in}
+
+With the above, it is possible to program the fizzy control system from scratch. Alternatively, fuzzy inference systems tools provided by MATLAB can also be used to quickly deploy a fuzzy control system. Both methods are investigated as follows.
+
+Consider programming from scratch. The following MATLAB program can be used to detect vibration. Notice that for simplicity, the membership functions and rules are hard-coded into the function.
+\begin{lstlisting}
+fs = 1;                                 % Sampling frequency                    
+T = 1/fs;                               % Sampling period       
+L = 600;                                % Number of samples
+t = (0:L-1)*T;                          % Time vector
+measured_torque = 5*sin(2*pi*0.2*t);
+measured_torque = measured_torque + 2*sin(2*pi*0.02*t);
+measured_torque = measured_torque + normrnd(0, 1, [1, length(measured_torque)]);
+detect_vibration(fs, measured_torque)
+
+function vibration_likelihood = detect_vibration(fs, measured_torque)
+	% fft analysis to get the oscillation frequency and amplitude
+	T = 1/fs;
+	L = length(measured_torque);
+	t = (0:L-1)*T;
+	figure
+	plot(t, measured_torque, 'b-')
+	grid on
+	xlabel("Time", "Interpreter", "latex")
+	ylabel("Torque", "Interpreter", "latex")
+	measured_torque_fft = fft(measured_torque);
+	P2 = abs(measured_torque_fft/L);
+	P1 = P2(1:L/2+1);
+	P1(2:end-1) = 2*P1(2:end-1);
+	f = fs*(0:(L/2))/L;
+	figure
+	plot(f, P1)
+	grid on
+	title("Single-Sided Amplitude Spectrum of Measured Torque")
+	xlabel("$f$ ($Hz$)", "Interpreter", "latex")
+	ylabel("$|P_1(f)|$", "Interpreter", "latex")
+	maj_f = f(P1 == max(P1));
+	maj_P1 = max(P1);
+	% fuzzification
+	x_freq = 0:0.01:0.5;
+	mf_x_freq = [];
+	mf_x_freq.low = trapmf(x_freq, [-1, 0, 0.05, 0.15]);
+	mf_x_freq.fine = trapmf(x_freq, [0.05, 0.15, 0.25, 0.35]);
+	mf_x_freq.high = trapmf(x_freq, [0.25, 0.40, 0.5, 1]);
+	[~, x_freq_ind] = min(abs(maj_f-x_freq));
+	x_freq_fuzzy = [mf_x_freq.low(x_freq_ind), mf_x_freq.fine(x_freq_ind), mf_x_freq.high(x_freq_ind)];
+	x_amp = 0:0.01:10;
+	mf_x_amp = [];
+	mf_x_amp.low = gbellmf(x_amp, [4, 10, -2]);
+	mf_x_amp.fine = gbellmf(x_amp, [5, 5, 8]);
+	[~, x_amp_ind] = min(abs(maj_P1-x_amp));
+	x_amp_fuzzy = [mf_x_amp.low(x_amp_ind), mf_x_amp.fine(x_amp_ind)];
+	% inference
+	y_likelihood_fuzzy = [0,0,0,0]; % very unlikely, unlikely, likely, very likely
+	y_likelihood_fuzzy(4) = max(y_likelihood_fuzzy(4), min(x_freq_fuzzy(2), x_amp_fuzzy(2)));
+	y_likelihood_fuzzy(3) = max(y_likelihood_fuzzy(3), min(x_freq_fuzzy(2), x_amp_fuzzy(1)));
+	y_likelihood_fuzzy(3) = max(y_likelihood_fuzzy(3), min(x_freq_fuzzy(3), x_amp_fuzzy(2)));
+	y_likelihood_fuzzy(3) = max(y_likelihood_fuzzy(3), min(x_freq_fuzzy(1), x_amp_fuzzy(2)));
+	y_likelihood_fuzzy(2) = max(y_likelihood_fuzzy(2), min(x_freq_fuzzy(3), x_amp_fuzzy(1)));
+	y_likelihood_fuzzy(1) = max(y_likelihood_fuzzy(2), min(x_freq_fuzzy(1), x_amp_fuzzy(1)));
+	% defizzification
+	x_likelihood = 0:0.01:1;
+	mf_x_likelihood = [];
+	mf_x_likelihood.verynotlikely = gbellmf(x_likelihood, [0.2, 5, 0]);
+	mf_x_likelihood.notlikely = gbellmf(x_likelihood, [0.15, 3, 0.3]);
+	mf_x_likelihood.likely = gbellmf(x_likelihood, [0.15, 3, 0.6]);
+	mf_x_likelihood.verylikely = gbellmf(x_likelihood, [0.3, 5, 1]);
+	mf = max(min(y_likelihood_fuzzy(1), mf_x_likelihood.verynotlikely), ...
+		max(min(y_likelihood_fuzzy(2), mf_x_likelihood.notlikely), ...
+		max(min(y_likelihood_fuzzy(3), mf_x_likelihood.likely), ...
+		min(y_likelihood_fuzzy(4), mf_x_likelihood.verylikely))));
+	vibration_likelihood = defuzz(x_likelihood , mf, 'mom');
+end
 \end{lstlisting}
 
+Running the above code gives the following results in Figs. \ref{ch:fcs:fig:exp_vibration_detection_signal} and \ref{ch:fcs:fig:exp_vibration_detection_signal_fft}. The function returns a likelihood of $0.84$. 
+
 \begin{figure}
 	\centering
-	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_createfuzzyset.eps}
-	\caption{Create fuzzy sets membership functions for in MATLAB.}
-	\label{ch:fcs:fig:exp_createfuzzyset}
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_signal.eps}
+	\caption{Measured torque.}
+	\label{ch:fcs:fig:exp_vibration_detection_signal}
 \end{figure}
 
-Variables in $\utilde{C}$ is obtained by adding elements in $\utilde{A}$ and $\utilde{B}$. For example, consider $c = 7$. This can be achieved from a set of combinations $a=0, b=7$, $a=0.01, b=6.99$, ..., $a = 7, b = 0$. The membership function, $\mu_{\utilde{C}(7)}$, is a sum of the membership function of all the combinations, where in each combination the associated membership function is obtained by multiplying (this is only one of the ways to handle this problem) the membership functions of $\utilde{A}$ and $\utilde{B}$. Finally, the membership function is normalized by dividing it with its maximum value.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_signal_fft.eps}
+	\caption{Measured torque single-sided amplitude spectrum.}
+	\label{ch:fcs:fig:exp_vibration_detection_signal_fft}
+\end{figure}
 
-Use the following to calculate the membership function of $\utilde{C}$ as illustrated above. The result is plotted in Fig. \ref{ch:fcs:fig:exp_createfuzzyset} as the magenta line
-\begin{lstlisting}[style=Matlab-editor]
-	c = conv(a, b, 'full');
-	c = c(1:length(x));
-	c = c/max(c);
+If increase the frequency from $0.2Hz$ to $0.45Hz$, i.e., let 
+\begin{lstlisting}
+measured_torque = 5*sin(2*pi*0.4*t);
+measured_torque = measured_torque + 2*sin(2*pi*0.02*t);
+measured_torque = measured_torque + normrnd(0, 1, [1, length(measured_torque)]);
+\end{lstlisting}
+the likelihood becomes $0.60$. If further drop the amplitude and let
+\begin{lstlisting}
+measured_torque = 2*sin(2*pi*0.4*t);
+measured_torque = measured_torque + 1*sin(2*pi*0.02*t);
+measured_torque = measured_torque + normrnd(0, 1, [1, length(measured_torque)]);
+\end{lstlisting}
+the likelihood further drops to $0.30$. By an exhaustive search, we can plot likelihood as a function of oscillation frequency and amplitude as given in Fig. XXX.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_gensurf1.eps}
+	\caption{Likelihood of vibration as a function of oscillation frequency and amplitude.}
+	\label{ch:fcs:fig:exp_vibration_detection_gensurf1}
+\end{figure}
+
+Consider programming using MATLAB built-in tools to reproduce the above results. MATLAB provides variety choice of fuzzy inference systems. In this example, \verb|mamfis| is used as follows.
+\begin{lstlisting}
+vd_fis = mamfis( ...
+	'NumInputs', 2, ...
+	'NumInputMFs', [3, 2], ...
+	'NumOutputs', 1, ...
+	'NumOutputMFs', 4, ...
+	'AddRule', 'none' ...
+	);
+% ios
+vd_fis.Inputs(1).Name = 'torque_frequency';
+vd_fis.Inputs(1).Range = [0, 0.5];
+vd_fis.Inputs(1).MembershipFunctions(1).Name = 'low';
+vd_fis.Inputs(1).MembershipFunctions(1).Type = 'trapmf';
+vd_fis.Inputs(1).MembershipFunctions(1).Parameters = [-1, 0, 0.05, 0.15];
+vd_fis.Inputs(1).MembershipFunctions(2).Name = 'fine';
+vd_fis.Inputs(1).MembershipFunctions(2).Type = 'trapmf';
+vd_fis.Inputs(1).MembershipFunctions(2).Parameters = [0.05, 0.15, 0.25, 0.35];
+vd_fis.Inputs(1).MembershipFunctions(3).Name = 'high';
+vd_fis.Inputs(1).MembershipFunctions(3).Type = 'trapmf';
+vd_fis.Inputs(1).MembershipFunctions(3).Parameters = [0.25, 0.40, 0.5, 1];
+vd_fis.Inputs(2).Name = 'torque_amplitude';
+vd_fis.Inputs(2).Range = [0, 10];
+vd_fis.Inputs(2).MembershipFunctions(1).Name = 'low';
+vd_fis.Inputs(2).MembershipFunctions(1).Type = 'gbellmf';
+vd_fis.Inputs(2).MembershipFunctions(1).Parameters = [4, 10, -2];
+vd_fis.Inputs(2).MembershipFunctions(2).Name = 'fine';
+vd_fis.Inputs(2).MembershipFunctions(2).Type = 'gbellmf';
+vd_fis.Inputs(2).MembershipFunctions(2).Parameters = [5, 5, 8];
+plotmf(vd_fis, 'input', 1, 1000)
+vd_fis.Outputs(1).Name = 'vibration_likelihood';
+vd_fis.Outputs(1).Range = [0, 1];
+vd_fis.Outputs(1).MembershipFunctions(1).Name = 'very_unlikely';
+vd_fis.Outputs(1).MembershipFunctions(1).Type = 'gbellmf';
+vd_fis.Outputs(1).MembershipFunctions(1).Parameters = [0.2, 5, 0];
+vd_fis.Outputs(1).MembershipFunctions(2).Name = 'unlikely';
+vd_fis.Outputs(1).MembershipFunctions(2).Type = 'gbellmf';
+vd_fis.Outputs(1).MembershipFunctions(2).Parameters = [0.15, 3, 0.3];
+vd_fis.Outputs(1).MembershipFunctions(3).Name = 'likely';
+vd_fis.Outputs(1).MembershipFunctions(3).Type = 'gbellmf';
+vd_fis.Outputs(1).MembershipFunctions(3).Parameters = [0.15, 3, 0.6];
+vd_fis.Outputs(1).MembershipFunctions(4).Name = 'very_likely';
+vd_fis.Outputs(1).MembershipFunctions(4).Type = 'gbellmf';
+vd_fis.Outputs(1).MembershipFunctions(4).Parameters = [0.3, 5, 1];
+plotmf(vd_fis, 'output', 1, 1000)
+% rules
+rules = ["if torque_frequency is fine and torque_amplitude is fine then vibration_likelihood is very_likely"; ...
+	"if torque_frequency is fine and torque_amplitude is low then vibration_likelihood is likely"; ...
+	"if torque_frequency is high and torque_amplitude is fine then vibration_likelihood is likely"; ...
+	"if torque_frequency is high and torque_amplitude is low then vibration_likelihood is unlikely"; ...
+	"if torque_frequency is low and torque_amplitude is fine then vibration_likelihood is likely"; ...
+	"if torque_frequency is low and torque_amplitude is low then vibration_likelihood is very_unlikely"; ...
+	"if torque_amplitude is fine then vibration_likelihood is likely" ...
+	];
+vd_fis = addRule(vd_fis, rules);
 \end{lstlisting}
 
-\subsection{Linguistic Variables}
-
-Fuzzy linguistic system is the language a fuzzy control system uses to record rules and communicate with a human expert knowledge base.
-
-Consider the statement ``sampling frequency is low''. To make sense from this statement, a universe named ``frequency'' must exist, where a fuzzy set ``low frequency'' is defined, whose membership might look like the red curve in Fig. \ref{ch:fcs:fig:explinguistic1}.
+Use
+\begin{lstlisting}
+	evalfis(vd_fis, [<frequency>, <amplitude>])
+\end{lstlisting}
+to get the output of the fuzzy controller. Use
+\begin{lstlisting}
+	gensurf(vd_fis)
+\end{lstlisting}
+to obtain the plot of likelihood as a function of the oscillation frequency and amplitude as given in Fig. \ref{ch:fcs:fig:exp_vibration_detection_gensurf2}, which is similar with Fig. \ref{ch:fcs:fig:exp_vibration_detection_gensurf1}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/explinguistic1.png}
-	\caption{Low, medium and high frequency membership functions in common sense.}
-	\label{ch:fcs:fig:explinguistic1}
+	\includegraphics[width=250pt]{chapters/ch-fuzzy-control-system/figures/exp_vibration_detection_gensurf2.eps}
+	\caption{Likelihood of vibration as a function of oscillation frequency and amplitude using \texttt{mamfis}.}
+	\label{ch:fcs:fig:exp_vibration_detection_gensurf2}
 \end{figure}
-
-In Fig. \ref{ch:fcs:fig:explinguistic1}, the considered variable is sampling frequency. The linguistic variables are ``low'', ``medium'' and ``high''. The range of the variable is $[0, 2] (\textup{Hz})$ as far as this problem concerns. Finally, the membership functions of the linguistic variables are given by the curves.
-
-These four features, $(x, T, u, m)$, define a linguistic variable systematically, where $x$, $T$, $u$ and $m$ denote the universe variable name, the linguistic variable name, the range of the universe variable, and the membership of the linguistic variable, respectively.
-
-Interfaces are required to translate from physical signals into fuzzy variables, and backwards from fuzzy variables into physical signals, based on the defined membership functions. They are often regarded as ``fuzzification'' and ``defuzzification'' interfaces, respectively.
-
-\subsection{Fuzzy Inference}
-
-``IF-THEN'' is used to define fuzzy rules, which form the base of the inference system. A commonly used syntax is ``if $x$ is $A$, then $y$ is $B$'', where ``$x$ is $A$'' is the premise, and ``$y$ is $B$'' the consequent. In the case of conventional proposition, the premise ``$x$ is $A$'' is either ``true'' or ``false''. In fuzzy logics, however, the premise can be ``to some extent true''. With the fuzzy variables and fuzzy inference system designed properly, the controller should be able to comprehend to what extend the premise is true, and what actions to take consequently.
-
-Take Fig. \ref{ch:fcs:fig:explinguistic1} as an example. Assume that the input to the system is ``sampling frequency $=0.6Hz$''. A rule is defined that says ``if sampling frequency is low, increase sampling frequency by 50\%''. The controller should be able to draw the conclusion that ``frequency is low'' from the sampling frequency $0.6Hz$ via the fuzzy inference, and increase sampling frequency. Another example is ``if service is good and food is good, then tips is good'', as shown in Fig. \ref{ch:fcs:fig:motivatingexp_fis}.
-
-In a practical fuzzy system, multiple rules are defined. The system should be able to select the best fit entry from the rules. Each rule may be associated with multiple input fuzzy variables, with propositions connected by logic connectors ``AND'', ``OR'', or ``NOT''. The membership function of the joint proposition can be derived from those with individual propositions, using rules such as defined in Table \ref{ch:fcs:tab:fuzzysetoperation}.
-
-The above procedures are summarized in Fig. \ref{ch:fcs:fig:fuzzyschemasimple}. Notice that for multivariable system the input and output physical signals are vectors. Each element in the vectors shall associate with a fuzzy variable. It is also possible to translate multiple fizzy output variables into a single physical output signal, to give it a bit more precision.
-
-
-
-
-
-
-
-
-
 
 
 
