@@ -60,11 +60,13 @@ fs = 1;                                 % Sampling frequency
 T = 1/fs;                               % Sampling period       
 L = 256;                                % Number of samples
 t = (0:L-1)*T;                          % Time vector
-measured_torque = 5*sin(2*pi*0.2*t);
+measured_torque = 5*sin(2*pi*0.3*t);
 measured_torque = measured_torque + 3*sin(2*pi*0.02*t);
 measured_torque = measured_torque + normrnd(0, 1, [1, length(measured_torque)]);
 
-detect_vibration(fs, measured_torque, true)
+detect_vibration(fs, measured_torque, true);
+
+%%
 
 freq_vec = 0.05:0.05:0.5;
 amp_vec = 0.5:0.5:10;
@@ -119,12 +121,14 @@ function vibration_likelihood = detect_vibration(fs, measured_torque, is_plot)
     mf_x_freq.high = trapmf(x_freq, [0.25, 0.40, 0.5, 1]);
     [~, x_freq_ind] = min(abs(maj_f-x_freq));
     x_freq_fuzzy = [mf_x_freq.low(x_freq_ind), mf_x_freq.fine(x_freq_ind), mf_x_freq.high(x_freq_ind)];
+    display(x_freq_fuzzy)
     x_amp = 0:0.01:10;
     mf_x_amp = [];
     mf_x_amp.low = gbellmf(x_amp, [4, 10, -2]);
     mf_x_amp.fine = gbellmf(x_amp, [5, 5, 8]);
     [~, x_amp_ind] = min(abs(maj_P1-x_amp));
     x_amp_fuzzy = [mf_x_amp.low(x_amp_ind), mf_x_amp.fine(x_amp_ind)];
+    display(x_amp_fuzzy)
     % inference
     y_likelihood_fuzzy = [0,0,0,0]; % very unlikely, unlikely, likely, very likely
     y_likelihood_fuzzy(4) = max(y_likelihood_fuzzy(4), min(x_freq_fuzzy(2), x_amp_fuzzy(2)));
@@ -133,6 +137,7 @@ function vibration_likelihood = detect_vibration(fs, measured_torque, is_plot)
     y_likelihood_fuzzy(3) = max(y_likelihood_fuzzy(3), min(x_freq_fuzzy(1), x_amp_fuzzy(2)));
     y_likelihood_fuzzy(2) = max(y_likelihood_fuzzy(2), min(x_freq_fuzzy(3), x_amp_fuzzy(1)));
     y_likelihood_fuzzy(1) = max(y_likelihood_fuzzy(2), min(x_freq_fuzzy(1), x_amp_fuzzy(1)));
+    display(y_likelihood_fuzzy)
     % defizzification
     x_likelihood = 0:0.01:1;
     mf_x_likelihood = [];
@@ -145,4 +150,5 @@ function vibration_likelihood = detect_vibration(fs, measured_torque, is_plot)
         max(min(y_likelihood_fuzzy(3), mf_x_likelihood.likely), ...
         min(y_likelihood_fuzzy(4), mf_x_likelihood.verylikely))));
     vibration_likelihood = defuzz(x_likelihood , mf, 'centroid');
+    display(vibration_likelihood)
 end
