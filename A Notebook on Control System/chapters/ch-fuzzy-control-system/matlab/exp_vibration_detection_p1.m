@@ -32,6 +32,7 @@ set(lg, 'Interpreter', 'latex');
 xlabel('Oscillation Amplitude', 'Interpreter', 'latex');
 ylabel('Membershif Function', 'Interpreter', 'latex');
 
+
 %%
 x_likelihood = 0:0.01:1;
 mf_x_likelihood = [];

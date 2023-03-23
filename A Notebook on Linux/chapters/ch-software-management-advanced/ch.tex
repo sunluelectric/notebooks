@@ -6,50 +6,50 @@ In this chapter, advanced software management approaches are introduced. These a
 
 \section{\textit{Git}}
 
-\textit{Git} is a distributed version-control system for tracking changes in source code during software development, and it can be used in cross platforms including Windows OS, Unix/Linux and MacOS. This section introduces the basic use of \textit{Git} on a local Linux machine and on a remote host such as \textit{GitHub}. Some contents in this section has been published previously in \textit{A Git Tutorial} by Sun Lu.
+\textit{Git} is a distributed version-control system for tracking changes in source code during the software development and deployment, and it can be used in cross platforms including Windows, Unix/Linux and MacOS. This section introduces the basic use of \textit{Git} on a local Linux machine and on a remote host such as \textit{GitHub}. Some contents in this section is taken from an earlier article \textit{A Git Tutorial}.
 
 \subsection{Brief Introduction to \textit{Git}}
 
-\textit{Git}, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files during software development. It is designed for coordinating work among programmers and its goals include speed, data integrity and support for distributed non-linear work flows. \textit{Git} is free and open-source software under GNU general public license.
+\textit{Git}, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files. It is helpful with maintaining data integrity during the coordinated development of a software in distributed non-linear work flows. \textit{Git} is free and open-source software under GNU general public license.
 
-With \textit{Git}, every local computer stores a copy of the full-fledged repository with complete history and full version-tracking, and it can synchronize with a centralized remote server. \textit{Git} uses ``master'' and ``slave'' branches to manage the concurrent development of different features of the project, where the ``master branch'' is the stable and shared repository among everyone, and the ``slave branches'' are copies of the master branch where individual features can be developed. For a slave branch, once its developed feature is approved, it can be merged back to the master branch. A demonstration is given in Fig. \ref{ch:sma:fig:gitflow}.
+With \textit{Git}, all computers participating in the software development store a copy of the full-fledged repository locally with complete history, and it can synchronize with a centralized remote server. \textit{Git} uses ``master'' and ``slave'' branches to manage the concurrent development of different features of the project, where the ``master branch'' is the stable and shared repository among everyone, and the ``slave branches'' are copies of the master branch where individual features can be developed. For a slave branch, once its developed feature is approved, it can be merged back to the master branch. A demonstration is given in Fig. \ref{ch:sma:fig:gitflow}.
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-software-management-advanced/figures/gitflow.png}
 	\caption{\textit{Git} for software development management.} \label{ch:sma:fig:gitflow}
 \end{figure}
 
-Command line is often used to manage a \textit{Git} repository. For example, \verb|git init| starts a new repository with an empty master branch, and \verb|git branch <branch name>| creates a new slave branch from the master branch, etc. Some of these commands are shown in Fig. \ref{ch:sma:fig:gitflow} and more details are introduced later. Notice that a graphical user interface is also available to interact with \verb|git|. However, in the scope of this notebook, command line is mostly used.
+CLI is often used to manage a \textit{Git} repository. For example, \verb|git init| starts a new repository with an empty master branch, and \verb|git branch <branch-name>| creates a new slave branch from the master branch, etc. Some of these commands are shown in Fig. \ref{ch:sma:fig:gitflow} and more details are introduced later. Notice that a graphical user interface is also available to interact with \verb|git|. However, in the scope of this notebook, command line is mostly used.
 
 \subsection{Installation and Basic Configurations}
 
-\textit{Git} and its relevant documents can be obtained from its official website  \textit{https://git-scm.com/}. On a Linux machine, \textit{Git} repository is most likely already registered. In that case, use the following command to install \textit{Git}
+\textit{Git} and its relevant documents can be obtained from its official website \textit{https://git-scm.com/}. In many Linux distributions, \textit{Git} is pre-installed. If \textit{Git} is missing in the machine, use the following command to install it
 \begin{lstlisting}
 $ sudo apt install git
 \end{lstlisting}
 
 Upon successful installation, it is recommended to use \verb|git config| for some basic configurations.
 
-Notice that there are two types of configurations, namely the global configurations (apply to the machine and the user), and the repository configurations (apply to the associated repository). By default, the global level configurations are stored under \verb|~/.gitconfig| and the repository level configurations under \verb|./.git/config| in the repository. A good practice to edit these configurations is to use \textit{Git} commands rather than editing them directly.
+Notice that there are two types of configurations, namely the global configurations (apply to the machine and the user), and the repository configurations (apply to a particular \textit{Git} repository). By default, the global level configurations are stored under \verb|~/.gitconfig| and the repository level configurations under \verb|./.git/config| in the repository. A good practice to edit these configurations is to use \textit{Git} commands rather than editing the files directly.
 
 To add user name and email to the global configuration, use
 \begin{lstlisting}
 $ git config --global user.name '<user name>'
 $ git config --global user.email <user email>
 \end{lstlisting}
-and use either \verb|git config --global -l| or \verb|cat ~/.gitconfig| to confirm the just defined global configurations.
+and use either \verb|git config --global -l| or \verb|cat ~/.gitconfig| to confirm the global configurations.
 
-To remove a global setting, use
+To revoke a global configuration, use
 \begin{lstlisting}
-$ git config --global --unset <tag name>
+$ git config --global --unset <configuration>
 \end{lstlisting}
 For example,
 \begin{lstlisting}
 $ git config --global --unset user.name
 \end{lstlisting}
-removes the user name set previously.
+removes the user name.
 
-More details about \verb|git config| can be found at \textit{https://git-scm.com/docs/git-config}. Usually, the user name and email configurations are mandatory, as they are very useful information in developing collaborative projects for which \textit{Git} is mainly used for.
+More details about \verb|git config| can be found at \textit{https://git-scm.com/docs/git-config}. Usually, the user name and email configurations are mandatory, as they are very useful information in developing collaborative projects.
 
 \subsection{Local Repository Management}
 
