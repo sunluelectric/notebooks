@@ -1,0 +1,37 @@
+% ---
+% sunlu
+% ---
+\input{../style/documentclass.tex}
+\input{../style/packages.tex}
+\input{../style/preamble.tex}
+
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\title{A Notebook on Artificial Intelligence Updates}
+\author{Lu Sun, and many more.}
+
+\maketitle
+
+\input{../frontmatter/dedication.tex}
+\tableofcontents
+\input{../frontmatter/foreword.tex}
+\include{frontmatter/preface}
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\part{Chatbot}
+
+\include{chapters/ch-chatgpt/ch}
+
+\bibliographystyle{plain}
+\bibliography{reference}
+
+\printindex
+
+\end{document}
