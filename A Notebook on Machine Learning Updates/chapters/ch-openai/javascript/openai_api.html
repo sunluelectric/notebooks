@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <style>
+    .inputFilepath,
+    .inputApiKey,
+    .textQuestion,
+    .textResponse {
+      width: 500px;
+      padding: 5px;
+    }
+
+    .selectModel {
+      width: 200px;
+      padding: 5px;
+    }
+
+    .btnBrowseFilepath,
+    .btnSubmitHTTP,
+    .btnSaveDialog {
+      padding: 5px;
+    }
+
+    th,
+    td {
+      padding: 8px;
+    }
+
+    tr:nth-child(4),
+    tr:nth-child(5) {
+      vertical-align: top;
+    }
+  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenAI API Response Recorder</title>
+</head>
+
+<body>
+  <h1>OpenAI API Response Recorder</h1>
+  <p>You need a valid OpenAI API key to use this API response recorder.</p>
+  <p>
+  <table>
+    <tr>
+      <td>Save dialog at:</td>
+      <td><input class="inputFilepath" id="filepath" placeholder="Enter the path to the dialog file (.md) here" /></td>
+      <td><button class="btnBrowseFilepath" id="browsefilepath">Browse</td>
+    </tr>
+    <tr>
+      <td>API key:</td>
+      <td><input class="inputApiKey" type="password" id="apiKey" placeholder="Enter API key here" /></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Model:</td>
+      <td>
+        <select class="selectModel" name="model" id="model">
+          <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+          <option value="gpt-4">gpt-4</option>
+          <option value="davinci">davinci</option>
+        </select>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Input:</td>
+      <td><textarea class="textQuestion" type="text" id="inputText" placeholder="Enter the question here" rows="10"
+          cols="50"></textarea></td>
+      <td><button class="btnSubmitHTTP" id="submitButton">Submit</button></td>
+    </tr>
+    <tr>
+      <td>Response:</td>
+      <td><textarea class="textResponse" id="outputText" rows="30" cols="50" readonly></textarea></td>
+      <td><button class="btnSaveDialog">Save Response</td>
+    </tr>
+  </table>
+  </p>
+
+  <script>
+    const apiKeyInput = document.getElementById("apiKey");
+    const inputText = document.getElementById("inputText");
+    const submitButton = document.getElementById("submitButton");
+    const outputText = document.getElementById("outputText");
+
+    submitButton.addEventListener("click", async () => {
+      const apiKey = apiKeyInput.value;
+      const messageContent = inputText.value;
+      const response = await callOpenAI(apiKey, messageContent);
+      outputText.value = response.choices[0].message.content;
+    });
+
+    async function callOpenAI(apiKey, messageContent) {
+      const url = "https://api.openai.com/v1/chat/completions";
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      };
+      const body = JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: messageContent,
+          },
+        ],
+      });
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: body,
+      });
+
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        return jsonResponse;
+      } else {
+        throw new Error("Failed to call OpenAI API");
+      }
+    }
+  </script>
+</body>
+
+</html>
