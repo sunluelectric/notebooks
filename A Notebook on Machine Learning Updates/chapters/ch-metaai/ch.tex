@@ -10,14 +10,188 @@ Meta, formerly known as Facebook, provides variety of solutions for AI, includin
 
 \section{PyTorch}
 
+PyTorch, similar with TensorFlow, is a Python-based generic AI engine developed by Meta. It is easy to deploy and has been widely used in variety of applications including computer vision and sequential signal processing. PyTorch is freely accessible can be installed on customer machines.
+
+\subsection{Summary of Capability}
+
+\subsection{Examples}
+
+\subsection{PyTorch Lightning}
+
+AI engines have tried hard to make themselves easy to use. Ultimately, the AI solution architect should only concern about the network architecture and not the programming. PyTorch Lightning, a PyTorch add-on provided by Lightning.AI, is one of the many attempts to make that happen. PyTorch Lightning comes in the form of an additional Python package.
+
+Notice that PyTorch packages and libraries are still required, as PyTorch Lightning is an add-on, but not a replacement, to PyTorch. PyTorch changes only the way of programming, but not the capability or performance of the models.
+
+Examples are given in \textit{pytorchlightning.ai} where PyTorch programs with and without PyTorch Lightning are compared. The examples show that PyTorch Lightning is helpful with simplifying the pipeline deployment and tiding the programming logic.
+
 \section{LLaMA}
 
 LLaMA is the large language model published by Meta AI. The associated paper that introduced LLaMA for the first time was published in February 2023 on ArXiv as \cite{touvron2023llama}. The initial LLaMA is trained on publicly available
-datasets exclusively. 
+datasets exclusively.
 
 Different levels of complexity of the models are provided. Like many other LLMs, Meta AI provides charged service for fine-tuning the model. There is also a re-write of LLaMA, namely Lit-LLaMA, that is completely open source under Apache 2.0 license. Both LLaMA and Lit-LLAMA can be fine-tuned via tools such as LoRA and Stanford Alpaca.
 
 Comparing with other models such as ChatGPT-3, LLaMA is claimed to use smaller models (with less number of parameters) to achieve the same performance.
 
 \subsection{LLaMA: Open and Efficient Foundation Language Models}
+
+LLaMA is another implication of (modified) transformer proposed in \cite{vaswani2017attention}. A GitHub repository has been created and made public about LLaMA. The repository is given here: \textit{github.com/facebookresearch/llama}.
+
+\vspace{0.1in}
+\noindent \textbf{Budget-Oriented LLM Design}
+\vspace{0.1in}
+
+There is a trad-off between using large model versus small model, given a fixed amount of budget to create and run the model. A large model often implies better performance potentially. But this is true only if it is trained on large amount of data. Otherwise, over-fitting may happen, which increases the variance of the system. A large model plus a large amount of data is sometimes economically inefficient.
+
+Given a fixed budget, comparing using large model with small amount of data which gives only mediocre performance, it might be wise to use a relatively smaller model, but and spend the remaining budget training it with a large amount of data. It is possible to match the performance of the large but under-trained model using the small but well-trained model. The later approach would often mean longer training time, but less resources at the same time and lower execution cost in its daily run post training.
+
+LLaMA implements the later approach. It assumes different levels of fixed budgets, and discusses what might be the optimal choice of LLM under each budget.
+
+\vspace{0.1in}
+\noindent \textbf{Data Sources}
+\vspace{0.1in}
+
+Only publicly available data is used in the training. The data sources for LLaMA is summarized Table \ref{tab:llama:data_sources}. The total amount of training data is about $4.75$TB, or $1.4$T tokens after tokenization. To put it into perspective, all the work that Shakespeare has done, if converted to plain text, is about $5$MB ($1/950000$ of $4.75$TB).
+
+\begin{table}[htbp]
+	\centering
+	\caption{Data sources for LLaMA.} \label{tab:llama:data_sources}
+	\begin{tabularx}{\textwidth}{|l|l|X|}
+		\hline
+		Data Source & Percentage & Description \\ \hline
+		Common Crawl & $67\%$ & Common Crawl English data is used. Common Crawl builds and maintains an open repository of web crawl data that can be accessed and analyzed by anyone. The data can be used for research, analysis, and education. \\ \hline
+		C4 Dataset & $15\%$ & C4 is a colossal, cleaned version of Common Crawl's web crawl corpus. It was based on Common Crawl dataset. \\ \hline
+		Github & $4.5\%$ & Github repositories under Apache, BSD and MIT licenses are used. \\ \hline
+		Wikipedia & $4.5\%$ & Wikipedia data with different Latin and Cyrillic scripts are used. \\ \hline
+		Public domain books & $4.5\%$ & Free ebooks from Gutenberg project, etc., are used. \\ \hline
+		ArXiv & $2.5\%$ & Latex files from ArXiv are used. \\ \hline
+		Stack Exchange & $2\%$ & Stack Exchange is a website of high-quality questions and answers of variety of domains. \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\vspace{0.1in}
+\noindent \textbf{Model}
+\vspace{0.1in}
+
+Different sizes of models are tested. The size of the model, i.e., number of parameters, are $6.7$, $13.0$, $32.5$, and $65.2$ billion respectively, which is summarized in Table \ref{tab:llama:models}. Notice that the number of parameters listed above is significantly smaller than many of the available models.
+
+\begin{table}[htbp]
+	\centering
+	\caption{LLaMA models by size.} \label{tab:llama:models}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Model Name & Number of Parameters & Data Size for Training \\ \hline
+        LLaMA 7B & $6.7$ billion & $1$T token \\ \hline
+        LLaMA 13B & $13.0$ billion & $1$T token \\ \hline
+        LLaMA 33B & $32.5$ billion & $1.4$T token \\ \hline
+        LLaMA 65B & $65.2$ billion & $1.4$T token \\ \hline
+	\end{tabular}
+\begin{flushleft}
+  Notice that 1.4T token of training data is approximately $4.75$TB of plain text data.
+\end{flushleft}
+\end{table}
+
+The model architecture is based on the original transformer proposed in \cite{vaswani2017attention}, with following modifications:
+\begin{itemize}
+	\item Add pre-normalization to the input of each transformer sub-layer, instead of normalizing the output of the layers.
+	\item Use SwiGLU activation function instead of ReLU.
+	\item Use rotary positional embedding instead of absolute positional embedding. Rotary Position Embedding, or RoPE, is a type of position embedding which encodes absolute positional information with rotation matrix and naturally incorporates explicit relative position dependency in self-attention formulation. See \cite{su2022roformer} for details.
+\end{itemize}
+
+AdamW optimizer with dynamic learning rate is used.
+
+Mini-batch training of $4$M tokens are used for all models. Models with size $6.7$B $13.0$B are trained with $1.0$T tokens, and the rest are trained with all $1.4$T tokens, as shown in Table \ref{tab:llama:models}. Variety of methods are implemented to speed up the training.
+
+\vspace{0.1in}
+\noindent \textbf{Performance Evaluation}
+\vspace{0.1in}
+
+The benchmarks to evaluate and compare the performance of LLaMA with other models are mainly from the following categories:
+\begin{itemize}
+	\item Common sense reasoning. E.g., ``If someone is holding an umbrella, what might be the reason?''
+	\item Closed-book question answering. E.g., ``What is the capital city of France?''
+	\item Reading comprehension. E.g., give a paragraph that introduces generic search, then ask ``what is the major advantage of generic search?''
+	\item Mathematical reasoning. E.g., ``what is the sum of the first 5 prime numbers?''
+	\item Code generation. E.g., ``Generate a code in Python that calculates the first 100 values in Fibonacci series.''
+	\item Multitask language understanding. E.g., ``Translate English into Franch, then give a summary.''
+	\item Bias, toxicity and misinformation.
+\end{itemize}
+
+LLaMA has shown improved performance compared with the model with similar size.
+
+\vspace{0.1in}
+\noindent \textbf{Training Effort}
+\vspace{0.1in}
+
+Take the largest LLaMA-65B as an example. An ``A100-80GB'' GPU (cost approx $15k$ USD) is used and trained using $1022$k GPU-hours. The total power consumption is $449$MWh, which is worth approximately $90$k USD household price.
+
+\subsection{LLaMA Services}
+
+LLaMA is not yet a fully commercialized AI model, and its code as given in the LLaMA Github repository is under GPL license. Research team behind LLaMA suggests that the primary intended uses of LLaMA should be research on LLMs. The model (at least version 1 of the model) is a base or foundational model, and should not be used on downstream applications without any tuning and mitigation of risks.
+
+The instruction to download and use LLaMA can be found in its Github repository. In short, the user needs ask approval to use the trained LLaMA model. The user needs to setup prerequisite Python environment in order to run the model. With the approval, the user can download the trained LLaMA model and the tokenizer, and run the model on its own machine. An example in Python is provided, which helps the user to verify the downloaded items, test the environment, and get a quick start.
+
+Variety of tools and projects have been developed, either as a demonstration of LLaMA use case, or as a add-on to make the use of LLaMA more convenient. Examples include LoRA, a tool by Microsoft that can be used to fine-tuning models, and Lit-LLaMA, an open-source recreation of LLaMA, and a few more. Details are introduced in later sections.
+
+\subsection{LLaMA-Relevant Use Cases, Tools, and Projects}
+
+\vspace{0.1in}
+\noindent \textbf{LoRA}
+\vspace{0.1in}
+
+LoRA (Low-Rank Adaptation of Large Language Models) is an open-source tool developed by Microsoft that enables transfer learning /knowledge distillation/model fine-tuning of LLMs. This is quite a important tool, as training LLMs from scratch can be very time and energy consuming.
+
+LoRA is first proposed in \cite{hu2021lora}. A Github repository \textit{github.com/microsoft/LoRA} contains the source code of LoRA implementation in Python package \verb|loralib|, which currently support PyTorch. Indeed, LoRA can be used to fine-tune ChatGPT (as under Microsoft), LLaMA and Lit-LLaMA.
+
+The latest version of LoRA is supported by \textit{github.com/huggingface/peft}, which is a collection of state-of-the-art parameter-efficient fine-tuning methods.
+
+\vspace{0.1in}
+\noindent \textbf{Lit-LLaMA}
+\vspace{0.1in}
+
+Lit-LLaMA is an open-source recreation of LLaMA by Lightning.AI. Think of Lightning.AI as something similar with GNU project (Linux project). GNU wants to create a open-source version of UNIX that can be freely distributed. Companies like Red Hat can make a profit from it by providing enterprise level support to the subscribers who uses RHEL. Lightning.AI is essentially trying to do the same: it creates user-friendly interfaces for existing AI models such as PyTorch, and sometimes recreates open-source version of existing (commercialized) models, and make them open-source. It encourages users to use their interfaces and models. It makes profits by providing add-on services such as training models using their servers, etc.
+
+Lit-LLaMA is a recreation of LLaMA model based on nanoGPT, another open-source transformer model. Different with LLaMA which is under GPL license, nanoGPT is under MIT license and Lit-LLaMA Apache license, both of which more friendly for private projects. Lit-LLaMA Github repository is given here \textit{github.com/Lightning-AI/lit-llama}. 
+
+Unlike LLaMA where approval is required to download the trained model, under the scope of Lit-LLaMA, it is fine to download the trained 7B model freely. The customer can run the trained model on its server. A decently powerful GPU is required. Such a power GPU often causes a few thousands (e.g., NVIDIA GeForce RTX 3090 24GB, which can be used to run and fine-tune the model, approx $3$k) to tens of thousands (e.g., NVIDIA A100 80GB, which can be used to train LLaMA and Lit-LLaMA from scratch, approx $15$k) USD.
+
+Both LLaMA and Lit-LLaMA provides interfaces and example scripts for the users to use the model on their own server. In addition, they also provide interface for LoRA, which can be used to fine-tune the model. Python script examples are provided to use LoRA on Lit-LLaMA in the repository.
+
+\vspace{0.1in}
+\noindent \textbf{Stanford Alpaca}
+\vspace{0.1in}
+
+It is quite unfortunate that, in the area of AI, academic researchers and universities have fallen behind. The most powerful models are usually trained using very expensive resources including high-cost GPU clusters, months or years of human labors, and tens or hundreds of terabytes of data. It is often done by data driven companies who would not make them completely open-source to the public even for research purposes. LLaMA is an outlier in the good sense, and it gives Stanford a chance to make a break through.
+
+Stanford Alpaca 7B is a fine-tuned model from LLaMA 7B model. The cost of the fine-tuning is impressively small (hundreds of USD), and the performance of the system after fine-tuning is comparable with ChatGPT-3.5 (text-davinci-003) which has a significantly larger model of 335B than 7B.
+
+It is common that a fine-tuned model gets its performance boosted. However, it is quite surprising to see a huge boost of performance happening on LLaMA 7B, as this model is famous for being small and already being trained by a huge amount of data. How much potential does LLaMA 7B have that can be further improved? Not to mention, everything is done using only a few hundred USD, given that a GPU alone that can train the model would usually cause thousands of dollars.  
+
+It is worth mentioning that text-davinci-003 outputs are used to fine-tune LLaMA 7B to create Stanford Alpaca 7B. This may imply:
+\begin{itemize}
+	\item Training Stanford Alpaca 7B is essentially fine-tuning a less-power model (LLaMA 7B) using the outputs from a more powerful model (text-davinci-003), instead of using plain text. This may explain partially why it is so inexpensive, as data collection and preprocessing is usually one of the most expensive parts in AI training and it is now taken care of by text-davinci-003.
+	\item It is suspicious whether the performance of LLaMA 7B can surpass text-davinci-003 in general, if it is trained by text-davinci-003 in the first place. This is because the bias of information can be enlarged during training.
+	\item The above suggests that very likely other techniques than training with text-davinci-003 been used to further improve its performance.
+\end{itemize}
+
+An introduction of Stanford Alpaca is given here \textit{crfm.stanford.edu}. An introduction to using the model is given in its Github repository \textit{github.com/tatsu-lab/stanford\_alpaca}. As of April 2023, Stanford Alpaca has released the fine-tuning receipt, and it claims that the trained model will be released in the future.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
