@@ -1,12 +1,78 @@
-\chapter{TensorFlow and PyTorch} \label{ch:tf} 
+\chapter{ANN Engines} \label{ch:tftorch} 
 
-TensorFlow and PyTorch are very popular and powerful Python-based generic-purpose AI engines. They both cover a large range of AI applications including pattern recognition, computer vision, natural language processing, and many more. They both offer variety of AI tools to quickly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models. Both of them can be used to train, evaluate and run networks. Both of them provide both server solutions, cloud solutions and edge computing solutions.
+There are many ANN engines for Python. Among all the choices, TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of applications including pattern recognition, computer vision, natural language processing, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.
 
-There was a debate on which one of the two is superior than the other. In the scope of this notebook, mastering either of them would make one a skilled developer and user in data science.
+TensorFlow and Pytorch are introduced in this chapter. Notice that the introduction focuses on the use of these engines rather than the theory and mechanisms behind them. Besides, the introduction only covers the basic implementations, which may not reflect the state-of-the-art technologies such as transformer, LLM, etc. Theory and mechanisms of different AI models and the state-of-the-art ANN applications can be found in other notebooks in \textit{A Notebook Series}.
+
+Installation of TensorFlow and PyTorch can be found in the corresponding websites. Although it is possible to run all the calculations on CPU, these AI engines are more powerful when GPU/TPU are enabled. Depends on the OS and the GPU/TPU brands, different methods may apply to enable GPU/TPU. Alternatively, consider using online platforms such as Google Colaboratory, which already has all the CPU/GPU/TPU pre-configured and all necessary packages pre-installed. The installation of the AI engines is neglected in this notebook.
+
+\section{Quick Review}
+
+\vspace{0.1in}
+\noindent \textbf{AI Pipeline Design}
+\vspace{0.1in}
+
+AI pipeline is a set of (automated) steps used to build, train, evaluate and deploy AI models. An AI pipeline usually includes at least the following steps:
+\begin{enumerate}
+  \item Data collection
+  \item Data preparation; this refers to the data pre-processing procedures such as data cleaning, transformation, normalization, etc.
+  \item Model design
+  \item Model training
+  \item Model evaluation
+  \item Model deployment
+\end{enumerate}
+where notice that model design and training might need to be carried out many times. After the training, the performance of the model is validated using the validation set, according to which the model design and hyper parameters can be modified.
+
+\vspace{0.1in}
+\noindent \textbf{Computer Vision (CV)}
+\vspace{0.1in}
+
+CV, as an important part of AI, has evolved in the past decades. In the early 2010s, ANN was not used in CV. Instead, conventional deterministic approaches were widely used. With the development in deep learning, the primary approach for CV has changed to CNN. There are a few milestones along the way that together make the change happen:
+\begin{itemize}
+  \item Development of GPU
+  \item CNN with deep neural network
+  \item Introduction of rectified linear unit (ReLU) activation function
+  \item Regularization techniques
+\end{itemize}
+Recently, with the development in transformer model and large language model, CV is able to be combined with LLM for image comprehension, reasoning, and even artwork generation.
+
+The commonly seen objectives of CV include:
+\begin{itemize}
+  \item Image classification
+  \item Object detection
+  \item Image generation
+  \item Image search
+  \item Image comprehension and generation
+\end{itemize}
 
 \section{TensorFlow Basics}
 
+Unless otherwise mentioned, the following packages are imported in the beginning of all the relevant scripts.
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+
+tf.test.is_gpu_available()
+\end{lstlisting}
+where \verb|.is_gpu_available()| tests whether GPU is enabled on the machine.
+
+Vectors and matrices are associated with 1-D and 2-D collections of data. A tensor is such a collection with any dimension. In Python, \verb|numpy| package defines data structures to store vectors, matrices and tensors. Package \verb|tensorflow| also defines similar data structures. Data structures from Numpy and TensorFlow can be converted from one to the other. One difference, however, is that the calculations defined using TensorFlow structures can be executed on GPU. On the other hand, the calculations defined using Numpy structures are executed only on CPU. An example is given below. In general, vectorization (instead of using loops) and using TensorFlow structures more often would help making the code more efficient, especially when the model dimension is high.
+\begin{lstlisting}[language=Python]
+x = np.array([1, 2, 3, 4, 5])
+y = tf.convert_to_tensor(x, dtype=tf.float64)
+x = x*0.3 // cpu calculation
+y = y*0.3 // gpu parallel calculation
+\end{lstlisting}
+
+
+
+
 \section{TensorFlow for Computer Vision}
+
+
+
+
 
 \section{TensorFlow for Sequential Data Processing}
 
@@ -22,4 +88,4 @@ There was a debate on which one of the two is superior than the other. In the sc
 
 \section{Pytorch for Edge Computing}
 
-\section{Pytorch Examples}
+\section{Pytorch Examples} 

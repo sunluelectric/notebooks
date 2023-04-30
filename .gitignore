@@ -274,3 +274,8 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+# data and db related
+**/*.db
+**/*.csv
+**/resource
