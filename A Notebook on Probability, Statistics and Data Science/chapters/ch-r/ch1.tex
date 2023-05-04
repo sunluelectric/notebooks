@@ -1335,6 +1335,8 @@ The resulted chart is given in Fig. \ref{ch:r1:fig:mortgage_histogram_theme}. Co
 
 \section{Data Preparation} \label{ch:r1:sec:datapreparation}
 
+The data downloaded from sensors usually needs to go through pre-processing procedures such as filtering, normalization, etc., before it can be used by a controller or an AI engine.
+
 \subsection{Data Type Conversion}
 
 Data preparation including data tidy is one of the most tedious and time consuming parts when using R for data analysis. The section introduces useful techniques helpful with data preparation.
@@ -1468,19 +1470,6 @@ Sometimes a blank string \verb|""| that we would expected to be treated as \verb
 df <- read.csv("<csv-name>", na.string=c("<pattern>", ...))
 \end{lstlisting}
 where \verb|"<pattern>"| are the patterns in the original file to be replaced by \verb|NA|, for instance, \verb|""|, \verb|"ERROR"|, etc.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \section{Connectivity with Data Sources} \label{ch:r1:sec:datasource}
 

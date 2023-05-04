@@ -1,16 +1,16 @@
-\chapter{ANN Engines} \label{ch:tftorch} 
+\chapter{ANN Engines for Data Processing} \label{ch:tftorch} 
 
-There are many ANN engines for Python. Among all the choices, TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of applications including pattern recognition, computer vision, natural language processing, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.
+This chapter focuses on the introduction of Python ANN engines from data processing perspective. ANN theories are not covered here can be found on other notebooks. The introduction only covers the basic implementations which may not reflect the state-of-the-art technologies such as transformer, LLM, etc. The state-of-the-art technologies are introduced on other notebooks.
 
-TensorFlow and Pytorch are introduced in this chapter. Notice that the introduction focuses on the use of these engines rather than the theory and mechanisms behind them. Besides, the introduction only covers the basic implementations, which may not reflect the state-of-the-art technologies such as transformer, LLM, etc. Theory and mechanisms of different AI models and the state-of-the-art ANN applications can be found in other notebooks in \textit{A Notebook Series}.
+There are many ANN engines for Python. TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of applications including pattern recognition, computer vision, natural language processing, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.  TensorFlow and Pytorch are introduced in this chapter.  
 
 Installation of TensorFlow and PyTorch can be found in the corresponding websites. Although it is possible to run all the calculations on CPU, these AI engines are more powerful when GPU/TPU are enabled. Depends on the OS and the GPU/TPU brands, different methods may apply to enable GPU/TPU. Alternatively, consider using online platforms such as Google Colaboratory, which already has all the CPU/GPU/TPU pre-configured and all necessary packages pre-installed. The installation of the AI engines is neglected in this notebook.
 
 \section{Quick Review}
 
-\vspace{0.1in}
-\noindent \textbf{AI Pipeline Design}
-\vspace{0.1in}
+This section briefly reviews the basic concepts used in this chapter. Details are not given. They can be found elsewhere in other notebooks.
+
+\subsection{AI Pipeline}
 
 AI pipeline is a set of (automated) steps used to build, train, evaluate and deploy AI models. An AI pipeline usually includes at least the following steps:
 \begin{enumerate}
@@ -19,13 +19,11 @@ AI pipeline is a set of (automated) steps used to build, train, evaluate and dep
   \item Model design
   \item Model training
   \item Model evaluation
-  \item Model deployment
+  \item Model deployment and test
 \end{enumerate}
 where notice that model design and training might need to be carried out many times. After the training, the performance of the model is validated using the validation set, according to which the model design and hyper parameters can be modified.
 
-\vspace{0.1in}
-\noindent \textbf{Computer Vision (CV)}
-\vspace{0.1in}
+\subsection{Computer Vision}
 
 CV, as an important part of AI, has evolved in the past decades. In the early 2010s, ANN was not used in CV. Instead, conventional deterministic approaches were widely used. With the development in deep learning, the primary approach for CV has changed to CNN. There are a few milestones along the way that together make the change happen:
 \begin{itemize}
@@ -45,7 +43,11 @@ The commonly seen objectives of CV include:
   \item Image comprehension and generation
 \end{itemize}
 
-\section{TensorFlow Basics}
+\section{TensorFlow}
+
+TensorFlow is an open-source software library for machine learning developed by Google in 2015.
+
+\subsection{TensorFlow Basics}
 
 Unless otherwise mentioned, the following packages are imported in the beginning of all the relevant scripts.
 \begin{lstlisting}[language=Python]
@@ -68,24 +70,28 @@ y = y*0.3 // gpu parallel calculation
 
 
 
-\section{TensorFlow for Computer Vision}
+\subsection{Computer Vision}
 
 
 
+\subsection{General Sequential Data Processing}
+
+\subsection{Natural Language Processing}
 
 
-\section{TensorFlow for Sequential Data Processing}
+\subsection{TensorFlow on Different Platforms}
 
-\section{TensorFlow for Edge Computing}
+\section{PyTorch}
 
-\section{TensorFlow Examples}
+TensorFlow is another open-source software library for machine learning originally developed by Meta AI in 2016. It is now under the Linux foundation umbrella.
 
-\section{Pytorch Basics}
+\subsection{Pytorch Basics}
 
-\section{Pytorch for Computer Vision}
+\subsection{Computer Vision}
 
-\section{Pytorch for Sequential Data Processing}
+\subsection{General Sequential Data Processing}
 
-\section{Pytorch for Edge Computing}
+\subsection{Natural Language Processing}
 
-\section{Pytorch Examples} 
+\subsection{PyTorch on Different Platforms}
+
