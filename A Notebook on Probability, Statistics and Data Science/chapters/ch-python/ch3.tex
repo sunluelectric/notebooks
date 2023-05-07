@@ -1,27 +1,31 @@
-\chapter{ANN Engines for Data Processing} \label{ch:tftorch} 
+\chapter{ANN Engines} \label{ch:tftorch} 
 
-This chapter focuses on the introduction of Python ANN engines from data processing perspective. ANN theories are not covered here can be found on other notebooks. The introduction only covers the basic implementations which may not reflect the state-of-the-art technologies such as transformer, LLM, etc. The state-of-the-art technologies are introduced on other notebooks.
+This chapter focuses on the introduction of commonly used Python-supported ANN engines used in data science. ANN relationships with AI, machine learning and deep learning as well as theories and mechanisms behind ANN can be found on other notebooks, hence is not given here. The introduction only contains the basic usage of these ANN engines from the implementation perspective, and it may not reflect the state-of-the-art technologies such as transformer, LLM, instruction-tuned LLM, etc. These state-of-the-art technologies are introduced on other notebooks.
 
-There are many ANN engines for Python. TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of applications including pattern recognition, computer vision, natural language processing, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.  TensorFlow and Pytorch are introduced in this chapter.  
+There are many ANN engines for Python. Among all, TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of supervised, reinforcement and unsupervised learning applications including classification, regression, pattern recognition, computer vision, natural language processing, clustering, abnormality detection, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.  TensorFlow and PyTorch are introduced in this chapter.  
 
-Installation of TensorFlow and PyTorch can be found in the corresponding websites. Although it is possible to run all the calculations on CPU, these AI engines are more powerful when GPU/TPU are enabled. Depends on the OS and the GPU/TPU brands, different methods may apply to enable GPU/TPU. Alternatively, consider using online platforms such as Google Colaboratory, which already has all the CPU/GPU/TPU pre-configured and all necessary packages pre-installed. The installation of the AI engines is neglected in this notebook.
+Installation of TensorFlow and PyTorch can be found in there websites. Although it is possible to run all the calculations on CPU, these ANN engines are more powerful when GPU/TPU are enabled. Depends on the OS and the GPU/TPU brands of the local system, different methods may apply to enable GPU/TPU. For example, if NVIDIA GPU is used, a software called CUDA can be used to configure and enable GPU for ANN training. The installation of TensorFlow, PyTorch, and the enabling of GPU/TPU modules are not covered here.
+
+Alternative to running the code on a local system, consider using online platforms such as Google Colaboratory, which already have all necessary packages pre-installed and the CPU/GPU/TPU pre-configured.
 
 \section{Quick Review}
 
-This section briefly reviews the basic concepts used in this chapter. Details are not given. They can be found elsewhere in other notebooks.
+This section briefly reviews the basic concepts used in this chapter. Details of the concepts can be found elsewhere in other notebooks.
 
 \subsection{AI Pipeline}
 
-AI pipeline is a set of (automated) steps used to build, train, evaluate and deploy AI models. An AI pipeline usually includes at least the following steps:
+AI pipeline is a set of (automated) steps used to build, train, evaluate and deploy AI models. An AI pipeline usually includes at least the following steps (for supervised learning):
 \begin{enumerate}
   \item Data collection
   \item Data preparation; this refers to the data pre-processing procedures such as data cleaning, transformation, normalization, etc.
   \item Model design
   \item Model training
   \item Model evaluation
-  \item Model deployment and test
+  \item Model deployment and testing
 \end{enumerate}
-where notice that model design and training might need to be carried out many times. After the training, the performance of the model is validated using the validation set, according to which the model design and hyper parameters can be modified.
+where notice that model design and training might need to be carried out iteratively. After the training, the performance of the model is validated using the validation set, according to which the model and its hyper parameters can be modified.
+
+\subsection{Commonly Seen ANN Use Cases}
 
 \subsection{Computer Vision}
 
@@ -43,13 +47,17 @@ The commonly seen objectives of CV include:
   \item Image comprehension and generation
 \end{itemize}
 
+\subsection{Natural Language Processing}
+
 \section{TensorFlow}
 
-TensorFlow is an open-source software library for machine learning developed by Google in 2015.
+TensorFlow is an open-source software library for machine learning developed by Google in 2015. TensorFlow 2.X is released in 2019 and it is know the official latest major updated version. TensorFlow is backed up by a large community and it supports Python as well as a few other programming languages.
+
+Don't confuse TensorFlow with Keras, later of which is a Python library built on top of deep learning libraries such as TensorFlow, and provides a simple and useful API. In TensorFlow 2.X, Keras is officially adopted as its API. Therefore, when TensorFlow 2.X is used, there is no need to install or import Keras separately.
 
 \subsection{TensorFlow Basics}
 
-Unless otherwise mentioned, the following packages are imported in the beginning of all the relevant scripts.
+Unless otherwise mentioned, the following packages are imported and the command executed in the beginning of all the relevant scripts.
 \begin{lstlisting}[language=Python]
 import numpy as np
 import pandas as pd
@@ -59,7 +67,7 @@ tf.test.is_gpu_available()
 \end{lstlisting}
 where \verb|.is_gpu_available()| tests whether GPU is enabled on the machine.
 
-Vectors and matrices are associated with 1-D and 2-D collections of data. A tensor is such a collection with any dimension. In Python, \verb|numpy| package defines data structures to store vectors, matrices and tensors. Package \verb|tensorflow| also defines similar data structures. Data structures from Numpy and TensorFlow can be converted from one to the other. One difference, however, is that the calculations defined using TensorFlow structures can be executed on GPU. On the other hand, the calculations defined using Numpy structures are executed only on CPU. An example is given below. In general, vectorization (instead of using loops) and using TensorFlow structures more often would help making the code more efficient, especially when the model dimension is high.
+The well-known \verb|numpy| package defines ``NumPy arrays'' to store vectors, matrices and tensors. Package \verb|tensorflow| also defines counterparts ``TensorFlow tensors'' for the same purpose. NumPy arrays and TensorFlow tensors can be converted from one to the other. A key difference of the two is that TensorFlow tensors related calculations are executed on GPU wherever possible, making it more efficient when comes to large-scale calculation that can be paralleled. An example is given below. 
 \begin{lstlisting}[language=Python]
 x = np.array([1, 2, 3, 4, 5])
 y = tf.convert_to_tensor(x, dtype=tf.float64)
@@ -67,17 +75,175 @@ x = x*0.3 // cpu calculation
 y = y*0.3 // gpu parallel calculation
 \end{lstlisting}
 
+\subsection{Classification and Regression}
+
+\vspace{0.1in}
+\noindent \textbf{Regression}
+\vspace{0.1in}
+
+The following data frame \textit{kaggle.com/datasets/shree1992/housedata} is used in this example to as a demonstration to predict house pricing using regression model.
+
+The following class \verb|SimpleRegressionModel| serves as an example that can be used for the above task.
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+import tensorflow as tf
+import seaborn as sns
+
+class SimpleRegressionModel:
+	"""
+	SimpleRegressionModel trains and tests a regression model using the given data frame.
+	"""
+	def __init__(self):
+		self.num_input = None
+		self.num_output = None
+		self.scalar = None
+		self.num_training = None
+		self.X_train = None
+		self.Y_train = None
+		self.num_validation = None
+		self.X_val = None
+		self.Y_val = None
+		self.history = None
+		self.num_test = None
+		self.X_test = None
+		self.Y_test = None
+		self.model = None
+	def import_dataset(self, df_total: pd.DataFrame, iplist: list, oplist: list, validation_size: float, test_size: float):
+        total_X = df_total[df_total.columns.intersection(iplist)]
+        object_columns = total_X.select_dtypes(include=['object'])
+        if not object_columns.empty:
+            dummy_columns = pd.get_dummies(object_columns)
+            total_X = pd.concat([total_X.drop(object_columns, axis=1), dummy_columns], axis=1)
+        self.num_input = len(total_X.columns)
+        total_Y = df_total[df_total.columns.intersection(oplist)]
+        self.num_output = len(total_Y.columns)
+        train_val_X, self.X_test, train_val_Y, self.Y_test = train_test_split(total_X, total_Y, test_size=test_size, random_state=None)
+        self.num_test = len(self.X_test.index)
+		if validation_size == 0:
+			self.X_train = train_val_X
+			self.Y_train = train_val_Y
+			self.X_val = []
+			self.Y_val = []
+			self.num_training = len(self.X_train.index)
+			self.num_validation = 0
+		else:
+			self.X_train, self.X_val, self.Y_train, self.Y_val = train_test_split(train_val_X, train_val_Y, test_size=validation_size/(1-test_size), random_state=None)
+			self.num_training = len(self.X_train.index)
+			self.num_validation = len(self.X_val.index)
+		print("Dataset size: training: {}, validation: {}, test: {}".format(self.num_training, self.num_validation, self.num_test))
+		self.scalar = MinMaxScaler()
+		self.X_train = self.scalar.fit_transform(self.X_train)
+		if validation_size == 0:
+			pass
+		else:
+			self.X_val = self.scalar.transform(self.X_val)
+		self.X_test = self.scalar.transform(self.X_test)
+	def design_model(self, hidden_layer_model: list, optimizer: str, learning_rate: float, loss: str):
+		"""
+		The input model describes the design of the model. It is a list of layers. Each layer is given by a dictionary describing layer type, number of nodes, etc.
+		"""
+		self.model = tf.keras.Sequential()
+		for ind in range(len(hidden_layer_model)):
+			if ind == 0:
+				if hidden_layer_model[ind]["type"] == "dense":
+					layer = tf.keras.layers.Dense(hidden_layer_model[ind]["node"], activation = hidden_layer_model[ind]["activation"], input_shape = (self.num_input, ))
+				else:
+					pass
+			else:
+				if hidden_layer_model[ind]["type"] == "dense":
+					layer = tf.keras.layers.Dense(hidden_layer_model[ind]["node"], activation = hidden_layer_model[ind]["activation"])
+				else:
+					pass
+			self.model.add(layer)
+		self.model.add(
+			tf.keras.layers.Dense(self.num_output, activation='relu')
+		)
+		if optimizer == 'adam':
+			optimizer = tf.keras.optimizers.Adam()
+		self.model.compile(optimizer=optimizer, loss=loss, metrics=['mae'])
+	def train_model(self, epochs: int, batch_size: int):
+		self.history = self.model.fit(self.X_train, self.Y_train, epochs=epochs, batch_size=batch_size, validation_split=0.2, verbose=2)
+	def evaluate_model(self):
+		if self.num_validation == 0:
+			print("Validation set is empty.")
+		else:
+			loss, mae = self.model.evaluate(self.X_val, self.Y_val, verbose=2)
+			print("Validation set test result: loss={}, mae={}".format(loss, mae))
+	def test_model(self):
+		loss, mae = self.model.evaluate(self.X_test, self.Y_test, verbose=2)
+		print("Test set test result: loss={}, mae={}".format(loss, mae))
+\end{lstlisting}
+
+The following code uses the above defined class to predict house price.
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+import tensorflow as tf
+import seaborn as sns
+
+df_house_pricing = pd.read_csv("house_pricing.csv").dropna()
+srm = SimpleRegressionModel()
+srm.import_dataset(
+    df_total=df_house_pricing,
+    iplist=["bedrooms", "bathrooms", "sqft_living", "sqft_lot", "floors", "sqft_above", "sqft_basement", "yr_built", "yr_renovated", "condition", "city"],
+    oplist=["price"],
+    validation_size=0, test_size=0.2)
+hidden_layer_model = [
+	{
+		"type": "dense",
+		"node": 128,
+		"activation": "relu"
+	},
+	{
+		"type": "dense",
+		"node": 64,
+		"activation": "relu"
+	},
+	{
+		"type": "dense",
+		"node": 64,
+		"activation": "relu"
+	},
+	{
+		"type": "dense",
+		"node": 32,
+		"activation": "relu"
+	},
+	{
+		"type": "dense",
+		"node": 16,
+		"activation": "relu"
+	},
+]
+srm.design_model(hidden_layer_model=hidden_layer_model, optimizer='adam', learning_rate=0.001, loss='mse')
+srm.train_model(epochs=100, batch_size=50)
+srm.evaluate_model()
+srm.test_model()
+\end{lstlisting}
+
+The above example is self-explanatory. Some key components of the codes are:
+\begin{itemize}
+  \item Use \verb|train_test_split()| from \verb|sklearn.model_selection| to split the data set into training set, validation set and testing set.
+  \item Use \verb|MinMaxScaler()| from \verb|sklearn.preprocessing| to normalize the inputs to the AI model.
+  \item Use \verb|tf.keras.Sequential()| and \verb|tf.keras.layers| to design the AI model structure.
+  \item Use \verb|.compile()| to configure optimization engine, loss function, validation matrix, etc., during the training.
+  \item Use \verb|.fit()| to train the model using the training set.
+  \item Use \verb|.evaluate()| to evaluate the AI model performance.
+\end{itemize}
+
 
 
 
 \subsection{Computer Vision}
 
-
-
 \subsection{General Sequential Data Processing}
 
 \subsection{Natural Language Processing}
-
 
 \subsection{TensorFlow on Different Platforms}
 
@@ -85,7 +251,9 @@ y = y*0.3 // gpu parallel calculation
 
 TensorFlow is another open-source software library for machine learning originally developed by Meta AI in 2016. It is now under the Linux foundation umbrella.
 
-\subsection{Pytorch Basics}
+\subsection{PyTorch Basics}
+
+\subsection{Classification and Regression}
 
 \subsection{Computer Vision}
 

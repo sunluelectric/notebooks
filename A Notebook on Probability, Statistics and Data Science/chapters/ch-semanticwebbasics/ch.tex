@@ -1,0 +1,358 @@
+\chapter{Brief Introduction to Semantic Web} \label{ch:briefintrosemanticweb}
+
+Ontology is the philosophical study of the nature of being, existence, or reality. In the context of the Semantic Web, ontology refers to a formal specification of concepts, relationships, and categories of a particular domain or knowledge base. Ontology allows the creation of a shared understanding of a particular domain, enabling machines to interpret and reason about data more effectively. Ontology is essentially about “what is everything”. It is about how we as humans mark our existence, and how we preserve and add to our knowledge base for the generations to come.
+
+Ontology inspires people in computer science how we can store and exchange information more efficiently by building an internet based knowledge base. The solution is called the semantic web. An internet powered by semantic web (together with other technologies) defines web 3.0.
+
+\section{Web of Data}
+
+The Internet, as we call it today, is a technology that enables information exchange between machines, as well as between machines and human beings. With the power of the Internet, humans can obtain the information they need from remote servers, databases, or knowledge bases.
+
+Initially, this information exchange was difficult, and professional computer skills were required to operate the Internet and its human-machine interface. Nowadays, everyone can access the Internet by just using a graphical browser. Public knowledge bases like Wikipedia make obtaining information much easier. 
+
+Following this trend, AI knowledge bases combined with human-readable semantic web technologies such as RDF and OWL, will become more and more popular and provide additional help for knowledge transfer and sharing.
+
+\subsection{Web 1.0 and 2.0}
+
+In the age of Web 1.0, knowledge was stored on individual servers, often in a static manner. Users could open a browser and check the knowledge as it was presented in the form designed by the server owner. It was essentially a one-way data transmission. The experts provide information, and the ordinary users consume the information.
+
+In the age of Web 2.0, thanks to more advanced communication technologies, users can interact with web service providers. They can search and filter data from the servers and even upload their own data to the servers and share it with others. The Internet became easier and more flexible to use for information exchange, and data transfer became bidirectional. Ordinary users are both providers and consumers of information on the Internet. Databases are used in the backend which allows the user to push and pull data from the server.
+
+Web 2.0 is useful but still far from perfect, especially given the background of industry 4.0 and data-driven everything.
+
+One of the biggest challenges that we encounter with Web 2.0 is how to quickly locate the information we want hidden among the vast amount of data on the Internet. Among all the information available, which is important, and which is redundant? Humans have contextual knowledge and experience to solve the problem, but it will take forever.
+
+Keyword search engines are widely used in the Web 2.0 framework, and it is the main method one can rely on when pulling information from the Internet. Keyword search engines may struggle with polysemous, synonyms, unintended personalizing, and implicit information from pictures.
+
+Today most of the information on the Internet is stored in HTML format. HTML tells the contents links to the information, but not the meaning behind it. It is difficult for a machine to understand the meaning of the information from HTML files. As will be introduced later, this potentially makes it difficult for a machine to retrieve data efficiently.
+
+\subsection{Web 3.0}
+
+The ultimate goal of Web 3.0 is to allow more efficient information search and transfer using the Internet, given the vast amount of existing data hosted on distributed servers and sensors.
+
+In order to search, exchange, and abstract useful information from distributed sources in an efficient manner, there are at least two things we can do:
+
+\begin{itemize}
+  \item Let the machine do the job. The AI should be smart enough to precisely capture what the user wants and get back to him with useful and accurate results.
+  \item Make the information stored on the Internet more readable for both humans and machines, i.e., make the information semantic (meaningful).
+\end{itemize}
+
+The above forms the fundamentals of Web 3.0. The first point leads to smart chatbot, and the second to semantic web.
+
+Web 3.0 relies on advanced data storage, data searching, and data processing technologies. We need to develop powerful AI so that it can interpret the user demands, search for useful information in its knowledge base efficiently, and finally come back with a human-readable answer. For that, we need advanced natural language processing techniques, and efficient (and potentially online) AI training techniques to keep the sophisticated knowledge base up to date.
+
+In addition, we need to formally express the semantics (meanings) of the information for everything put online. This helps both humans and machines to interpret information and decide whether it is useful. This introduces the concept of the semantic web, which is a significant aspect of Web 3.0. In fact, semantics are so important that they are often considered synonymous with Web 3.0, although the broader vision of Web 3.0 includes other features as well.
+
+Distributed storage has both advantages and disadvantages. On one hand, it provides higher resilience against data loss. On the other hand, it adds difficulty to the searching and collecting of information. Technologies like IPFS, blockchain, and distributed databases are being used to address these challenges.
+
+This notebook focuses on the technologies used in semantic web, some of which such as RDF and OWL have already been implemented. We will see how we can use semantic web to collect and organize information, and from where how we can create a knowledge base for both humans and AI.
+
+\subsection{Semantic Web Vision}
+
+How to make contents on the Internet meaningful to machines? 
+
+Recall the 2 bullet points in the previous section. We always have the choice to use AI with powerful natural language processing capability. This of course relies on technologies in machine learning. We need to design ANN models that can be easily massively trained and it needs to be able to capture long text that humans usually use. With the development of transformer, this is becoming promising. There is another challenge though, which is that the knowledge base formed by AI is a black box, and cannot be interpreted by other machines with a different framework. In other words, you cannot build a knowledge base with AI and use it everywhere without any tuning. Transfer learning and knowledge distillation may help, but they also have constraints.
+
+In the semantic web vision, we mainly focus on another approach, which is **annotating explicit semantic metadata to the existing content**. The semantic metadata shall be encoded the meaning of the content in a machine-readable way.
+
+Semantic web approach is complementary with AI approach. It has some advantages:
+\begin{itemize}
+  \item The knowledge is more transparent, unlike AI where the knowledge is hidden in the ANN as a black box.
+  \item The knowledge is reusable and scalable in a easier way than AI knowledge base which relies on knowledge distilling (reuse) and transfer learning (rescale).
+  \item RDF and OWL, the tools we use to organize and store knowledge in semantic web, are more reader-friendly for both humans and machines.
+\end{itemize}
+
+Many research facilities and organizations have tried building semantic web for either global or specific domains. An example is DBPedia \textit{dbpedia.org}. The goal of DBPedia is to create something like Wikipedia, but semantic.
+
+\subsection{Semantic Web Stack} \label{subsec:semanticwebstack}
+
+A commonly seen semantic web stack looks like Fig. \ref{fig:semanticwebstack}. It is a summary of components and tools used in building a semantic web.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebbasics/figures/semanticwebstack.png}
+	\caption{Semantic web stack introduced in \cite{semanticwebstack}.}
+	\label{fig:semanticwebstack}
+\end{figure}
+
+In the very bottom is the platform that hosts everything. It is also the representation of all the existing knowledge. Uniform Resource Identifier (URI) is the “address” that can be used to identify a information source. It can be in the form of an URL to the web page that introduces an item. For example, ``About: Semantic Web (dbpedia.org)'' \textit{dbpedia.org/page/Semantic_Web} is the URL to the defination of semantic web in DBPedia. The web page represents semantic web as part of the existing knowledge (this web page is not stand alone though, as later we will see that it links to other sources using linked data).
+
+N3, TURTLE, XML, JSON and Resource Description Framework (RDF) model are used to organize and store data. N3, TURTLE, XML and JSON is the syntax of the text, while RDF demonstrates the knowledge representation structure. The following is an example of using semantic web stored in TURTLE. Only the first few lines are given. Details to the syntax are introduced in later chapters.
+
+\begin{lstlisting}
+@prefix dbo:	<http://dbpedia.org/ontology/> .
+@prefix dbr:	<http://dbpedia.org/resource/> .
+dbr:Semantic_web	dbo:wikiPageWikiLink	dbr:Semantic_Web ;
+	dbo:wikiPageRedirects	dbr:Semantic_Web .
+dbr:Knowledge_management	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Intelligent_agent	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Wiki_software	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:List_of_Brown_University_alumni	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:NitrosBase	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Arabic_Ontology	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Semantic_Web_Stack	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Giant_Global_Graph	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Computational_semantics	dbo:wikiPageWikiLink	dbr:Semantic_Web .
+dbr:Deborah_McGuinness	dbo:wikiPageWikiLink	dbr:Semantic_Web ;
+	dbo:academicDiscipline	dbr:Semantic_Web .
+\end{lstlisting}
+
+Information is tagged in RDF. RDF, together with RDF Schema (RDFS) provides limited semantics, and it created a foundation of semantic that allows Web Ontology Language (OWL) to build more complicated semantics on top of it, such as adding rules on restrictions and disjoint classes. In this sense, OWL is an extension of RDF.
+
+SPARQL (SPARQL Protocol and RDF Query Language) is the standard query language for querying and manipulating RDF data on the Semantic Web. It allows users to search, retrieve, and modify information stored in RDF format.
+
+The syntax of SPARQL is similar to SQL, as both are query languages designed for structured data. SPARQL was influenced by SQL, and many concepts in SPARQL have counterparts in SQL, such as SELECT, WHERE, GROUP BY, and ORDER BY. However, the backend technologies differ largely.
+
+SQL is designed to query and manipulate data stored in relational databases, which are based on tables with rows and columns. On the other hand, SPARQL is designed for querying and manipulating RDF data, which is based on graphs with nodes and edges. In SPARQL, you work with RDF triples and graph patterns, and use operations such as graph pattern matching to find data that satisfies specific conditions. Their interfaces look similar, but the backend technologies differ largely.
+
+An example of a knowledge base using RDF/RDFS/OWL is given below, together with a SPARQL query.
+
+\begin{mdframed}
+
+\vspace{0.1in}
+{\centering \textbf{Example: Knowledge Base on Animals}}
+\vspace{0.1in}
+
+The following examples demonstrates how to use RDF/RDFS and OWL to create a small knowledge base about animal. The example is provided by \textit{ChatGPT-4}.
+
+\vspace{0.1in}
+\noindent \textbf{RDF/RDFS}
+\vspace{0.1in}
+
+\begin{lstlisting}
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex: <http://example.org/> .
+
+ex:Animal rdf:type rdfs:Class .
+
+ex:Mammal rdf:type rdfs:Class ;
+    rdfs:subClassOf ex:Animal .
+
+ex:Reptile rdf:type rdfs:Class ;
+    rdfs:subClassOf ex:Animal .
+
+ex:hasLegs rdf:type rdf:Property ;
+    rdfs:domain ex:Animal ;
+    rdfs:range rdfs:Literal .
+
+ex:Dog rdf:type rdfs:Class ;
+    rdfs:subClassOf ex:Mammal .
+
+ex:Lizard rdf:type rdfs:Class ;
+    rdfs:subClassOf ex:Reptile .
+
+ex:Max rdf:type ex:Dog ;
+    ex:hasLegs 4 .
+
+ex:Lizzy rdf:type ex:Lizard ;
+    ex:hasLegs 4 .
+\end{lstlisting}
+
+In this example, we used RDF and RDFS to:
+\begin{itemize}
+  \item Define classes (Animal, Mammal, Reptile, Dog, and Lizard)
+  \item Define a property (hasLegs)
+  \item Set the domain and range of the property
+  \item Create subclass relationships (Mammal and Reptile are subclasses of Animal; Dog is a subclass of Mammal; Lizard is a subclass of Reptile)
+  \item Define individuals (Max and Lizzy) and their properties
+\end{itemize}
+
+\vspace{0.1in}
+\noindent \textbf{OWL}
+\vspace{0.1in}
+
+\begin{lstlisting}
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ex: <http://example.org/> .
+
+ex:hasParent rdf:type owl:ObjectProperty ;
+    rdfs:domain ex:Animal ;
+    rdfs:range ex:Animal .
+
+ex:hasChild rdf:type owl:ObjectProperty ;
+    owl:inverseOf ex:hasParent .
+
+ex:isWarmBlooded rdf:type owl:Class ;
+    rdfs:subClassOf ex:Animal .
+
+ex:Mammal rdfs:subClassOf ex:isWarmBlooded .
+
+ex:Reptile owl:disjointWith ex:isWarmBlooded .
+
+ex:Max ex:hasParent ex:Buddy .
+
+ex:Buddy rdf:type ex:Dog ;
+    ex:hasLegs 4 .
+\end{lstlisting}
+
+In this example, we used OWL to:
+\begin{itemize}
+  \item Define object properties (hasParent and hasChild)
+  \item Specify an inverse relationship between properties (hasParent and hasChild)
+  \item Define a new class (isWarmBlooded) and set it as a superclass of Mammal
+  \item Specify a disjoint relationship between Reptile and isWarmBlooded
+  \item Define a new individual (Buddy) and his properties
+  \item Specify a relationship between individuals (Max and Buddy)
+\end{itemize}
+
+In this demonstration example, RDF and RDFS provided the basic structure and hierarchy for the knowledge base, while OWL added more expressivity by defining complex relationships, additional semantics, and constraints.
+
+Finally, the above knowledge base can be queried by SPARQL as follows.
+
+\begin{lstlisting}
+PREFIX ex: <http://example.org/>
+
+SELECT ?mammal
+WHERE {
+  ?mammal rdf:type/rdfs:subClassOf* ex:Mammal .
+}
+\end{lstlisting}
+
+\end{mdframed}
+
+SPARQL query is not user-friendly. Commercialized semantic web applications such as WolframAlpha \textit{wolframalpha.com} often provides a ``search bar'' with limited NLP capability to make the searching of the semantic web easier. It is worth mentioning that although this searching engine may look like chatbot at a first glance, their underlying information source and techniques differently largely. See ChatGPT-4's comments as follows.
+
+\begin{mdframed}
+
+\textbf{I understand that chatbot like you works differently compared with these engines such as WolframAlpha. While their knowledge comes from semantic web, your knowledge comes from years of training using natural-language-written books and articles. Am I right?}
+
+Yes, that's correct. As an AI language model, I am based on the GPT-4 architecture developed by OpenAI. My primary source of knowledge comes from the vast amount of text data that I have been trained on, which includes books, articles, and other documents written in natural language. My training data consists of diverse sources and covers a wide range of topics up to my knowledge cutoff date in September 2021.
+
+Unlike search engines like WolframAlpha or tools that rely on the Semantic Web, my knowledge representation and understanding are not based on formalized structures like RDF or OWL. Instead, I analyze and generate text based on patterns and relationships learned from my training data.
+
+This approach has some advantages and limitations. On the one hand, I can provide more human-like, natural language responses and can generate text on a wide range of topics, even if I have not been specifically trained on a particular domain. On the other hand, my understanding of the underlying structure and semantics of the data may be less precise than that of systems that use formal knowledge representation languages like RDF or OWL.
+
+In summary, chatbots like me and engines like WolframAlpha operate differently in terms of their knowledge sources and representation, but both approaches can be useful for providing information and answering questions in their respective domains.
+\end{mdframed} 
+
+Chatbot and semantic web can work together. Chatbot is used to provide a human interface and basic domain knowledge, while the semantic web provides up-to-date precise informative facts.
+
+\subsection{Semantic Web Limitations and Challenges}
+
+It is worth mentioning that though semantic web is powerful, building semantic web can be challenging because it requires a lot of human labor. As of 2023, the majority of web sites and applications have not yet embraced the full potential of the semantic web, some of which only partially adopt semantic web concepts or technologies.
+
+ChatGPT-4 comments on the current status of semantic web applications as follows.
+
+\begin{mdframed}
+The semantic web has made significant progress since its inception, but it hasn't been adopted as widely as initially envisioned. Many organizations, research institutions, and some large corporations have adopted semantic web technologies for specific use cases, such as knowledge management, data integration, and domain-specific applications. However, the majority of websites and web applications have not yet embraced the full potential of the semantic web.
+
+That being said, some aspects of the semantic web have become popular and are widely used:
+
+\begin{enumerate}
+  \item Structured data markup: Many websites use structured data markup, such as schema.org, to provide additional semantic information about their content. This helps search engines like Google to better understand the content and present it more effectively in search results. While not the full realization of the semantic web vision, this is a step towards making the web more machine-readable.
+  \item Linked Data: The concept of Linked Data, which is closely related to the semantic web, has gained some traction. Linked Data is a method of publishing structured data on the web so that it can be interlinked and easily accessed by machines. Examples include DBpedia, Wikidata, and various governmental and organizational datasets.
+  \item Research and academia: The semantic web has been a popular research topic in academia, with numerous conferences, workshops, and publications dedicated to its development and application. This has led to the development of various tools, algorithms, and methodologies that have been adopted in specific domains.
+  \item Domain-specific applications: Some industries and sectors, such as healthcare, life sciences, and digital libraries, have adopted semantic web technologies to manage their complex data and facilitate data integration and interoperability.
+\end{enumerate}
+
+While the semantic web has not been adopted as widely as originally anticipated, its core ideas and technologies have had an impact on various areas of the web, and its principles continue to influence the development of new standards and technologies. It's possible that as AI and machine learning technologies continue to advance, there will be renewed interest in the semantic web and its potential to facilitate machine understanding of web content.
+
+There are several challenges that have contributed to the semantic web not being embraced to its full potential:
+
+\begin{enumerate}
+  \item Complexity: Semantic web technologies, such as RDF and OWL, can be complex and difficult to understand for many web developers, especially those without a background in knowledge representation, logic, or artificial intelligence. This complexity can act as a barrier to adoption.
+  \item Lack of incentives: Many website owners and content creators may not see immediate benefits or incentives for adopting semantic web technologies. Implementing semantic annotations and structured data can be time-consuming and resource-intensive, especially for smaller organizations or individuals without dedicated technical teams.
+  \item Incomplete coverage: The vision of the semantic web relies on a large amount of high-quality, machine-readable data being available. However, not all websites provide structured data or semantic annotations, which limits the effectiveness of semantic web applications and discourages further adoption.
+  \item Ontology development and maintenance: Creating and maintaining ontologies, which are key components of the semantic web, can be a complex and time-consuming task. Achieving consensus on common vocabularies and ontologies across different domains and stakeholders can also be challenging.
+  \item Scalability and performance: Semantic web technologies need to handle large-scale data processing and reasoning tasks, which can be computationally expensive. Some traditional semantic web tools and algorithms may not scale well for big data or real-time applications.
+  \item Privacy and security concerns: The semantic web promotes data sharing and integration, which can raise privacy and security concerns for both individuals and organizations. Ensuring that sensitive data is protected while still enabling the benefits of the semantic web can be a challenging balance to strike.
+  \item Competition from other technologies: Other technologies and approaches, such as keyword-based search engines, relational databases, and machine learning, have continued to evolve and provide effective solutions for many data management and retrieval tasks, which may have reduced the urgency for adopting semantic web technologies.
+\end{enumerate}
+
+Overcoming these challenges will require continued research, development, and collaboration among researchers, developers, and stakeholders. As new tools, algorithms, and techniques are developed, and as the importance of machine understanding of data increases, there may be renewed interest in and adoption of the semantic web.
+
+Despite the challenges in the widespread adoption of the semantic web, its core ideas and principles have had a significant impact on various fields, especially in the development of domain-specific knowledge bases and applications. The concepts of ontology, structured data, and linked data have inspired and facilitated numerous projects and use cases, such as:
+
+\begin{enumerate}
+  \item Domain-specific ontologies: The development of domain-specific ontologies has allowed organizations and researchers to model and represent complex knowledge structures and relationships in their respective fields. Examples include the Gene Ontology (GO) in the life sciences, the CIDOC Conceptual Reference Model (CRM) in cultural heritage, and the Financial Industry Business Ontology (FIBO) in finance.
+  \item Data integration and interoperability: Semantic web technologies have been instrumental in integrating and sharing data across different systems, platforms, and organizations. By utilizing shared ontologies and vocabularies, data can be mapped and linked more easily, enabling better interoperability and reducing the need for manual data reconciliation.
+  \item Knowledge management and discovery: Semantic web technologies have been used to build intelligent knowledge management systems that can infer new information and discover hidden relationships by reasoning over structured data. This can help organizations make better decisions, discover new insights, and optimize their processes.
+  \item Personalization and recommendation systems: By incorporating semantic web technologies and leveraging domain-specific knowledge bases, recommendation systems can provide more accurate and personalized suggestions based on users' preferences, behaviors, and the underlying relationships between items.
+  \item Natural language processing and AI: The ideas behind the semantic web have inspired research in natural language processing (NLP) and AI, as they both strive to enable machines to better understand and process human-generated content. Semantic web technologies can be used to enrich NLP tasks and enhance AI models with structured knowledge.
+\end{enumerate}
+
+While the semantic web has not yet reached its full potential, its principles and concepts continue to influence and inspire the development of new technologies and applications, especially in the context of building domain-specific knowledge bases and fostering knowledge sharing and discovery.
+
+\end{mdframed}
+
+With the population of LLM powered chatbot and IoT as part of Industrial 4.0, things might change. It has been extremely difficult to check the correctness and consistency of the existing data bases (both structured and unstructured) due to the large volume of data, let along converting them into semantic web. With the help from chatbot, the checking and conversion might be automated. In addition, as Industry 4.0 and IoT technologies continue to advance, the amount of structured data generated will increase significantly. This structured data can be a valuable resource for building semantic web applications more easily and effectively. A knowledge base that combines semantic web and chatbot might become a future standard. ChatGPT-4 comments as follows.
+
+\begin{mdframed}
+In the future, the combination of AI chatbots and semantic web technologies could become a powerful standard for handling various tasks. AI chatbots would serve as the natural language interface for users, providing basic knowledge and understanding of context, while the semantic web would provide accurate, up-to-date, and domain-specific data.
+
+Integrating AI chatbots with SPARQL or other semantic web querying capabilities can enable them to search, analyze, and interpret structured data more effectively. This way, chatbots could provide users with more precise and relevant information based on the available structured data.
+
+Such a combination of technologies would not only make it easier for users to access and interact with the vast amount of structured data, but it would also enable AI systems to better understand the context and semantics of information, leading to improved performance and more accurate results.
+\end{mdframed}
+
+\section{Ontology}
+
+Ontology has very rich meanings with both philosophy and semantic web perspective.
+
+\subsection{Philosophy Perspective}
+
+Knowledge is the intersect of ground truth and human beliefs, i.e., it is the truth that humans know of being truth. Ontology is a way of communicating knowledge.
+
+In the context of philosophy, ontology discusses the meaning of an object “exists”, how objects can be categorized, and how objects relate to each other. Ontology mainly discusses the following questions:
+
+\begin{itemize}
+  \item What is existence?
+  \item What are the fundamental categories of existence? 
+  \item What does it mean for something to exist or not exist?
+  \item What types of entities exist, and what is their nature?
+  \item What is the nature of abstract entities like numbers, properties, and relations?
+  \item How do different entities relate to each other and interact?
+  \item Can something exist independently of our perception or thought?
+\end{itemize}
+
+The discussion of these questions can be traced back to BC300 and earlier. Aristotle defined a system to structure and reasoning knowledge. The famous Aristotelian logic “major premise + minor premise -> conclusion” is in fact a standard and systematic way of reasoning unknown from knowledge. Aristotelian logic is an important tool of ontology, and it inspires how we build semantic web, even after these many years.
+
+The first idea of creating a machine to categorize things came in 1200s. The first idea of creating a “universal precise language” to record knowledge was proposed in 1600s.
+
+\subsection{Semantic Web Perspective}
+
+In the context of the Semantic Web, an ontology is a formal, machine-readable representation of a specific domain's concepts, their properties, and the relationships between them. It serves as a shared vocabulary (unlike natural language, which is often ambiguous) for describing and reasoning about the knowledge within that domain. In practice, RDF/RDFS and OWL can be used to express the ontology.
+
+The followings are defined in RDF/RDFS and OWL.
+
+\begin{itemize}
+  \item Class. Classes are used to represent components and models. It represents a concept. It is an abstraction of objects sharing some similarities.
+  \item Attribute. Attributes are used to describe classes.
+  \item Relations. Relations are special attributes whose values are objects of (other) classes.
+  \item Constraints. The attributes of classes might be restricted. For example, a class may have an multiple attributes of similar kind (consider a person has many houses). A class may not have two attributes at the same time (consider a person cannot be man and woman at the same time).
+  \item Instance. An instance is an individual of an ontology. For example, “John is a person”, where “person” is a class.
+\end{itemize}
+
+\subsection{Knowledge and Logic}
+
+Knowledge should be stored in such a way that new knowledge can be derived from existing knowledge, and there should be a standardized way of deriving new knowledge from existing knowledge. This introduces the important concept of logic.
+
+Propositional logic is the fundamental of the logic that we know of today. In propositional logic, knowledge is represented by simple facts (simple proposition), and facts connected with  AND, OR, NOT, IF THEN, IF AND ONLY IF (compound proposition).
+
+First-order logic (FOL) is the most commonly used logic as of today. In FOL, quantifiers and logic connectives are introduced, including universal quantification $\forall$, existential quantification $\exists$, conjunction, disjunction and negation. A formal way of representing logic expressions are defined. For example, using the following to represent ``all humans are mortal''
+\begin{eqnarray}
+\forall x \left(\textup{Human}(x) \rightarrow \textup{Mortal}(x)\right) \nonumber
+\end{eqnarray}
+where $\textup{CLASS}(x)$ is equivalent of a proposition ``$x$ belongs to CLASS'', which can be either true or false. The above proposition says ``for any item, if that it belongs to human is true, then that it belongs to mortal must be true''. Given the current biology development, this proposition is still true.
+
+Description logic (DL) is a subset of the first-order logic. DL is specifically designed to represent and reason about ontologies and their concepts, relations, and instances. It focuses on capturing the semantics of structured knowledge with a restricted set of constructs and reasoning capabilities. The idea of semantic web builds on top of DL.  Some key features of DL are:
+\begin{itemize}
+  \item Defining classes and subclasses
+  \item Defining properties (roles) and their domain and range:
+  \item Defining restrictions on classes
+  \item Using existential and universal quantifiers
+\end{itemize}
+Semantic web is essentially an implementation of DL on computers. As can be seen later, many tools used in semantic web, such as RDF/RDFS and OWL, are essentially practicing DL in a machine-readable way.
+
+
+
+
+
+
+
+
+
+
