@@ -4,20 +4,263 @@ Semantic web uses URI to identify an existing name or resource, RDF/RDFS and OWL
 
 \section{Uniform Resource Identifier (URI)}
 
-Humans uses symbol and concept to help interpret things and link to objects in real life. This is demonstrated by semiotic triangle as shown in Fig. \ref{fig:semiotictriangle}. The interpretation of ``apple'' is used as an example.
+Humans uses symbol and concept to help interpret things and link to objects in real life. This is demonstrated by semiotic triangle as shown in Fig. \ref{fig:semiotictriangle}. The interpretation of ``apple'' is used as an example. The concept is shared among humans in the form of knowledge.
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/semiotic_triangle.png}
-	\caption{Semiotic triangle.}
+	\includegraphics[width=\textwidth]{./chapters/ch-semanticwebarchitecture/figures/semiotic_triangle.png}
+	\caption{Semiotic triangle. The symbol is an ``representation'' of a category of items. The concept is the abstracted general properties of an item.}
 	\label{fig:semiotictriangle}
 \end{figure} 
 
+Uniform resource identifier (URI) is the way to identify a resource of information or knowledge. URI is unique from resource to resource. 
 
+For example, DBpedia gives concept of the apple here: \textit{dbpedia.org/page/Apple}. This is an URL to the web page that contains information of the apple. This URL is an example of URI. In this example, the information can be accessed by HTTP call to the URL.
+
+In semantic web, the URI of a resource identifies an item or a class. Using the URI, the representation (meta data) of the item/class can be accessed. The representation is like the symbol in Fig. \ref{fig:semiotictriangle}, and although it is not a specific instance of the item, it is usually sufficient for us to use the symbol to discuss the item. This is shown in Fig. \ref{fig:identificationflow}.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/identificationflow.png}
+	\caption{Identification flowchart.}
+	\label{fig:identificationflow}
+\end{figure} 
+
+URI shall contain at least two pieces of information: the address (locator), and the identity (name). URI is often ASCII encoded, but it is possible to extend to unicode. The generic syntax is given below, and the URL is a subset of the syntax.
+\begin{lstlisting}
+scheme:[//authority]path[?query][#fragment]
+\end{lstlisting}
+where
+\begin{itemize}
+\item \verb|scheme| specifies the protocol used to access the resource. Common schemes include \verb|http|, \verb|https|, \verb|ftp|, \verb|mailto|, \verb|file|, and \verb|data|. The scheme is followed by a colon \verb|:|.
+\item \verb|authority| component is optional and typically includes the user information, host, and port, separated by an at sign \verb|@| and a colon \verb|:|, respectively. The authority is preceded by a double forward slash \verb|//|.
+\item \verb|path| identifies the specific resource within the context of the scheme and authority. It is a sequence of segments separated by forward slashes \verb|/|.
+\item \verb|query| component is optional and provides additional information that the resource can use for processing. It is a series of key-value pairs separated by an ampersand \verb|&|. The query starts with a question mark \verb|?|.
+\item \verb|fragment| component is optional and allows for the identification of a specific part or section within the resource. It is typically used with HTML documents to indicate a specific anchor or location within the page. The fragment starts with a hash sign \verb|#|.
+\end{itemize}
+More details can be found on
+\begin{lstlisting}
+https://www.rfc-editor.org/rfc/rfc3986.html#section-3.1
+\end{lstlisting}
+which happens to be a good example of an URI in https scheme.
 
 \section{Resource Description Framework (RDF)}
 
-\section{RDF Schema}
+The representations of the knowledge shown in \ref{fig:identificationflow} need to be presented in a consistent way. In practice, RDF is introduced to represent knowledge.
+
+Notice that RDF itself is not a programming language. It is the structure using which information is stored. Therefore, it needs a markup language to host the RDF framework. Commonly used markup language the following. There are tools to automatically transfer them from one to another.
+\begin{itemize}
+  \item RDF/XML: has good compatibility with old machines.
+  \item Terse RDF Triple Language (Turtle): easy to use, human-readable.
+  \item JSON for Linked Data (JSON-LD): popular in web applications and APIs where JSON-based format is required.
+  \item N-Triples: simple, machine-readable format for data exchange between tools.
+\end{itemize}
+Turtle is very self-explanatory. Unless otherwise mentioned, Turtle is used in this notebook.
+
+\subsection{Triple Representation}
+
+RDF uses ``node-edge-node'' triples to represent knowledge. The triple refers to the combination of: 
+\begin{itemize}
+  \item Subject
+  \item Predicate
+  \item Object
+\end{itemize}
+For example, consider representation of knowledge ``Einstein was born in Ulm''. In RDF, ``Einstein'' is the subject of the knowledge, and ``Ulm'' the object. The predicate is ``has birthPlace'', where ``birthPlace'' is a property assigned to ``Einstein''. The graph representation is given by Fig. \ref{fig:einsteinexp}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/einsteinexp.png}
+	\caption{Graph representation of triple for knowledge ``Einstein was born in Ulm''.}
+	\label{fig:einsteinexp}
+\end{figure} 
+The RDF is given as follows.
+\begin{lstlisting}
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+
+dbr:Albert_Einstein dbo:birthPlace dbr:Ulm .
+\end{lstlisting}
+where \verb|Albert_Einstein| and \verb|Ulm| are defined in \verb|dbpedia.org/resource/| as name and place, and \verb|birthPlace| in \verb|dbpedia.org/ontology/| as an attribute, respectively. To give more details:
+\begin{itemize}
+  \item \verb|@prefix| keyword is used to define prefixes for namespaces, making it easier to write URIs.
+  \item \verb|dbr:Albert_Einstein| is the subject, representing Albert Einstein as a resource in the DBpedia namespace.
+  \item \verb|dbo:birthPlace| is the predicate, representing the "birthPlace" property from the DBpedia ontology.
+  \item \verb|dbr:Ulm|is the object, representing the city of Ulm as a resource in the DBpedia namespace.
+  \item \verb|.| indicates the end of a statement.
+\end{itemize}
+
+We use
+\begin{lstlisting}
+<object> <predicate> <subject> .
+\end{lstlisting}
+to claim a statement, and
+\begin{lstlisting}
+<object> <predicate1> <subject1>; <predicate2> <subject2>; <predict3> <subject3> .
+\end{lstlisting}
+to assign multiple predicates to a subject to avoid repeating the same object in statements.
+
+\subsection{Multi-valued Relation and Blank Node}
+
+It is possible to use multi-valued relations and blank nodes to enforce combining of information. Consider an example given in Fig. \ref{fig:lectureexp}, where the graph is used to demonstrate a lecture taking place at a specific room at given time slot. What if the lecture takes place twice a week, each time at a different location? With the help of multi-valued relations and blank nodes, this can be demonstrated clearly as shown in Fig. \ref{fig:lectureexp2}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/lectureexp.png}
+	\caption{An example that demonstrate when and where a lecture takes place.}
+	\label{fig:lectureexp}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/lectureexp2.png}
+	\caption{An example that demonstrate a lecture taking place at multiple locations and time slots using multi-valued relations and blank nodes.}
+	\label{fig:lectureexp2}
+\end{figure}
+
+Turtle and other markup languages provides syntax for creating blank nodes that looks like the following.
+\begin{lstlisting}
+<subject1> <predicate1> [
+	<predicate2> <object2>;
+	<predicate3> <object3>
+] .
+\end{lstlisting}
+To refer to a blank node, it is also possible to give the blank node a name. The syntax looks like the following.
+\begin{lstlisting}
+<subject1> <predicate1> _:<blank-node-name> .
+_:<blank-node-name> <predicate2> <object2> .
+_:<blank-node-name> <predicate3> <object3> .
+\end{lstlisting}
+where \verb|_:<blank-node-name>| is used to declare a blank node and assign it a name.
+
+\subsection{Lists}
+
+Lists help to make the code clean and readable. There are two types of lists, the container (open list, extendable) and the collections (closed list, fixed). Container is helpful to handle the situation given in Fig.  \ref{fig:lectureexp3}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/lectureexp3.png}
+	\caption{An example of a container.}
+	\label{fig:lectureexp3}
+\end{figure}
+Notice that the blank node has a type \verb|rdf:Seq|. This tells that the items stored in the container follows an ordered set. There are other container types, such as \verb|rdf:Bag| (unordered set) and \verb|rdf:Alt| (alternatives of elements; only one element is relevant for the application).
+
+The collection, on the other hand, defines a closed list as shown by Fig. \ref{fig:lectureexp4}. In turtle, this can be done by using nested \verb|[]| iteratively. 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/lectureexp4.png}
+	\caption{An example of a collection.}
+	\label{fig:lectureexp4}
+\end{figure}
+A short cut is to use \verb|()|, with the items in the collection listed down in the bracket as follows.
+\begin{lstlisting}
+<subject> <predicate> (<object1> <object2> <object3>) .
+\end{lstlisting}
+
+\subsection{Reification}
+
+RDF permits interleaving of statements, i.e., to make a statement about another statement. For example, consider ``Alice says that Bob ate the cake''. This example contains nested statement, where ``Bob ate the cake'' is a statement, and ``Alice says \ldots'' is a statement on that statement. RDF reification follows Fig. \ref{fig:reificationexp}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/reificationexp.png}
+	\caption{An example of RDF reification.}
+	\label{fig:reificationexp}
+\end{figure}
+
+\subsection{Converting RDB to RDF}
+
+For small-scale relational database, it is possible to convert it to semantic web RDF manually. For example, consider an RDB for all the books in a study. There are three tables in the database, for books, authors and publishers, respectively. Each table contains a few dozens of entries. The RDB can be converted to RDF as shown in Fig. \ref{fig:bookexp}. It can be realized very easily, simply by defining everything as nodes and stack triples for all relationships. 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/bookexp.png}
+	\caption{Semantic web of a few books, and their authors and publishers.}
+	\label{fig:bookexp}
+\end{figure}
+
+However, when comes to a large and complicated database, converting it to RDF manually would consume too much labor. Several ways to systematically do the conversion have been proposed. Details are not covered here. See \cite{michel2014survey} for more details.
+
+\subsection{Conclusion}
+
+In summary, RDF, different from a plain XML or JSON which can also store independent classes, defines not only the objects (nodes) themselves but also the relationships among objects. This is essentially how RDF differs from a conventional key-value based NoSQL. RDF can be easily scaled up as nodes with the same name naturally merge together.
+
+The underlying mechanism behind RDF, such as how machine stores graphical database including nodes and relationships, and how it enables query using SPARQL, is out of the scope of this notebook. In short, there are several ways to do that, for example by transforming the graph links into multiple small tables, etc. Different approaches may have their pros and cons. Details are neglected here.
+
+\section{RDF Schema (RDFS)}
+
+RDFS, also known as RDF vocabulary description language, expands the vocabulary of RDF and hence largely enhances RDF modeling capability. It introduces the concepts of ``class'' and ``subclass'' to RDF. It provides built-in predefined classes such as \verb|rdfs:Literal|, \verb|rdfs:Resource|, \verb|rdfs:Datatype|, etc., and enforce the nodes to be linked to these classes. RDF already defines \verb|rdf:Property|. RDFS further expands the properties and relations. All above makes the RDF modeling more consistent and semantic.
+
+The following example applies RDF versus RDF/RDFS on the same statement. Consider statement ``banana is yellow, apple is red, and orange is orange color''. In a RDF implementation, this would be simply be Fig. \ref{fig:fruitexp} green-colored elements.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/fruitexp.png}
+	\caption{Semantic web of a fruits, with the green color RDF and green + red RDF/RDFS implementations.}
+	\label{fig:fruitexp}
+\end{figure}
+
+In a RDF/RDFS implementation, class/subclass and property are enforced in the RDF model, with property domain and range specified. All classes eventually root to \verb|rdfs:Resource|. This is shown by the green + red color in Fig. \ref{fig:fruitexp}. The corresponding Turtle is
+\begin{lstlisting}
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix example: <http://example.org/> .
+
+# Define classes (optional; they are implicit)
+rdfs:Class rdfs:subClassOf rdfs:Resource .
+rdf:Property rdfs:subClassOf rdfs:Resource .
+
+example:Fruit rdf:type rdfs:Class ;
+rdfs:subClassOf rdfs:Resource .
+
+example:Color rdf:type rdfs:Class ;
+rdfs:subClassOf rdfs:Resource .
+
+# Define properties
+example:hasColor rdf:type rdf:Property ;
+rdfs:domain example:Fruit ;
+rdfs:range example:Color .
+
+# Define fruits and colors
+example:Banana rdf:type example:Fruit .
+example:Apple rdf:type example:Fruit .
+example:Orange rdf:type example:Fruit .
+
+example:Yellow rdf:type example:Color .
+example:Red rdf:type example:Color .
+example:Green rdf:type example:Color .
+
+# Define relationships between fruits and colors
+example:Banana example:hasColor example:Yellow .
+example:Apple example:hasColor example:Green .
+example:Orange example:hasColor example:Orange .
+
+\end{lstlisting} 
+where only the last 3 lines would be used in RDF implementation. It can be seen from this example that RDF/RDFS uses more ``complicated'' structure to enforce schema of the model. Notice that predicate \verb|rdf:type| can be used  interchangeably with turtle keyword \verb|a|. They both declares a instance of a class.
+
+Special classes and properties are defined, some of which already used in the above example. Some commonly seen ones include:
+\begin{itemize}
+	\item \verb|rdfs:Resource|
+	\item \verb|rdfs:Class|
+	\item \verb|rdf:Property|
+	\item \verb|rdfs:subClassOf|
+	\item \verb|rdfs:subPropertyOf|
+	\item \verb|rdfs:domain|
+	\item \verb|rdfs:range|
+\end{itemize}
+
+Commonly seen further properties of a node include the following. They help to make the RDF model more human-readable.
+\begin{itemize}
+	\item \verb|rdfs:seeAlso| points to a resource where a detailed explanation of the node can be found.
+	\item \verb|isDefinedBy| defines the relation of a resource to its definition.
+	\item \verb|rdfs:comment| points to text comment.
+	\item \verb|rdfs:label| assign a more human-readable name to the node.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{SPARQL Protocol and RDF Query Language (SPARQL)}
 
