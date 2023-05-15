@@ -1,8 +1,8 @@
-\chapter{ANN Engines} \label{ch:tftorch} 
+\chapter{ANN Engines} \label{ch:tftorch}
 
 This chapter focuses on the introduction of commonly used Python-supported ANN engines used in data science. ANN relationships with AI, machine learning and deep learning as well as theories and mechanisms behind ANN can be found on other notebooks, hence is not given here. The introduction only contains the basic usage of these ANN engines from the implementation perspective, and it may not reflect the state-of-the-art technologies such as transformer, LLM, instruction-tuned LLM, etc. These state-of-the-art technologies are introduced on other notebooks.
 
-There are many ANN engines for Python. Among all, TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of supervised, reinforcement and unsupervised learning applications including classification, regression, pattern recognition, computer vision, natural language processing, clustering, abnormality detection, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.  TensorFlow and PyTorch are introduced in this chapter.  
+There are many ANN engines for Python. Among all, TensorFlow and PyTorch are very popular and powerful generic-purpose ANN engines. They both cover a large range of supervised, reinforcement and unsupervised learning applications including classification, regression, pattern recognition, computer vision, natural language processing, clustering, abnormality detection, and many more. They both offer variety of tools to quickly and flexibly design and deploy different types of AI models such as conventional dense networks, CNN models, RNN models, and many more. Both of them can be used to train, evaluate and run networks. Both of them provide server solutions, cloud solutions and edge computing solutions.  TensorFlow and PyTorch are introduced in this chapter.
 
 Installation of TensorFlow and PyTorch can be found in there websites. Although it is possible to run all the calculations on CPU, these ANN engines are more powerful when GPU/TPU are enabled. Depends on the OS and the GPU/TPU brands of the local system, different methods may apply to enable GPU/TPU. For example, if NVIDIA GPU is used, a software called CUDA can be used to configure and enable GPU for ANN training. The installation of TensorFlow, PyTorch, and the enabling of GPU/TPU modules are not covered here.
 
@@ -17,13 +17,36 @@ This section briefly reviews the basic concepts used in this chapter. Details of
 AI pipeline is a set of (automated) steps used to build, train, evaluate and deploy AI models. An AI pipeline usually includes at least the following steps (for supervised learning):
 \begin{enumerate}
   \item Data collection
-  \item Data preparation; this refers to the data pre-processing procedures such as data cleaning, transformation, normalization, etc.
+  \item Data preparation
   \item Model design
   \item Model training
-  \item Model evaluation
+  \item Model evaluation and analysis
   \item Model deployment and testing
 \end{enumerate}
 where notice that model design and training might need to be carried out iteratively. After the training, the performance of the model is validated using the validation set, according to which the model and its hyper parameters can be modified.
+
+\subsection{Data Preparation and Model Evaluation}
+
+Model training is where the magic happens. Nowadays, with the help of AI engines, it is done automatically via back propagation and other techniques. Given the same training data and model design (including training methods), the almost-the-same trained model can be reproduced by the machine. It is done in a standardized, systematic and consistent manner, hence does not distinguish the performance of the model.
+
+It is rather the data preparation (pre-processing), model design, and model evaluation that require human guidance. Depending on the experience and skill level of the data scientist and engineer, this is where the model performance may differ. Model design and fine-tuning are closely related to model evaluation, as model evaluation results and analysis decides how the model should be tuned. Therefore, it can be concluded that good data preparation, model evaluation and analysis skills are the critical factors that affect model behavior.
+
+To be more precise by breaking down the aforementioned critical factors:
+\begin{itemize}
+  \item Data preprocessing:
+  \begin{itemize}
+      \item Data cleaning. This is a critical step that greatly influences the model's performance. It includes cleaning the data, handling missing values, and dealing with outliers. Often, domain knowledge plays a significant role in these steps. In practice, some of the above procedures are done using AI engine built-in functions, while others are done using other packages such as pandas.
+      \item Feature engineering. This involves creating new features from the existing data that might help improve the model's performance. Feature selection is also crucial to reduce overfitting and improve the model's interpretability. Again, domain knowledge can be very beneficial here.
+  \end{itemize}
+  \item Model design, evaluation and tuning:
+  \begin{itemize}
+      \item Model selection. Choosing the right model or architecture for the problem at hand requires a solid understanding of the strengths and weaknesses of different models.
+      \item Hyperparameter tuning. While there are systematic approaches like grid search or random search, often, practical experience and intuition play a significant role in choosing the right hyperparameters.
+      \item Model evaluation and analysis. Evaluating a model goes beyond looking at a single metric. It involves understanding the model's errors, checking its performance on different subsets of data, and considering aspects like fairness and interpretability.
+  \end{itemize}
+\end{itemize}
+
+Given that many, if not all, of the above steps involve a lot of human interaction, data visualization tools often play a very important role to assist humans on their tasks.
 
 \subsection{Commonly Seen ANN Use Cases}
 
@@ -67,7 +90,7 @@ tf.test.is_gpu_available()
 \end{lstlisting}
 where \verb|.is_gpu_available()| tests whether GPU is enabled on the machine.
 
-The well-known \verb|numpy| package defines ``NumPy arrays'' to store vectors, matrices and tensors. Package \verb|tensorflow| also defines counterparts ``TensorFlow tensors'' for the same purpose. NumPy arrays and TensorFlow tensors can be converted from one to the other. A key difference of the two is that TensorFlow tensors related calculations are executed on GPU wherever possible, making it more efficient when comes to large-scale calculation that can be paralleled. An example is given below. 
+The well-known \verb|numpy| package defines ``NumPy arrays'' to store vectors, matrices and tensors. Package \verb|tensorflow| also defines counterparts ``TensorFlow tensors'' for the same purpose. NumPy arrays and TensorFlow tensors can be converted from one to the other. A key difference of the two is that TensorFlow tensors related calculations are executed on GPU wherever possible, making it more efficient when comes to large-scale calculation that can be paralleled. An example is given below.
 \begin{lstlisting}[language=Python]
 x = np.array([1, 2, 3, 4, 5])
 y = tf.convert_to_tensor(x, dtype=tf.float64)
@@ -78,12 +101,18 @@ y = y*0.3 // gpu parallel calculation
 \subsection{Classification and Regression}
 
 \vspace{0.1in}
+\noindent \textbf{Classification}
+\vspace{0.1in}
+
+
+
+\vspace{0.1in}
 \noindent \textbf{Regression}
 \vspace{0.1in}
 
 The following data frame \textit{kaggle.com/datasets/shree1992/housedata} is used in this example to as a demonstration to predict house pricing using regression model.
 
-The following class \verb|SimpleRegressionModel| serves as an example that can be used for the above task.
+The following class \verb|SimpleRegressionModel| serves as an example that can be used for the above task. Notice that this model design is only a demonstration, and it is not optimized.
 \begin{lstlisting}[language=Python]
 import numpy as np
 import pandas as pd
@@ -234,7 +263,10 @@ The above example is self-explanatory. Some key components of the codes are:
   \item Use \verb|.compile()| to configure optimization engine, loss function, validation matrix, etc., during the training.
   \item Use \verb|.fit()| to train the model using the training set.
   \item Use \verb|.evaluate()| to evaluate the AI model performance.
+  \item Use \verb|.predict()| to carry out prediction of input points.
 \end{itemize}
+
+Use \verb|.save("name")| to save a model, and \verb|load_model()| from \verb|tensorflow.keras.models| to load a model. Some popular formats to store a model include H5 file.
 
 
 

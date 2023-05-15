@@ -183,9 +183,17 @@ The underlying mechanism behind RDF, such as how machine stores graphical databa
 
 \section{RDF Schema (RDFS)}
 
-RDFS, also known as RDF vocabulary description language, expands the vocabulary of RDF and hence largely enhances RDF modeling capability. It introduces the concepts of ``class'' and ``subclass'' to RDF. It provides built-in predefined classes such as \verb|rdfs:Literal|, \verb|rdfs:Resource|, \verb|rdfs:Datatype|, etc., and enforce the nodes to be linked to these classes. RDF already defines \verb|rdf:Property|. RDFS further expands the properties and relations. All above makes the RDF modeling more consistent and semantic.
+RDFS enforces schema to the RDF model. By using RDF/RDFS, a more consistent and semantic RDF model can be achieved compared with using RDF along.
 
-The following example applies RDF versus RDF/RDFS on the same statement. Consider statement ``banana is yellow, apple is red, and orange is orange color''. In a RDF implementation, this would be simply be Fig. \ref{fig:fruitexp} green-colored elements.
+\subsection{RDFS Motivation}
+
+RDF is flexible. It is so flexible that sometimes it becomes difficult to maintain consistency of the RDF model, let alone performing sophisticated reasoning from it. RDFS, also known as RDF vocabulary description language, enforce schema to the RDF model by adding more ``meta information'' which builds more connections among the nodes.
+
+RDFS expands the vocabulary of RDF. It introduces the concepts of ``class'' and ``subclass'' to RDF. It provides built-in predefined classes such as \verb|rdfs:Literal|, \verb|rdfs:Resource|, \verb|rdfs:Datatype|, etc., and enforce the nodes to be linked to these classes. RDF already defines \verb|rdf:Property|. RDFS further expands the properties and relations. All above makes the RDF modeling more consistent and semantic.
+
+\subsection{RDF Versus RDF/RDFS via an Example}
+
+The following example applies RDF versus RDF/RDFS on the same statement. Consider statement ``banana is yellow, apple is red, and orange is orange color''. In a RDF implementation, this would be simply be Fig. \ref{fig:fruitexp} green-colored elements. It is a disconnected graph, where the three statements are completely independent.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/fruitexp.png}
@@ -229,7 +237,9 @@ example:Apple example:hasColor example:Green .
 example:Orange example:hasColor example:Orange .
 
 \end{lstlisting} 
-where only the last 3 lines would be used in RDF implementation. It can be seen from this example that RDF/RDFS uses more ``complicated'' structure to enforce schema of the model. Notice that predicate \verb|rdf:type| can be used  interchangeably with turtle keyword \verb|a|. They both declares a instance of a class.
+where only the last 3 lines would be used in RDF implementation. It can be seen from this example that RDF/RDFS uses more ``complicated'' structure to enforce schema of the model. In this example, ``a fruit has color of a color'' is enforced. Notice that predicate \verb|rdf:type| can be used interchangeably with turtle keyword \verb|a|. They both declares a instance of a class.
+
+\subsection{RDFS Expanded Class and Properties}
 
 Special classes and properties are defined, some of which already used in the above example. Some commonly seen ones include:
 \begin{itemize}
@@ -250,17 +260,20 @@ Commonly seen further properties of a node include the following. They help to m
 	\item \verb|rdfs:label| assign a more human-readable name to the node.
 \end{itemize}
 
+More details of the latest version of RDF/RDFS defined classes and properties are given by W3C and can be found at \textit{w3.org/TR/rdf-schema/}.
 
+\subsection{Semantics inside RDF/RDFS}
 
+The semantics in RDF/RDFS, such as Fig. \ref{fig:fruitexp}, is stored in the format of connections linked via properties, with domain and range specified. The name of a class or a property makes no sense to a machine when it is doing reasoning and query. The connection matters. 
 
+The following gives some intuitive examples for semantic reasoning.
+\begin{itemize}
+	\item Via class inheritance. In Fig. \ref{fig:fruitexp}, if apple is a subclass of fruit, and fruit a subclass of plant, then apple must also be a subclass of a plant. There is an ``hidden arrow'' pointing from the apple to the plant.
+	\item Via property domain and range. In Fig. \ref{fig:fruitexp}, if an unknown object ``hasColor'', then its object must be a fruit, and the subject a color. There are associated ``hidden arrows'', even if these arrows are not specified in the programming. 
+	\item Via property inheritance. Consider two properties, ``isMotherOf'' and ``isParentOf''. Both properties have the same domain and range of ``person'', and ``isMotherOf'' is a sub property of ``isParentOf''. In this case ``A is the mother of B'' can derive ``A is the parent of B''. 
+\end{itemize}
 
-
-
-
-
-
-
-
+Though not given by the input directly, the hidden information exists in the semantic web and should be accessible from API
 
 \section{SPARQL Protocol and RDF Query Language (SPARQL)}
 
