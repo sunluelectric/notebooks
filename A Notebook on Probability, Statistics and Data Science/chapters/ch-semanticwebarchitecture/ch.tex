@@ -191,7 +191,9 @@ RDF is flexible. It is so flexible that sometimes it becomes difficult to mainta
 
 RDFS expands the vocabulary of RDF. It introduces the concepts of ``class'' and ``subclass'' to RDF. It provides built-in predefined classes such as \verb|rdfs:Literal|, \verb|rdfs:Resource|, \verb|rdfs:Datatype|, etc., and enforce the nodes to be linked to these classes. RDF already defines \verb|rdf:Property|. RDFS further expands the properties and relations. All above makes the RDF modeling more consistent and semantic.
 
-\subsection{RDF Versus RDF/RDFS via an Example}
+In the deeper insights, RDFS helps to add ``ontology'' to the RDF model by introducing the schema. It essentially integrate common understanding and domain knowledge to tine information. For example, by creating a property ``\verb|:hasSpouse|'' whose domain and range person, it demonstrates the common knowledge that a person can be married to another person.
+
+\subsection{RDF Versus RDF/RDFS via an Example} \label{subsec:rdfvsrdfs}
 
 The following example applies RDF versus RDF/RDFS on the same statement. Consider statement ``banana is yellow, apple is red, and orange is orange color''. In a RDF implementation, this would be simply be Fig. \ref{fig:fruitexp} green-colored elements. It is a disconnected graph, where the three statements are completely independent.
 \begin{figure}[htbp]
@@ -277,4 +279,267 @@ Though not given by the input directly, the hidden information exists in the sem
 
 \section{SPARQL Protocol and RDF Query Language (SPARQL)}
 
+SPARQL is the query language for semantic web. It is SQL-like in the API syntax perspective, but notice that the underlying technologies of SQL and SPARQL differ largely, as SQL is for operations on structured tabular, while SPARQL for those of graphical database. The details of the internal mechanism of SPARQL, which involves a lot of graph theory, pattern searching and data structuring, are not covered in this chapter.
+
+In the recent update by W3C standard for SPARQL, namely SPARQL 1.1, more operations such as advanced query and interfering, updating triples, etc., have been added to the existing SPARQL 1.0 standard, making it more powerful and capable. SPARQL 1.1 is already supported by many triplestores. 
+
+Notice that SPARQL is not only a language, but also a protocol layer. The input and return have specific formats which are also illustrated by the SPARQL standard. However, introducing of SPARQL from a protocol perspective is not the focus of this chapter, hence it is not covered in details. 
+
+More details of SPARQL 1.1 can be found at \textit{w3.org/TR/sparql11-query/}.
+
+\subsection{SPARQL for Basic Query}
+
+Many query types are defined in SPARQL, each with a different purpose and associated with a different return type. For example,
+\begin{itemize}
+	\item SELECT returns a tabular just like SQL.
+	\item CONSTRUCT returns a new RDF graph based on the query result.
+	\item ASK returns true and false of whether a query has a solution.
+	\item DESCRIBE returns the schematic of a resource; this is useful when the structure of RDF data in the data source is unclear.
+\end{itemize}
+
+The basic syntax of SPARQL is inspired by SQL as follows.
+\begin{lstlisting}
+SELECT [?s, ?p, ?o] 
+[FROM rdfSource] 
+WHERE {
+	[?s/s] [?p/p] [?o/o]
+}
+[ORDER BY (?s/?p/?o)]
+[LIMIT limitNum]
+[PFFSET offsetNum]
+\end{lstlisting}
+where \verb|?variableName| denotes a variable, and without \verb|?|, a constant. Recall the fruit example used in Section \ref{subsec:rdfvsrdfs}. To perform a query to look for fruits with yellow color, use the following
+\begin{lstlisting}
+PREFIX ex: <http://www.example.com/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+ASK WHERE {
+	?fruit rdf:type ex:Fruit .
+	?fruit ex:hasColor ex:Yellow .
+} # return yes
+
+SELECT ?fruit
+WHERE {
+	?fruit ex:hasColor ex:Yellow .
+} # return a table with one element, ex:Banana
+
+CONSTRUCT {?fruit ex:hasColor ?color}
+WHERE {
+	?fruit rdf:type ex:Fruit .
+	?color rdf:type ex:Color .
+	?fruit ex:hasColor ?color .
+	FILTER (?color = ex:Yellow || ?color = ex:Red)
+} # returns 2 triples, banana has color yellow and apple has color red
+
+DESCRIBE ?fruit
+WHERE {
+	?fruit ex:hasColor ex:Yellow .
+} # return triples related to ex:Banana
+\end{lstlisting}
+
+Always put in mind that SPARQL is essentially pattern matching. The triples given in the WHERE clause are the patterns to be matched. Only the elements or triples that matches all the patterns in the WHERE clause can be returned, on top of which other filtering functions (such as FILTER which is introduced later) can be carried out.
+
+Notice that some triplestore may require each query to be passed to the engine one at a time, instead of putting everything into a gigantic file and ``run all''.
+
+When there are string and numerical attributes, ``\verb|FILTER|'' keyword can be used to filter the result and returns only the entries matching the filter condition. An example is given below. It is worth mentioning that only triples in the WHERE clause need to end with a period ``.''. The filter condition lead by \verb|FILTER ()| does not require the period.
+\begin{lstlisting}
+PREFIX ex: <http://example.org/>
+
+SELECT ?person 
+WHERE {
+	?person ex:age ?age .
+	FILTER (?age >= 30 && ?age <= 40)
+}
+\end{lstlisting}
+
+Commonly used keywords and operators in FILTER clause include \verb|&&| (and), \verb$||$ (or), \verb|!| (not), as well as string functions \verb|STR|, \verb|LANG|, \verb|CONTAINS|, \verb|STRSTARTS|, \verb|STRENDS|, \verb|STRLEN|, \verb|SUBSTR|, \verb|REGEX| (regular expression matching), etc., and numeric functions \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|>|, \verb|>=|, \verb|<|, \verb|<=|, \verb|ABS|, \verb|ROUND|, \verb|CEIL|, \verb|FLOOR|, etc., and comparison operators \verb|=|, \verb|!=|.
+
+Similar with FILTER clause, there are also other clauses such as OPTIONAL, UNION, etc. The OPTIONAL clause indicates that if the entry does not have the attribute to be evaluated in the clause, it still passes the query. An example of is given below, where RDF and SPARQL are given separately. RDF:
+\begin{lstlisting}
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:alice
+a foaf:Person ;
+foaf:name "Alice" ;
+foaf:mbox <mailto:alice@example.com> .
+
+:bob
+a foaf:Person ;
+foaf:name "Bob" .
+\end{lstlisting}
+SPARQL:
+\begin{lstlisting}
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?name ?email
+WHERE {
+	?person a foaf:Person ;
+	foaf:name ?name .
+	OPTIONAL { ?person foaf:mbox ?email . }
+}
+\end{lstlisting}
+The above returns both names and Alice's email, and it won't fail although Bob does not have an attribute of email.
+
+The UNION clause allows the combination of two queries as one return, given that the structure of the queries matches. An example is given below.
+\begin{lstlisting}
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+SELECT ?name 
+WHERE {
+	{
+		?person a foaf:Person .
+		?person foaf:name ?name .
+	} 
+	UNION 
+	{
+		?organization a foaf:Organization .
+		?organization foaf:name ?name .
+	}
+}
+\end{lstlisting}
+which would return both people and company names in one go.
+
+\subsection{SPARQL for Advanced Operations}
+
+SPARQL 1.0 provides basic query functions based on graph pattern matching, as already explained in the previous section. SPARQL 1.1 provides advanced query functions as follows.
+
+\vspace{0.1in}
+\noindent \textbf{Advanced Query}
+\vspace{0.1in}
+
+In the SELECT clause, it allows simple calculations on top of the returned result, and name it as a new column. For example,
+\begin{lstlisting}
+SELECT ?x (?y*1.1 AS ?z)
+WHERE {
+	?x ex:hasProperty ?y .
+}
+\end{lstlisting}
+returns \verb|?y*1.1| instead of \verb|?y|, and furthermore rename it as \verb|?z|.
+
+SPARQL 1.1 enables aggregate functions. For example,
+\begin{lstlisting}
+PREFIX ex: <http://www.example.com/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT (Count(?fruit) AS ?numOfFruit)
+WHERE {
+	?fruit rdf:type ex:Fruit .
+}
+
+SELECT (Count(DISTINCT ?fruit) AS ?numOfFruit)
+WHERE {
+	?fruit rdf:type ex:Fruit .
+}
+\end{lstlisting}
+counts the total number of fruits in the database. Notice that when using aggregate functions, new variable name (in this example, \verb|?numOfFruit|) must be assigned. Otherwise, there will be an syntax error.
+
+\vspace{0.1in}
+\noindent \textbf{Data Editing}
+\vspace{0.1in}
+
+SPARQL provides operations to insert, edit, and delete elements in a semantic web as follows.
+\begin{itemize}
+	\item INSERT inserts triples into a graph.
+	\item DELETE deletes triples from a graph.
+\end{itemize}
+
+Recall the fruit example used in Section \ref{subsec:rdfvsrdfs}. To create that RDF/RDFS database from scratch using SPARQL, use the following (notice that ``orange is orange color is changed to pear is green'')
+\begin{lstlisting}
+PREFIX ex: <http://www.example.com/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT DATA {
+	# Define resources
+	ex:Banana rdf:type ex:Fruit .
+	ex:Apple rdf:type ex:Fruit .
+	ex:Pear rdf:type ex:Fruit .
+	ex:Yellow rdf:type ex:Color .
+	ex:Red rdf:type ex:Color .
+	ex:Green rdf:type ex:Color .
+	
+	# Define properties
+	ex:hasColor rdf:type rdf:Property ;
+	rdfs:domain ex:Fruit ;
+	rdfs:range ex:Color .
+	
+	# Link resources with properties
+	ex:Banana ex:hasColor ex:Yellow .
+	ex:Apple ex:hasColor ex:Red .
+	ex:Pear ex:hasColor ex:Green .
+}
+\end{lstlisting}
+
+\subsection{Default Graph and Named Graph}
+
+It is worth mentioning that it is possible to create and query ``disjoint'' graphs using SPARQL. If the graph name is not specified during the inserting of the data, the data is inserted into the default graph. A query can have multiple FROM clause, each specifying a graph. If the graph name is not specified during the query, all graphs will be searched. An example of inserting and querying named graph is given below.
+
+\begin{lstlisting}
+INSERT DATA {
+	GRAPH <http://example.org/mygraph> { 
+		<http://example.org/book1> <http://purl.org/dc/elements/1.1/title> "A new book" .
+	}
+	GRAPH <http://example.org/myothergraph> { 
+		<http://example.org/book2> <http://purl.org/dc/elements/1.1/title> "Another book" .
+	}
+}
+
+SELECT ?book ?title WHERE {
+	GRAPH <http://example.org/mygraph> {
+		?book <http://purl.org/dc/elements/1.1/title> ?title .
+	}
+}
+\end{lstlisting}
+
+The relationship of the graphs is somehow like the different tables in an RDS. They usually represent logically separated things, but they can have some overlaps. When doing analysis information can be extracted from multiple graphs at the same time.
+
+\subsection{SPARQL Returns}
+
+As introduced earlier, SPARQL is an HTML based protocol. The returned result of a SPARQL query can be specified in the HTML header. There are several return types defined in the standard. When SELECT or ASK are used, the return types can be:
+\begin{itemize}
+	\item XML
+	\item JSON
+	\item TSV (table-separated values, similar to CSV)
+\end{itemize}
+When CONSTRUCT or DESCRIBE are used, the return is an RDF that can be in 
+\begin{itemize}
+	\item RDF/XML
+	\item Turtle
+	\item N-Triples
+	\item JSON-LD
+\end{itemize}
+and a few more. The decoding of the return can be done my relative tools and packages, and are not given in details here.
+
+\section{A Bit More Insights on RDF/RDFS}
+
+RDF can be represented as a set of triples, which makes it readable for both humans and machines. When using SPARQL to query or edit RDF database, RDF is treated as directional graphs with some sort of hierarchy. This is the interface of RDF database, following W3C standard.
+
+How about the underlying data structure that ultimately supports the interface, making sure that everything runs smoothly and efficiently?
+
+Different triplestores may have different preference when choosing the underlying data structure.
+
 \section{Web Ontology Language (OWL)}
+
+By adding schema to RDF, RDFS already boosts the capability and adds ontology to the RDF model. However, there are still a number of limitations using RDF/RDFS alone.
+
+\subsection{OWL Motivation}
+
+OWL provides additional features to enforce and enhance the schema of an RDF model. 
+
+It provides different levels of  ``consistency checks'' and applies ``limitations'' to the classes and instances in an RDF model. It adds identity equivalence and difference features by introducing properties such as \verb|sameAs|, \verb|differentFrom|, \verb|equivalentClass|, \verb|equivalentProperty|. It offers more expressive class definitions including intersection, union, complement and disjointness of classes. It further enlarge the vocabulary sets of the RDF model.
+
+\section{Commonly Used Namespace}
+
+Commonly used built-in name spaces are summarized in Table \ref{tab:commonnamespace}.
+
+\begin{table}
+	\centering \caption{Commonly used namespaces in RDF models.} \label{tab:commonnamespace}
+	\begin{tabularx}{\textwidth}{|c|c|X|}
+		\hline
+		Namespace & URI & Description \\ \hline
+		\verb|foaf| & \verb|http://xmlns.com/foaf/0.1/| & Friend-of-a-friend. It describes people, their activities and relations to other people and object. \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+
+
