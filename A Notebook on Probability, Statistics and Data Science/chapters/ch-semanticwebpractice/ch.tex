@@ -1,6 +1,60 @@
 \chapter{Semantic Web Practice} \label{ch:semanticwebpractice}
 
-The knowledge in a semantic web is stored using RDF/RDFS and OWL on Turtle, JSON-LD, RDF/XML, or any other media as the developer prefers. To execute an operation such as a query on the semantic web, a database engine is required. The database engines that manage RDF/RDFS and OWL based semantic webs are called triplestore, which is introduced in this chapter.
+This chapter studies the design and development of ontology and semantic web model in practice. Both methodologies (ontological engineering) and tools (triplestores) are introduced. Examples are given.
+
+\section{Brief Introduction to Ontological Engineering}
+
+Ontological engineering focuses on the methodology to design the ontology or the semantic web for a specific application or task (recall Fig. \ref{fig:ontologylevel}).
+
+In practice, to model a physical system, we need to define classes, properties, and instances. For class, we need to define class hierarchy and classes relationships (intersection, union, etc.). For properties, we need to define property type, hierarchy, domain and range, property features (transitive, symmetric, etc.) and restrictions. There might be many different ways to design and describe the same physical system. Ontological engineering studies the systematical way of designing, comparing, and merging of ontologies.
+
+Ontology engineering has the following sub areas:
+\begin{itemize}
+	\item Ontology design: it studies the methods to systematically design, develop, and devploy ontology models.
+	\item Ontology mapping: it studies the methods to efficiently compare different ontology models.
+	\item Ontology merging: it studies the methods to efficiently combine ontology models.
+	\item Ontology learning: it studies the automatic learning of new knowledge by an existing ontology model, when new data sets are provided.
+\end{itemize}
+
+\section{Ontology Design}
+
+Ontology design methodology describes all activities necessary for the construction of an ontology model. It helps with consistent, efficient, and distributed (collaborative) ontology model design.
+
+\subsection{Ontology Management Activity}
+
+Design, develop and deploy ontology model for a sophisticated system can be time and manpower consuming. It is important to manage each step during the entire procedure to ensure healthy development of the system. This include
+\begin{enumerate}
+	\item Scheduling: identify tasks and problems to be solved by the semantic web; plan and arrange resources, time, manpower and money ahead.
+	\item Control: guarantee correct execution of tasks and problems to be solved.
+	\item Quality assurance: guarantee all steps are done correctly, including using the correct software, and everything is documented in details.
+\end{enumerate}
+
+In pre-development stage, environment study needs to be carried out. This is mainly to identify what software to use to host the semantic web, and what interface/API shall the semantic have, and what applications would call the API to talk to the semantic web. A feasibility study is also necessary. For example, we need to consider whether it makes sense to develop a semantic web for the application, and whether the semantic web design is realizable.
+
+In development stage, domain expert needs to come in to structure domain knowledge in a conceptual model. Knowledge engineer or data scientist then formalize the conceptual model into a computable (formal) model, then into ontology representation language.
+
+Finally, in the post-development phase, pipeline needs to be designed to maintain, update and scale up and down the ontology model. In the case where the ontology model needs to be migrated into different platforms, used by unplanned applications, or merged with other models, necessary changes need to be made to the model. In the case when the knowledge in a model needs to be exported, knowledge recycle needs to be supported. 
+
+There are many ontology support activities. These activities need to be carried out during the different stages of ontology development. Below is a list of these activities summarized in bullet points.
+\begin{itemize}
+	\item Knowledge acquisition. Interview experts in the field and learn domain knowledge from them. This is referred as ontology learning. This is often done manually by the knowledge engineer or data scientist in the beginning stage. It is also possible to develop tools to automatically gather information and transfer it into ontology models, and even merge it with existing models.
+	\item Technical evaluation. A domain expert checks occasionally to make sure the ontology model is correct.
+	\item Integration and merging. This refers to the case where a big (scaled-up) ontology model can be built from a small existing ontology model.
+	\item Alignment. Where there are multiple ontology models describing the same physical thing, alignment needs to be made to make sure knowledge consistency.
+	\item Documentation and configuration management.
+\end{itemize}
+
+\subsection{Ontology Design Basics}
+
+To design a complicated ontology model, many methods and techniques need to be used comprehensively. It is too complicated to be covered here.
+
+This section introduces the basics of ontology design. It covers a subset of the aforementioned methods and techniques in a very brief manner.
+
+
+
+\section{Linked Data Engineering}
+
+\section{Semantic Search}
 
 \section{Triplestore}
 
@@ -14,9 +68,12 @@ When it comes to relational database, there are many choices of DBMS such as Mic
 	\item Many more, such as Stardog, Blazegraph, AllegroGraph, etc.
 \end{itemize}
 
+More triplestores can be found at W3C, where a list of triple stores is maintained. At this moment of 2023, there are 50 triplestores registered at W3C.
+
 For the demonstrations given in this notebook, GraphDB is used, unless otherwise mentioned. A full instruction on using GraphDB, including applying for access and installation of the software, can be found at \textit{graphdb.ontotext.com}.
 
-Notice that RDF/RDFS/OWL/SPARQL APIs can be enabled using packages or libraries of many programming languages. For example, in Python, there are several packages available for semantic web operations, including \verb|rdflib|, \verb|Owlready2|, \verb|SPARQLWrapper|, etc. Some of these packages have ``lite'' triplestore engine built-in which provides some SPARQL features for in-memory operations. They do not have all the features of a triplestore. However, they can connect to a triplestore API, in which case they serve as Python-to-triplestore interfaces.  
+Notice that RDF/RDFS/OWL/SPARQL APIs can be enabled using packages or libraries of many programming languages. For example, in Python, there are several packages available for semantic web operations, including \verb|rdflib|, \verb|Owlready2|, \verb|SPARQLWrapper|, etc. Some of these packages have ``lite'' triplestore engine built-in which provides some SPARQL features for in-memory operations. They do not have all the features of a triplestore. However, they can connect to a triplestore API, in which case they serve as Python-to-triplestore interfaces.
+
 
 \section{Example: Semantic Web for Home Assets}
 
@@ -44,6 +101,48 @@ The result should be something like Fig. \ref{fig:houseassetexp}, after visualiz
 \subsection{Add OWL}
 
 \subsection{Data Retrieval Examples}
+
+\section{Reference: Commonly Used Namespace}
+
+Commonly used built-in name spaces are summarized in Table \ref{tab:commonnamespace}.
+
+\begin{table}
+	\centering \caption{Commonly used name spaces in RDF models. URI is neglected since they can be easily found online.} \label{tab:commonnamespace}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Namespace & Description \\ \hline
+		\verb|rdf| & RDF syntax. \\
+		\verb|rdfs| & RDFS syntax. \\
+		\verb|xsd|  & XML syntax. \\
+		\verb|foaf| & Friend-of-a-friend. It describes people, their activities and relations to other people and object. \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+To search URI for a name space, use \textit{prefix.cc}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -26,12 +26,13 @@ Examples are given in \textit{pytorchlightning.ai} where PyTorch programs with a
 
 \section{LLaMA}
 
-LLaMA is the large language model published by Meta AI. The associated paper that introduced LLaMA for the first time was published in February 2023 on ArXiv as \cite{touvron2023llama}. The initial LLaMA is trained on publicly available
-datasets exclusively.
+LLaMA is the large language model published by Meta AI. The associated paper that introduced LLaMA for the first time was published in February 2023 on ArXiv as \cite{touvron2023llama}. The initial LLaMA is trained on publicly available datasets exclusively.
 
 Different levels of complexity of the models are provided. Like many other LLMs, Meta AI provides charged service for fine-tuning the model. There is also a re-write of LLaMA, namely Lit-LLaMA, that is completely open source under Apache 2.0 license. Both LLaMA and Lit-LLAMA can be fine-tuned via tools such as LoRA and Stanford Alpaca.
 
 Comparing with other models such as ChatGPT-3, LLaMA is claimed to use smaller models (with less number of parameters) to achieve the same performance.
+
+Notice that LLaMA is released as the base model, not the assistant model. This is different from GPT-4, in which case up till this moment only assistant model is released.
 
 \subsection{LLaMA: Open and Efficient Foundation Language Models}
 
@@ -152,7 +153,7 @@ The latest version of LoRA is supported by \textit{github.com/huggingface/peft},
 
 Lit-LLaMA is an open-source recreation of LLaMA by Lightning.AI. Think of Lightning.AI as something similar with GNU project (Linux project). GNU wants to create a open-source version of UNIX that can be freely distributed. Companies like Red Hat can make a profit from it by providing enterprise level support to the subscribers who uses RHEL. Lightning.AI is essentially trying to do the same: it creates user-friendly interfaces for existing AI models such as PyTorch, and sometimes recreates open-source version of existing (commercialized) models, and make them open-source. It encourages users to use their interfaces and models. It makes profits by providing add-on services such as training models using their servers, etc.
 
-Lit-LLaMA is a recreation of LLaMA model based on nanoGPT, another open-source transformer model. Different with LLaMA which is under GPL license, nanoGPT is under MIT license and Lit-LLaMA Apache license, both of which more friendly for private projects. Lit-LLaMA Github repository is given here \textit{github.com/Lightning-AI/lit-llama}. 
+Lit-LLaMA is a recreation of LLaMA model based on nanoGPT, another open-source transformer model. Different with LLaMA which is under GPL license, nanoGPT is under MIT license and Lit-LLaMA Apache license, both of which more friendly for private projects. Lit-LLaMA Github repository is given here \textit{github.com/Lightning-AI/lit-llama}.
 
 Unlike LLaMA where approval is required to download the trained model, under the scope of Lit-LLaMA, it is fine to download the trained 7B model freely. The customer can run the trained model on its server. A decently powerful GPU is required. Such a power GPU often causes a few thousands (e.g., NVIDIA GeForce RTX 3090 24GB, which can be used to run and fine-tune the model, approx $3$k) to tens of thousands (e.g., NVIDIA A100 80GB, which can be used to train LLaMA and Lit-LLaMA from scratch, approx $15$k) USD.
 
@@ -166,7 +167,7 @@ It is quite unfortunate that, in the area of AI, academic researchers and univer
 
 Stanford Alpaca 7B is a fine-tuned model from LLaMA 7B model. The cost of the fine-tuning is impressively small (hundreds of USD), and the performance of the system after fine-tuning is comparable with ChatGPT-3.5 (text-davinci-003) which has a significantly larger model of 335B than 7B.
 
-It is common that a fine-tuned model gets its performance boosted. However, it is quite surprising to see a huge boost of performance happening on LLaMA 7B, as this model is famous for being small and already being trained by a huge amount of data. How much potential does LLaMA 7B have that can be further improved? Not to mention, everything is done using only a few hundred USD, given that a GPU alone that can train the model would usually cause thousands of dollars.  
+It is common that a fine-tuned model gets its performance boosted. However, it is quite surprising to see a huge boost of performance happening on LLaMA 7B, as this model is famous for being small and already being trained by a huge amount of data. How much potential does LLaMA 7B have that can be further improved? Not to mention, everything is done using only a few hundred USD, given that a GPU alone that can train the model would usually cause thousands of dollars.
 
 It is worth mentioning that text-davinci-003 outputs are used to fine-tune LLaMA 7B to create Stanford Alpaca 7B. This may imply:
 \begin{itemize}

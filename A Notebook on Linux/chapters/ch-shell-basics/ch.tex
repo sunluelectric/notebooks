@@ -1,10 +1,8 @@
-%\chapterauthor{Author Name}{Author Affiliation}
-%\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{Shell Basics} \label{ch:sb}
 
-Linux command line tool, usually known as the ``shell'', is the most powerful tool for Linux operations including configuration and control of the OS. Notice that the use of the shell is not compulsory for casual users when the graphical desktop is present. Though the shell is not as intuitive as the graphical tools, it is more powerful and flexible, and well-supported by the community.
+Linux command line tool, usually known as the ``shell'', is the most powerful tool for Linux operations including configuration and control of the OS. Notice that the use of the shell is not compulsory for casual users when the graphical desktop is present. Though the shell is not as intuitive as the graphical tools, it is more powerful, flexible and better-supported by the community.
 
-Linux shell will be used rapidly in the remaining sections of this notebook.
+Linux shell will be used rapidly in the remaining parts of this notebook.
 
 \section{Brief Introduction}
 
@@ -12,7 +10,7 @@ Linux command line tool, usually known as Linux shell, was invented before the g
 
 \subsection{Shell Types}
 
-There are different types of shells. The most commonly used shell is the ``bash shell'' which stands for ``Bourne Again Shell'', derived from the ``Bourne Shell'' used in UNIX. An example \verb|calculate_fib.sh| written in bash shell script is given below, where the first 10 terms in Fibonacci series is calculated ``1, 1, 2, 3, 4, 8, 13, 21, 34, 55''.
+There are different types of shells. The most commonly used shell is the ``bash shell'' which stands for ``Bourne Again Shell'', derived from the ``Bourne Shell'' used in UNIX. An example \verb|calculate_fib.sh| written in bash shell script is given below, where Fibonacci series is calculated ``1, 1, 2, 3, 4, 8, 13, 21, 34, 55''.
 
 \begin{lstlisting}
 #!/usr/bin/bash
@@ -36,44 +34,41 @@ r=`fib $n`
 echo "$r"
 \end{lstlisting}
 
-Some other shells such as ``C Shell'' and ``Korn Shell'' are also popular among certain users or certain Linux distributions. For example, C Shell supports C-like shell programming, which can sometimes be more convenient than the bash shell. In case where the Linux distribution does not have these shells pre-installed, the user can install and use these shells just like installing other software.
+Some other shells such as ``C Shell'' and ``Korn Shell'' are also popular among certain users or certain Linux distributions. For example, C Shell supports C-like shell programming, which is sometimes more convenient than the bash shell. In case where the Linux distribution does not have these shells pre-installed, the user can install and use these shells just like installing other software.
 
 In this notebook, bash shell is assumed unless otherwise mentioned.
 
 \subsection{Prompt and Basic Concepts}
 
-After opening the shell or terminal, you will see a string (usually containing username, hostname, current working directory, etc.) followed by either a \verb|$| or \verb|#|, starting from where you can input your shell command. For example, it may look like the following:
+After opening the shell or terminal, a string (usually containing username, hostname, current working directory, etc.) followed by either a \verb|$| or \verb|#| appears, following which the user inputs the shell command. The string may look like the following:
 \begin{lstlisting}
 <username>@<hostname>:~$
 \end{lstlisting}
 
-The above displayed string is called a \textit{prompt}, indicating the start of a manually input command. By default, for regular user, the ending of the prompt is \verb|$| while for the root user, the ending is \verb|#|. The prompt can be customized by changing the environment variable \verb|PS1|. See Sections \ref{ch:sb:subsec:shellenvvar}, \ref{ch:sb:subsec:others} for details about environment variable and shell configuration, respectively.
+The above string is called a \textit{prompt}, indicating the start of a user command. By default, for regular user, the ending of the prompt is \verb|$| while for the root user, the ending is \verb|#|. The prompt can be customized by changing the environment variable \verb|PS1|. See Sections \ref{ch:sb:subsec:shellenvvar}, \ref{ch:sb:subsec:others} for details about environment variable and shell configuration, respectively.
 
-For the term ``root user'', we are referring to a special user with username and user ID (UID) ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, change ownership of files, etc. To avoid vital damage by human error, root user shall not be used unless it is definitely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
+For the term ``root user'', we are referring to a special user with username and user ID (UID) ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid vital damage by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
 
-Notice that the root user is different from a ``sudoer'', later of which is basically a regular user equipped with \textit{sudo privilege}. However, a sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
+Notice that the root user is different from a ``sudoer'', later of which is basically a regular user equipped with \textit{sudo privilege}. A sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
 \begin{lstlisting}
 <username>@<hostname>:~$ sudo su
 [sudo] password for <username>:
 root@<hostname>:/home/<username>#
 \end{lstlisting}
+More about sudo privilege, \verb|sudo| and \verb|su| commands are introduced later.
 
-More about sudo privilege, \verb|sudo| and \verb|su| commands are introduced later parts of the notebook.
-
-You can key in a command after the prompt, and execute the command by pressing the \verb|Enter| key. A Linux shell command usually has the following form.
+Key in a command after the prompt followed by \verb|Enter| key to execute the command. A Linux shell command usually has the following form.
 \begin{lstlisting}
 $ <command> <option> <input>
 \end{lstlisting}
 
-\section{Shell Basic Commands}
+\section{Basic Commands}
 
-Some useful commands are introduced in this section by categories.
-
-Notice that text file editing, files management (such as changing ownership of files), software management (such as installation of software, checking version, upgrading software, etc.), process management (such as checking CPU usage, terminating a process) are commonly used in Linux operations. They are not included in this chapter, but introduced separately in later chapters.
+Some basic and useful commands are briefly introduced in this section by categories.
 
 \subsection{Set Shell Environment Variables}\label{ch:sb:subsec:shellenvvar}
 
-Unless the directory where a command resides is specifically given, the OS only recognizes the commands saved in the PATH environment of the shell. The PATH environment is a series of directories (locations) in the system, and it is initialized automatically when the shell is started. Check the PATH environment by
+To execute a command by its name, the OS needs to know where the command is located at. Commonly used commands shall be included in the PATH environment of the shell, so that they can be executed anytime from any working directory. The PATH environment is a series of directories (locations) in the system, and it is initialized automatically when the shell is started. Check the PATH environment by
 \begin{lstlisting}
 $ echo $PATH
 <directory-1>:<directory-2>:<directory-3>: ...
