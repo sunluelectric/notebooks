@@ -59,12 +59,8 @@ More about sudo privilege, \verb|sudo| and \verb|su| commands are introduced lat
 
 Key in a command after the prompt followed by \verb|Enter| key to execute the command. A Linux shell command usually has the following form.
 \begin{lstlisting}
-$ <command> <option> <input>
+$ <command> [<option>] [<input>]
 \end{lstlisting}
-
-\section{Basic Commands}
-
-Some basic and useful commands are briefly introduced in this section by categories.
 
 \subsection{Set Shell Environment Variables}\label{ch:sb:subsec:shellenvvar}
 
@@ -81,7 +77,7 @@ $ type <command>
 <command-location>
 \end{lstlisting}
 
-In addition to \verb|PATH|, there is a list of other shell environment variables for the user to monitor and control and status of the system. Table \ref{ch:sb:tab:shellenvironmentvars} summarizes commonly used shell environment variables. Command \verb|echo $<variable-name>| can be used to check the values of these variables.
+In addition to \verb|PATH|, there is a list of other shell environment variables for the user to monitor and control and status of the system. Table \ref{ch:sb:tab:shellenvironmentvars} summarizes commonly used shell environment variables. Command \verb|echo $<variable-name>| can be used to check the values of these variables. Use command \verb|env| to check a list of environment variables in the shell.
 
 \begin{table}
 	\centering \caption{Commonly used shell environment variables.}\label{ch:sb:tab:shellenvironmentvars}
@@ -108,14 +104,15 @@ The environmental variables can be edited and new environmental variables can be
 \begin{lstlisting}
 <variable-name> = <variable-value> ; export <variable-name>
 \end{lstlisting}
-
 For example,
 \begin{lstlisting}
 PATH = $PATH:/getstuff/bin ; export PATH
 \end{lstlisting}
-adds a new directory \verb|/getstuff/bin| to the \verb|PATH| environmental variable.
+adds a new directory \verb|/getstuff/bin| to the \verb|PATH| environmental variable. Notice that each time the shell is restarted, the environmental variables are also reset. To permanently change the value of an environmental variable, consider changing it in the bash start scripts such as \verb|~/.bashrc|.
 
-Use command \verb|env| to check a list of environment variables in the shell.
+\section{Basic Commands}
+
+Some basic and useful commands are briefly introduced in this section by categories.
 
 \subsection{Display User Information}
 
@@ -184,9 +181,9 @@ for example
 $ alias pwd='pwd; ls -CF'
 \end{lstlisting}
 
-To permanently add alias to the shell, the alias needs to be added to the bash start script, which is usually \verb|~/.bashrc| for a user. See Section \ref{ch:sb:subsec:others} for details.
+To permanently add alias to the shell, the alias needs to be added to the bash start scripts such as \verb|~/.bashrc|.. See Section \ref{ch:sb:subsec:others} for details.
 
-\subsection{Others}\label{ch:sb:subsec:others}
+\subsection{Other Commands}\label{ch:sb:subsec:others}
 
 Many commands can be used flexibly and it is impossible to illustrate all their details. Consider use the following two methods to check the detailed manual about a command.
 \begin{lstlisting}

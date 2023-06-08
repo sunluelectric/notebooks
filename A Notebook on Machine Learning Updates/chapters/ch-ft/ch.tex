@@ -1,0 +1,86 @@
+\chapter{Model Fine Tuning and Knowledge Distillation} \label{ch:ft}
+
+Training an LLM from scratch is usually time and computational power consuming. For cost efficiency, it is usually preferable to train a new LLM from an existing one. 
+
+The first approach of suck kind is to re-use the weights of the existing model in the new model. For example, one may train a new model with its weights initialized as the existing model weights. Alternatively, one may modify the weights of the existing model, and save them as the new model. This approach is often known as model fine tuning.
+
+Alternatively, consider building a new and smaller model. Take the new model as the ``student'', and let the existing LLM model be the ``teacher'' that teaches the new model. The new model is trained to mimic the outputs of the existing model in a specific domain. The new model is more efficient and runs faster with less cost compared with the existing model due to the smaller size. This approach is often known as knowledge distillation.
+
+Model fine tuning and knowledge distillation are introduced in this chapter.
+
+\section{Transfer Learning VS Model Fine Tuning}
+
+Transfer learning and model fine tuning are sometimes used interchangeably. They share similarities and sometimes may indeed refer to the same operation. However, it is worth clarifying the differences of the two concepts here.
+
+Transfer learning refers to any attempt that tries to build a model for a new task using an existing model originally designed for another task. For example, consider an existing CNN for edge and shape detection. It is possible to add a new dense network on top of the CNN for cat detection. The weights of the original CNN is not changed (hence, it is not model fine tuning). It is just that its output is used as the input to a newly designed downstream network.
+
+Model fine tuning is a widely used technique for transfer learning. It refers to the attempt of building a new network by modifying fully or partially the weights of an existing network. In a full fine tuning, the new network uses the weights of the existing network as a starting point, and further update them using new training data. In partial fine tuning, some of the weights of the existing network are fixed (usually bottom layers, i.e. the layers close to the input) while others are updated (usually top layers, i.e., the layers close to the output) using new training data. Partial fine-tuning often has the advantage of saving computational and memory burden, as less parameters are updated.
+
+\section{Model Fine Tuning}
+
+Both full and partial model fine tuning methods are introduced in this section.
+
+\subsection{Full Fine Tuning}
+
+There are many studies on model fine tuning. The most intuitive fine tuning method is full fine tuning, which basically continue training an existing model using new training data to boost its performance. There are many tools for full fine tuning an LLM (or other AI models). Technically speaking, the methods used to train the model from scratch can be used here to continue training it on new data. An example of such methods is ADAM optimizer, which is widely used in LLM training.
+
+In the context of LLM, a full fine tuning algorithm often tries to find such weights $\Phi$ that maximizes
+\begin{eqnarray}
+	\sum_{(x,y)\in Z}\sum_{t=1}^{|y|} \textup{log}(P_{\Phi}(y_t|x)) \nonumber
+\end{eqnarray}
+where $x, y$ are tokenized sequence, $P_{\Phi}(y|x)$ a pre-trained autoregressive language model parameterized by $\Phi$, and $Z=\{(x_i,y_i), i=1,...,N\}$ the context-target pairs. The same objective functions applies for training an LLM from scratch, in which case $\Phi$ is initialized with random values instead of a pre-trained model.
+
+The disadvantage of full fine tuning is obviously the computational and memory cost, as there are many values to be parameters to be updated. This is true especially in LLM, and there are often billions of parameters in a model (for example, GPT-3 has 175 billions of parameters).
+
+\subsection{Partial Fine Tuning}
+
+Partial fine tuning of an AI model refers to fixing some of the parameters in an existing model and updating only selected parameters when training it on new datasets. It is widely used in ANN, not only to LLM. A general way of partial fine tuning is to fix the bottom layers of an AI model and only update the top dense layers, as it is widely accepted that top layers contain more comprehensive features of a task.
+
+An advantage of partial fine tuning over full fine tuning is saving computational cost, as there are less parameters to be tuned. In addition, it also saves storage space when there are multiple fine tuned models, as part of the weights are shared and do not need to be stored in duplicated pieces.
+
+When comes to LLM partial fine tuning, many algorithms have been proposed with details implemented carefully to enhance computational efficiency. Some examples are given below.
+
+\vspace{0.1in}
+\noindent \textbf{Prompt Engineering} 
+\vspace{0.1in}
+
+Prompt engineering refers to the fine tuning of an LLM base model to assistant model, i.e., to train it using ``request(prompt)-and-response'' datasets on top of the LLM base model so that it can answer human questions. Notice that both full and partial fine tuning can be applied in prompt engineering.
+
+\vspace{0.1in}
+\noindent \textbf{Parameter-Efficient Adaptation} 
+\vspace{0.1in}
+
+Parameter-efficient adaptation refers to the technique where ``adapter layers'' are inserted into the existing LLM. Only the adapter layers weights are updated during the fine tuning. This changes the topology and schematic of the LLM, which potentially adds complexity and computational load to the network. 
+
+It is argued that since the adapter layers are often smaller in size ($<1\%$) compared with the original LLM, thus the small bottleneck may not largely affect the general performance of the system. However, in LLM practice, since it relies very heavily on hardware parallelism to keep the latency low, and adapter layers can be processed only sequentially, the introduced inference latency is quite noticeable.
+
+\vspace{0.1in}
+\noindent \textbf{Low-Rank Structure Based Adaption}
+\vspace{0.1in}
+
+Instead of fine tuning the weights directly, consider finding the optimal ``delta of weights''. The $\Delta W$ is obtained using the new training data, and it is added to the original weights $W = W_0 + \Delta W$ to form the new model. In practice, $\Delta W=BA$ is formed by the product of two low-rank matrices $B\in\mathbb{R}^{d\times r}$, $A\in\mathbb{R}^{r\times k}$ obtained during the fine tuning, hence the name low-rank structure based adaption. An example of such techniques is Low-Rank Adaption of LLMs (LoRA), which will be introduced in more details in later sections.
+
+LoRA has some advantages. It has a low computational cost when a small $r$ is used. The value of $r$ serves as a balancing factor, where the larger $r$, the more close it is to the full fine tuning. Unlike parameter-efficient adaptation, LoRA does not change the structure of the model, thus not adding computational complexity. Finally, the original model $W_0$ can be recovered easily from $W$ by subtracting $\Delta W$. These advantages make LoRA a popular fine tuning method.
+
+\section{Low-Rank Adaptation of LLMs (LoRA)}
+
+LoRA, its extensions, and its practice usage are introduced in this section.
+
+\subsection{Original LoRA}
+
+As introduced earlier, LoRA tries to find the optimal $B\in\mathbb{R}^{d\times r}$, $A\in\mathbb{R}^{r\times k}$ that form the ``delta of weights'' $\Delta W = BA$. The fine tuned weights $W = W_0+\Delta W$ is the sum of the original weights and the delta of weights.
+
+Hyper parameter $r$ decides the complexity of the fine tuning. When $r$ is chosen small, the fine tuning is computationally lite; when chosen large, the fine tuning is computationally heavy and the performance of the model would converge to a full fine tuning model.
+
+The model stores $W_0$, $B$ and $A$ separately. When executing the model, $W = W_0+\Delta W = W_0 + BA$ is calculated and used, which integrates the fine tuning knowledge into the original model and reduces inference latency. When fine tuning for a different task, only $B$, $A$ needs to be re-calculated and there is no need to change $W_0$.
+
+Studies have been carried out on how $\Delta W$ relates to $W$, and how to choose $r$ in practice, etc. Details are not given here. See \cite{hu2021lora} for more details.
+
+\subsection{LoRA Extensions}
+
+There are some extensions for LoRA. For example, QLoRA modifies LoRA and claims that it can train a model with much smaller GPU ($780GB$ memory GPU to single core $48GB$ memory GPU) and less time consumption ($<1$ day) than the state-of-the-art, while not sacrificing too much performance. See \cite{dettmers2023qlora} for more details. QLoRA makes $33B$ and $65B$ LLMs more accessible to regular PCs.
+
+\subsection{LoRA Practice}
+
+\section{Knowledge Distillation}
+
