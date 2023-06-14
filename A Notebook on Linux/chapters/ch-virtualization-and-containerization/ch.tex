@@ -1,14 +1,18 @@
 \chapter{Virtualization and Containerization}
 
-Virtualization and containerization are widely appreciated techniques for distributing multiple instances of applications on single or multiple physical servers. The most important objective of virtualization and containerization is for each instance to generate consistent result, while deploying each instance efficiently and saving the total resource consumption.
+Virtualization and containerization are widely appreciated techniques for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization and efficiency, while maintaining isolation between applications. The key challenge for virtualization and containerization is to deploy and manage each instance efficiently and consistently across various environments.
 
 \section{Introduction}
 
 One of the major differences between a server (or a server cluster) and a PC is that a server is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, each and every user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and hard disk storage, despite that the actual hardware is shared with others. This is done through \textit{Virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
 
-Deploying a new VM would generally consume considerably large amount of time and computational load, because it needs to load the OS in its first startup. Consider a case where there are hundreds of small applications (microservices, as people call them nowadays), each requiring running in a similar but separate environment. Launching a VM for each application can be a solution, but it can be expensive due to the time and resource consumption burden. It would be batter to rather deploy only one VM (or physical server), and put each application in a ``container'' with its own customized drivers and configurations. A container is similar with a VM in the sense that it runs separately from other containers. However, a container is much ``lighter'' than a VM, thus is cheaper to launch and manage. This becomes possible thanks to \textit{containerization}. Since a container contains all the configuration and minimum requirement information of the application, running a container on different platforms would generate consistent result. This has made sharing and fast-deploying of containers very easy and convenient. The similarities and differences of personal PC, VM, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
+Deploying a new VM generally consumes a considerable amount of time and computational load. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for each application is resource-intensive, particularly when these applications could simply share the same OS kernel and operate within their own isolated workspaces.
 
-As an analogy, think of running an APP as asking a restaurant to prepare a dish. The hardware is corresponding with the kitchen of the restaurant. The OS is corresponding with the cook, who uses the materials in the kitchen to make the dish. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries are like the skill set expected from the cook in order to prepare the dish correctly. Therefore, installing and configuring drivers and libraries in the OS is like teaching the cook how the dish should be prepared. Finally, the APP is corresponding with the expected dish.
+A more efficient approach would be to deploy a single VM (or use a physical server) and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
+
+The technique used to deploy and manage containers is known as ``containerization''. As a container contains all the configuration and minimum requirement information of an application, running a container on different platforms would consistently generate the expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
+
+As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware is corresponding with the physical resources in kitchen, such as the cooktop, the gas, etc. The OS is corresponding with the person who manages the kitchen, say a cook. He arranges the resources in the kitchen to make dishes. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries are like the necessary skill sets or specific cookers to prepare the dish correctly. Therefore, installing and configuring drivers and libraries in the OS is like teaching the cook how the dish should be prepared. Finally, the APP is corresponding with the expected dish.
 
 \begin{figure}
 	\centering
@@ -23,13 +27,13 @@ In the most simple configuration, a dedicated machine is used to run an APP. Thi
 	\caption{PC implementation: a cook in a kitchen.} \label{ch:vac:fig:acookinakitchen}
 \end{figure}
 
-In a VM implementation, a larger and more capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the resources in the kitchen can be utilized more effectively.
+In a VM implementation, a larger and more capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the kitchen can be utilized more effectively.
 \begin{figure}
 	\centering \includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/manycooksinakitchen.png}
 	\caption{VM implementation: many cooks in a kitchen, each with a different cookbook.} \label{ch:vac:fig:manycooksinakitchen}
 \end{figure}
 
-While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each different dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided that contains everything needed to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
+While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided that contains everything needed to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
 
 \begin{figure}
 	\centering
@@ -40,31 +44,31 @@ While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in m
 Just like a receipt guaranteeing the consistency of dishes, in containerization, an ``image'' guarantees the consistent performance of container instances. An image is basically a collection of prerequisites and configurations, from where a container can be launched quickly and conveniently. Images can be shared among machines to replicate the containers, even if the machines use different OS.
 
 \section{Virtualization and Containerization}
+
 ...
 
 \section{Docker Container} \label{ch:vac:sec:dc}
 
-Before moving forward to the introduction of containerization approaches, it is important to briefly explain the following 3 terms what would be frequently mentioned in the remaining of this chapter: container runtime, container engine, and container orchestration. 
+Before moving forward to the introduction of containerization approaches, it is important to briefly explain the following 3 terms that would be frequently mentioned in the remaining parts of this chapter: container runtime, container engine, and container orchestration.
 
-Container runtime refers to the backend software that actually runs the containers. One of the widely used container runtimes is ``containerd''. Other container runtime examples include ``runc''. Container engine is the interface for a user or software to manage images and containers. One of the widely used container engines is ``docker''. Alternatives to docker include ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to automatically scale up and down the number of running containers based on the loads, balance the API calls made to the containers. One of the most widely used container orchestrations is ``kubernetes''.
+Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'' and ``runc''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to automatically scale up and down the number of running containers based on the loads and balance the API calls made to the containers. One of the most widely used container orchestrations is ``kubernetes''.
 
-Container runtime is necessary for containerization implementation of any kind. For personal applications, it is possible to manually deploy containers just using a container engine, without a container orchestration. For massive deployment of containers in an enterprise, container orchestration is almost certainly required. In such a case, the container orchestration calls the container engine via API, telling later of which how the containers should be deployed.
+Container runtime and engine are essential in almost every system that uses containerization. Container runtime is necessary for containerization implementation of any kind. It is usually behind the screen, backing up the container engine. For example, docker container engine is backed up by containerd. Container engine is the interface and management tool for container runtime, which is almost certainly needed in every container use case.
 
-Docker engine is one of the most popular container engines available on the market, and it is free of charge for personal and non-commercial usage. The basics of using the docker container engine are introduced in this section. More details of docker can be found at \textit{https://docs.docker.com/reference/}.
+For personal applications, it is possible to manually deploy containers using a container engine without a container orchestration. For massive deployment of containers in an enterprise, container orchestration is almost certainly required. In such a case, the container orchestration calls the container engine via API, instructing it on how the containers should be deployed.
+
+Docker engine is one of the most popular container engines available on the market, and it is free of charge for personal and non-commercial usage. The basics of using the docker container engine are introduced in this section. More details of docker can be found at \textit{https://docs.docker.com/reference/}. It is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier podman is an alternative to docker, and it is the default container engine for RHEL 8 and 9.
 
 \subsection{Docker Installation}
 
-To install Docker on a Linux machine, go to \textit{https://www.docker.com/} to look for the instruction. The installation steps differ depending on the host Linux distributions. As an example, consider installing Docker engine on Ubuntu. Some of the key steps are summarized as follows.
+To install Docker on a Linux machine, go to \textit{https://www.docker.com/} to look for the instruction. The installation steps differ depending on the host machine. As an example, consider installing Docker engine on Ubuntu. Some of the key steps are summarized as follows.
 
-\vspace{0.1in}
-\noindent \textbf{Remove existing Docker engine, if any.}
+Remove existing Docker engine, if any.
 \begin{lstlisting}
 $ sudo apt-get remove docker docker-engine docker.io
 $ sudo apt-get remove containerd runc
 \end{lstlisting}
-
-\vspace{0.1in}
-\noindent \textbf{Add Docker's official GPG key and set up the repository.}
+Add Docker's official GPG key and set up the repository.
 \begin{lstlisting}
 $ sudo apt-get update
 $ sudo apt-get install ca-certificates curl gnupg lsb-release
@@ -74,26 +78,23 @@ $ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 \end{lstlisting}
-
-\vspace{0.1in}
-\noindent \textbf{Install Docker.}
+Install Docker.
 \begin{lstlisting}
 $ sudo apt-get update
 $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 \end{lstlisting}
-
 To test whether docker is installed correctly, run
 \begin{lstlisting}
 $ sudo docker run hello-world
 \end{lstlisting}
 and if everything is done correctly, a message started with ``Hello from Docker!'' will be displayed in the console, together with a brief introduction to how docker works.
 
-Notice that to use docker commands, sudo privilege is required. To avoid typing \verb|sudo| each time running a docker command, add the user to the docker group as follows.
+Notice that to use docker commands, sudo privilege is required. To avoid typing \verb|sudo| each time running a docker command, add the user to the docker group as follows. In the rest of the section, \verb|sudo| is neglected for docker commands.
 \begin{lstlisting}
 $ sudo usermod <user name> -aG docker
 \end{lstlisting}
 
-In the rest of the section, \verb|sudo| is neglected for docker commands.
+Docker installs at least two piece of software on the machine, namely Docker CLI and docker server (also known as docker daemon). The CLI is the interface to the user, and the server is the actual tool that manages images and containers. Docker runs natively on Linux OS. If docker is installed on non-Linux system such as Windows or macOS, ``docker desktop'' is used, which includes a Linux VM to host the docker daemon and run Linux-based containers.
 
 \subsection{Container Launching}
 
@@ -109,13 +110,13 @@ to check the list of running containers, and
 \begin{lstlisting}
 $ docker container ls -a
 \end{lstlisting}
-the list of all containers, running or exited. Alternatively, \verb|docker ps| can also be used to list down containers just like \verb|docker container ls|.
+the list of all containers, running or exited. Alternatively, \verb|docker ps|, \verb|docker ps -a| can also be used to list down containers just like \verb|docker container ls|, \verb|docker container ls -a|.
 
 For example, consider running a container of \textit{alpine} as follows. A screen shot is given in Fig. \ref{ch:vac:fig:dockerrunexp}.
 \begin{lstlisting}
 $ docker run -it --name test-alpine alpine
 \end{lstlisting}
-where \verb|-i| stands for ``interactive'', which keeps the container's standard input (i.e., the console in this example) open so that the user can actively interact with the container. Option \verb|-t| allocates a pseudo-TTY to the container. TTY stands for ``TeleTYpewriter'', which enforces the I/O of the container following the typical terminal format, hence making the interactive interface a bit more user-friendly. Finally, \verb|--name| assign a name to the container. Without an assigned name, docker will assign a random name to the container.
+where \verb|-i| stands for ``interactive'', which keeps the container's standard input (i.e., the console in this example) open so that the user can actively interact with the container. Option \verb|-t| allocates a pseudo-TTY to the container. TTY stands for ``TeleTYpewriter'', which enforces the I/O of the container following the typical terminal format and allows the user to interact with the container like a traditional terminal, hence making the interactive interface a bit more user-friendly. Finally, \verb|--name| assigns a name to the container. Without an assigned name, docker will assign a random name to the container.
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/dockerrunexp.png}
@@ -136,7 +137,7 @@ After exiting from Fig. \ref{ch:vac:fig:dockerrunexp} (by using \verb|exit| in \
 	\caption{List the exited container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart3}
 \end{figure}
 
-It is also possible to launch a container and let it run in the backend using \verb|-d| flag. An example is given below.
+It is also possible to launch a container and let it run in the backend using \verb|-d| flag which stands for ``detached mode''. An example is given below.
 \begin{lstlisting}
 $ docker run -dt --name test-background-alpine alpine
 \end{lstlisting}
@@ -152,7 +153,7 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 		\verb|docker run| & --- & Launch a container of the image followed by the command. If the image cannot be found locally, it downloads the image from the remote repository automatically. Assign a random name to the container. Exit the container after execution. \\ \hdashline
         \verb|docker run| & \verb|-i| & Keep the standard input of the container open when launching the container. \\ \hdashline
         \verb|docker run| & \verb|-d| & Launch the container in the backend and keep it running. \\ \hdashline
-        \verb|docker run| & \verb|-rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used for testing and debugging. \\ \hdashline
+        \verb|docker run| & \verb|--rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used for testing and debugging. \\ \hdashline
         \verb|docker run| & \verb|-t| & Allocate a pseudo-TTY. The flag usually comes with the flags \verb|-i| or \verb|-d|, to form \verb|-it| or \verb|-dt|. \\ \hdashline
         \verb|docker run| & \verb|--restart| & Enforce restart of the container upon exiting. This is usually used on containers running in the backend. Commonly used restart configurations include \verb|--restart no| (do not restart), \verb|--restart on-failure[:<max retries>]| (restart if exits with an error flag), \verb|--restart always| (always restart when exists). \\ \hdashline
         \verb|docker run| & \verb|--name| & Assign a name to the container. \\
@@ -174,7 +175,7 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 
 \subsection{Basic Container Management}
 
-To start an exited container, use
+To re-start an existing but exited container, use
 \begin{lstlisting}
 $ docker start <container>
 \end{lstlisting}
@@ -202,7 +203,7 @@ To check the processes that is running in the container, use
 $ docker top <container>
 \end{lstlisting}
 
-There are multiple ways and protocols to access with the files in a container, depending the I/O setup of the container. For a container running locally, \verb|docker cp| can be used for file transfer between the container and the host machine as follows. From container to host machine:
+There are multiple ways and protocols to access the files in a container, depending on the I/O setup of the container. For a container running locally, \verb|docker cp| can be used for file transfer between the container and the host machine as follows. From container to host machine:
 \begin{lstlisting}
 $ docker cp <container>:<source> <destination>
 \end{lstlisting}
@@ -231,11 +232,11 @@ respectively. To rename a container (without changing its container ID or anythi
 $ docker rename <container-old-name> <container-new-name>
 \end{lstlisting}
 
-To quickly check container status (CPU, memory usage, etc.) of a running container or all running containers, use
+To quickly check container status including resource consumption (CPU, memory usage, etc.), use
 \begin{lstlisting}
-$ docker stats <container>
+$ docker stats [<container>]
 \end{lstlisting}
-where the container name can be specified as an option. To list down more detailed information of a container, including its status, gateway, IP address, etc., use
+where the user can choose to list down all containers or a specified container. To show more detailed information of a container, including its status, gateway, IP address, etc., use
 \begin{lstlisting}
 $ docker inspect <container>
 \end{lstlisting}
@@ -244,29 +245,31 @@ Finally, to check the logs of a container (e.g., its standard output to the cons
 $ docker logs <container>
 \end{lstlisting}
 
-A container is usually generated from its image. It is also possible to package a container into an image. To create an image from a container, use
+A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. To create an image from a container, use
 \begin{lstlisting}
 $ docker commit <container> <image>
 \end{lstlisting}
 where \verb|docker commit| command saves the container's file changes or settings into a new image, which allows easier populating containers or debugging in a later stage. Notice that \verb|docker commit| does not save everything of the container into the image, and it is not the only way an image is created.
 
-\subsection{Example: A Web Server}
+\subsection{Ports Exposure and Load Balancing}
 
 A container can be configured accessible from not only the host machine but also other computers in LAN or the Internet. In a typical web service application, the host machine and the containers are often designed following the architecture similar with Fig. \ref{ch:vac:fig:containerwebserverarchitecture}. Notice that in practice, the load balancer and the containers may or may not run on the same physical machine.
 
-The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP, in this case a web servers such as \textit{apache} or \textit{nginx}, shall run in the containers.
+The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP instances such as \textit{apache} or \textit{nginx} shall run in the containers distributively.
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/containerwebserverarchitecture.png}
 	\caption{A simplified architecture where containers are used to host the web service.} \label{ch:vac:fig:containerwebserverarchitecture}
 \end{figure}
 
-An example of setting up a web server in containers from scratch is given in this section. For simplicity, everything is on a single physical server. Only one container is used and the load balancer and the shared services are not included in the example. As a first step, create a container from the official \textit{nginx} image as follows. Notice that it is also possible to create a container from \textit{apline}, and install \textit{nginx} on \textit{apline}.
+An example of setting up a web server in containers from scratch is given in this section. For simplicity, everything happens on a single physical server. Only one container is used and the load balancer and the shared services are not included in the example.
+
+As a first step, create a container from the official \textit{nginx} image as follows. Notice that it is also possible to create a container from \textit{apline}, and install \textit{nginx} on \textit{apline}.
 \begin{lstlisting}
 $ docker run -dt --name simple-web nginx
 \end{lstlisting}
 
-Next, create the configuration file for \textit{nginx}, and also the \textit{html} files to be used as the static web page. For convenience, the files are created and edited in the host machine, then copied to the container. The following \textit{default.conf} and \textit{index.html} have been created, respectively. The configuration file \textit{default.conf}:
+Next, create the configuration file for \textit{nginx}, and also the \textit{html} files to be used as the static web page. For convenience, the files are created and edited in the host machine, then copied to the container. The following \textit{default.conf} and \textit{index.html} have been created, respectively. The configuration file \textit{default.conf} is given below.
 \begin{lstlisting}
 server {
 	listen 80 default_server;
@@ -274,7 +277,7 @@ server {
 	root /var/www/html/;
 }
 \end{lstlisting}
-The \textit{html} file \textit{index.html}:
+The \textit{html} file \textit{index.html} is given below.
 \begin{lstlisting}
 <html>
 	<body>
@@ -284,11 +287,16 @@ The \textit{html} file \textit{index.html}:
 \end{lstlisting}
 Use \verb|docker copy| to copy the two files to the designed locations in the container as follows.
 \begin{lstlisting}
-$ docker exec simple-web mkdir /var/www
-$ docker exec simple-web mkdir /var/www/html
+$ docker exec simple-web mkdir -p /var/www/html
 $ docker cp default.conf simple-web:/etc/nginx/conf.d/default.conf
 $ docker cp index.html simple-web:/var/www/html/index.html
 \end{lstlisting}
+where \verb|mkdir -p| creates the directories along the given path, if not exist. Notice that the file name in the destination can be ignored if it is the same with the source, i.e., the copy commands can be replaced by
+\begin{lstlisting}
+	$ docker cp default.conf simple-web:/etc/nginx/conf.d/
+	$ docker cp index.html simple-web:/var/www/html/
+\end{lstlisting}
+
 Change the ownership of the \textit{html} file as follows, so that the current user \textit{nginx} is able to access that file.
 \begin{lstlisting}
 $ docker exec simple-web chown -R nginx:nginx /var/www/html
@@ -303,20 +311,20 @@ To test the web server running inside the container, obtain the IP address of th
 \begin{lstlisting}
 $ docker inspect simple-web | grep IPAddress
 \end{lstlisting}
-and open a browser with the obtained IP address keyed in. If everything is done correctly, the browser should try to access port 80 of the container, and the ``Hello World!'' web page shall show up.
+and open a browser to key in the obtained IP address. If everything is done correctly, the browser should try to access port 80 of the container, and the ``Hello World!'' web page shall show up.
 
 For easy sharing and populating of the container, commit the container into a new image using \verb|docker commit| as follows. The new image can be used to populate the web server, just like ``web01'' container given below.
 \begin{lstlisting}
 $ docker commit simple-web simple-web-image
 $ docker run -dt --name web01 -p 80:80 simple-web-image
 \end{lstlisting}
-where \verb|-p <host machine port>:<container port>| is used to map ports. Notice that different from the previous container ``\textit{simple-web}'', the new container ``\textit{web01}'' IP address port 80 is mapped with the port 80 of the host machine. Therefore, the web page hosted in ``\textit{web01}'' can be accessed not only by the container's IP address, but also by the host machine IP address. Key in \verb|localhost| in the browser on the host machine and the ``Hello World!'' web page shall show up.
+where \verb|-p <host machine port>:<container port>| is used to map ports. Notice that different from the previous container ``\textit{simple-web}'', the new container ``\textit{web01}'' IP address port 80 is mapped with the port 80 of the host machine. Therefore, the web page hosted in ``\textit{web01}'' can be accessed not only by the host machine, but also by other machines in the same network with the host machine.
 
 \subsection{Docker Volume}
 
-As introduced earlier, \verb|docker cp| can be used to transfer data into and out of a container. Alternatively, Docker volumes can be used, which is more convenient when there are massive data to be transferred frequently. 
+As introduced earlier, \verb|docker cp| can be used to transfer data into and out of a container. An alternative way of accessing docker container data from the host machine is to use docker volume. Docker volume is used to mount host machine hard drive to container storage. Details are introduced below.
 
-Docker volumes are the mapping of disk storage from outside the container to inside. With Docker volume, the data inside the container can be backed up, migrated, or shared among containers easily. Docker volume is critical for some applications, such as a database. To create a volume, use
+To create a docker volume, use
 \begin{lstlisting}
 $ docker volume create <volume>
 \end{lstlisting}
@@ -338,11 +346,16 @@ $ docker run -v <volume>:<container-internal-path>[:ro] <image>
 \end{lstlisting}
 which should synchronize \verb|<volumn name>| with \verb|<container internal path>|. The optional \verb|:ro| can be specified if it is a read-only volume. Instead of using a volume name, the path to a directory in the host machine can also be used, in which case the specified directories in the host machine and in the container should be synchronized.
 
-Notice that the data persists in the host machine, and in the container it is taken as a mounted volume. Therefore, synchronized files does not duplicate physically, and the data persists and remains accessible after removing the container.
+Docker volume guarantees data persistence in containerized applications. When a docker container is removed, any data written to the container's writable layer is lost. Docker volumes, however, are stored outside of the container's writable layer, allowing data to persist even after the container is removed. This persistence is particularly important for applications that require permanent storage, such as databases.
+
+Moreover, Docker volumes can be shared among multiple containers, which facilitates data exchange and allows containers to work on the same dataset. Therefore, Docker volumes are not just a tool for data persistence, but also an effective mechanism for data sharing and collaboration among containers.
+
+The data persists in the Docker host, and from the container's perspective, it is treated as a mounted volume. Hence, the data is not duplicated physically.
+
 
 \section{Docker Image} \label{ch:vac:sec:di}
 
-In earlier Section \ref{ch:vac:sec:dc}, images have been used to create containers. An image performs like a template or source of a container. It contains information regarding the basic settings, initial configurations, required libraries, and other metadata of the container. Images can be shared across different machines and platforms. More details about the formulation and function of a docker image are introduced in the rest of this section.
+In earlier Section \ref{ch:vac:sec:dc}, images were used to create containers. An image performs like a blueprint that encapsulates all the necessary information needed to spawn a container. It includes initial configurations, requisite libraries, and other pertinent metadata. Docker images are highly portable and can be shared across various machines and platforms. This section delves deeper into the construction and functionality of Docker images.
 
 \subsection{Image Architecture}
 
@@ -357,7 +370,7 @@ In addition, an image shall be designed and organized in such a way that it is m
 
 \subsection{Dockerfile}
 
-Dockerfile is a human-readable text document that serves as an instruction for building a Docker image, as shown in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notice that the Dockerfile itself is not included in the image it built.
+The Dockerfile is a text document that serves as the blueprint for constructing a Docker image, as illustrated in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notably, the Dockerfile itself isn't included within the resulting image.
 
 \begin{figure}
 	\centering
@@ -365,12 +378,9 @@ Dockerfile is a human-readable text document that serves as an instruction for b
 	\caption{A demonstration of how Dockerfile, image and container link to each other.} \label{ch:vac:fig:dockerfiletoimage}
 \end{figure}
 
-Since a Docker image is mainly used as a container template, many commands in a Dockerfile reads like a ``step-by-step'' instructions of creating a container, with each instruction correspond to a ``layer'' in the image. An image can be regarded as an integration of multiple layers, and it is indeed stored and shared in that way. For images that share layers (for example, two images of different versions of the same APP), the shared layers will not be saved or transferred in a duplicated manner. This largely reduces the weight of an image. More details are given on \textit{https://docs.docker.com/storage/storagedriver/}.
+Since a Docker image's primary role is to serve as a template for containers, many Dockerfile commands appear like a ``step-by-step'' recipe for container creation. Each instruction corresponds to an ``image layer''. An image is, in essence, an amalgamation of these layers. It is stored and distributed in this format. If images share layers (for instance, different versions of the same app), these shared layers aren't saved or transferred redundantly, resulting in significantly reduced image sizes. More details can be found at \textit{https://docs.docker.com/storage/storagedriver/}.
 
-Docker containers use a special filesystem called Union File System (UFS), which aligns well with the ``layer'' concept. The UFS provides useful features such as enabling file sharing between the container and the host machine, and integrating read-only upper layers and writable lower layers, etc.
-
-A demonstration to illustrate this concept is given later in Fig. \ref{ch:vac:fig:dockerlayerdemo}.
-
+Docker containers employ a special file system known as the Union File System (UFS), which is well suited to the ``layer'' concept. UFS facilitates file sharing between the container and the host machine, along with combining read-only upper layers and writable lower layers, among other functions. A demonstration to illustrate this concept is given later in Fig. \ref{ch:vac:fig:dockerlayerdemo}.
 
 Just as a quick example, the Dockerfile to build the official \textit{hello-world} image from Docker Hub looks like the following.
 \begin{lstlisting}
@@ -378,9 +388,9 @@ FROM scratch
 COPY hello /
 CMD ["/hello"]
 \end{lstlisting}
-Similar with other computer languages, Dockerfile has reserved keywords, environmental variables, syntax and grammar rules. Only the basics of forming a Dockerfile is introduced in this section. More details can be found in the docker reference from the official website. In the example above, \verb|FROM scratch| indicates that this image is a base image without a parent. The following \verb|COPY hello /| suggests to copy the \textit{hello} binary script from the image to the root directory. Finally, \verb|CMD ["/hello"]| executes \textit{hello} binary script.
+Like other computer languages, Dockerfiles have reserved keywords, environment variables, and syntax rules. Only the basics of constructing a Dockerfile are introduced in this section. More details can be found in the Docker reference on the official website. In the example above, \verb|FROM scratch| signifies that this image is a base image without a parent. The \verb|COPY hello /| instruction copies the \textit{hello} binary script from the image to the root directory of the container. Lastly, \verb|CMD ["/hello"]| runs the \textit{hello} binary script.
 
-Generally speaking, a typical Dockerfile shall consist of the following instructions in order to build an image. With these instructions, the image would know how to create a container and automatically build filesystem directory structure, install necessary packages, and run the APP.
+In general, a typical Dockerfile includes the following instructions to build an image. These instructions allow the image to know how to create a container, automatically construct the file system directory structure, install necessary packages, and run the app:
 \begin{enumerate}[(1)]
   \item Define parent image.
   \item Create filesystem directory.
@@ -388,7 +398,7 @@ Generally speaking, a typical Dockerfile shall consist of the following instruct
   \item Copy files.
   \item Configure registry.
   \item Install packages.
-  \item Copy more files after the packages installation.
+  \item Copy more files after package installation.
   \item Switch to the correct user.
   \item Expose port.
   \item Run the APP.
@@ -401,11 +411,11 @@ The keywords to be used in a Dockerfile to realize the above instructions, such 
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Syntax & Description \\ \hline
-		\verb|FROM <image>| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instruction, in which case the last \verb|FROM| statement is the final base image and the earlier \verb|FROM| instructions creates intermediate images that can be used in the final image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image will be used. \\ \hdashline
+		\verb|FROM <image>| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instructions, in which case the last \verb|FROM| statement is the final base image and the earlier \verb|FROM| instructions creates intermediate images that can be used in the final image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image is used. \\ \hdashline
 		\verb|RUN <command>| & Execute a shell command using \verb|/bin/sh -c|. \\ \hdashline
-		\verb|WORKDIR <path>| & Set the working directory from the point onwards. This is often a preparation for the upcoming \verb|RUN|, \verb|COPY|, etc., commands. \\ \hdashline
-		\verb|ADD <src> <dest>| & Add \verb|<src>|, either a directory/file or URL, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. \\ \hdashline
-		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|, just easier to use but in return less powerful. \\ \hdashline
+		\verb|WORKDIR <path>| & Set the working directory from the point onward. This prepares the working directory for the upcoming \verb|RUN|, \verb|COPY|, etc., commands. \\ \hdashline
+		\verb|ADD <src> <dest>| & Add (Copy) \verb|<src>|, either a directory/file or URL, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. \\ \hdashline
+		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ \hdashline
 		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ \hdashline
 		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\ \hdashline
 		\verb|CMD ["<exe>", "p1", ...]| & As the last instruction of a Dockerfile, run the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. \\
@@ -413,7 +423,7 @@ The keywords to be used in a Dockerfile to realize the above instructions, such 
 	\end{tabularx}
 \end{table}
 
-Besides Table \ref{ch:vac:tab:keywordsdockerfile}, there are other Dockerfile keywords that can significantly convenient the design and maintenance of the image. For example, \verb|ENV <key>=<value>| assign a value to an environmental variable; \verb|LABEL <key>="<value>"| assigns a tag to the image, which can be displayed when \verb|docker inspect <container>| is used.
+Besides Table \ref{ch:vac:tab:keywordsdockerfile}, there are other Dockerfile keywords that can significantly simplify the design and maintenance of the image. For example, \verb|ENV <key>=<value>| assign a value to an environmental variable; \verb|LABEL <key>="<value>"| assigns a tag to the image, which can be displayed when \verb|docker inspect <container>| is used.
 
 Examples of Dockerfiles are given below, one from \textit{docs.docker.com} and the other from Linux Academy.
 
@@ -472,20 +482,17 @@ The most commonly used image operations can be categorized as follows.
   \item Manage local images, such as listing down all images, deleting an image, etc.
 \end{itemize}
 
-The first two categories have been introduced in earlier sections. The third and last categories are introduced as follows.
-
-Use the following command to search for an image on the default remote repository server (Docker Hub).
+The first two operations have been introduced in earlier sections. The third and last ones are introduced below. Use the following command to search for an image on the default remote repository server (Docker Hub).
 \begin{lstlisting}
 $ docker search <image name>
 \end{lstlisting}
-
 Use the following command to download or update an image from the default remote repository server as follows. Notice that different from \verb|docker run|, this command will not start a container from the image.
 \begin{lstlisting}
 $ docker pull <image name>
 \end{lstlisting}
-There is one thing to highlight about \verb|docker pull|. Notice that since an image is stored by layers, if another image that shares some layers with the image to be downloaded already exists, the shared layers will not be downloaded again to avoid duplication.
+Notice that since images are stored by layers, if two images share common layers, it is unnecessary to pull the shared layers repeatedly when downloading the second image, if the first image already exists in the host machine. Command \verb|docker pull| is smart enough to automatically detect shared layers, and avoid duplicating download of layers.
 
-Use the following commands to list down or remove images as follows.
+Use the following commands to list down or remove images.
 \begin{lstlisting}
 $ docker image ls
 $ docker image rm <image name>
@@ -501,23 +508,21 @@ $ docker image inspect <image name>
 
 \section{Advanced Container Management Using Portainer}
 
-Docker is a great tool to build and share images, and to create containers from images. It is introduced from earlier sections that Docker can also monitor and manage the running containers in a simple manner, for example checking the status of the containers using \verb|docker container ls|, and stopping a container using \verb|docker stop <container name>|.
+As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container management tools such as Protainer and kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
 
-However, the container management functions built-in with Docker may not be powerful and flexible enough in some occasions. Thus, more advanced container management tools have emerged, some of which integrated with useful features such as auto-scaling the number of the running containers. These container management tools are often used collaboratively with Docker: Docker builds images and creates containers, while the container management tools manage the running of the containers. As one of the many container management tools, \textit{Portainer} is introduced in this section.
-
-Portainer is an open-source container management tool, and it is free-of-charge for personal usage. It has a web-based UI and puts everything into a dashboard. Notice that Protainer itself also runs in a container, hence can be managed just like any other container.
+Portainer is an open-source container management tool. It has a web-based dashboard user interface. Notice that Portainer itself also runs in a container.
 
 Before starting a Portainer container, it is a good practice to first create a Docker volume for Portainer to store the database. Use the following command to create such Docker volume.
 \begin{lstlisting}
 $ docker volume create portainer_data
 \end{lstlisting}
-Then run a Protainer container using
+Then run a Portainer container using
 \begin{lstlisting}
 $ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
 \end{lstlisting}
-where ports 8000, 9000 and 9443 are used for development environments of web server software, management server service, and SSL, respectively. It is often possible to ignore \verb|-p 9000:9000| unless for legacy reasons.  The \verb|docker.sock| is the socket that enables the docker server-side daemon to communicate with its command-line interface. The image name for Portainer community edition (distinguished form the business edition) is \verb|portainer/portainer-ce|.
+where ports 8000, 9000 and 9443 are used for hosting HTTP traffic in development environments, hosting web interface, and hosting HTTPS or SSL-secured services, respectively. The \verb|docker.sock| is the socket that enables the docker server-side daemon to communicate with its command-line interface. The image name for Portainer community edition (distinguished form the business edition) is \verb|portainer/portainer-ce|.
 
-Use \verb|https://localhost:9443| to login to the container. The following page in Fig. \ref{ch:vac:fig:portainerlogin} should pop up in the first-time login, requiring to add an admin user.
+Use \verb|https://localhost:9443| to login to the container. The following page in Fig. \ref{ch:vac:fig:portainerlogin} should pop up in the first-time login, asking the user to create and administration user.
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/portainerlogin.png}
@@ -543,11 +548,13 @@ After creating the admin user and logging in, the status of images, containers a
 	\caption{Portainer dashboard list down of all running containers.} \label{ch:vac:fig:portainerdashboard3}
 \end{figure}
 
-In summary, Portainer provides an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
+In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
 
 \section{Advanced Container Management Using Kubernetes}
 
-\textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google for automating deployment, scaling and management of containerized applications, guaranteeing their high availability and resilience. By default, Kubernetes command line tool, \textit{kubectl}, is used to interact with Kubernetes and manage the containers. Kubernetes is more powerful than Portainer, but at the same time more complicated and difficult to use.
+\textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google for automating deployment, scaling and management of containerized applications, guaranteeing their high availability and resilience. By default, Kubernetes command line tool, \textit{kubectl}, is used to interact with Kubernetes.
+
+Kubernetes is more powerful than Portainer (as of today, it is possible integrate kubernetes as part of other container management tool such as Portainer), but at the same time more complicated and difficult to use.
 
 Figure \ref{ch:vac:fig:kubernetescluster} demonstrates a Kubernetes cluster and how its key components are managed inside the cluster.
 \begin{figure}
@@ -555,14 +562,13 @@ Figure \ref{ch:vac:fig:kubernetescluster} demonstrates a Kubernetes cluster and 
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/kubernetescluster.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
+As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker (node)'' mode, where the master also plays as the control panel, API gateway (with static IP address) and load balancer to interact with a user.
 
-As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker (node)'' mode, where the master also plays as the control panel, API gateway (with static IP address) and load balancer to interact with a user. 
-
-In practice, the master and nodes can run on multiple servers or VMs. Kubernetes packages need to be installed on all these servers or VMs for the system to work properly. Kubernetes provides variety of tools to distribute the loads to different servers or VMs, or to add redundancy to the system for high availability. 
+In practice, the master and nodes can run on multiple servers or VMs. Kubernetes packages need to be installed on all these servers or VMs for the system to work properly. Kubernetes provides variety of tools to distribute the loads to different servers or VMs, or to add redundancy to the system for high availability.
 
 \subsection{Kubernetes Installation}
 
-The installation guidance of kubernetes can be found at \textit{https://kubernetes.io/docs/setup/}. Key steps are summarized as follows.
+The installation guidance of kubernetes can be found at its official website \textit{kubernetes.io}. Key steps are summarized as follows.
 
 \subsection{Kubernetes Practice}
 
