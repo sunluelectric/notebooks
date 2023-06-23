@@ -4,15 +4,13 @@ Virtualization and containerization are widely appreciated techniques for distri
 
 \section{Introduction}
 
-One of the major differences between a server (or a server cluster) and a PC is that a server is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, each and every user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and hard disk storage, despite that the actual hardware is shared with others. This is done through \textit{Virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
+One of the major differences between a server cluster and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and hard disk storage, despite that the actual hardware is shared with others. This can be achieved through \textit{Virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
 
-Deploying a new VM generally consumes a considerable amount of time and computational load. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for each application is resource-intensive, particularly when these applications could simply share the same OS kernel and operate within their own isolated workspaces.
+Deploying a new VM generally consumes a considerably large amount of time. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for all of them is resource-intensive, particularly when these applications could have shared the same OS kernel and operated within their own isolated workspace.
 
-A more efficient approach would be to deploy a single VM (or use a physical server) and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
+A more efficient approach would be to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
 
-The technique used to deploy and manage containers is known as ``containerization''. As a container contains all the configuration and minimum requirement information of an application, running a container on different platforms would consistently generate the expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
-
-As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware is corresponding with the physical resources in kitchen, such as the cooktop, the gas, etc. The OS is corresponding with the person who manages the kitchen, say a cook. He arranges the resources in the kitchen to make dishes. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries are like the necessary skill sets or specific cookers to prepare the dish correctly. Therefore, installing and configuring drivers and libraries in the OS is like teaching the cook how the dish should be prepared. Finally, the APP is corresponding with the expected dish.
+The technique used to deploy and manage containers is known as ``containerization''. Since a container contains all the configuration and requirement information of an application, running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
 
 \begin{figure}
 	\centering
@@ -20,7 +18,9 @@ As an analogy, think of running an APP as asking a kitchen to prepare a dish. Th
 	\caption{System architectures of PC, VM and container.} \label{ch:vac:fig:pcvmcontainersructure}
 \end{figure}
 
-In the most simple configuration, a dedicated machine is used to run an APP. This is like constructing a dedicated kitchen and hiring a dedicated cook for each dish. The cook is trained to master all necessary skills required for that specific dish, as shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
+As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware is corresponding with the physical resources in kitchen, such as the cooktop, gas, etc. The OS is corresponding with the person who manages the kitchen, say a cook. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries correspond with the skill sets or specific cookers for the dish. Finally, the APP is corresponding with the expected dish.
+
+In the most simple configuration, a dedicated machine is used to run an APP. This is like constructing a dedicated kitchen and hiring a dedicated cook for each dish. The cook is trained to master all necessary skills required for that specific dish. This is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
 \begin{figure}
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-virtualization-and-containerization/figures/acookinakitchen.png}
@@ -33,7 +33,7 @@ In a VM implementation, a larger and more capable kitchen is setup in advance as
 	\caption{VM implementation: many cooks in a kitchen, each with a different cookbook.} \label{ch:vac:fig:manycooksinakitchen}
 \end{figure}
 
-While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided that contains everything needed to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
+While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided from where you can find all information required to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
 
 \begin{figure}
 	\centering
@@ -41,23 +41,45 @@ While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in m
 	\caption{Container implementation: one in a kitchen, handling multiple dishes, each has a cookbook and stays in its own pan.} \label{ch:vac:fig:multitaskcook}
 \end{figure}
 
-Just like a receipt guaranteeing the consistency of dishes, in containerization, an ``image'' guarantees the consistent performance of container instances. An image is basically a collection of prerequisites and configurations, from where a container can be launched quickly and conveniently. Images can be shared among machines to replicate the containers, even if the machines use different OS.
+Just like a receipt guaranteeing the consistency of dishes, in containerization, an ``image'' guarantees the consistent performance of container instances. An image is basically a collection of prerequisites and configurations to run a container quickly, efficiently and consistently. Images can be shared among machines to replicate the containers even if the machines adopt different underlying infrastructure such as OS.
 
 \section{Virtualization and Containerization}
 
-...
+Virtualization and containerization technologies have been studied for decades.
 
-\section{Docker Container} \label{ch:vac:sec:dc}
+Before moving forward to the introduction of containerization approaches, it is important to briefly explain the following frequently used concepts: container runtime, container engine, and container orchestration.
 
-Before moving forward to the introduction of containerization approaches, it is important to briefly explain the following 3 terms that would be frequently mentioned in the remaining parts of this chapter: container runtime, container engine, and container orchestration.
+Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to balance API calls, automatically scale up and down the number of running containers, and restart containers upon failure. One of the most widely used container orchestrations is ``kubernetes''.
 
-Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'' and ``runc''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to automatically scale up and down the number of running containers based on the loads and balance the API calls made to the containers. One of the most widely used container orchestrations is ``kubernetes''.
+Container runtime is definitely vital in every containerization implementation. Container engines and container orchestrations must have container runtime built-in. However, the users rarely directly talk to the container runtime. 
 
-Container runtime and engine are essential in almost every system that uses containerization. Container runtime is necessary for containerization implementation of any kind. It is usually behind the screen, backing up the container engine. For example, docker container engine is backed up by containerd. Container engine is the interface and management tool for container runtime, which is almost certainly needed in every container use case.
+Container engine is the interface and management tool of the container runtime, from where the developer can monitor and control the containers manually. Container engines are widely used especially in small projects or in the development environment.
 
-For personal applications, it is possible to manually deploy containers using a container engine without a container orchestration. For massive deployment of containers in an enterprise, container orchestration is almost certainly required. In such a case, the container orchestration calls the container engine via API, instructing it on how the containers should be deployed.
+For massive deployment of containers in enterprise-level applications, container orchestration can become handy. In such a case, the container orchestration calls the container engine via API (nowadays a container orchestration may also talk to container runtime directly), instructing it on how the containers should be deployed.
 
-Docker engine is one of the most popular container engines available on the market, and it is free of charge for personal and non-commercial usage. The basics of using the docker container engine are introduced in this section. More details of docker can be found at \textit{https://docs.docker.com/reference/}. It is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier podman is an alternative to docker, and it is the default container engine for RHEL 8 and 9.
+\section{Docker} \label{ch:vac:sec:dc}
+
+This section introduces docker Notice that although docker is famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine, many of which even used in its opponent container engines.
+
+This section focuses mostly on the introduction of docker engine.
+
+\subsection{Docker Engine VS Alternatives}
+
+Docker engine is the most popular container engines available on the market as of 2023, and it is free of charge for open-source, personal and small business usage. More details of docker can be found at \textit{https://docs.docker.com/}.
+
+But does that mean docker engine is the absolutely best and perfect container engine solution?
+
+Docker has surely revolutionized how we use containerization technology in software development and deployment, and it has been one of the most popular and beloved container engine solutions. However, it is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier podman is an alternative to docker. It supports the same interface (as if podman is an alias) as docker, and claims to have better performance and security. As a matter of fact, RHEL already started the transitionary from docker to podman from RHEL 8. Nowadays, installing docker on the latest versions of RHEL is possible but tedious. On the other hand, install podman (it might be built-in to the OS installation) on RHEL can be done by simply using
+\begin{lstlisting}
+$ sudo yum install podman
+\end{lstlisting}
+Kubernetes, a famous container ochestration, is also dropping docker support, as they say ``docker support in the kubelet is now deprecated and will be removed in a future release''. Some may even argue that ``containers are alive, but the role that docker plays is shrinking''. Many open-source initiatives such as podman are gaining round.
+
+Docker has some disadvantages indeed. For one thing, docker uses docker server (docker daemon), a single piece of software running in the backend of the system, to support all the services. This creates a single-point-failure of the system. Docker requires root privileges, and it starts a container on behalf of the root user. This means that the program running inside the container, or the users in the docker group can potentially bypass the OS access control and gain root access, which introduces security risk. These shortages are to some extent addressed by other container engines such as podman which is daemon-less and does not necessarily need to run on root user's behalf.
+
+This is not to say that Docker is falling behind as a whole. Some key techniques that Docker introduced are widely used in all different types and brands of container runtimes and engines. It is just that people do not like some of the features and schematics implementation of Docker engine, and new tools are being developed to fix these problems, the latter of which starting drawing more and more attention. Docker still enjoys widespread usage and support due to its massive community, wealth of online resources, and extensive compatibility with numerous tools and platforms. Nevertheless, for demonstration purpose, for the remaining sections docker is used throughout this notebook. Since podman provides the same interface, it is probable that podman can be used likewise to replicate all the results.
+
+As of 2023, Docker is still the dominating container market engine, with a market share of over $80\%$.
 
 \subsection{Docker Installation}
 
@@ -96,7 +118,7 @@ $ sudo usermod <user name> -aG docker
 
 Docker installs at least two piece of software on the machine, namely Docker CLI and docker server (also known as docker daemon). The CLI is the interface to the user, and the server is the actual tool that manages images and containers. Docker runs natively on Linux OS. If docker is installed on non-Linux system such as Windows or macOS, ``docker desktop'' is used, which includes a Linux VM to host the docker daemon and run Linux-based containers.
 
-\subsection{Container Launching}
+\subsection{Docker Container Management}
 
 To run a container from an image, simply use
 \begin{lstlisting}
@@ -172,8 +194,6 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 		\hline
 	\end{tabularx}
 \end{table}
-
-\subsection{Basic Container Management}
 
 To re-start an existing but exited container, use
 \begin{lstlisting}
@@ -251,8 +271,6 @@ $ docker commit <container> <image>
 \end{lstlisting}
 where \verb|docker commit| command saves the container's file changes or settings into a new image, which allows easier populating containers or debugging in a later stage. Notice that \verb|docker commit| does not save everything of the container into the image, and it is not the only way an image is created.
 
-\subsection{Ports Exposure and Load Balancing}
-
 A container can be configured accessible from not only the host machine but also other computers in LAN or the Internet. In a typical web service application, the host machine and the containers are often designed following the architecture similar with Fig. \ref{ch:vac:fig:containerwebserverarchitecture}. Notice that in practice, the load balancer and the containers may or may not run on the same physical machine.
 
 The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP instances such as \textit{apache} or \textit{nginx} shall run in the containers distributively.
@@ -320,7 +338,7 @@ $ docker run -dt --name web01 -p 80:80 simple-web-image
 \end{lstlisting}
 where \verb|-p <host machine port>:<container port>| is used to map ports. Notice that different from the previous container ``\textit{simple-web}'', the new container ``\textit{web01}'' IP address port 80 is mapped with the port 80 of the host machine. Therefore, the web page hosted in ``\textit{web01}'' can be accessed not only by the host machine, but also by other machines in the same network with the host machine.
 
-\subsection{Docker Volume}
+\subsection{Docker Volume Configuration} \label{ch:vac:subsec:dockervolume}
 
 As introduced earlier, \verb|docker cp| can be used to transfer data into and out of a container. An alternative way of accessing docker container data from the host machine is to use docker volume. Docker volume is used to mount host machine hard drive to container storage. Details are introduced below.
 
@@ -353,11 +371,9 @@ Moreover, Docker volumes can be shared among multiple containers, which facilita
 The data persists in the Docker host, and from the container's perspective, it is treated as a mounted volume. Hence, the data is not duplicated physically.
 
 
-\section{Docker Image} \label{ch:vac:sec:di}
+\subsection{Docker Image Management} \label{ch:vac:sec:di}
 
 In earlier Section \ref{ch:vac:sec:dc}, images were used to create containers. An image performs like a blueprint that encapsulates all the necessary information needed to spawn a container. It includes initial configurations, requisite libraries, and other pertinent metadata. Docker images are highly portable and can be shared across various machines and platforms. This section delves deeper into the construction and functionality of Docker images.
-
-\subsection{Image Architecture}
 
 An image shall contain everything needed to create and initialize a container. This include but not limited to:
 \begin{itemize}
@@ -367,8 +383,6 @@ An image shall contain everything needed to create and initialize a container. T
   \item Libraries, tools and dependencies
 \end{itemize}
 In addition, an image shall be designed and organized in such a way that it is migratable, reusable and light, and can be used to easily populate large number of containers. For better inheritability, an image might be based on another existing image, which is called its parent image. An image with no parent, such as the official \textit{hello-world} image from Docker Hub, is called a base image.
-
-\subsection{Dockerfile}
 
 The Dockerfile is a text document that serves as the blueprint for constructing a Docker image, as illustrated in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notably, the Dockerfile itself isn't included within the resulting image.
 
@@ -472,8 +486,6 @@ $ docker build <path/url> -t <image name>
 \end{lstlisting}
 where \verb|<path/url>| is the path or URL to the directory where the Dockerfile locates (does not need to contain ``\verb|/Dockerfile|'' in its end), and \verb|-t| gives a tag, in this case an image name, to the image to build.
 
-\subsection{Docker Image Operations}
-
 The most commonly used image operations can be categorized as follows.
 \begin{itemize}
   \item Create an image.
@@ -506,9 +518,9 @@ Use the following command to inspect an image, and list down its metadata detail
 $ docker image inspect <image name>
 \end{lstlisting}
 
-\section{Advanced Container Management Using Portainer}
+\section{Brief Introduction to Portainer}
 
-As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container management tools such as Protainer and kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
+As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container management tools such as Protainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
 
 Portainer is an open-source container management tool. It has a web-based dashboard user interface. Notice that Portainer itself also runs in a container.
 
@@ -550,34 +562,387 @@ After creating the admin user and logging in, the status of images, containers a
 
 In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
 
-\section{Advanced Container Management Using Kubernetes}
+\section{Brief Introduction to Kubernetes}
 
-\textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google for automating deployment, scaling and management of containerized applications, guaranteeing their high availability and resilience. By default, Kubernetes command line tool, \textit{kubectl}, is used to interact with Kubernetes.
+Kubernetes is introduced cross sections. This section focuses on a brief introduction to Kubernetes, its basic schematic architecture, and how it can be installed on a local machine.
 
-Kubernetes is more powerful than Portainer (as of today, it is possible integrate kubernetes as part of other container management tool such as Portainer), but at the same time more complicated and difficult to use.
+\subsection{What is Kubernetes}
 
-Figure \ref{ch:vac:fig:kubernetescluster} demonstrates a Kubernetes cluster and how its key components are managed inside the cluster.
+\textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications. While Kubernetes is more flexible than Portainer, it's also more complex and has a steeper learning curve.
+
+Note that running Kubernetes on a local server can differ significantly from running it on a cloud platform such as AWS or Google Cloud, which offer managed Kubernetes services with additional features and simplified management. These platforms, AWS with its Elastic Kubernetes Service (EKS) and Google Cloud with Google Kubernetes Engine (GKE), have developed their own tools and interfaces for interacting with Kubernetes. So, while learning Kubernetes can be beneficial, one might not need to learn all the low-level details if he is running Kubernetes using one of the above management tools instead of DIY everything.
+
+This notebook focuses introducing running Kubernetes on a local server in a DIY manner. In this scenario, the following common practice is adopted: \textit{kubectl} is used as the user interface to Kubernetes and \textit{minikube} the software to manage the host machine. Minikube is an open-source software developed by the Kubernetes community to run a single-node Kubernetes cluster on a local machine, which is suitable for developers to learn and test different things in development environment.
+
+Notice that in the past days, docker is the default container engine built-in to Kubernetes, and Kubernetes uses a special program ``dockershim'' that talks to docker engine. As of now, docker support is deprecated in Kubernetes and dockershim is removed from the installation.
+
+\subsection{Infrastructure}
+
+Figure \ref{ch:vac:fig:kubernetescluster} demonstrates what key components Kubernetes has inside its cluster.
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/kubernetescluster.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
-As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker (node)'' mode, where the master also plays as the control panel, API gateway (with static IP address) and load balancer to interact with a user.
+As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' mode, where the master plays as the control panel, API gateway (with static IP address) and load balancer to interact with a user, and the worker nodes (also known as nodes, for short) actually process the data. Each node can host multiple pods, inside each pod is a container or a group of containers that work closely together. Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. A pod should be the minimal unit or group of container(s) that can deliver a basic function.
 
-In practice, the master and nodes can run on multiple servers or VMs. Kubernetes packages need to be installed on all these servers or VMs for the system to work properly. Kubernetes provides variety of tools to distribute the loads to different servers or VMs, or to add redundancy to the system for high availability.
+In practice, the master and nodes can run on cross servers or VMs. Kubernetes packages need to be installed on each and every server or VM for the system to work properly. Kubernetes provides variety of tools to distribute the loads to different servers or VMs, or to add redundancy to the system for high availability.
 
-\subsection{Kubernetes Installation}
+\subsection{Installation}
 
-The installation guidance of kubernetes can be found at its official website \textit{kubernetes.io}. Key steps are summarized as follows.
+The installation guidance of Kubernetes can be found at its official website \textit{kubernetes.io}. Notice that different OS adopts different ways of installing and using Kubernetes. The installation procedures introduced in this section applies to Linux OS only. For Windows users, Kubernetes can be installed from Docker desktop. For macOS users, other tools are used to install the tools to be introduced below.
 
-\subsection{Kubernetes Practice}
+As introduced earlier, \textit{kubectl} is used to interact with Kubernetes. In addition, since we are in development environment, we will also install \textit{minikube} which is used to setup a small Kubernetes cluster in the local machine. They can be installed separately. See following links for more details.
+\begin{lstlisting}
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+https://minikube.sigs.k8s.io/docs/start/
+\end{lstlisting}
+When running \textit{minikube} for the first time, it would try to install \textit{kubectl} as a built-in. Start \textit{minikube} using \verb|minikube start|, which will start a VM using Vertual Box, and setup a Kubernetes node in the VM.
+
+If \textit{kubectl} and \textit{minikube} are installed separately, run the following command to verify the successful installation of both software.
+\begin{lstlisting}
+$ kubectl cluster-info
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+\end{lstlisting}
+If \textit{minikube} is installed, and \textit{kubectl} is considered as a built-in installation to \textit{minikube}, use the following command
+\begin{lstlisting}
+$ minikube kubectl cluster-info
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+\end{lstlisting}
+in which case \verb|alias kubectl="minikube kubectl --"| may make things easier.
+
+\section{Basic Kubernetes}
+
+This section focuses on the basic steps of creating a functional Kubernetes cluster.
+
+\subsection{Kubernetes Configuration Files}
+
+Managing containers via container orchestration such as Kubernetes is different from doing so using container engines such as docker engine. Unlike docker engine where we started from building an image from a dockerfile, Kubernetes requires that all images to be used are already available. Instead of having one configuration file where each entry in that file corresponds with a container, when using Kubernetes, multiple configuration files are required, each file corresponding with an object to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, or any other ``thing'' in the Kubernetes framework. There are more involving manual setups of networking when using Kubernetes as well. Details are introduced in the remaining of this section.
+
+The following two configuration files are given as examples \cite{stephen2023docker} to demonstrate how these files look like. This example comes from Udemy course \textit{Docker and Kubernetes: The Complete Guide} by Stephen Grinder. They are both written in YAML. Configuration file to setup a pod:
+\begin{lstlisting}
+apiVersion: v1
+kind: Pod
+metadata:
+    name: client-pod
+    labels:
+        component: web
+spec:
+    containers:
+        - name: client
+          image: <image-name>
+          ports:
+          	- containerPort: 3000
+\end{lstlisting}
+Configuration file to setup the networking service:
+\begin{lstlisting}
+apiVersion: v1
+kind: Service
+metadata:
+    name: client-node-port
+spec:
+    type: NodePort
+    ports:
+        - port: 3050
+          targetPort: 3000
+          nodePort: 31515
+    selector:
+        component: web
+\end{lstlisting}
+
+Commonly used Kubernetes object types are summarized in Table \ref{ch:vac:tab:objtype}.
+\begin{table}[htbp]
+  \centering
+  \caption{Commonly used Kubernetes object types.} \label{ch:vac:tab:objtype}
+  \begin{tabularx}{\textwidth}{lX}
+    \hline
+    Object Type & Description \\
+    \hline
+    Pod & The smallest and most basic unit in the Kubernetes object model. It represents a single instance of a process running on the cluster. \\ \hdashline
+    Deployment & Manages the deployment and scaling of a set of identical pods, ensuring the desired number of replicas are running and providing rolling updates for seamless application upgrades. \\ \hdashline
+    Service & Enables network access to a set of pods using a stable IP address and DNS name. It provides load balancing across multiple pod replicas and allows external traffic to be directed to the appropriate pods. \\ \hdashline
+    ConfigMap & Stores configuration data in key-value pairs, which can be consumed by pods as environment variables, command-line arguments, or mounted as files. \\ \hdashline
+    Secret & Similar to a ConfigMap, but specifically designed to store sensitive data, such as passwords, API keys, and TLS certificates. Secrets are encrypted at rest and can be mounted into pods as files or exposed as environment variables. \\ \hdashline
+    PersistentVolume & Provides a way to provision and manage persistent storage resources in a cluster. It decouples the storage from the underlying infrastructure and allows data to persist beyond the lifecycle of individual pods. \\ \hdashline
+    PersistentVolumeClaim & Requests a specific amount of storage from a PersistentVolume. It acts as a request for a specific storage resource and provides an abstraction layer for managing persistent storage in a cluster. \\ \hdashline
+    Ingress & Manages external access to services within a cluster. It acts as a reverse proxy and exposes HTTP and HTTPS routes to route traffic to the appropriate services based on hostnames, paths, or other rules. \\
+    \hline
+  \end{tabularx}
+\end{table}
+Some highlights of the above configuration files are as follows.
+\begin{itemize}
+  \item \verb|apiVersion| plays as the prefix that decides what configuration types are supported. For example, under the scope of \verb|v1|, \verb|Pod|, \verb|Service|, \verb|configMap|, \verb|Namespace|, etc., are supported. In a different \verb|apps/v1|, a different set of configuration types \verb|ControllerRevision|, \verb|StatefulSet|, etc., are supported. It's important to choose the correct apiVersion for the Kubernetes API version you are working with to ensure the compatibility and availability of the desired configuration options.
+  \item \verb|kind| This indicates the type of the object that the configuration file describes. For example, \verb|Pod| represents a pod that is used to host containers, and \verb|Service| the primary object type that defines networking, with subtypes \verb|NodePort| (see example above), \verb|ClusterIP|, \verb|LoadBalancer| and \verb|Ingress|.
+  \item \verb|metadata| indicates the name and labels of the object. For example, \verb|component: web| is defined as a label of the pod. This information is passed to the networking service under \verb|selector|, so that the networking service knows which object it should link to.
+  \item \verb|port|, \verb|targetPort| and \verb|nodePort| are used to specify ports used in the service. The \verb|targetPort| indicates which port in the pod should be exposed to the service, and it is consistent with \verb|containerPort| defined in the pod. Assume that there is another pod in the node who needs to talk to this pod via the service. The other pod's port that communicates with the service is fed into \verb|port|. Finally, \verb|nodePort| is the port with value between 30000 and 32767 that is exposed from the service to outside the node. If \verb|nodePort| is not assigned, a random number within the range will be assigned. This is shown in Fig. \ref{ch:vac:fig:nodeport}.
+\end{itemize}
+Notice that Kubernetes networking using \verb|kind: Service| is more complicated than shown in the above example. More details of it is given later in a dedicated Section \ref{ch:vac:subsec:k8snetworking}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=200pt]{chapters/ch-virtualization-and-containerization/figures/nodeport.png}
+	\caption{The NodePort networking service.} \label{ch:vac:fig:nodeport}
+\end{figure}
+
+\subsection{Cluster Deployment}
+
+With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. \textit{kubectl} command line interface is used to instruct Kubernetes to deploy the objects as follows.
+\begin{lstlisting}
+$ kubectl apply -f <configuration file>
+\end{lstlisting}
+This essentially asks the master node in the Kubernetes cluster to start taking actions according to the configuration files, such as to inform the nodes to start creating pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
+
+It is worth mentioning here that by default Kubernetes uses declarative deployment instead of imperative deployment, meaning that the developer does not need to specifically tell Kubernetes what to do in each step. The developer only tells the overall objectives, and Kubernetes master node will try to figure out the steps to realize that goal. It is possible to enforce Kubernetes master node to practice specific details via configuration files, but it is almost always recommended to use the default declarative approach with Kubernetes.
+
+To retrieve information, such as the status, of a group of objects, use
+\begin{lstlisting}
+$ kubectl get <object type>
+\end{lstlisting}
+where \verb|<object type>| can be \verb|pods|, \verb|services|, etc. For more details of a specific object, use
+\begin{lstlisting}
+$ kubectl describe <object type> <object name>
+\end{lstlisting}
+for example, to check the containers running in a pod. If \verb|<object name>| is neglected, Kubernetes returns detailed information of all objects of the given object type. For a running object, use
+\begin{lstlisting}
+$ kubectl logs <object name>
+\end{lstlisting}
+to check the log file of that object.
+
+With the above been done, open a browser and use \verb|<ip>:<port>| to access the application running in the container, where \verb|<ip>| is the IP address of the VM (not \verb|localhost|) that \textit{minikube} created, and \verb|<port>| the port configured in NodePort service under \verb|nodePort|. The IP address can be found by running \verb|minikube ip|.
+
+\subsection{ClusterUpdate} \label{ch:vac:subsec:updatek8s}
+
+Without container orchestration such as Kubernetes, one of the most challenging tasks is to update the container for a different configuration, for example, changing the underlying image. With the help of Kubernetes declarative approach, it is possible update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks the names and kinds of the revised configuration files, comparing them with existing running objects, and update them if necessary.
+
+Check the status of the pods using \verb|kubectl get pods|. After updating, the pods are often restarted, hence it is expected to see increment in the ``RESTARTS'' tag. To double confirm that updates have been made, use \verb|kubectl describe| to check the details of the relevant objects.
+
+However, there is a limitation to the updating of the Kubernetes deployment. For an existing object, only certain fields in the configuration files can be changed. For example, for a pod that runs containers, the image can be changed, but the container port cannot. Sometimes there can be a walk around. For example, in the case of changing container port of pods, consider using a new object type \verb|Deployment| instead of \verb|Pod|, which allows more flexible updating. The \verb|Deployment| in its backend is consist of one or more monitored and managed identical pods.
+
+To revert \verb|kubectl apply|, i.e., to remove a configuration file, use
+\begin{lstlisting}
+$ kubectl delete -f <configuration file>
+\end{lstlisting}
+Kubernetes treats the above delete command as a specific type of update to the cluster, and will action accordingly.
+
+\section{Advanced Kubernetes}
+
+This section introduces advanced commonly used Kubernetes objects, tools and techniques.
+
+\subsection{Kubernetes Object: Deployment} \label{ch:vac:subsec:deployment}
+
+As introduced in Section \ref{ch:vac:subsec:updatek8s}, updating pods has some limitations. It is practically more convenient to setup pods using ``Deployment'' object instead of ``pod''. The Deployment object servers as an additional layer of Kubernetes infrastructure that manages identical pods. More details of Deployment object is introduced in this section.
+
+As an example, here is a configuration file from Kubernetes manual that deploys a Deployment object.
+\begin{lstlisting}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+\end{lstlisting}
+Some highlights are as follows.
+\begin{itemize}
+  \item \verb|replicas| gives the expected number of pods that the Deployment object manages.
+  \item \verb|matchLabels| specifies the pods with which label are to be managed by the Deployment object. In this example, the label is \verb|app: nginx|. When populating pods, the pods would have the same label, as the same label is assigned under \verb|template|, \verb|metadata|, \verb|labels|.
+  \item \verb|template| specifies the template that is used to create the pods.
+\end{itemize}
+
+When a new version of an image becomes available, we may want to update the containers accordingly. Re-apply the same configuration file would not help, as Kubernetes would reject apply request if no change is detected in the configuration file. It would not check whether the image is in its latest version. Kubernetes uses the following imperial command to update images as a walk around, and the developer needs to run this command manually.
+\begin{lstlisting}
+$ kubectl set image deployment/<Deployment name> <container name>=<image name>
+\end{lstlisting}
+For example,
+\begin{lstlisting}
+$ kubectl set image deployment/nginx-deployment nginx=nginx:1.25.1
+\end{lstlisting}
+
+\subsection{Kubernetes Object: Service} \label{ch:vac:subsec:k8snetworking}
+
+There are 4 service types defined in Kubernetes. So far ``NodePort'' service type has been introduced in earlier examples. More types are introduced here.
+
+A summary of different service types are given below.
+\begin{itemize}
+	\item ClusterIP: Exposes the service object on a cluster-internal IP. Objects in the cluster can access to the object that a ClusterIP is pointing at.
+	\item NodePort: Assigns a static port with the cluster IP, and exposes the service object to the internet. This is used mostly used in development environment, not in production environment.
+	\item LoadBalancer: Exposes the service object externally using an external load balancer. Kubernetes does not provide built-in load balancer.
+	\item ExternalName: Maps the service object to the contents of the \verb|externalName| field, such as a host name. This is related to cluster DNS server.
+\end{itemize}
+
+A ClusterIP configuration file may look like the following.
+\begin{lstlisting}
+apiVersion: v1
+kind: Service
+metadata:
+	name: client-cluster-ip-service
+spec:
+	type: ClusterIP
+	selector:
+		<target tag>
+	ports:
+		- port: <port for internal comm>
+		  targetPort: <port for internal comm>
+\end{lstlisting}
+where the first \verb|port for internal comm| is the port in the ClusterIP service object that opens to other objects in the cluster, and the second the port the target object opens to the ClusterIP service object. They can be set differently, but usually they are just set to the same value.
+
+\subsection{Kubernetes Object: Persistent Volume Claim, Persistent Volume, and Volume} \label{ch:vac:subsec:k8svolume}
+
+Docker engine uses volumes to maintain persistent data and share data among containers. Details have been introduced in Section \ref{ch:vac:subsec:dockervolume}. Kubernetes volume framework is similar in the sense that it makes sure that the data is saved and managed by the host machine, so that when the pods or containers are shutdown or restarted, the data can be restored safely.
+
+Do notice that when comes to data sharing using volume, it is dangerous to have multiple containers or the host machine accessing the same files simultaneously, without knowing the existence of each other. Usually additional steps need to be setup to ensure data consistency.
+
+It is worth emphasizing the differences of ``volume'' technology in containerization and Kubernetes volume-related objects: Persistent Volume Claim (PVC). Persistent Volume (PV), and Volume. As a matter of fact, Kubernetes Volume object is usually not what we want. Kubernetes Volume creates the volume tied to a pod, not to the host machine. It survives container failure in the pod, but not pod failure. In summary:
+\begin{itemize}
+	\item Kubernetes Volume: A volume tied to the pod. It survives container failure inside the pod, but not pod failure.
+	\item Kubernetes PV: A volume tied to the host machine. It survives pod failure. It can be provisioned either automatically by a StorageClass, or manually by the developer and administrator.
+	\item Kubernetes PVC: It is essentially a request sent from a pod or a container, asking for specific amount of storage from a PV. Kubernetes will find that amount of PV from either existing provisioned static PV, or dynamically provision new ones for the pod or container.
+\end{itemize}
+A Deployment or a pod can claim a PV using a PVC, in which case a PV will be provisioned following the PVC requirements. There is a one-to-one relationship between the PV and the PVC. If there are multiple pods, each requiring a dedicated PV, then multiple PVCs must be used. The developer can either create those PVCs manually, or use a Volume Claim Template to claim them if they are similar.
+
+An example of claiming Kubernetes PV and PVC is given below. In the remaining part of this section, we will be mostly using PVC instead of PV.
+\begin{lstlisting}
+# persistent-volume.yaml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+	name: my-pv
+spec:
+	storageClassName: standard
+	capacity:
+		storage: 10Gi
+	accessModes:
+		- ReadWriteOnce
+	hostPath:
+		path: /data/my-pv
+---
+# persistent-volume-claim.yaml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+	name: my-pvc
+spec:
+	storageClassName: standard
+	accessModes:
+		- ReadWriteOnce
+	resources:
+		requests:
+			storage: 5Gi
+\end{lstlisting}
+To check the PV objects, use \verb|$ kubectl get pv| and \verb|$ kubectl get pvc|.
+
+To add the above Kubernetes PVC to a Kubernetes Deployment, add volumes information to the specs as given in the following example.
+\begin{lstlisting}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+	name: my-app-deployment
+spec:
+	replicas: 1
+	selector:
+		matchLabels:
+			app: my-app
+	template:
+		metadata:
+			labels:
+				app: my-app
+		spec:
+			containers:
+				- name: my-app-container
+				  image: my-app-image
+				  ports:
+					- containerPort: 8080
+				  volumeMounts:
+					- name: data-volume
+					  mountPath: /data
+					  subPath: data-from-container
+			volumes:
+				- name: data-volume
+				  persistentVolumeClaim:
+					claimName: my-pvc
+\end{lstlisting}
+where \verb|volumes| defines which Kubernetes PVC is used, and \verb|volumeMounts| tells how it is mounted in the container. The \verb|mountPath| is the path in the container whose data is mounted by the volume. If a \verb|subPath| is given, a sub-folder of its specified name will be created in the host machine in the volume to contain the data.
+
+There are different types of access modes: 
+\begin{itemize}
+\item \verb|ReadWriteOnce|: Allow one node to read and write at a time.
+\item \verb|ReadOnlyMany|: Allow many nodes to read at a time.
+\item \verb|ReadWriteMany|: Allow many nodes to read and write at a time.
+\end{itemize}
+
+It is worth mentioning that it can be controlled where Kubernetes would look for storage by default. On a personal PC, this would of course most likely to be the hard drive, or a virtual storage space in the VM. Use the following command to check Kubernetes possible choice of storage.
+\begin{lstlisting}
+$ kubectl get storageclass
+\end{lstlisting}
+and 
+\begin{lstlisting}
+$ kubectl describe storageclass
+\end{lstlisting}
+However, when deploying Kubernetes on a Cloud provider, the developer needs to configure where to slice the PV, as there would be many storage options. Usually, each Cloud provider will have its own default storage space for Kubernetes, such as AWS Elastic Block Store for AWS.
 
 
-In a production environment, a kubernetes cluster may look like the following.
 
-\subsection{Kubernetes with Rancher}
 
-\textit{Rancher}, just like Portainer, is an open-source container management tool that has a web-based UI and is relatively easy to use. Rancher can be used stand-alone just like Portainer. What makes Rancher special is that it can help to deploy and manage Kubernetes, which essentially adds an additional UI layer to Kubernetes and makes its use easier. Therefore, by using Rancher together with Kubernetes as a whole, we can have a powerful yet user-friendly container management approach.
+
+\subsection{Kubernetes Multi-Container Application}
+
+In this section, we are using an example to demonstrate the general workflow of a multi-container application deployment using Kubernetes. The example is from \cite{stephen2023docker}.
+
+A general framework of the deployment is given in Fig. \ref{ch:vac:fig:multipodk8s}. It would be too detailed to explain how each part of the deployment functions. Only some highlights are introduced.
+\begin{figure}
+	\centering
+	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/multipodk8s.png}
+	\caption{A multi-container deployment example given in \cite{stephen2023docker}.} \label{ch:vac:fig:multipodk8s}
+\end{figure}
+
+The developer needs to prepare at least 11 configuration files for this implementation, each associated with a colored object in  Fig. \ref{ch:vac:fig:multipodk8s}. The blocks in blue are associated with communication-relevant objects, gray pods-relevant objects, and green the volume claim.
+
+The configuration files for deploying pods using Deployment object and constructing internal communications using ClusterIP service object have already been introduced in Section \ref{ch:vac:subsec:deployment} and \ref{ch:vac:subsec:k8snetworking}, respectively. 
+
+To apply a group of configuration files all together, provide the directory name of all the configuration files to Kubernetes instead of feeding each configuration file one at a time.
+\begin{lstlisting}
+$ kubectl apply -f <directory>
+\end{lstlisting}
+When directory is given instead of a file, Kubernetes will try to apply all the configuration files in that directory.
+
+It is possible to consolidate the configuration files of objects into one conjunctive configuration file. To do that, use \verb|---| to split the configurations for each object in the conjunctive configuration file as follows. It is of personal preference whether to use conjunctive configuration files or separate configuration files for all objects.
+\begin{lstlisting}
+<configurations-for-object-1>
+---
+<configurations-for-object-2>
+---
+<...>
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Docker Hub}
 
@@ -589,7 +954,7 @@ $ docker login --username=<user name>
 Passowrd:
 \end{lstlisting}
 
-Assume that there is an image in the local machine, and an empty repository on Docker Hub. In order to push the local image to the Docker Hub, the first step is to add the remote repository ad the ``\textit{RepoTags}'' in the local image as follows.
+Assume that there is an image in the local machine, and an empty repository on Docker Hub. In order to push the local image to the Docker Hub, the first step is to add the remote repository and the ``\textit{RepoTags}'' in the local image as follows.
 \begin{lstlisting}
 $ docker tag <image name> <username>/<repository name>:<version>
 \end{lstlisting}
