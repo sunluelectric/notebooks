@@ -1,16 +1,10 @@
-%\chapterauthor{Author Name}{Author Affiliation}
-%\chapterauthor{Second Author}{Second Author Affiliation}
-\chapter{Software Management Advanced}
+\chapter{\textit{Git}}
 
-In this chapter, advanced software management approaches are introduced. These approaches may relate to both OS and user applications management.
+\textit{Git} is a distributed version-control system for tracking changes in source code during the software development, and it can be used on cross platforms including Windows, Unix/Linux and MacOS. This section introduces the basic use of \textit{Git} on a local Linux machine and on a remote host such as \textit{GitHub}. Some contents in this section is taken from an earlier article \textit{A Git Tutorial}.
 
-\section{\textit{Git}}
+\section{Brief Introduction to \textit{Git}}
 
-\textit{Git} is a distributed version-control system for tracking changes in source code during the software development and deployment, and it can be used in cross platforms including Windows, Unix/Linux and MacOS. This section introduces the basic use of \textit{Git} on a local Linux machine and on a remote host such as \textit{GitHub}. Some contents in this section is taken from an earlier article \textit{A Git Tutorial}.
-
-\subsection{Brief Introduction to \textit{Git}}
-
-\textit{Git}, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files. It is helpful with maintaining data integrity during the coordinated development of a software in distributed non-linear work flows. \textit{Git} is free and open-source software under GNU general public license.
+\textit{Git}, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files. It is helpful with maintaining data integrity during the collaborative development of a software in distributed non-linear work flows. \textit{Git} is free and open-source software under GNU general public license.
 
 With \textit{Git}, all computers participating in the software development store a copy of the full-fledged repository locally with complete history, and it can synchronize with a centralized remote server. \textit{Git} uses ``master'' and ``slave'' branches to manage the concurrent development of different features of the project, where the ``master branch'' is the stable and shared repository among everyone, and the ``slave branches'' are copies of the master branch where individual features can be developed. For a slave branch, once its developed feature is approved, it can be merged back to the master branch. A demonstration is given in Fig. \ref{ch:sma:fig:gitflow}.
 \begin{figure}
@@ -21,25 +15,24 @@ With \textit{Git}, all computers participating in the software development store
 
 CLI is often used to manage a \textit{Git} repository. For example, \verb|git init| starts a new repository with an empty master branch, and \verb|git branch <branch-name>| creates a new slave branch from the master branch, etc. Some of these commands are shown in Fig. \ref{ch:sma:fig:gitflow} and more details are introduced later. Notice that a graphical user interface is also available to interact with \verb|git|. However, in the scope of this notebook, command line is mostly used.
 
-\subsection{Installation and Basic Configurations}
+\section{Initial Setup}
 
-\textit{Git} and its relevant documents can be obtained from its official website \textit{https://git-scm.com/}. In many Linux distributions, \textit{Git} is pre-installed. If \textit{Git} is missing in the machine, use the following command to install it
-\begin{lstlisting}
-$ sudo apt install git
-\end{lstlisting}
+To use \textit{Git}, follow the instructions to install and configure the software.
 
-Upon successful installation, it is recommended to use \verb|git config| for some basic configurations.
+\subsection{Installation}
 
-Notice that there are two types of configurations, namely the global configurations (apply to the machine and the user), and the repository configurations (apply to a particular \textit{Git} repository). By default, the global level configurations are stored under \verb|~/.gitconfig| and the repository level configurations under \verb|./.git/config| in the repository. A good practice to edit these configurations is to use \textit{Git} commands rather than editing the files directly.
+\textit{Git} and its relevant documents can be obtained from its official website \textit{https://git-scm.com/}. In many Linux distributions, \textit{Git} is pre-installed. If \textit{Git} is missing in the machine, follow the instructions on the official website to install it on the computer. Notice that the installation procedure may differ according to the OS.
+
+\subsection{Configuration}
+
+Upon successful installation, it is recommended to use \verb|git config| for some basic configurations. Notice that there are two types of configurations, namely the global configurations (apply to the machine and the user), and the repository configurations (apply to a particular \textit{Git} repository). By default, the global level configurations are stored under \verb|~/.gitconfig| and the repository level configurations \verb|./.git/config| in the repository. A good practice to edit these configurations is to use \textit{Git} commands rather than editing the files directly.
 
 To add user name and email to the global configuration, use
 \begin{lstlisting}
 $ git config --global user.name '<user name>'
-$ git config --global user.email <user email>
+$ git config --global user.email '<user email>'
 \end{lstlisting}
-and use either \verb|git config --global -l| or \verb|cat ~/.gitconfig| to confirm the global configurations.
-
-To revoke a global configuration, use
+To retrieve the global configuration, use either \verb|git config --global -l| or \verb|cat ~/.gitconfig|. To revoke a global configuration, use
 \begin{lstlisting}
 $ git config --global --unset <configuration>
 \end{lstlisting}
@@ -51,25 +44,27 @@ removes the user name.
 
 More details about \verb|git config| can be found at \textit{https://git-scm.com/docs/git-config}. Usually, the user name and email configurations are mandatory, as they are very useful information in developing collaborative projects.
 
-\subsection{Local Repository Management}
+\section{Local Repository Management}
 
-Navigate to the project directory. Use the following command to create a new \textit{Git} repository for this project.
+\textit{Git} can be used to manage a purely local repository. Although this is not its full power, \textit{Git} is still useful. In this scenario, \textit{Git} is most often used to track versions and control branches (when the developer wants a dedicate branch for a adding a new feature).
+
+\subsection{Initialization of Repository}
+
+Navigate to the project directory. Use the following command to create a new \textit{Git} repository for the project.
 \begin{lstlisting}
 $ git init
 \end{lstlisting}
-From this point forward, \textit{Git} monitors everything that happens inside this directory and its subdirectories, and try tracking changes to the files. Further \textit{Git} commands can be applied to either check status or execute changes to the repository.
+From this point forward, \textit{Git} monitors everything that happens inside this directory and its subdirectories and tries to track any change to the files, unless otherwise configured specifically. A bench of \textit{Git} commands is enabled, such as \verb|git status| that checks the status of the repository.
 
-\textit{Git} can spread a slave branch from the master branch, and merge the modified slave branch back to the master branch. When working on a branch, either master or slave, \textit{Git} is able to do version-tracking for the changes made to the branch. The version-tracking related features and operations are introduced first, followed by the branch spreading and merging features.
+\subsection{Version Tracking}
 
-\vspace{10pt}
+For simplicity, assume that there is only one branch in the repository, namely the master branch. Notice that when there are multiple branches, the version-tracking works the same for each and every branch in a separate and independent manner.
 
-\noindent \textbf{Version-tracking}
+The mechanism behind version tracking is briefly introduced as follows. This helps the user to better understand how \textit{Git} works and how the CLI commands are designed.
 
-\vspace{10pt}
+The project directory is split into two parts, outside \verb|./.git/| the workspace, and inside \verb|./.git/| the \textit{Git} repository. The workspace has the up-to-date project contents and it is directly managed by the user, while \textit{Git} repository is managed by \textit{Git} and it is supposed to be invisible to the user unless interacted with the CLI. 
 
-For convenience, without loosing generality assume that there is only a single branch in the project, namely the master branch. Notice that when there are multiple branches, the version-tracking works the same for each and every branch in a separate and independent manner.
-
-The \verb|./.git/| subdirectory separates the project directory into two areas, outside \verb|./.git/|, namely the workspace, and inside \verb|./.git/|, namely the \textit{Git} repository. The workspace has the up-to-date project contents and it is directly managed by the user, while the \textit{Git} repository is managed by \textit{Git}, and it is accessible by the user using the \verb|git| commands. Inside the \textit{Git} repository are metadata of the workspace files such as which files have been changed since the last version, which files are newly added to the project, etc., and also a full back up of every historical versions for the project. It is worth mentioning that instead of recording the changes of a file from version to version, \textit{Git} records the snapshot of the file in every version, unless it is left untouched between two consecutive versions.
+Inside the \textit{Git} repository are metadata of the workspace files such as which files have been changed since the last deployment, etc. It also stores a full back up of every historical versions for the project (with powerful compressing mechanisms, of course). It is worth mentioning that instead of recording the changes of a file from version to version, \textit{Git} records the snapshot of the file in every version, unless it is left untouched between two consecutive versions.
 
 Figure \ref{ch:sma:fig:gitbasics} gives a demonstration of how \textit{Git} manages the project directory. \textit{Git} classifies files in the workspace into different status, as shown in Fig. \ref{ch:sma:fig:gitbasics}. A brief explanation of each types is given in Table \ref{ch:sma:tab:gitbasics}. Detail explanations of ``stage'' and ``commit'' are given later.
 \begin{figure}
@@ -85,8 +80,8 @@ Figure \ref{ch:sma:fig:gitbasics} gives a demonstration of how \textit{Git} mana
 		Status & Description \\ \hline
 		Untracked & Newly added or renamed items in the project directory.  \\ \hdashline
 		Modified (Unstaged) & Modified items from the last version that has not been registered in the staged area.  \\ \hdashline
-		Modified (Staged) & Modified items from the last version that has been registered in the staged area. An untracked item can also be staged, in which case it also falls into this category. \\ \hdashline
-		Unmodified & Unmodified items from the last version. \\ \hline
+		Modified (Staged) & Modified items from the last version that has been registered in the staged area. Notice that an untracked item can be staged directly, skipping ``modified (unstaged)'' step. Use \verb|git add| to stage items. \\ \hdashline
+		Unmodified & Unmodified items from the last version. Use \verb|git commit| to update a new version, which would change all the staged items into unmodified items. \\ \hline
 	\end{tabularx}
 \end{table}
 
@@ -189,13 +184,9 @@ The options \verb|--hard|, \verb|--mixed| and \verb|--soft| work differently. Al
 
 Notice that the above \verb|git reset| approaches does not help if an undesigned commit has already been pushed and synchronized to a remote server, in which case \verb|git revert| should be used instead. More details are given in Section \ref{ch:sma:sec:rrm}.
 
-\vspace{10pt}
+\subsection{Branch Management}
 
-\noindent \textbf{Branch Management}
-
-\vspace{10pt}
-
-``Branch'' is one of the core features of \textit{Git}, and it plays an important role in collaborative development of a project. There are two types of branches, namely the local branches and the remote branches. The remote branches are mainly used for sharing and synchronizing the project development with others. The details will be introduced in Section \ref{ch:sma:sec:rrm}. Only local branches are considered in this section.
+``Branch'' is one of the core features of \textit{Git}, and it plays an important role in collaborative development of a project. There are two types of branch, namely the local branch and the remote branch. The remote branches are mainly used for sharing and synchronizing the project development with others. The details will be introduced in Section \ref{ch:sma:sec:rrm}. Only local branches are considered in this section.
 
 To list down all the local branches, use
 \begin{lstlisting}
@@ -205,7 +196,7 @@ and the current working branch will be highlighted. The current working branch i
 
 To create a new branch from the current branch, or to delete a branch, use
 \begin{lstlisting}
-$ git branch <branch name> [<commit ID>]
+$ git branch <new branch name> [<commit ID>]
 $ git branch -d <branch name>
 \end{lstlisting}
 respectively. The optional \verb|<commit ID>| when creating a new branch allows the user to create a branch on top of a specified historical commit.
@@ -221,13 +212,13 @@ To switch to a different working branch, use \verb|git checkout| or \verb|git sw
 $ git checkout <branch name>
 $ git switch <branch name>
 \end{lstlisting}
-Notice that when there are uncommited changes in the current branch, \textit{Git} may or may not forbid the user to switch to another branch (the rules are too complicated to be explained here). Therefore, it is recommended to commit the changes before switching to a different branch. When switching to another branch, the workspace will change accordingly to the target branch.
+Notice that when there are uncommited changes in the current branch, \textit{Git} may forbid the user to switch to another branch (the rules are too complicated to be explained here). Therefore, it is recommended to commit the changes before switching to a different branch. When switching to another branch, the workspace will change accordingly to the target branch.
 
 To merge a branch back to the current branch, use
 \begin{lstlisting}
 $ git merge <branch name>
 \end{lstlisting}
-and fill in the comments accordingly. Depending on the setup, \textit{Git} may or man not automatically delete the merged branch.
+and fill in the comments accordingly. For example, checkout to master branch, and use \verb|git merge <slave branch name>| to merge the features in the slave branch to the master brach. By default, \textit{Git} automatically deletes the merged branch. This behavior can be changed in the configuration.
 
 An alternative way of integrating two branches is \verb|git rebase|, which ``rewires'' the two branches into a linear single branch. Use \verb|git rebase| as follows.
 \begin{lstlisting}
@@ -240,7 +231,7 @@ A demonstrative Fig. \ref{ch:sma:fig:gitrebase} explains the differences between
 	\caption{Two approaches of integrating branches, \texttt{git merge} VS \texttt{git rebase}.} \label{ch:sma:fig:gitrebase}
 \end{figure}
 
-\subsection{Remote Repository Management} \label{ch:sma:sec:rrm}
+\section{Remote Repository Management} \label{ch:sma:sec:rrm}
 
 \textit{GitHub} is an internet hosting service for software development and sharing using \textit{Git}. A user can create, manage, share and co-develop remote repositories on \textit{GitHub}. Notice that \textit{GitHub} is not the only place to host remote repositories. Some alternatives include \textit{GitLab} and \textit{Gitee}. Using \textit{Git}, it is possible to build a remote repository hosting server at home on a regular computer. In this section, only \textit{GitHub} is considered.
 
@@ -288,11 +279,6 @@ To tackle this problem, use \verb|git revert| instead as follows.
 $ git revert <commit ID>
 \end{lstlisting}
 Different from \verb|git reset|, this command creates a new commit that mirrors the specified historical commit. The new commit can then be pushed to the shared server.
-
-\section{Linux Repository Management}
-...
-\subsection{Brief Introduction to Linux Repository}
-...
 
 
 

@@ -1,16 +1,16 @@
 \chapter{Virtualization and Containerization}
 
-Virtualization and containerization are widely appreciated techniques for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization and efficiency, while maintaining isolation between applications. The key challenge for virtualization and containerization is to deploy and manage each instance efficiently and consistently across various environments.
+Virtualization and containerization are widely appreciated technologies for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization efficiency, while ensuring isolation between applications.
 
 \section{Introduction}
 
-One of the major differences between a server cluster and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and hard disk storage, despite that the actual hardware is shared with others. This can be achieved through \textit{Virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
+One of the major differences between a server and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and storage, despite that the actual hardware is shared with others. This can be achieved through \textit{Virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
 
 Deploying a new VM generally consumes a considerably large amount of time. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for all of them is resource-intensive, particularly when these applications could have shared the same OS kernel and operated within their own isolated workspace.
 
 A more efficient approach would be to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
 
-The technique used to deploy and manage containers is known as ``containerization''. Since a container contains all the configuration and requirement information of an application, running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
+The technology used to deploy and manage containers is known as ``containerization''. Since a container contains all the configuration and requirement information of an application, running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
 
 \begin{figure}
 	\centering
@@ -38,26 +38,33 @@ While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in m
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/multitaskcook.png}
-	\caption{Container implementation: one in a kitchen, handling multiple dishes, each has a cookbook and stays in its own pan.} \label{ch:vac:fig:multitaskcook}
+	\caption{Container implementation: one cook in a kitchen, handling multiple dishes, each has a cookbook and stays in its own pan.} \label{ch:vac:fig:multitaskcook}
 \end{figure}
 
 Just like a receipt guaranteeing the consistency of dishes, in containerization, an ``image'' guarantees the consistent performance of container instances. An image is basically a collection of prerequisites and configurations to run a container quickly, efficiently and consistently. Images can be shared among machines to replicate the containers even if the machines adopt different underlying infrastructure such as OS.
 
 \section{Virtualization and Containerization}
 
-Virtualization and containerization technologies have been studied for decades.
+Virtualization and containerization have been studied for decades. This section gives a brief introduction to both technologies.
 
-Before moving forward to the introduction of containerization approaches, it is important to briefly explain the following frequently used concepts: container runtime, container engine, and container orchestration.
+In a conventional data center, multiple physical servers are deployed, and each server has a single associated application. Servers may share the same LAN and network-attached storage (NAS) for data exchanging. A big issue of this implementation is the utilization efficiency of the servers and the unevenly distributed loads: some of the servers may not be utilized efficiently, while others may be overwhelmed. To deploy a new application, a new server must be purchased, which can take months of time. With more and more servers, the management and IT cost may grow exponentially.
 
-Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to balance API calls, automatically scale up and down the number of running containers, and restart containers upon failure. One of the most widely used container orchestrations is ``kubernetes''.
+To solve this problem, we need a systematical and automated way of integrating the resources in a data center and re-distributed them to the applications in an efficient manner. Virtualization is one of the most important technology used in this framework. Virtualization is essentially about running a system on a ``virtualized machine'', where by saying ``virtualized'' we mean that the machine is not a physical machine, but a running environment (known as the virtual execution environment) that is emulated and managed by a special software running on the actual machine (known as the ``hypervisor''). The setup should be transparent to the applications, in the sense that the applications would think that they are running on a physical machine, not a VM.
 
-Container runtime is definitely vital in every containerization implementation. Container engines and container orchestrations must have container runtime built-in. However, the users rarely directly talk to the container runtime. 
+Depending on the items to be virtualized, virtualization can be divided into the following categories.
+\begin{itemize}
+  \item Virtualization of equipment, mainly network resources and storage. This results in virtual local area network (VLAN), virtual private network (VPN), NAS and storage area network (SAN).
+  \item Virtualization of operating system. This results in the well-known VM and virtual desktop.
+  \item Virtualization of software, mainly programming language and applications. An example is Java virtual machine (JVM) that allows Java to generate consistent result while running on different machines.
+\end{itemize}
 
-Container engine is the interface and management tool of the container runtime, from where the developer can monitor and control the containers manually. Container engines are widely used especially in small projects or in the development environment.
+Containerization is an alternative virtualization approach to VM that can also virtualize an independent workspace for an application. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. By saying ``container'', we are referring to one or multiple of the following 3 components: container runtime, container engine, and container orchestration.
 
-For massive deployment of containers in enterprise-level applications, container orchestration can become handy. In such a case, the container orchestration calls the container engine via API (nowadays a container orchestration may also talk to container runtime directly), instructing it on how the containers should be deployed.
+Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to balance API calls, automatically scale up and down the number of running containers, and restart containers upon failure. One of the most widely used container orchestrations is ``kubernetes''. 
 
-\section{Docker} \label{ch:vac:sec:dc}
+Container runtime is definitely vital in every containerization implementation. Container engines and container orchestrations must have container runtime built-in. However, the users rarely directly talk to the container runtime. Container engine is the interface and management tool of the container runtime, from where the developer can monitor and control the containers manually. Container engines are widely used especially in small projects or in the development environment. For massive deployment of containers in enterprise-level applications, container orchestration can become handy. In such a case, the container orchestration calls the container engine via API (nowadays a container orchestration may also talk to container runtime directly), instructing it on how the containers should be deployed.
+
+\section{Docker Container} \label{ch:vac:sec:dc}
 
 This section introduces docker Notice that although docker is famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine, many of which even used in its opponent container engines.
 
@@ -120,21 +127,15 @@ Docker installs at least two piece of software on the machine, namely Docker CLI
 
 \subsection{Docker Container Management}
 
-To run a container from an image, simply use
-\begin{lstlisting}
-$ docker run <image>
-\end{lstlisting}
-Docker will search the local and remote repositories for the image, download the image if necessary, and start a container from that image. By default, after successful execution, the container will enter ``Exited'' status. Use
-\begin{lstlisting}
-$ docker container ls
-\end{lstlisting}
-to check the list of running containers, and
-\begin{lstlisting}
-$ docker container ls -a
-\end{lstlisting}
-the list of all containers, running or exited. Alternatively, \verb|docker ps|, \verb|docker ps -a| can also be used to list down containers just like \verb|docker container ls|, \verb|docker container ls -a|.
+\vspace{0.1in}
+\noindent \textbf{Container Manipulation}
+\vspace{0.1in}
 
-For example, consider running a container of \textit{alpine} as follows. A screen shot is given in Fig. \ref{ch:vac:fig:dockerrunexp}.
+To create and run a container from an image, simply use
+\begin{lstlisting}
+$ docker run <configuration> <image>
+\end{lstlisting}
+which is a combination of \verb|docker create| and \verb|docker start|. Docker will search the local and remote repositories for the image, download the image if necessary, and start a container from that image. By default, after successful execution and completion of all the tasks, the container will enter ``Exited'' status. For example, consider running a container of \textit{alpine} as follows. A screen shot is given in Fig. \ref{ch:vac:fig:dockerrunexp}.
 \begin{lstlisting}
 $ docker run -it --name test-alpine alpine
 \end{lstlisting}
@@ -151,13 +152,18 @@ It can be seen from Fig. \ref{ch:vac:fig:dockerrunexp} that once the container i
 	\includegraphics[width=250pt]{chapters/ch-virtualization-and-containerization/figures/dockerrunexppart2.png}
 	\caption{List the running container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart2}
 \end{figure}
-
 After exiting from Fig. \ref{ch:vac:fig:dockerrunexp} (by using \verb|exit| in \textit{alpine}), the container will transfer its status from ``running'' to ``exited'', as shown in Fig. \ref{ch:vac:fig:dockerrunexppart3}.
 \begin{figure}
 	\centering
 	\includegraphics[width=250pt]{chapters/ch-virtualization-and-containerization/figures/dockerrunexppart3.png}
 	\caption{List the exited container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart3}
 \end{figure}
+
+As introduced earlier, \verb|docker run| contains 2 steps in the backend, namely \verb|docker create| and \verb|docker start|, where \verb|docker create| creates a container, with all its file system setup, and \verb|docker start| starts the container by executing the startup script defined in the image. These two commands can be used separately. For example, to start an exited container, use
+\begin{lstlisting}
+$ docker start <container id>
+\end{lstlisting}
+This command starts the container with the startup command, and keep it running in the backend. If \verb|-a| is used in front of the container id, the container's IO would be attached to the terminal. If the startup command has been overwritten during the creation of the container, the new startup command will be used. The container id and the revised startup command can be obtained using \verb|docker container ls -a|.
 
 It is also possible to launch a container and let it run in the backend using \verb|-d| flag which stands for ``detached mode''. An example is given below.
 \begin{lstlisting}
@@ -195,33 +201,88 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 	\end{tabularx}
 \end{table}
 
-To re-start an existing but exited container, use
+It is worth mentioning that file system snapshot and startup commands are defined inside an image. See Section \ref{ch:vac:sec:di} for more details. When a container starts, the file system snapshot is pasted to the container file system, and the startup commands executed. It is possible to overwrite the startup commands when starting a container, simply by amending the revised startup commands to the image name as follows.
 \begin{lstlisting}
-$ docker start <container>
+$ docker run <image> <revised command>
 \end{lstlisting}
-This command starts the exited container, and keep it running in the backend.
+Notice that the command needs to be defined in the image file system, otherwise an error will be raised.
 
 For a container running in the backend, use \verb|docker exec| to execute a shell command in that container as follows.
 \begin{lstlisting}
 $ docker exec <container> <command>
 \end{lstlisting}
-
 To enable the TTY shell of a container running in the backend, use
 \begin{lstlisting}
-$ docker exec -it <container> <shell name>
+$ docker exec -it <container> <command>
 \end{lstlisting}
-Notice that the shell used by the application running inside the container may differ from the one used in the host machine. In the case of an \textit{alpine} image based container, \verb|ash| is the default shell. For a \textit{ubuntu} image based container, \verb|bash| is often used. To exit from the TTY shell while keep the container running in the backend, use shortcut key \verb|Ctrl+p+q|.
-
-An alternative way to interact with containers running in the backend is to use
+If \verb|<command>| is replaced by the shell name used in the container, this would open the terminal of the container. Notice that the shell used by the application running inside the container may differ from the one used in the host machine. In the case of an \textit{alpine} image based container, \verb|ash| is the default shell. For a \textit{ubuntu} image based container, \verb|bash| is often used. To exit from the TTY shell while keep the container running in the backend, use shortcut key \verb|Ctrl+p+q|. An alternative way to interact with containers running in the backend is to use
 \begin{lstlisting}
 $ docker attach <container>
 \end{lstlisting}
 to attach local standard input, output, and error streams to a running container. Similar with the previously introduced \texttt{docker exec -it} command, \texttt{docker attach} also starts the shell of the application running in the container. Use \verb|Ctrl-C| to quite the shell.
 
+To stop, kill or restart a container running in the backend, use
+\begin{lstlisting}
+$ docker stop <container>
+$ docker kill <container>
+$ docker restart <container>
+\end{lstlisting}
+respectively. The difference between \verb|docker stop| and \verb|docker kill| concerns with how the OS manages process. When \verb|docker stop| is used, a  \verb|SIGTERM| signal is sent to the main process that the container runs. The container still has a little bit of time (maximum $10$ seconds) to do terminating jobs and clean up. When \verb|docker kill| is used, \verb|SIGKILL| signal is sent to the process, and the process is terminated immediately. When a container is stopped, it enters exited status. 
+
+To remove an exited container or all exited containers, use
+\begin{lstlisting}
+$ docker container rm <container>
+\end{lstlisting}
+or
+\begin{lstlisting}
+$ docker container prune
+\end{lstlisting}
+respectively. Notice that there is a more powerful command
+\begin{lstlisting}
+$ docker system prune
+\end{lstlisting}
+which removes not only stopped containers but also unused network configurations, dangling images and cache.
+
+To rename a container (without changing its container ID or anything else), use
+\begin{lstlisting}
+$ docker rename <container-old-name> <container-new-name>
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Container Monitoring}
+\vspace{0.1in}
+
+Use
+\begin{lstlisting}
+$ docker container ls
+\end{lstlisting}
+to check the list of running containers, and
+\begin{lstlisting}
+$ docker container ls -a
+\end{lstlisting}
+the list of all containers, running or exited. Alternatively, \verb|docker ps|, \verb|docker ps -a| can also be used to list down containers just like \verb|docker container ls|, \verb|docker container ls -a|.
+
 To check the processes that is running in the container, use
 \begin{lstlisting}
-$ docker top <container>
+$ docker top <container id>
 \end{lstlisting}
+
+To quickly check container status including resource consumption (CPU, memory usage, etc.), use
+\begin{lstlisting}
+$ docker stats [<container id>]
+\end{lstlisting}
+where the user can choose to list down all containers or a specified container. To show more detailed information of a container, including its status, gateway, IP address, etc., use
+\begin{lstlisting}
+$ docker inspect <container id>
+\end{lstlisting}
+Finally, to check the logs of a container (e.g., its standard output to the console), use
+\begin{lstlisting}
+$ docker logs <container id>
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{File Exchange between Container and Host Machine}
+\vspace{0.1in}
 
 There are multiple ways and protocols to access the files in a container, depending on the I/O setup of the container. For a container running locally, \verb|docker cp| can be used for file transfer between the container and the host machine as follows. From container to host machine:
 \begin{lstlisting}
@@ -233,41 +294,19 @@ $ docker cp <source> <container>:<destination>
 \end{lstlisting}
 where \verb|<source>| and \verb|<destination>| refer to the path to the source and destination, respectively, located in the host machine or the container.
 
-To stop, kill (force stop) or restart a container running in the backend, use
+\vspace{0.1in}
+\noindent \textbf{Commit Container to Image}
+\vspace{0.1in}
+
+A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. Notice that this is generally not recommended. Images shall be created mostly from Dockerfile, as will be introduced in Section \ref{ch:vac:sec:di}. 
+
+To create an image from a container, use
 \begin{lstlisting}
-$ docker stop <container>
-$ docker kill <container>
-$ docker restart <container>
-\end{lstlisting}
-respectively. When a container is stopped, it enters exited status. To remove an exited container or all exited containers, use
-\begin{lstlisting}
-$ docker container rm <container>
+$ docker commit <container> <image>
 \end{lstlisting}
 or
 \begin{lstlisting}
-$ docker container prune
-\end{lstlisting}
-respectively. To rename a container (without changing its container ID or anything else), use
-\begin{lstlisting}
-$ docker rename <container-old-name> <container-new-name>
-\end{lstlisting}
-
-To quickly check container status including resource consumption (CPU, memory usage, etc.), use
-\begin{lstlisting}
-$ docker stats [<container>]
-\end{lstlisting}
-where the user can choose to list down all containers or a specified container. To show more detailed information of a container, including its status, gateway, IP address, etc., use
-\begin{lstlisting}
-$ docker inspect <container>
-\end{lstlisting}
-Finally, to check the logs of a container (e.g., its standard output to the console), use
-\begin{lstlisting}
-$ docker logs <container>
-\end{lstlisting}
-
-A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. To create an image from a container, use
-\begin{lstlisting}
-$ docker commit <container> <image>
+$ docker commit -c 'CMD ["<startup command>"]' <container> <image>
 \end{lstlisting}
 where \verb|docker commit| command saves the container's file changes or settings into a new image, which allows easier populating containers or debugging in a later stage. Notice that \verb|docker commit| does not save everything of the container into the image, and it is not the only way an image is created.
 
@@ -311,8 +350,8 @@ $ docker cp index.html simple-web:/var/www/html/index.html
 \end{lstlisting}
 where \verb|mkdir -p| creates the directories along the given path, if not exist. Notice that the file name in the destination can be ignored if it is the same with the source, i.e., the copy commands can be replaced by
 \begin{lstlisting}
-	$ docker cp default.conf simple-web:/etc/nginx/conf.d/
-	$ docker cp index.html simple-web:/var/www/html/
+$ docker cp default.conf simple-web:/etc/nginx/conf.d/
+$ docker cp index.html simple-web:/var/www/html/
 \end{lstlisting}
 
 Change the ownership of the \textit{html} file as follows, so that the current user \textit{nginx} is able to access that file.
@@ -338,7 +377,7 @@ $ docker run -dt --name web01 -p 80:80 simple-web-image
 \end{lstlisting}
 where \verb|-p <host machine port>:<container port>| is used to map ports. Notice that different from the previous container ``\textit{simple-web}'', the new container ``\textit{web01}'' IP address port 80 is mapped with the port 80 of the host machine. Therefore, the web page hosted in ``\textit{web01}'' can be accessed not only by the host machine, but also by other machines in the same network with the host machine.
 
-\subsection{Docker Volume Configuration} \label{ch:vac:subsec:dockervolume}
+\section{Docker Volume} \label{ch:vac:subsec:dockervolume}
 
 As introduced earlier, \verb|docker cp| can be used to transfer data into and out of a container. An alternative way of accessing docker container data from the host machine is to use docker volume. Docker volume is used to mount host machine hard drive to container storage. Details are introduced below.
 
@@ -371,7 +410,11 @@ Moreover, Docker volumes can be shared among multiple containers, which facilita
 The data persists in the Docker host, and from the container's perspective, it is treated as a mounted volume. Hence, the data is not duplicated physically.
 
 
-\subsection{Docker Image Management} \label{ch:vac:sec:di}
+\section{Docker Image} \label{ch:vac:sec:di}
+
+Container image related operations are introduced in this section.
+
+\subsection{Docker Image Creation from Dockerfile}
 
 In earlier Section \ref{ch:vac:sec:dc}, images were used to create containers. An image performs like a blueprint that encapsulates all the necessary information needed to spawn a container. It includes initial configurations, requisite libraries, and other pertinent metadata. Docker images are highly portable and can be shared across various machines and platforms. This section delves deeper into the construction and functionality of Docker images.
 
@@ -384,7 +427,20 @@ An image shall contain everything needed to create and initialize a container. T
 \end{itemize}
 In addition, an image shall be designed and organized in such a way that it is migratable, reusable and light, and can be used to easily populate large number of containers. For better inheritability, an image might be based on another existing image, which is called its parent image. An image with no parent, such as the official \textit{hello-world} image from Docker Hub, is called a base image.
 
-The Dockerfile is a text document that serves as the blueprint for constructing a Docker image, as illustrated in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notably, the Dockerfile itself isn't included within the resulting image.
+The Dockerfile is a text document that serves as the blueprint for constructing a Docker image. Generally speaking, a Dockerfile follows the following flow:
+\begin{enumerate}[(1)]
+	\item Specify base image.
+	\item Add additional configurations.
+	\begin{itemize}
+		\item Setup file system.
+		\item Install dependencies and other programs.
+		\item Setup working directory.
+		\item Handle access control.
+		\item ...
+	\end{itemize}
+	\item Specify startup command.
+\end{enumerate}
+A more detailed step-by-step guidance example is given later. The relationship between Dockerfile, image and container is illustrated in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notably, the Dockerfile itself isn't included within the resulting image.
 
 \begin{figure}
 	\centering
@@ -486,6 +542,8 @@ $ docker build <path/url> -t <image name>
 \end{lstlisting}
 where \verb|<path/url>| is the path or URL to the directory where the Dockerfile locates (does not need to contain ``\verb|/Dockerfile|'' in its end), and \verb|-t| gives a tag, in this case an image name, to the image to build.
 
+\subsection{Docker Image Management}
+
 The most commonly used image operations can be categorized as follows.
 \begin{itemize}
   \item Create an image.
@@ -566,6 +624,8 @@ In summary, Portainer is an easy-to-use container management tool with clean gra
 
 Docker Hub is a commonly used server for storing and sharing docker images. It is also the default remote repository server of Docker engine. However, do notice that Docker Hub is not the only remote docker image server. Some alternatives are Amazon Elastic Container Registry, Red hat Quay, Azure Container Registry, Google Container Registry, etc.
 
+\subsection{Basics}
+
 After registering an account on Docker Hub, use the following command to login to the docker hub from your local machine.
 \begin{lstlisting}
 $ docker login --username=<user name>
@@ -582,3 +642,25 @@ Use the following command to push the image to Docker Hub.
 \begin{lstlisting}
 $ docker push <user name>/<repository name>
 \end{lstlisting}
+
+\subsection{\textit{Alpine}}
+
+TBA
+
+\subsection{\textit{Redis}}
+
+TBA
+
+\subsection{\textit{Nginx}}
+
+TBA
+
+\subsection{\textit{PostgreSQL}}
+
+TBA
+
+\subsection{\textit{Node.js}}
+
+TBA
+
+

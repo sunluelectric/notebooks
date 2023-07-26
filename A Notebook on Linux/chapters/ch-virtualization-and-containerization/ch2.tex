@@ -1,56 +1,57 @@
 \chapter{Kubernetes}
 
-Kubernetes is introduced cross sections. This section focuses on a brief introduction to Kubernetes, its basic schematic architecture, and how it can be installed on a local machine.
+Kubernetes is one of the most widely used container orchestrations. Many cloud platforms provide Kubernetes support. Container orchestrations other than Kubernetes may also include it as a plug-in.
 
 \section{Basic Kubernetes}
 
 \textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications. While Kubernetes is more flexible than Portainer, it's also more complex and has a steeper learning curve.
 
-Note that running Kubernetes on a local server can differ significantly from running it on a cloud platform such as AWS or Google Cloud, which offer managed Kubernetes services with additional features and simplified management. These platforms, AWS with its Elastic Kubernetes Service (EKS) and Google Cloud with Google Kubernetes Engine (GKE), have developed their own tools and interfaces for interacting with Kubernetes. So, while learning Kubernetes can be beneficial, one might not need to learn all the low-level details if he is running Kubernetes using one of the above management tools instead of DIY everything.
+Notice that running Kubernetes on a local server differs significantly from running it on a cloud platform  which often offers managed Kubernetes services with additional features and simplified managing interface. For example, AWS has Elastic Kubernetes Service (EKS) and Google cloud Google Kubernetes Engine (GKE). Both of them have developed their own tools and interfaces for interacting with Kubernetes. So, while learning Kubernetes can be beneficial, one might not need to learn all the low-level details if he is using one of the above platforms instead of DIY everything.
 
-This notebook focuses introducing running Kubernetes on a local server in a DIY manner. In this scenario, the following common practice is adopted: \textit{kubectl} is used as the user interface to Kubernetes and \textit{minikube} the software to manage the host machine. Minikube is an open-source software developed by the Kubernetes community to run a single-node Kubernetes cluster on a local machine, which is suitable for developers to learn and test different things in development environment.
+The majority part of this chapter focuses on introducing running Kubernetes on a local server. In this scenario, the following common practice is adopted: \textit{kubectl} is used as the user interface to Kubernetes and \textit{minikube} the software to manage the host machine. Minikube is an open-source software developed by the Kubernetes community to run a single-node Kubernetes cluster on a local machine, which is suitable for developers to learn and test different things in development environment.
 
 Notice that in the past days, docker is the default container engine built-in to Kubernetes, and Kubernetes uses a special program ``dockershim'' that talks to docker engine. As of now, docker support is deprecated in Kubernetes and dockershim is removed from the installation.
 
 \subsection{Infrastructure}
 
-Figure \ref{ch:vac:fig:kubernetescluster} demonstrates what key components Kubernetes has inside its cluster.
+Figure \ref{ch:vac:fig:kubernetescluster} demonstrates the key components Kubernetes has inside its cluster.
 \begin{figure}
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/kubernetescluster.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
-As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' mode, where the master plays as the control panel, API gateway (with static IP address) and load balancer to interact with a user, and the worker nodes (also known as nodes, for short) actually process the data. Each node can host multiple pods, inside each pod is a container or a group of containers that work closely together. Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. A pod should be the minimal unit or group of container(s) that can deliver a basic function.
+As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the master plays as the control panel to interact with a user, and the worker nodes (nodes, for short) process the data. Each node can host multiple pods. Inside each pod is a container or a group of containers that work together closely (dependently, in many cases). Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. A pod should be the minimal unit  that can deliver a basic function.
 
-In practice, the master and nodes can run on cross servers or VMs. Kubernetes packages need to be installed on each and every server or VM for the system to work properly. Kubernetes provides variety of tools to distribute the loads to different servers or VMs, or to add redundancy to the system for high availability.
+The master and nodes can run on cross servers or VMs. Kubernetes packages need to be installed on each and every server or VM. Kubernetes provides variety of tools to distribute the loads to different servers or VMs, or to add redundancy to the system for high availability.
 
 \subsection{Installation}
 
-The installation guidance of Kubernetes can be found at its official website \textit{kubernetes.io}. Notice that different OS adopts different ways of installing and using Kubernetes. The installation procedures introduced in this section applies to Linux OS only. For Windows users, Kubernetes can be installed from Docker desktop. For macOS users, other tools are used to install the tools to be introduced below.
+The installation guidance of Kubernetes can be found at its official website \textit{kubernetes.io}. Notice that different OS adopts different ways of installing and using Kubernetes. The installation procedures introduced in this section applies to Linux OS only. For Windows users, Kubernetes can be installed from Docker desktop. For macOS users, other tools are used to install the tools.
 
 As introduced earlier, \textit{kubectl} is used to interact with Kubernetes. In addition, since we are in development environment, we will also install \textit{minikube} which is used to setup a small Kubernetes cluster in the local machine. They can be installed separately. See following links for more details.
 \begin{lstlisting}
-	https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
-	https://minikube.sigs.k8s.io/docs/start/
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+https://minikube.sigs.k8s.io/docs/start/
 \end{lstlisting}
-When running \textit{minikube} for the first time, it would try to install \textit{kubectl} as a built-in. Start \textit{minikube} using \verb|minikube start|, which will start a VM using Vertual Box, and setup a single Kubernetes node in the VM.
-
-If \textit{kubectl} and \textit{minikube} are installed separately, run the following command to verify the successful installation of both software.
+and do not forget to start \textit{minikube} using the following command. Notice that when both \textit{minikube} and \textit{kubectl} are installed, \textit{minikube} needs to be started before \textit{kubectl} can work properly.
 \begin{lstlisting}
-	$ kubectl cluster-info
-	Kubernetes control plane is running at https://192.168.49.2:8443
-	CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+$ minikube start
+\end{lstlisting} 
+When starting \textit{minikube}, it would launch a VM using Vertual Box, and install \textit{kubectl} as a built-in. If \textit{kubectl} and \textit{minikube} are installed separately, run the following command to verify the successful installation of both software.
+\begin{lstlisting}
+$ kubectl cluster-info
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 \end{lstlisting}
-
 If \textit{minikube} is installed, and \textit{kubectl} is considered as a built-in installation to \textit{minikube}, use the following command
 \begin{lstlisting}
-	$ minikube kubectl cluster-info
-	Kubernetes control plane is running at https://192.168.49.2:8443
-	CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+$ minikube kubectl cluster-info
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 \end{lstlisting}
 in which case \verb|alias kubectl="minikube kubectl --"| may make things easier.
 
-It is indeed possible to run Docker and Kubernetes directly on a host machine if that machine is running a Linux OS. However, this is typically not recommended for reasons pertaining to access control, security, and isolation. It is generally better practice, particularly in a development environment, to deploy your Kubernetes cluster within a virtual machine.
+It is possible to run Docker and Kubernetes directly on a host machine OS without VM, if that machine is running Linux. However, this is not recommended for reasons pertaining to access control, security, and isolation. It is generally a better practice to deploy Kubernetes clusters in a VM.
 
 The \verb|kubectl| command is a command-line interface (CLI) for interacting with Kubernetes clusters. Its behavior is governed by a configuration file, typically located at \verb|~/.kube/config|, which determines which Kubernetes cluster \verb|kubectl| communicates with. This could be a cluster running on the host machine, or a cluster running in a VM managed by tools like Minikube. It's worth noting that, for better isolation and control, it is recommended to deploy the Kubernetes cluster in a VM, instead of directly on the host machine.
 
@@ -60,33 +61,33 @@ Managing containers via container orchestration such as Kubernetes is different 
 
 The following two configuration files are given as examples \cite{stephen2023docker} to demonstrate how these files look like. This example comes from Udemy course \textit{Docker and Kubernetes: The Complete Guide} by Stephen Grinder. They are both written in YAML. Configuration file to setup a pod:
 \begin{lstlisting}
-	apiVersion: v1
-	kind: Pod
-	metadata:
-	name: client-pod
-	labels:
-	component: web
-	spec:
-	containers:
-	- name: client
-	image: <image-name>
-	ports:
-	- containerPort: 3000
+apiVersion: v1
+kind: Pod
+metadata:
+name: client-pod
+labels:
+component: web
+spec:
+containers:
+- name: client
+image: <image-name>
+ports:
+- containerPort: 3000
 \end{lstlisting}
 Configuration file to setup the networking service:
 \begin{lstlisting}
-	apiVersion: v1
-	kind: Service
-	metadata:
-	name: client-node-port
-	spec:
-	type: NodePort
-	ports:
-	- port: 3050
-	targetPort: 3000
-	nodePort: 31515
-	selector:
-	component: web
+apiVersion: v1
+kind: Service
+metadata:
+name: client-node-port
+spec:
+type: NodePort
+ports:
+- port: 3050
+targetPort: 3000
+nodePort: 31515
+selector:
+component: web
 \end{lstlisting}
 
 Commonly used Kubernetes object types are summarized in Table \ref{ch:vac:tab:objtype}.
@@ -127,7 +128,7 @@ Notice that Kubernetes networking using \verb|kind: Service| is more complicated
 
 With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. \textit{kubectl} command line interface is used to instruct Kubernetes to deploy the objects as follows.
 \begin{lstlisting}
-	$ kubectl apply -f <configuration file>
+$ kubectl apply -f <configuration file>
 \end{lstlisting}
 This essentially asks the master node in the Kubernetes cluster to start taking actions according to the configuration files, such as to inform the nodes to start creating pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
 
@@ -135,15 +136,15 @@ It is worth mentioning here that by default Kubernetes uses declarative deployme
 
 To retrieve information, such as the status, of a group of objects, use
 \begin{lstlisting}
-	$ kubectl get <object type>
+$ kubectl get <object type>
 \end{lstlisting}
 where \verb|<object type>| can be \verb|pods|, \verb|services|, etc. For more details of a specific object, use
 \begin{lstlisting}
-	$ kubectl describe <object type> <object name>
+$ kubectl describe <object type> <object name>
 \end{lstlisting}
 for example, to check the containers running in a pod. If \verb|<object name>| is neglected, Kubernetes returns detailed information of all objects of the given object type. For a running object, use
 \begin{lstlisting}
-	$ kubectl logs <object name>
+$ kubectl logs <object name>
 \end{lstlisting}
 to check the log file of that object.
 
@@ -151,17 +152,17 @@ With the above been done, open a browser and use \verb|<ip>:<port>| to access th
 
 To apply a group of configuration files all together, provide the directory name of all the configuration files to Kubernetes instead of feeding each configuration file one at a time.
 \begin{lstlisting}
-	$ kubectl apply -f <directory>
+$ kubectl apply -f <directory>
 \end{lstlisting}
 When directory is given instead of a file, Kubernetes will try to apply all the configuration files in that directory.
 
 It is possible to consolidate the configuration files of objects into one conjunctive configuration file. To do that, use \verb|---| to split the configurations for each object in the conjunctive configuration file as follows. It is of personal preference whether to use conjunctive configuration files or separate configuration files for all objects.
 \begin{lstlisting}
-	<configurations-for-object-1>
-	---
-	<configurations-for-object-2>
-	---
-	<...>
+<configurations-for-object-1>
+---
+<configurations-for-object-2>
+---
+<...>
 \end{lstlisting}
 
 \subsection{Cluster Update} \label{ch:vac:subsec:updatek8s}
@@ -174,7 +175,7 @@ However, there is a limitation to the updating of the Kubernetes deployment. For
 
 To revert \verb|kubectl apply|, i.e., to remove a configuration file, use
 \begin{lstlisting}
-	$ kubectl delete -f <configuration file>
+$ kubectl delete -f <configuration file>
 \end{lstlisting}
 Kubernetes treats the above delete command as a specific type of update to the cluster, and will action accordingly.
 
@@ -188,27 +189,27 @@ As introduced in Section \ref{ch:vac:subsec:updatek8s}, updating pods has some l
 
 As an example, here is a configuration file from Kubernetes manual that deploys a Deployment object.
 \begin{lstlisting}
-	apiVersion: apps/v1
-	kind: Deployment
-	metadata:
-	name: nginx-deployment
-	labels:
-	app: nginx
-	spec:
-	replicas: 3
-	selector:
-	matchLabels:
-	app: nginx
-	template:
-	metadata:
-	labels:
-	app: nginx
-	spec:
-	containers:
-	- name: nginx
-	image: nginx
-	ports:
-	- containerPort: 80
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: nginx-deployment
+labels:
+app: nginx
+spec:
+replicas: 3
+selector:
+matchLabels:
+app: nginx
+template:
+metadata:
+labels:
+app: nginx
+spec:
+containers:
+- name: nginx
+image: nginx
+ports:
+- containerPort: 80
 \end{lstlisting}
 Some highlights are as follows.
 \begin{itemize}
@@ -219,11 +220,11 @@ Some highlights are as follows.
 
 When a new version of an image becomes available, we may want to update the containers accordingly. Re-apply the same configuration file would not help, as Kubernetes would reject apply request if no change is detected in the configuration file. It would not check whether the image is in its latest version. Kubernetes uses the following imperial command to update images as a walk around, and the developer needs to run this command manually.
 \begin{lstlisting}
-	$ kubectl set image deployment/<Deployment name> <container name>=<image name>
+$ kubectl set image deployment/<Deployment name> <container name>=<image name>
 \end{lstlisting}
 For example,
 \begin{lstlisting}
-	$ kubectl set image deployment/nginx-deployment nginx=nginx:1.25.1
+$ kubectl set image deployment/nginx-deployment nginx=nginx:1.25.1
 \end{lstlisting}
 
 \subsection{Kubernetes Object: Service} \label{ch:vac:subsec:k8snetworking}
@@ -244,17 +245,17 @@ A summary of different service types are given below.
 
 A ClusterIP configuration file may look like the following.
 \begin{lstlisting}
-	apiVersion: v1
-	kind: Service
-	metadata:
-	name: client-cluster-ip-service
-	spec:
-	type: ClusterIP
-	selector:
-	<target tag>
-	ports:
-	- port: <port for internal comm>
-	targetPort: <port for internal comm>
+apiVersion: v1
+kind: Service
+metadata:
+name: client-cluster-ip-service
+spec:
+type: ClusterIP
+selector:
+<target tag>
+ports:
+- port: <port for internal comm>
+targetPort: <port for internal comm>
 \end{lstlisting}
 where the first \verb|port for internal comm| is the port in the ClusterIP service object that opens to other objects in the cluster, and the second the port the target object opens to the ClusterIP service object. They can be set differently, but usually they are just set to the same value.
 
@@ -300,70 +301,70 @@ Notice that it is not necessary to claim PV in order to use PVC, as PVC can prov
 
 An example of claiming Kubernetes PV and PVC is given below. In the remaining part of this section, we will be mostly using PVC instead of PV.
 \begin{lstlisting}
-	# persistent-volume.yaml
-	
-	apiVersion: v1
-	kind: PersistentVolume
-	metadata:
-	name: my-pv
-	spec:
-	storageClassName: standard
-	capacity:
-	storage: 10Gi
-	accessModes:
-	- ReadWriteOnce
-	hostPath:
-	path: /data/my-pv
-	---
-	# persistent-volume-claim.yaml
-	
-	apiVersion: v1
-	kind: PersistentVolumeClaim
-	metadata:
-	name: my-pvc
-	spec:
-	storageClassName: standard
-	accessModes:
-	- ReadWriteOnce
-	resources:
-	requests:
-	storage: 5Gi
+# persistent-volume.yaml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+name: my-pv
+spec:
+storageClassName: standard
+capacity:
+storage: 10Gi
+accessModes:
+- ReadWriteOnce
+hostPath:
+path: /data/my-pv
+---
+# persistent-volume-claim.yaml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+name: my-pvc
+spec:
+storageClassName: standard
+accessModes:
+- ReadWriteOnce
+resources:
+requests:
+storage: 5Gi
 \end{lstlisting}
 To check the PV objects, use \verb|$ kubectl get pv| and \verb|$ kubectl get pvc|.
 
 To add the above Kubernetes PVC to a Kubernetes Deployment, add volumes information to the specs as given in the following example.
 \begin{lstlisting}
-	apiVersion: apps/v1
-	kind: Deployment
-	metadata:
-	name: my-app-deployment
-	spec:
-	replicas: 1
-	selector:
-	matchLabels:
-	app: my-app
-	template:
-	metadata:
-	labels:
-	app: my-app
-	spec:
-	containers:
-	- name: my-app-container
-	image: my-app-image
-	ports:
-	- containerPort: 8080
-	volumeMounts:
-	- name: data-volume
-	mountPath: /data
-	subPath: data-from-container
-	volumes:
-	- name: data-volume
-	persistentVolumeClaim:
-	claimName: my-pvc
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: my-app-deployment
+spec:
+replicas: 1
+selector:
+matchLabels:
+app: my-app
+template:
+metadata:
+labels:
+app: my-app
+spec:
+containers:
+- name: my-app-container
+image: my-app-image
+ports:
+- containerPort: 8080
+volumeMounts:
+- name: data-volume
+mountPath: /data
+subPath: data-from-container
+volumes:
+- name: data-volume
+persistentVolumeClaim:
+claimName: my-pvc
 \end{lstlisting}
 where \verb|volumes| defines which Kubernetes PVC is used, and \verb|volumeMounts| tells how it is mounted in the container. The \verb|mountPath| is the path in the container whose data is mounted by the volume. If a \verb|subPath| is given, a sub-folder of its specified name will be created in the host machine in the volume to contain the data.
 
-There are different types of access modes: 
+There are different types of access modes:
 \begin{itemize}
 	\item \verb|ReadWriteOnce|: Allow one node to read and write at a time.
 	\item \verb|ReadOnlyMany|: Allow many nodes to read at a time.
@@ -374,7 +375,7 @@ The developer can specify the place for Kubernetes PVs. This is usually the hard
 \begin{lstlisting}
 	$ kubectl get storageclass
 \end{lstlisting}
-and 
+and
 \begin{lstlisting}
 	$ kubectl describe storageclass
 \end{lstlisting}
@@ -397,43 +398,43 @@ Kubernetes environment variables are used to pass or share information among Dep
 To define constant environment variables in containers, simply specify them in the Deployment configuration file as given in the example below.
 
 \begin{lstlisting}
-	apiVersion: apps/v1
-	kind: Deployment
-	metadata:
-	name: my-app-deployment
-	spec:
-	replicas: 1
-	selector:
-	matchLabels:
-	app: my-app
-	template:
-	metadata:
-	labels:
-	app: my-app
-	spec:
-	containers:
-	- name: my-app-container
-	image: my-app-image
-	ports:
-	- containerPort: 8080
-	volumeMounts:
-	- name: data-volume
-	mountPath: /data
-	subPath: data-from-container
-	env:
-	- name: <name1>
-	value: <value1>
-	- name: <name2>
-	value: <value2>
-	- name: <name3>
-	valueFrom:
-	secretKeyRef:
-	name: <secret-name>
-	key: <key>
-	volumes:
-	- name: data-volume
-	persistentVolumeClaim:
-	claimName: my-pvc
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: my-app-deployment
+spec:
+replicas: 1
+selector:
+matchLabels:
+app: my-app
+template:
+metadata:
+labels:
+app: my-app
+spec:
+containers:
+- name: my-app-container
+image: my-app-image
+ports:
+- containerPort: 8080
+volumeMounts:
+- name: data-volume
+mountPath: /data
+subPath: data-from-container
+env:
+- name: <name1>
+value: <value1>
+- name: <name2>
+value: <value2>
+- name: <name3>
+valueFrom:
+secretKeyRef:
+name: <secret-name>
+key: <key>
+volumes:
+- name: data-volume
+persistentVolumeClaim:
+claimName: my-pvc
 \end{lstlisting}
 where a new tag \verb|env| is defined under template, specifications, containers. Under the \verb|env| tag, a list is defined containing names and values of the environment variables. The value must be a string, not a numerical number.
 
@@ -461,7 +462,7 @@ Travis CI is a continuous integration service tool written. It can be deployed o
 
 To run Travis, a machine supporting Ruby programming language is required. For that, a separate container with Ruby installation is deployed to run Travis. Use Github credentials to login to Travis, so that it can link to the Github repositories.
 
-Travis has built-in file encryption function. This function is mainly used to encrypt login credentials and service account credentials (in this example, the service account information to link to Kubernetes clusters on Google Cloud Platform) locally, so that later the unencrypted original credential files can be deleted, and only the encrypted credentials uploaded to the Github repository. When encrypting a file, Travis will also guide the user on how to call the encrypt information in the build script. 
+Travis has built-in file encryption function. This function is mainly used to encrypt login credentials and service account credentials (in this example, the service account information to link to Kubernetes clusters on Google Cloud Platform) locally, so that later the unencrypted original credential files can be deleted, and only the encrypted credentials uploaded to the Github repository. When encrypting a file, Travis will also guide the user on how to call the encrypt information in the build script.
 
 Travis uses configuration files to setup CI/CD pipeline.
 
@@ -478,7 +479,7 @@ The walk around introduced in Section \ref{ch:vac:subsec:deployment} was to use 
 so what when the version name changes, Kubernetes would notice the differences and apply the new image. When working with CI/CD using \textit{Git}, this can be further automated. Just use the \verb|$GIT_SHA| as part of the tag as follows.
 \begin{lstlisting}
 	docker build -t <docker-id>/<image-name>:latest -t <docker-id>/<image-name>:$GIT_SHA -f <dockerfile> <save-directory>
-	docker push <docker-id>/<image-name>:latest 
+	docker push <docker-id>/<image-name>:latest
 	docker push <docker-id>/<image-name>:$GIT_SHA
 \end{lstlisting}
 Notice that in addition to \verb|:latest|, \verb|:$GIT_SHA| is used as a secondary tag. When pushing the built image to Docker hub, both \verb|:latest| and \verb|:$GIT_SHA| are pushed (although they have identical content). When setting image, the \verb|$GIT_SHA| is used to identify the image just like the version number.
@@ -505,9 +506,9 @@ Many cloud platform providers including Google Cloud Platform provides services 
 
 To install a software in a Kubernetes pod, the most intuitive way is to commit the installation in the image, and call the image in the Kubernetes configuration file. For commonly used services such as \verb|ingress-nginx|, its installation configuration file is available online as part of the manual. It essentially starts and initializes a branch of Kubernetes objects to enable the service.
 
-Helm is designed as an alternative to manage software installation in Kubernetes clusters. In many occasions, it is more convenient (or even only possible) to use Helm to install a software. More details are given in \textit{github.com/helm/helm}. 
+Helm is designed as an alternative to manage software installation in Kubernetes clusters. In many occasions, it is more convenient (or even only possible) to use Helm to install a software. More details are given in \textit{github.com/helm/helm}.
 
-We need to first install Helm from script. Helm installation used to contain two parts, the CLI (referred as Helm client) and the server (referred as Tiller server). We could then use Helm CLI to install other third-party software and tools. 
+We need to first install Helm from script. Helm installation used to contain two parts, the CLI (referred as Helm client) and the server (referred as Tiller server). We could then use Helm CLI to install other third-party software and tools.
 
 Access control is important on cloud platforms. In practice, user accounts are used to identify users, and service accounts to identify pods and programs. Associated role bindings are used to manage what resources can be accessed by a user or program. For example, administrative role over the entire account can be used to bind with the administrative user. The same applies to Helm. The Tiller server required some extent of administrative control over the resources in an account. In many occasions, Tiller server was given the administrative permission to access the entire account, which introduced security risks.
 
