@@ -933,7 +933,7 @@ ADD FOREIGN KEY (payment_method_id)
 REFERENCES payment_method(payment_method_id);
 \end{lstlisting}
 
-\section{Commonly Seen Relational Databases}
+\section{Relational Databases Examples}
 
 Commonly seen RDBMS examples include Oracle Database, MySQL, Microsoft SQL Server, PostgreSQL, SQLite, MariaDB, and many more. Some of them are briefly introduced in this section.
 
@@ -1077,7 +1077,7 @@ Some of the main features of PostgreSQL are summarized as follows.
 \end{itemize}
 
 \vspace{0.1in}
-\noindent \textbf{PostgreSQL Installation}
+\noindent \textbf{Installation}
 \vspace{0.1in}
 
 PostgreSQL supports a large range of operating systems including Linux, MacOS, Windows, and some more. The source code and very detailed documentations of PostgreSQL are available on its websites and can be downloaded to a local machine freely. Due to the lite weight of the base installation, PostgreSQL can be used conveniently in containers, where the associated images can be found on Docker Hub.
@@ -1099,21 +1099,35 @@ $ sudo systemctl enable postgresql-15
 $ sudo systemctl start postgresql-15
 \end{lstlisting}
 
-To use PostgreSQL in containers, either download and run PostgreSQL images from Docker Hub, or create a Docker File like the following that installs and configures PostgreSQL on top of an Alpine base image.
+After installation, use command \verb|pg_ctl| to control the server, and \verb|psql| to login to the server. Notice that PostgreSQL installation may come with PgAdmin, the GUI for the DBMS, which can also be used to interact with the databases. 
 
-xxx
+To use PostgreSQL in containers, either download and run PostgreSQL images from Docker Hub, or create a Dockerfile like the following that installs and configures PostgreSQL on top of an Alpine base image. An example of such Dockerfiles is given below.
+\begin{lstlisting}
+FROM alpine
+RUN apk update
+# install postgresql
+RUN apk add postgresql
+RUN mkdir /run/postgresql
+RUN chown postgres:postgres /run/postgresql/
+USER postgres
+WORKDIR /var/lib/postgresql
+RUN mkdir /var/lib/postgresql/data
+RUN chmod 0700 /var/lib/postgresql/data
+RUN initdb -D /var/lib/postgresql/data
+# prepare user scripts
+RUN mkdir /var/lib/postgresql/user-scripts
+RUN chmod 0700 /var/lib/postgresql/user-scripts
+COPY ./start.sh /var/lib/postgresql/user-scripts
+COPY ./setup_db.sql /var/lib/postgresql/user-scripts
+COPY ./populate_db.py /var/lib/postgresql/user-scripts
+# prepare user data
+RUN mkdir /var/lib/postgresql/user-data
+RUN chmod 0700 /var/lib/postgresql/user-data
+COPY ./google_stock_price.csv /var/lib/postgresql/user-data
+#
+CMD ["/bin/sh", "/var/lib/postgresql/user-scripts/start.sh"]
+\end{lstlisting}
 
-\vspace{0.1in}
-\noindent \textbf{PostgreSQL Basic Configuration}
-\vspace{0.1in}
-
-\vspace{0.1in}
-\noindent \textbf{PostgreSQL Console}
-\vspace{0.1in}
-
-\vspace{0.1in}
-\noindent \textbf{Execute SQL File}
-\vspace{0.1in}
 
 \vspace{0.1in}
 \noindent \textbf{PostgreSQL Features: New Data Types}
@@ -1259,25 +1273,91 @@ $$ LANGUAGE plpgsql;
 
 With the above been said, though convenient and powerful it might be in some use cases, it is often a good practice to keep complex logic in application layer, for logic consistency and database portability. 
 
+\vspace{0.1in}
+\noindent \textbf{Database Manipulation}
+\vspace{0.1in}
 
+\vspace{0.1in}
+\noindent \textbf{Database Query}
+\vspace{0.1in}
 
-
-
-
-
+\vspace{0.1in}
+\noindent \textbf{DBMS API}
+\vspace{0.1in}
 
 \subsection{Firebird}
 
-\section{Commonly Seen Non-relational Database Examples}
+\section{Non-relational Databases Examples}
 
-\subsection{AllegroGraph}
+Unlike relational databases where data is stored in relevant tables with pre-designed schematics such as column names, types, and references, non-relational database stores data in different structures such as directed graphs, dictionaries and documents. 
+
+Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful. 
+
+Since there are many types of non-relational databases, such as document-oriented databases, directed graph databases, and each of them has some unique features, pros and cons over relational databases, and each of them may adopts its own database manipulation language, it is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}. 
+
+\subsection{MongoDB}
+
+MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with optional schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as Express.js, React.js, Node.js, etc., is widely used in database powered web applications.
+
+As a document-oriented database, MongoDB stores data not in related tables, but in separated collections and documents. Each document in the same database can adopt its own schema. When querying data, the user does not need to join documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-database/figures/mongodb_tree.png}
+	\caption{A demonstration of MongoDB storing data as object-of-object.} \label{ch:database:mongotree}
+\end{figure}
+In Fig. \ref{ch:database:mongotree}, the database is named ``USER''. The database contains two objects, also known as ``collections'' in MongoDB framework. Each collection has a few properties. Different collection may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language'' in this example.
+
+Different properties may have different types. For example, a property can be string, numeric, or an object, or a list of the above.
+
+When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and order them in required order.
+
+\vspace{0.1in}
+\noindent \textbf{Installation}
+\vspace{0.1in}
+
+MongoDB, like many other DBMS, has both community and enterprise versions. MongoDB community server can be installed following the instructions in the official website \textit{https://www.mongodb.com/try/download/community}.
+
+To interact with MongoDB DBMS, the quickest way is to use MongoDB shell (also known as ``mongosh''). A description of the shell can be found at \textit{https://www.mongodb.com/try/download/shell}. Notice that when installing MongoDB server, it is possible that the server comes with MongoDB Compass, the GUI for MongoDB DBMS. The GUI can also be used to interact with the databases.
+
+Different versions of MongoDB is provided. Choose the correct MongoDB version depending on the CPU and the OS of the machine. MongoDB community server installation size is about 500MB.
+
+\vspace{0.1in}
+\noindent \textbf{Database Manipulation}
+\vspace{0.1in}
+
+After installing both MongoDB server and MonghDB shell, use \verb|mongosh| in the command line to login to the DBMS. JavaScript-like commands are used to manipulate the database, including creating databases and inserting data.
+
+To display the existing databases, use
+\begin{lstlisting}
+> show dbs
+\end{lstlisting}
+which should return the 3 default databases, \verb|admin|, \verb|config| and \verb|local| on a new installed DBMS.
+
+\vspace{0.1in}
+\noindent \textbf{Database Query}
+\vspace{0.1in}
+
+
+
+
+\vspace{0.1in}
+\noindent \textbf{DBMS API}
+\vspace{0.1in}
+
+
+
 
 \subsection{Redis}
 
-\subsection{Amazon DynamoDB}
 
-\subsection{MongoDB}
-...
+
+
+
+\subsection{AllegroGraph}
+
+
+
+
 
 \section{Database Accessory}
 
@@ -1296,24 +1376,24 @@ As pre-requisitions, make sure that the following has been done.
 
 For DBMS configuration, in the case of MariaDB, use the following code in the shell to check the location of the configuration files.
 \begin{lstlisting}
-	$ mysqld --help --verbose
+$ mysqld --help --verbose
 \end{lstlisting}
 Typical locations of the configuration files are \verb|/etc/my.cnf| and \verb|/etc/mysql/my.cnf|. In the configuration file, use the following to disable binding address.
 \begin{lstlisting}
-	[mysqld]
-	skip-networking=0
-	skip-bind-address
+[mysqld]
+skip-networking=0
+skip-bind-address
 \end{lstlisting}
 
 For account setup, in the DBMS console, use something like
 \begin{lstlisting}
-	> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'<ip-address>' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
+> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'<ip-address>' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
 \end{lstlisting}
 where \verb|'<ip-address>'| is the remote machine that runs the Python program. If the Python codes are running locally, simply use \verb|'localhost'|.
 
 It might be necessary to install MariaDB database development files in the DMBS host machine for the Python libraries to be introduced to function properly. Install the development as follows.
 \begin{lstlisting}
-	$ sudo apt install libmariadb-dev
+$ sudo apt install libmariadb-dev
 \end{lstlisting}
 
 \vspace{0.1in}
@@ -1324,41 +1404,41 @@ Python library \verb|pandas| is one of the essential libraries for data analysis
 
 A class \verb|pandas.DataFrame| is defined in \verb|pandas| as the backbone to store and process data. The data attribute of \verb|pandas.DataFrame| is a \verb|numpy| array. Many functions are provided to read different data formats into \verb|pandas| data frame, which makes reading data easy and convenient. An example of reading a CSV file is given below.
 \begin{lstlisting}
-	import pandas as pd
-	df = pd.read_csv(<file-name>)
-	print(df)
-	print(df.head(<number>))
-	print(df.tail(<number>))
-	print(df.info())
+import pandas as pd
+df = pd.read_csv(<file-name>)
+print(df)
+print(df.head(<number>))
+print(df.tail(<number>))
+print(df.info())
 \end{lstlisting}
 where \verb|head()|, \verb|tail()| gives the first and last rows of the data frame, and \verb|info()| checks the data frame basic information including shape and data types of the columns. Check \verb|df.columns| for all the columns of the data frame. Details specific to a column can be accessed via \verb|df.[<column-name>]|. Many functions are provided to further abstract the details, such as grouping and counting. Use \verb|df.loc(<row-index-list>, <column-name-list>)| to check the content of specified rows and columns.
 
 With \verb|pandas| and other relavent libraries, Python can connect to a database and execute a query. An example of using \verb|pandas| to connect to an Microsoft SQL server and implement a query is given below. Notice that different DBMS may require different database connectivity driver standards, and there are mainly two of them, namely open database connectivity (ODBC) and Java database connectivity (JDBC). Microsoft adopts ODBC, and a separate package is required in the Python program to connect to the Microsoft SQL server.
 \begin{lstlisting}
-	import pyodbc
-	import pandas.io.sql as psql
-	
-	server = "<server-url>,<port>"
-	database = "<database>"
-	uid = "<uid>"
-	pwd = "<pwd>"
-	driver = "<driver>" # such as "{ODBC Driver 17 for SQL Server}"
-	
-	# connect to database
-	conn = pyodbc.connect(
+import pyodbc
+import pandas.io.sql as psql
+
+server = "<server-url>,<port>"
+database = "<database>"
+uid = "<uid>"
+pwd = "<pwd>"
+driver = "<driver>" # such as "{ODBC Driver 17 for SQL Server}"
+
+# connect to database
+conn = pyodbc.connect(
 	server = server,
 	database = database,
 	uid = uid,
 	pwd = pwd,
 	driver = driver
-	)
-	
-	# get cursor
-	cursor = conn.cursor()
-	
-	# execute sql command
-	query = """<query>"""
-	runs = psql.read_sql_query(query, conn)
+)
+
+# get cursor
+cursor = conn.cursor()
+
+# execute sql command
+query = """<query>"""
+runs = psql.read_sql_query(query, conn)
 \end{lstlisting}
 The above codes returns a data frame corresponding to the result set of the query string, which is saved in \verb|runs|.
 
@@ -1368,32 +1448,32 @@ The above codes returns a data frame corresponding to the result set of the quer
 
 Use the following code to test connectivity from Python to the database.
 \begin{lstlisting}
-	import mariadb
-	import sys
-	
-	user = "<user>"
-	password = "<password>"
-	host = "<server-url>"
-	port = "<port>" # MariaDB default: 3306
-	database = "<database>"
-	
-	# connect to database
-	try:
+import mariadb
+import sys
+
+user = "<user>"
+password = "<password>"
+host = "<server-url>"
+port = "<port>" # MariaDB default: 3306
+database = "<database>"
+
+# connect to database
+try:
 	conn = mariadb.connect(
-	user = user,
-	password = password,
-	host = host,
-	port = port,
-	database = database
+		user = user,
+		password = password,
+		host = host,
+		port = port,
+		database = database
 	)
-	except mariadb.Error as e:
+except mariadb.Error as e:
 	print(f"Error connecting to MariaDB Platform: {e}")
 	sys.exit(1)
-	
-	# get cursor
-	cur = conn.cursor()
-	
-	# execute sql command
-	cur.execute("<sql-command>")
+
+# get cursor
+cur = conn.cursor()
+
+# execute sql command
+cur.execute("<sql-command>")
 \end{lstlisting}
 Notice that for query, the result is stored in the cursor object. Use a for loop to view the results.
