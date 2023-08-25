@@ -25,7 +25,7 @@ Examples of relational databases include \textit{Oracle}, \textit{MySQL}, \texti
 
 \subsection{Non-relational Database}
 
-Non-relational database (NoSQL database) started to emerge in 2000s. In contrast to RDBMS, NoSQL databases do not store data in tables but in key-value pairs, graphs, documents, or other formats.
+Non-relational database (NoSQL database) started to emerge in $2000$s. In contrast to RDBMS, NoSQL databases do not store data in tables but in key-value pairs, graphs, documents, or other formats.
 
 As it may not sound as intuitive as RDB, NoSQL database can become more efficient and easier to use in some applications. For example, NoSQL databases can be very fast in query, and are becoming popular in handling big data and in real-time web applications. However, many non-relational databases compromise consistency issue, and can only provide ``eventual consistency'', which implies that the latest update in the database may not be reflected in an immediate query.
 
@@ -448,9 +448,9 @@ The statement \verb|<column-or-statistics>| mainly controls the information to b
 \end{itemize}
 When the column is of date time type or interval type, it is possible to use \verb|EXTRACT()| to select a field of the timestamp or interval. For example,
 \begin{lstlisting}
-SELECT EXTRACT(YEAR FROM birthday) AS year FROM customer; 
+SELECT EXTRACT(YEAR FROM birthday) AS year FROM customer;
 \end{lstlisting}
-would look into table \verb|customer|, focus on column \verb|birthday| which should be a datetime type, and extract only \verb|year| from the datetime to return the result. 
+would look into table \verb|customer|, focus on column \verb|birthday| which should be a datetime type, and extract only \verb|year| from the datetime to return the result.
 
 
 The statement \verb|<table-name-or-combination>| mainly indicates the source table(s). It can be a single table, a joint of multiple tables, or a nest query. More details about joint of multiple tables are illustrated below. Consider the following example, where two tables are given as follows.
@@ -960,10 +960,10 @@ Different databases may propose different minimum system requirements. There is 
 		 & \multirow{2}{*}{OS} & \multicolumn{3}{c|}{Minimum Requirements} \\ \cline{3-5}
 		 & & CPU & RAM & Disk* \\ \hline
 		 MySQL (E) & All* & 2 core & 2 GB & 1.3 GB \\ \hline
-		 MySQL (C) & All & 1 core & 1 GB & 1.3 GB \\ \hline 
-		 MariaDB & All & 1 core & 400MB & 660 MB \\ \hline 
+		 MySQL (C) & All & 1 core & 1 GB & 1.3 GB \\ \hline
+		 MariaDB & All & 1 core & 400MB & 660 MB \\ \hline
 		 PostgreSQL & All & 1 core & 1 GB & 40MB \\ \hline
-		 Firebird & All & 1 core & 12MB & 15MB \\ \hline  
+		 Firebird & All & 1 core & 12MB & 15MB \\ \hline
 	\end{tabular}
 	\begin{flushleft}
 	\footnotesize
@@ -1099,7 +1099,7 @@ $ sudo systemctl enable postgresql-15
 $ sudo systemctl start postgresql-15
 \end{lstlisting}
 
-After installation, use command \verb|pg_ctl| to control the server, and \verb|psql| to login to the server. Notice that PostgreSQL installation may come with PgAdmin, the GUI for the DBMS, which can also be used to interact with the databases. 
+After installation, use command \verb|pg_ctl| to control the server, and \verb|psql| to login to the server. Notice that PostgreSQL installation may come with PgAdmin, the GUI for the DBMS, which can also be used to interact with the databases.
 
 To use PostgreSQL in containers, either download and run PostgreSQL images from Docker Hub, or create a Dockerfile like the following that installs and configures PostgreSQL on top of an Alpine base image. An example of such Dockerfiles is given below.
 \begin{lstlisting}
@@ -1197,7 +1197,7 @@ For example,
 CREATE TYPE sex_type AS
 enum ('M', 'F');
 \end{lstlisting}
-which creates a new data type called \verb|sex_type|, and it can take enumerated value of either \verb|'M'| or \verb|F|. 
+which creates a new data type called \verb|sex_type|, and it can take enumerated value of either \verb|'M'| or \verb|F|.
 
 \vspace{0.1in}
 \noindent \textbf{PostgreSQL Features: Stored Procedural and Functions}
@@ -1256,7 +1256,7 @@ The following is a list of languages supported by PostgreSQL.
 
 SQL is sufficient to carry out simple and straight forward tasks such as adding two numbers, as shown in the earlier example. However, when comes to handling conditional statements and loops, etc., procedural language is required. An example is given below. When the function is complex, it is sometimes impossible or inefficient to implement it using SQL, and PL/pgSQL and other procedural languages can solve this problem. An example is given below.
 \begin{lstlisting}
-CREATE OR REPLACE FUNCTION increment_value(value INT, increment INT) 
+CREATE OR REPLACE FUNCTION increment_value(value INT, increment INT)
 RETURNS INT AS $$
 DECLARE
 	result INT;
@@ -1271,7 +1271,7 @@ END;
 $$ LANGUAGE plpgsql;
 \end{lstlisting}
 
-With the above been said, though convenient and powerful it might be in some use cases, it is often a good practice to keep complex logic in application layer, for logic consistency and database portability. 
+With the above been said, though convenient and powerful it might be in some use cases, it is often a good practice to keep complex logic in application layer, for logic consistency and database portability.
 
 \vspace{0.1in}
 \noindent \textbf{Database Manipulation}
@@ -1289,15 +1289,15 @@ With the above been said, though convenient and powerful it might be in some use
 
 \section{Non-relational Databases Examples}
 
-Unlike relational databases where data is stored in relevant tables with pre-designed schematics such as column names, types, and references, non-relational database stores data in different structures such as directed graphs, dictionaries and documents. 
+Unlike relational databases where data is stored in relevant tables with pre-designed schematics such as column names, types, and references, non-relational database stores data in different structures such as directed graphs, dictionaries and documents.
 
-Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful. 
+Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful.
 
-Since there are many types of non-relational databases, such as document-oriented databases, directed graph databases, and each of them has some unique features, pros and cons over relational databases, and each of them may adopts its own database manipulation language, it is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}. 
+There are many types of non-relational databases including document-oriented databases, directed graph databases, etc., Each of them has some unique features, pros and cons over other databases, and may adopt its own database manipulation language. It is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}.
 
 \subsection{MongoDB}
 
-MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with optional schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as Express.js, React.js, Node.js, etc., is widely used in database powered web applications.
+MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with flexible schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., is widely used in database powered web applications.
 
 As a document-oriented database, MongoDB stores data not in related tables, but in separated collections and documents. Each document in the same database can adopt its own schema. When querying data, the user does not need to join documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
 \begin{figure}
@@ -1315,27 +1315,114 @@ When querying MongoDB, the DBMS is able to return selected properties of documen
 \noindent \textbf{Installation}
 \vspace{0.1in}
 
-MongoDB, like many other DBMS, has both community and enterprise versions. MongoDB community server can be installed following the instructions in the official website \textit{https://www.mongodb.com/try/download/community}.
-
-To interact with MongoDB DBMS, the quickest way is to use MongoDB shell (also known as ``mongosh''). A description of the shell can be found at \textit{https://www.mongodb.com/try/download/shell}. Notice that when installing MongoDB server, it is possible that the server comes with MongoDB Compass, the GUI for MongoDB DBMS. The GUI can also be used to interact with the databases.
+MongoDB, like many other DBMS, has both community and enterprise versions. MongoDB community server can be installed following the instructions in the official website
+\begin{lstlisting}
+https://www.mongodb.com/try/download/community
+\end{lstlisting}
+To interact with MongoDB DBMS, the quickest way is to use MongoDB shell (also known as ``mongosh''). A description of the shell can be found at
+\begin{lstlisting}
+https://www.mongodb.com/try/download/shell
+\end{lstlisting}
+Notice that when installing MongoDB server, it is possible that the server comes with MongoDB Compass, the GUI for MongoDB DBMS. The GUI can also be used to interact with the databases.
 
 Different versions of MongoDB is provided. Choose the correct MongoDB version depending on the CPU and the OS of the machine. MongoDB community server installation size is about 500MB.
 
+MongoDB provides enterprise service as part of its cloud solution, MongoDB Atlas, where user can deploy clusters to host databases. With proper gateway setup, the user can connect to MongoDB Atlas clusters from its local server to retrieve data or to manipulate the databases. MongoDB Atlas is not the covered in this notebook.
+
 \vspace{0.1in}
-\noindent \textbf{Database Manipulation}
+\noindent \textbf{Basic Global Operations}
 \vspace{0.1in}
 
 After installing both MongoDB server and MonghDB shell, use \verb|mongosh| in the command line to login to the DBMS. JavaScript-like commands are used to manipulate the database, including creating databases and inserting data.
+
+The object \verb|db| contains many methods using which the user can access and modify the basic configurations of the database. For example,
+\begin{lstlisting}
+> db.version()
+\end{lstlisting}
+gives the version of the database server. More commands can be found using \verb|db.help()|. Some commonly used commands are listed in Table \ref{ch:db:tab:mongodbbasics}.
+\begin{table}
+	\centering \caption{MongoDB basic commands.}\label{ch:db:tab:mongodbbasics}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Command & Description \\ \hline
+        \verb|db.help()| & Show a list of methods of \verb|db| object. \\ \hdashline
+		\verb|db.version()| & Show database server version. \\ \hdashline
+        \verb|db.getUsers()| & Show users. \\ \hdashline
+        \verb|db.createUser(<content>)| & Create a user. The username, password, roles, etc., needs to be included in the \verb|<content>| area. \\ \hdashline
+        \verb|db.dropUser(<username>)| & Drop a user. \\ \hdashline
+        \verb|db.dropDatabase()| & Drop current database. \\ \hdashline
+		\verb|db.status()| & Show the basic status of the currently selected database, such as its name, number of collections, storage size, etc.  \\ \hdashline
+        \verb|db.getUsers()| & Show users. \\
+		 \hline
+	\end{tabularx}
+\end{table}
 
 To display the existing databases, use
 \begin{lstlisting}
 > show dbs
 \end{lstlisting}
-which should return the 3 default databases, \verb|admin|, \verb|config| and \verb|local| on a new installed DBMS.
+On a clean installation, the above should return the 3 default databases, \verb|admin|, \verb|config| and \verb|local|. To change to a particular database, use
+\begin{lstlisting}
+> use <database_name>
+\end{lstlisting}
+Notice that there is no ``create database'' command in MongoDB. To create a database, switch to that database using the above command (even though it does not exist yet), and create some data such as a collection there. The database will be automatically created. This is again a feature closely related to JavaScript.
 
 \vspace{0.1in}
-\noindent \textbf{Database Query}
+\noindent \textbf{Data Format}
 \vspace{0.1in}
+
+MongoDB is a document-oriented database program. The data is stored in the format of ``binary JSON'' (BSON), which can be taken as an extension of JSON that supports more data types. Since BSON and JSON have a strong connection to the JavaScript object datatype, which looks very similar to a ``dictionary'', one may claim that MongoDB uses key-value pairs to store data. That statement is partially correct because BSON indeed adopts key-value pair structure to store data, but it may over simplifies the reality and might be misleading sometimes. In fact, BSON supports much more complicated data types other than string-to-string, such as array and nested objects.
+
+JSON supports 6 datatypes: number, string, boolean (true or false), object, array and null. Notice that JSON is text-based, which is essentially a string. It is a notation of data. It does not concern how the data would be stored and used in the program who takes JSON as the input file. For example, from JSON's point of view, it does not distinguish different types of number, being integer or float or double. In JSON, it is just a notation of number, say ``$108$''. It is the program's responsibility to decide how to treat the number, either as an integer, or as a 32-bit float, or a 64-bit float.
+
+BSON, on the other hand, is binary-based, which is essentially a list of binary numbers. This makes BSON more efficient (but less flexible and more difficult to use sometimes) than JSON. In BSON, more datatypes are supported, including: double (64-bit float), string, object, array, binary data (a binary string), object id, boolean, date, null, regular expression, JavaScript code, 32-bit integer, 64-bit integer, timestamp, etc. When using BSON, the user needs to be more specific on how the data should be stored. For example, for a number ``$108$'', the user needs to specify whether to store it as a 32-bit integer or a 64-bit integer, or maybe as a 64-bit float.
+
+Both JSON and BSON are intuitive and human-readable. MongoDB uses BSON due to its enhanced capability.
+
+\vspace{0.1in}
+\noindent \textbf{Collection}
+\vspace{0.1in}
+
+A MongoDB database contains multiple collections. A collection is similar to a table in an RDB in the sense that it is the ``host'' of similar data. However, unlike tables where schematics such as column names and datatypes are enforced upon creation of the table, a collection does not enforce fields and data types. An example of creating a collection inside a database is given below.
+\begin{lstlisting}
+> use testdb
+> db.createCollection("users")
+\end{lstlisting}
+Use \verb|show collections| to show the collections in the current database.
+
+Data can be installed into a collection. An entry to be inserted to a collection, corresponding with a row of a table in RDB, is called a document. It is possible to insert one or multiple entries at a time. To insert documents, first prepare the document in BSON format. For example, consider the following documents.
+\begin{lstlisting}
+{
+  name: "Alice",
+  age: 20,
+  address: "123 Center Park",
+  hobbies: ["football", "reading"],
+  parents: {
+    father: "Chris",
+    mother: "Kite"
+  }
+}
+
+{
+  name: "Bob",
+  age: Long.fromNumber(25),
+  address: "135 Center Park",
+  hobbies: BSON.Array(["basketball", "jogging"])
+}
+\end{lstlisting}
+Notice that user ``Alice'' and ``Bob'' are represented by JSON and BSON, respectively. MongoDB uses BSON internally, but it can also take JSON as input, in which case MongoDB driver converts JSON to BSON.
+
+Then use the following syntax to insert the document into the collection.
+\begin{lstlisting}
+db.<collection_name>.insertOne({...})
+db.<collection_name>.insertMany([{...}, {...}, {...}])
+\end{lstlisting}
+where \verb|{...}| is the document in JSON or BSON format as shown earlier. To make it more readable, consider do the following instead.
+\begin{lstlisting}
+const doc = {...};
+db.<collection_name>.insertOne(doc)
+\end{lstlisting}
+which first store the document in \verb|doc|, then pass it to \verb|insertOne()| method. Upon successful insertion, an insert id (also known as object id) will be created automatically.
 
 
 
