@@ -6,20 +6,20 @@ Database and database manage systems (DBMS) are introduced in this chapter. Both
 
 Database, in a broad view, refers to an organized collection of data of any format. In this sense, any file format that hosts information in an meaningful and explainable way, such as \textit{CSV}, \textit{XML} and \textit{JSON}, is a database. These file formats often work fine when the data is stored in a centralized manner and its size small.
 
-As the data size grows, the robustness and efficiency of storing and retrieving data may become an issue, and different database models have been proposed for improved performance. Dedicated software, namely DBMS, are developed to manage and maintain the database and provide an interface for the users to create, retrieve, update and delete data. Different database models require different database engines and DBMS, and different DBMS may provide different interfaces for the users.
+As the data size grows, the robustness and efficiency of storing and retrieving data may become a challenge, and different database models have been proposed to tackle it. Dedicated software, namely DBMS, is developed to manage and maintain the database and provide an interface for the users to create, retrieve, update and delete data. Different database models require different database engines and DBMS, and different DBMS may provide different interfaces for the users.
 
 There are hundreds of database models available in the market. In general, the most widely seen database models can be divided into two categories, namely the relational databases (RDB) and the non-relational databases.
 
 \subsection{Relational Database}
 
-Relational database was proposed in 1970s by IBM. Some important features of a relational database includes the following.
+Relational database was proposed in 1970s by IBM. Some important features of a relational database include the following.
 \begin{itemize}
 	\item Structure the data as ``relations'', which is a collection of tables, each consisting of a set of rows (also known as tuple/record) and columns (also known as attribute/field).
 	\item For each table, a primary key, either being a column or a combination of several columns, is defined that can uniquely distinguish a row from others.
-	\item Provide relational operations the manipulate the data in the tables, for example, joining tables together and aligning them using an attribute.
+	\item Provide relational operations that manipulate the data in the tables, for example, joining tables together and aligning them using an attribute.
 \end{itemize}
 
-Structured query language (SQL), a domain-specific language, is used in managing RDB and interfacing relational DBMS.  Most commercialized RDB management systems (RDBMS) adopt SQL as the query language. There are alternative languages, but are rarely used compared to SQL. There is a evolving standard on what operations should an RDBMS support using SQL. The latest version as of this writing is \verb|SQL:2023|.
+Structured query language (SQL), a domain-specific language, can be used in managing RDB and interfacing relational DBMS.  Most commercialized RDB management systems (RDBMS) adopt SQL as the query language. There are alternatives, but they are rarely used compared to SQL. There is a evolving standard on what operations should an RDBMS support using SQL. The latest version as of this writing is \verb|SQL:2023|.
 
 Examples of relational databases include \textit{Oracle}, \textit{MySQL}, \textit{Microsoft SQL Server}, \textit{MariaDB}, \textit{IBM Db2}, \textit{Amazon Redshift}, \textit{Amazon Aurora} and \textit{PostgreSQL}.
 
@@ -27,21 +27,21 @@ Examples of relational databases include \textit{Oracle}, \textit{MySQL}, \texti
 
 Non-relational database (NoSQL database) started to emerge in $2000$s. In contrast to RDBMS, NoSQL databases do not store data in tables but in key-value pairs, graphs, documents, or other formats.
 
-As it may not sound as intuitive as RDB, NoSQL database can become more efficient and easier to use in some applications. For example, NoSQL databases can be very fast in query, and are becoming popular in handling big data and in real-time web applications. However, many non-relational databases compromise consistency issue, and can only provide ``eventual consistency'', which implies that the latest update in the database may not be reflected in an immediate query.
+As it may not sound as intuitive as RDB, NoSQL database can become more efficient and easier to use in some applications. For example, NoSQL databases can be very fast in query, and are becoming popular in handling big data in real-time web applications. However, many non-relational databases compromise consistency issue, and can only provide ``eventual consistency'' but not ``strong consistency''. This implies that the latest update in the database may not be reflected in an immediate query. Examples of NoSQL databases include \textit{Redis}, \textit{Azure Cosmos DB}, \textit{Oracle NoSQL Database}, \textit{Amazon DynamoDB} and \textit{AllegroGraph}.
 
 Unlike SQL which applies to almost all RDB, there is no universally adopted language for NoSQL databases. We use ``NoSQL'' to refer to a collective set of languages used for NoSQL database management.
 
-In this chapter, both relational and non-relational databases are introduced in further details to illustrate the database service on a Linux system. Since RDB is more popular they share the same SQL standard (although they may not be able to fully comply with the standard), we will start with introducing SQL.
+Database services, both RDB and NoSQL, are very important on servers such as a Linux based web server. In this chapter, both relational and non-relational databases are introduced in the remaining sections.
 
 \section{RDB and SQL}
 
-As of writing, RDB is the most commonly used database, and SQL is its standard manipulating and querying language.
+As of this writing, RDB is the most commonly used database, and SQL is its standard manipulating and querying language. They are introduced as follows.
 
 \subsection{Tables and Columns} \label{ch:db:subsec:tables}
 
-An example of a table used in RDB is given in Table \ref{ch:db:tab:relationaldbexample}. The table has a name \verb|user| and 4 attributes \verb|user_id|, \verb|user_email|, \verb|membership| and \verb|referee_id|. A table should have an attribute (or a set of attributes) defined as the primary key. In this example, \verb|user_id| is assigned to be the primary key as denoted by the asterisk. The primary key is used to uniquely identify a row in the table. When a primary key is made up of multiple attributes, it is called a composite key. A table should have one and only one primary key.
+An example of a table used in RDB is given in Table \ref{ch:db:tab:relationaldbexample}. The table has a name \verb|user| and 4 attributes \verb|user_id|, \verb|user_email|, \verb|membership| and \verb|referee_id|. A table should have an attribute (or a set of attributes) defined as the primary key. In this example, \verb|user_id| is assigned to be the primary key as denoted by the asterisk. The primary key is used to uniquely identify a row in the table. A primary key can consist a single column or multiple columns. When a primary key is composed of multiple columns, it is called a composite key. A table should have one and only one primary key.
 
-Depending on the meaning behind the primary key, it can be divided into 2 types, namely surrogate key and natural key. A surrogate key is like a serial number or an incremental ID, which serves only for recording and distinguishing rows, and does not have a physical meaning. A natural key, such as a timestamp, email, citizenship IC number, on the other hand reflect some meaningful information in the real world.
+Depending on the meaning behind the primary key, it can be divided into two types, namely surrogate key and natural key. A surrogate key is like a serial number or an incremental ID, which serves only for recording and distinguishing rows, and does not have a physical meaning. In contrast, a natural key such as a timestamp, email, citizenship IC number, reflects some meaningful information in the real world.
 
 \begin{table}
 	\centering \caption{An example of a relational database table.} \label{ch:db:tab:relationaldbexample}
@@ -55,7 +55,7 @@ Depending on the meaning behind the primary key, it can be divided into 2 types,
 	\end{tabular}
 \end{table}
 
-A foreign key is the attribute(s) that link a table to another table. It is the primary key of another table that in someway connects to this table. For example, the \verb|membership_type| attribute in Table \ref{ch:db:tab:relationaldbexample} could be the foreign key that links to another Table \ref{ch:db:tab:relationaldbexampleanother}. Notice that although a foreign key doe not necessarily need to have the same name as the primary key in another table (though their links are there), it is a good practice to keep them consistent.
+A foreign key is the attribute(s) that link a table to another table. It is often the primary key of another table that in some way links to this table. For example, consider another table \verb|membership_type| as defined in Table \ref{ch:db:tab:relationaldbexampleanother}. In the first Table \ref{ch:db:tab:relationaldbexample}, column \verb|membership| can be a foreign key which points to \verb|membership_type| in the second Table \ref{ch:db:tab:relationaldbexampleanother}.
 
 \begin{table}
 	\centering \caption{A second database table in the example.} \label{ch:db:tab:relationaldbexampleanother}
@@ -71,11 +71,11 @@ A foreign key is the attribute(s) that link a table to another table. It is the 
 
 The introducing of foreign key helps to maintain the consistency and integrity of the database. For example, when adding a new member to Table \ref{ch:db:tab:relationaldbexample}, the DBMS will first check whether the membership type is registered in Table \ref{ch:db:tab:relationaldbexampleanother}. If not, the insert operation will be rejected. This guarantees that all registered members have valid membership types.
 
-Notice that a table can have multiple foreign keys. The foreign key can not only relate a table to another, but also relate a table to itself. For example, the ``referee-id'' attribute in Table \ref{ch:db:tab:relationaldbexample} could be the foreign key that relates to ``user-id'' of the same table, and we know that user the referee of user ``xingzhe'' is user ``sunlu''.
+Notice that a table can have multiple foreign keys. The foreign key can not only relate a table to another, but also relate a table to itself. For example, the ``referee-id'' attribute in Table \ref{ch:db:tab:relationaldbexample} could be the foreign key that relates to ``user-id'' of the same table.
 
 \subsection{RDB Naming Conventions}
 
-Naming conventions shall apply to the databases, tables and columns. Some rules and good practices are concluded as follows.
+It is recommended that the following naming conventions be applied to databases, tables and columns.
 \begin{itemize}
 \item General rules:
 \begin{itemize}
@@ -98,7 +98,7 @@ Naming conventions shall apply to the databases, tables and columns. Some rules 
 \end{itemize}
 \item Alias:
 \begin{itemize}
-	\item Use keyword AS to indicate an alias.
+	\item Use keyword \verb|AS| to indicate an alias.
 	\item The correlation name should be the first letter of each word of the object name.
 	\item If there is already the same correlation name, append a number.
 \end{itemize}
@@ -116,9 +116,9 @@ Naming conventions shall apply to the databases, tables and columns. Some rules 
 
 \subsection{General Introduction to SQL}
 
-SQL is the most widely language for interacting with RDBMS for data query and maintenance. SQL is very powerful and flexible in its full capability, and it is hardly possible to cover everything in one section. Hence, in this section only the basic SQL operations are introduced.
+SQL is the most widely used language for interacting with RDBMS for data query and maintenance. SQL is very powerful and flexible in its full capability, and it is hardly possible to cover everything in one section. Hence, in this section only the basic SQL operations are introduced.
 
-Notice that the support of different RDBMS to SQL may differ slightly. This is because an RDBMS may (in fact, very likely) fail to adapt to everything in the SQL standard. However, most of the commands especially the widely used ones such as creating tables, inserting rows and most of the querying, shall be universally consistent.
+Notice that the support of different RDBMS to SQL may differ slightly. This is because an RDBMS may (in fact, very likely) fail to adopt everything in the latest SQL standard. However, most of the commands especially the widely used ones such as creating tables, inserting rows and most of the querying, shall be universally consistent.
 
 SQL is a hybrid language consisting of the following 4 sub-languages.
 \begin{itemize}
@@ -128,23 +128,23 @@ SQL is a hybrid language consisting of the following 4 sub-languages.
   \item Data manipulation language: insert, update and delete data from a database.
 \end{itemize}
 
-SQL supports variety of data types, and different RDBMS may cover slightly different data types. Some of the most commonly used data types are summarized in Table \ref{ch:db:tab:sqldatatypes}. Nowadays, many RDBMS supports even more data types such as objects (also known as object-relational database), and many more. For the full list of data types that a DBMS supports, check the manuals and documents of that DBMS.
+SQL supports variety of data types, and different RDBMS may cover slightly different data types. Some of the most commonly used data types are summarized in Table \ref{ch:db:tab:sqldatatypes}. Nowadays, many RDBMS supports more complicated types such as objects (also known as object-relational database), and many more. For the full list of data types that a DBMS supports, check the manuals and documents of that DBMS.
 
 \begin{table}
 	\centering \caption{Widely used SQL data types.}\label{ch:db:tab:sqldatatypes}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Data Type & Description \\ \hline
-		INT/INTEGER & Integer, with a range of -2147483648 to 2147483647. When marked ``UNSIGNED'', the range becomes 0 to 4294967295. Some relevant data types are TINYINT, SMALLINT, MEDIUMINT, and BIGINT, which have a different range. \\ \hdashline
+		INT/INTEGER & Integer, with a range of -2147483648 to 2147483647. When marked ``UNSIGNED'', the range becomes 0 to 4294967295. Some relevant data types are TINYINT, SMALLINT, MEDIUMINT, and BIGINT, which have different ranges. \\ \hdashline
 		DEC/DECIMAL(size,d) & An exact fixed-point number. The total number of digits and the number of digits after decimal point are specified by ``size'' and ``d'', respectively. Some relevant data types are DOUBLE(size,d), which can also be used to specify a floating point. Notice that DEC/DECIMAL is usually preferable in most occasions. \\ \hdashline
 		CHAR(size) & A fixed length string with the specified length in characters. \\ \hdashline
 		VARCHAR(size) & A variable length string, with the specified maximum string length in characters. \\ \hdashline
-		BOOL/BOOLEAN & This is essentially a 1-digit integer, where 0 stands for ``false'' and other values stand for ``true''. \\ \hdashline
+		BOOL/BOOLEAN & This is essentially a 1-digit integer, where 0 stands for ``false'' and otherwise ``true''. \\ \hdashline
 		BLOB & A binary large object with maximum 65535 bytes. \\ \hdashline
 		DATE & A date by format ``YYYY-MM-DD''. \\ \hdashline
 		TIME & A time by format ``hh:mm:ss''. \\ \hdashline
 		DATETIME & A combination of date and time by format ``YYYY-MM-DD hh:mm:ss''. \\ \hdashline
-		TIMESTAMP & A timestamp that measures the number of seconds since the Unix epoch. The format is ``YYYY-MM-DD hh:mm:ss''. Unlike DATETIME, TIMESTAMP specifies an exact point in time, thus is not affected by timezone, etc. \\ \hline
+		TIMESTAMP & A timestamp that measures the number of seconds since the Unix epoch. The format is ``YYYY-MM-DD hh:mm:ss''. Unlike DATETIME which is meaningful only if the timezone is known, TIMESTAMP does not rely on timezone. \\ \hline
 	\end{tabularx}
 \end{table}
 
@@ -159,10 +159,10 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 		DATABASE & A database. \\ \hdashline
 		TABLE & A table. \\ \hdashline
 		COLUMN & A column (attribute, field) of a table. \\ \hdashline
-		VIEW & A view, which is a virtual table which does not store data by itself and only reflects the base tables data. \\ \hdashline
+		VIEW & A view, which is a virtual table that does not store data by itself but only reflects the base tables data. \\ \hdashline
 		INDEX & An index, which is a pre-scan of specific column(s) of a table and can be used to speed up future queries related to the column(s). Notice that unlike a view, an index needs to be stored together with the table. \\ \hdashline
 		PRIMARY KEY & The primary key of a table. \\ \hdashline
-		FOREIGN KEY & A foreign key defined in a table that links to a (different) table. \\
+		FOREIGN KEY & A foreign key defined in a table that links to a (different) table. \\ \hdashline
 		PROCEDURE & A procedure that defines a list of database operations to be executed one after another \\ \hline
 	\end{tabularx}
 \end{table}
@@ -172,7 +172,7 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Keyword & Description \\ \hline
-		CREATE & Create a database (CREATE DATABASE), a table (CREATE TABLE), an index (CREATE INDEX), a procedure (CREATE PROCEDURE). \\ \hdashline
+		CREATE & Create a database (CREATE DATABASE), a table (CREATE TABLE), a view (CREATE VIEW), an index (CREATE INDEX) or a procedure (CREATE PROCEDURE). \\ \hdashline
 		ADD & Add a column in an existing table, or a constraint to an existing column. \\ \hdashline
 		ALTER & Modify columns in a table (ALTER TABLE), or a data type of a column (ALTER COLUMN). \\ \hdashline
 		SET & Specify the columns and values to be updated in a table. \\ \hdashline
@@ -180,8 +180,8 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 		CHECK & Define a constraint that limits the value that can be placed in a column. \\ \hdashline
 		DEFAULT & Define a default value for a column. \\ \hdashline
 		INSERT INTO & Insert a new row into a table. \\ \hdashline
-		UPDATE & Update an existing row (tuple, entity) in a table. \\ \hdashline
-		DELETE & Delete a row (tuple, entity) from a table. \\ \hdashline
+		UPDATE & Update an existing row in a table. \\ \hdashline
+		DELETE & Delete a row from a table. \\ \hdashline
 		EXEC & Executes a stored procedure. \\ \hline
 	\end{tabularx}
 \end{table}
@@ -193,7 +193,7 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 		Keyword & Description \\ \hline
 		SELECT & Query data from a database. Relevant combinations are SELECT DISTINCT which returns only distinct values; SELECT INTO which copies data from one table into another; SELECT TOP which returns part of the results. \\ \hdashline
 		AS & Assign an alias to a column or table. \\ \hdashline
-		FROM & Specify the table where the operation is run. \\ \hdashline
+		FROM & Specify the table where the query is run. \\ \hdashline
 		WHERE & Filter results that fulfill a specified condition. \\ \hdashline
 		IN & Specify multiple values in a WHERE clause. \\ \hdashline
 		AND & Select rows where both conditions are true. \\ \hdashline
@@ -217,7 +217,7 @@ All SQL commands shall end with a semicolon ``\verb|;|''.
 The programming of SQL shall follow the following general rules wherever possible. This helps to maintain the good quality and portability of the code.
 \begin{itemize}
 	\item Use standard SQL functions over user-defined functions wherever possible for better portability.
-	\item Do NOT use object-oriented design principles in SQL or database schema wherever possible.
+	\item Do NOT use object-oriented design principles in SQL and database schema wherever possible.
 	\item Use UPPERCASE for keywords.
 	\item Use \verb|/*<comments>*/| to add comments to the code, otherwise precede comments with \verb|-- <comments>| and finish them with a new line.
 \end{itemize}
@@ -263,7 +263,7 @@ DROP DATABASE <database-name>;
 
 Tables are the fundamental components in an RDB. Some features of a table have been introduced in Section \ref{ch:db:subsec:tables}. An example of creating a table using SQL is given below
 \begin{lstlisting}
-CREATE TABLE <table-name> (
+CREATE TABLE <table_name> (
     PRIMARY KEY (<column_name>),
     <column_name_1>    <data-type>    <constraint>,
     <column_name_2>    <data-type>    <constraint>,
@@ -273,7 +273,7 @@ CREATE TABLE <table-name> (
                        CHECK(<constraint-rule>)
 );
 \end{lstlisting}
-where in this demonstrative example 2 columns and 2 constraints are defined.
+where in this demonstrative table, 2 columns and 2 constraints are defined.
 
 The \verb|<constraint>| that comes after the data type of a column is used to set an additional restriction to the data in the table. When such restriction is violated, an error would raise to stop the operation. For example, if \verb|NOT NULL| is set as a constraint, then when inserting a row to the table later, the user cannot input NULL for that specific column. Notice that the ``primary key'' can also be set as a constraint named \verb|PRIMARY KEY| using this syntax, although it is a better practice to use \verb|PRIMARY KEY (<column-name>)|.
 
@@ -318,7 +318,7 @@ RENAME COLUMN <old-name> TO <new-name>; -- rename column
 ALTER TABLE <table-name>
 MODIFY COLUMN <column-name> <data-type>; -- modify column data type (depending on DBMS, syntax may differ)
 \end{lstlisting}
-and
+or
 \begin{lstlisting}
 ALTER TABLE <table-name>
 ADD CONSTRAINT <constraint-name> CHECK(<constraint-rule>); -- add constraint
@@ -327,7 +327,7 @@ DROP CONSTRAINT <constraint-name>; -- drop constraint
 \end{lstlisting}
 Notice that it is possible to change the primary key using the above syntax because essentially the primary key is treated as a constraint named ``primary''. It is not recommended to do so in general.
 
-The foreign key is a key used to point to another table, in many cases other table's primary key. Therefore, the foreign key can be nominated only after the other table has been created. Declare foreign key upon creation of a table as follows. As mentioned, to do this, the other tables must be created beforehand. Two methods to declare a foreign key is given below.
+The foreign key is a key used to point to another table, in many cases other table's primary key. Therefore, the foreign key can be nominated only after the other table has been created. Declare foreign key upon creation of a table as follows. As mentioned, to do this, the other tables must be created beforehand. Two methods to declare a foreign key are shown below.
 \begin{lstlisting}
 CREATE TABLE <table-name> (
     PRIMARY KEY (<column-name>),
@@ -343,7 +343,7 @@ CREATE TABLE <table-name> (
                   REFERENCES <target-table-name>(<target-column-name>) -- method 2
 );
 \end{lstlisting}
-where, as can be seen, foreign key is just treated as a constraint in the table.
+where, as can be seen, foreign key is treated as a constraint in the table.
 
 To define a foreign key in an existing table, use
 \begin{lstlisting}
@@ -452,8 +452,9 @@ SELECT EXTRACT(YEAR FROM birthday) AS year FROM customer;
 \end{lstlisting}
 would look into table \verb|customer|, focus on column \verb|birthday| which should be a datetime type, and extract only \verb|year| from the datetime to return the result.
 
+The statement \verb|<table-name-or-combination>| mainly indicates the source table(s). It can be a single table, a joint of multiple tables, or a nest query. More details about joint of multiple tables are illustrated below.
 
-The statement \verb|<table-name-or-combination>| mainly indicates the source table(s). It can be a single table, a joint of multiple tables, or a nest query. More details about joint of multiple tables are illustrated below. Consider the following example, where two tables are given as follows.
+Consider the following example, where two tables are given as follows.
 \begin{lstlisting}
 > SELECT * FROM test;
 +---------+---------+---------+
@@ -511,7 +512,7 @@ The most intuitive join is the cross join. It returns everything in the two tabl
 \end{lstlisting}
 where notice that \verb|CROSS JOIN| can be replaced by a comma ``,''.
 
-It is clear in this table, that the two columns \verb|value_1| from table \verb|test| and \verb|test_join_id| from table \verb|test_join| is probably the logic connection point. In this context, the rows with inconsistent \verb|test.value_1| and \verb|test_join.test_join_id| is meaningless and shall be removed. This can be achieved by the following code.
+In this example, \verb|value_1| from table \verb|test| and \verb|test_join_id| from table \verb|test_join| are corresponding with each other. In this context, the rows with inconsistent \verb|test.value_1| and \verb|test_join.test_join_id| is meaningless and shall be removed. This can be achieved by the following code.
 \begin{lstlisting}
 > SELECT * FROM test CROSS JOIN test_join
     -> where test.value_1 = test_join.test_join_id;
@@ -539,9 +540,12 @@ and this is equivalent to inner join (or simply, join)
 |       5 | b       |     200 | b            |     100 |     999 | bravo   |
 +---------+---------+---------+--------------+---------+---------+---------+
 \end{lstlisting}
-where \verb|ON (<table1.column-name> = <table2.column_name>)| is used to indicate the association. The number of columns remain unchanged, but the number of rows depends on the repentance of the associated row with connection in each table. For example, for ``a'', \verb|test.value_1=a| has 3 relevant rows while \verb|test_join.test_join_id=a| has 1 relevant row. Thus, the total number of regarding ``a'' is $3=3\times 1$. The same applies to ``b''.
+where \verb|ON (<table1.column-name> = <table2.column_name>)| is used to indicate the association. The number of columns remain unchanged compared with cross join, but the number of rows is reduced.
 
-From table \verb|test| perspective, its rows regarding \verb|value_1| equals to ``a'' and ``b'' are fully included in the inner join results. However, the two rows regarding \verb|value_1=c| is omitted. This is because there is no associated row in the other table \verb|test_join|. It is possible to protect information loss from table \verb|test| by adding these two rows back, with all the columns from table \verb|test_join| filled with NULL. Use left join to achieve this goal as follows.
+From table \verb|test| perspective, its rows regarding \verb|value_1| equals to ``a'' and ``b'' are fully included in the inner join results. However, the two rows regarding \verb|value_1=c| is omitted. This is because there is no corresponding row in the other table \verb|test_join| with \verb|test_join_id=c|.
+
+
+It is possible to ``prevent'' information loss from table \verb|test| by adding these two rows back, with all the columns from table \verb|test_join| filled with NULL. This can be done by left join as follows.
 \begin{lstlisting}
 > SELECT * FROM test LEFT JOIN test_join
     -> ON (test.value_1 = test_join.test_join_id);
@@ -557,7 +561,7 @@ From table \verb|test| perspective, its rows regarding \verb|value_1| equals to 
 |       7 | c       |    2000 | NULL         |    NULL |    NULL | NULL    |
 +---------+---------+---------+--------------+---------+---------+---------+
 \end{lstlisting}
-Alternatively, think of this as temporarily adding one row to \verb|test_join| with \verb|test_join_id=c| and everything else NULL, before the joining.
+One can think of this as temporarily adding a new row to \verb|test_join| with \verb|test_join_id=c| and everything else NULL, before the inner joining.
 
 The same idea applies to right join as well, as shown below.
 \begin{lstlisting}
@@ -578,7 +582,7 @@ Some RDBMS supports ``outer join'', which is basically a union of the left and r
 
 The statement \verb|<filter-condition>| applies filtering to the results. Commonly seen filter criteria \verb|<filter-condition>| are summarized as follows.
 \begin{itemize}
-  \item \verb|<column-name> = <value>|, where \verb|=| can be replaced by \verb|<|, \verb|<=|, \verb|>|, \verb|>=| and \verb|<>|.
+  \item \verb|<column-name> = <value>|, where \verb|=| can be replaced by \verb|<| (less than), \verb|<=| (less than or equal to), \verb|>| (larger than), \verb|>=| (larger than or equal to) and \verb|<>| (not equal to).
   \item \verb|<column-name> IN (<value>, <value>, ...)|
   \item \verb|<column-name> BETWEEN <value> AND <value>|
   \item \verb|<column-name> LIKE <wildcards>|, which compares the column value (usually a string) with a given pattern.
@@ -658,7 +662,7 @@ SELECT <...>
 ...
 SELECT <...>;
 \end{lstlisting}
-where inside \verb|<...>| are the original query statements. Notice that for the queries to be union-compatible, they must have the same number of columns with identical data type for the associated column. The names of the column in the returns, if different, follow the first query result. Use alias \verb|AS| to change the names if needed. Duplicated rows in the union will be excluded. If duplications need to be included in the result, certain DBMS provides the \verb|UNION ALL| option.
+where inside \verb|<...>| are the original query statements. Notice that for the queries to be union-compatible, they must have the same number of columns with identical data type for the associated columns. The names of the column in the returns, if different, follow the first query result. Use alias \verb|AS| to change the names if needed. Duplicated rows in the union will be excluded. If duplications need to be included in the result, certain DBMS provides the \verb|UNION ALL| option.
 
 SQL uses nest queries to add more flexibility. Nest queries plays as the intermediate steps to provide a temporary searching result, from which another query can be executed. Wherever a table name appears in the query, it can be replaced by a \verb|SELECT| statement nested in a bracket ``()''. A demonstrative example is given below. Consider the same tables \verb|test| and \verb|test_join| as follows.
 \begin{lstlisting}
@@ -709,7 +713,7 @@ Nest queries can be popular in table joins as well as filter criteria, where the
 
 \subsection{Trigger}
 
-A trigger defines a set of operations to be carried out automatically when something happens to specified tables. For example, in any case a new row is added to a table, a trigger can automatically insert an associated record into a second table.
+A trigger defines a set of operations to be carried out automatically when something happens to specified tables. For example, in any case a new row is added to a table, a trigger can automatically insert an associated record into another table.
 
 There are mainly 3 types of triggers: DML trigger (triggered by \verb|INSERT|, \verb|UPDATE|, \verb|DELETE|, etc.), DDL trigger (triggered by \verb|CREATE|, \verb|ALTER|, \verb|DROP|, \verb|GRANT|, \verb|DENY|, \verb|REVOKE|, etc.), and CLR trigger (triggered by LOGON event).
 
@@ -742,21 +746,21 @@ Use the following to drop a trigger.
 DROP TRIGGER <trigger-name>;
 \end{lstlisting}
 
-\subsection{An SQL Example}
+\subsection{SQL Demonstrative Example}
 
 An an example to demonstrate the use of SQL, a database is created from scratch. MariaDB is used as the DBMS in this example. More about MariaDB is introduced in later Section \ref{ch:db:sec:mariadb}. The database is used in the smart home project to trace the resources obtained and consumed by the user. The resources in this context may refer to groceries bought from the supermarket, books purchased online, subscriptions of magazines and services, etc. For simplicity, the prompt is ignored in the rest of this section.
 
 Check the existing databases as follows.
 \begin{lstlisting}
-	SHOW DATABASES;
+SHOW DATABASES;
 \end{lstlisting}
 A database named \verb|smart_home| is created as follows.
 \begin{lstlisting}
-	CREATE DATABASE smart_home;
+CREATE DATABASE smart_home;
 \end{lstlisting}
 Select the database as follows.
 \begin{lstlisting}
-	USE smart_home;
+USE smart_home;
 \end{lstlisting}
 With the above command, \verb|smart_home| is selected as the current database.
 
@@ -933,15 +937,15 @@ ADD FOREIGN KEY (payment_method_id)
 REFERENCES payment_method(payment_method_id);
 \end{lstlisting}
 
-\section{Relational Databases Examples}
+\section{Relational Databases}
 
 Commonly seen RDBMS examples include Oracle Database, MySQL, Microsoft SQL Server, PostgreSQL, SQLite, MariaDB, and many more. Some of them are briefly introduced in this section.
 
 \subsection{MySQL and MariaDB} \label{ch:db:sec:mariadb}
 
-MariaDB and MySQL are two widely used relational DBMS. MariaDB is initially a fork of MySQL, and in this since they share many similarities. While MySQL moves towards a dual license approach (free community license and paid enterprise license with proprietary code), MariaDB is designed to be fully open-source under GNU license, and plays as a replacement of MySQL.
+MariaDB and MySQL are two widely used relational DBMS. MariaDB is initially a fork of MySQL, and in this sense they share many similarities. While MySQL moves towards a dual license approach (free community license and paid enterprise license with proprietary code), MariaDB is designed to be fully open-source under GNU license, and plays as a replacement of MySQL.
 
-In general, MariaDB supports a larger varieties of data engines and new features, and it is claimed to be faster, more powerful and advanced than MySQL. However, it lacks some of the enterprise features provided by MySQL. The users can gain some of these features by using open-source plugins. The most recent new features in MySQL and MariaDB is also diverging.
+In general, MariaDB supports a larger varieties of data engines and new features, and it is claimed to be faster, more powerful and advanced than MySQL. However, it lacks some of the enterprise features provided by MySQL. The users can gain some of these features by using open-source plugins. The most recent new features in MySQL and MariaDB are also diverging.
 
 Some of the main features of MySQL and MariaDB are summarized as follows.
 \begin{itemize}
@@ -968,7 +972,7 @@ Different databases may propose different minimum system requirements. There is 
 	\begin{flushleft}
 	\footnotesize
 	$^{*}$ Some installations may come with default test database and logs. The disk usage can be reduced if those files are removed after installation. \\
-	$^{**}$ All platforms refers to Linux, MacOS and Windows. Different platforms may have different requirements. \\
+	$^{**}$ ``All'' refers to Linux, MacOS and Windows. Different platforms may have different minimum requirements. \\
     \end{flushleft}
 \end{table}
 
@@ -1033,7 +1037,11 @@ from where an admin account can be created as follows.
 MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'localhost' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
 MariaDB [(none)]> FLUSH PRIVILEGES;
 \end{lstlisting}
-By creating an admin account, the use of root account can be avoided, thus reducing the operation risks. Notice that when using remote connection from another machine to the database, this command is also required to grant access to the remote user with specified IP address. Wildcard expression can be used for the IP address, if necessary. To check existing users and their IP addresses to whom access has been granted, use
+By using an admin account instead of the root account in daily operations, the security risk is reduced.
+
+Notice that remote access to a database is by default forbidden. A command similar with the above is required to enable remote access. Wildcard expression can be used for the IP address, if necessary, to allow a user to access the database from multiple machines.
+
+To check existing users and their IP addresses to whom access has been granted, use
 \begin{lstlisting}
 SELECT host, user FROM mysql.user;
 \end{lstlisting}
@@ -1048,7 +1056,7 @@ to quite MariaDB console.
 \noindent \textbf{Execute SQL File}
 \vspace{0.1in}
 
-In many occasions, an SQL file is prepared in advance, and the DBMS is asked to execute the SQL file. In the Linux shell, execute the following command and MariaDB shall be able to execute an SQL file on the specified host, on behalf of the user, on the selected database.
+In many occasions, instead of executing SQL commands line by line, an SQL file is prepared in advance and the DBMS is asked to execute the SQL file as a whole. In the Linux shell, execute the following command and MariaDB shall be able to execute an SQL file on the specified host, on behalf of the user, on the selected database.
 \begin{lstlisting}
 $ mariadb --host="mysql_server" --user="user_name" --database="database_name" --password="user_password" < "file.sql"
 \end{lstlisting}
@@ -1059,9 +1067,9 @@ MariaDB [(none)]> source file.sql
 
 \subsection{PostgreSQL}
 
-PostgreSQL (or Postgres) is claimed to be the world's most advanced open-source RDB, and it has some great features. It is a object-relational database where the user can define customized data types alike objects. The database functions are modularized, meaning that it has a small base installation (only 40MB) as given in Table \ref{ch:db:tab:rdbrequirements}, and the user can expand its capability by installing additional modules per required. The space is never wasted on built-in but unused functions, as in the case of many other DBMS. It complies very well with the latest SQL standard, with additional powerful add-ons.
+PostgreSQL (or Postgres) is claimed to be the world's most advanced open-source RDB, and it has some great features. It is a object-relational database where the user can define customized data types in the form of objects. The database functions are modularized, meaning that it has a small base installation (only 40MB) as given in Table \ref{ch:db:tab:rdbrequirements}, and the user can expand its capability by installing additional modules per required. It complies very well with the latest SQL standard, with additional powerful add-ons.
 
-Though powerful and efficient, PostgreSQL has not grown as popular as some other more famous databases such as Oracle, Microsoft SQL server, and MySQL. One of the reasons for this is the lack of enterprise tier support. Being under PostgreSQL license (an open-source license similar to BSD and MIT), the available support is mostly from the community. With that being said, PostgreSQL is mature and has been adopted in some large enterprises. Of course the IT department of these companies need to work hard to maintain the database. In addition, great flexibility often means a steeper learning curve, making mastering PostgreSQL generally more difficult than other aforementioned databases.
+Though powerful and efficient, PostgreSQL has not grown as popular as some other databases such as Oracle, Microsoft SQL server, and MySQL. One of the reasons for this is the lack of enterprise tier support. Being under PostgreSQL license (an open-source license similar to BSD and MIT), the available support is mostly from the community. With that being said, PostgreSQL is mature and has been adopted in some large enterprises. Of course the IT department of these companies need to work hard to maintain the database. In addition, great flexibility often means a steeper learning curve, making mastering PostgreSQL generally more difficult than other aforementioned databases.
 
 However, with the populating use of microservices where the database efficiency and performance becomes absolutely critical, PostgreSQL is gaining more and more attentions. It is especially popular when using inside containers.
 
@@ -1080,7 +1088,7 @@ Some of the main features of PostgreSQL are summarized as follows.
 \noindent \textbf{Installation}
 \vspace{0.1in}
 
-PostgreSQL supports a large range of operating systems including Linux, MacOS, Windows, and some more. The source code and very detailed documentations of PostgreSQL are available on its websites and can be downloaded to a local machine freely. Due to the lite weight of the base installation, PostgreSQL can be used conveniently in containers, where the associated images can be found on Docker Hub.
+PostgreSQL supports a large range of operating systems including Linux, MacOS, Windows, and more. The source code and very detailed documentations of PostgreSQL are available on its websites and can be downloaded to a local machine freely. Due to the lite weight of the base installation, PostgreSQL can be used conveniently in containers. The associated images can be found on Docker Hub.
 
 To install PostgreSQL directly on a host machine, simply follow the instructions on the official website, where command line tools are provided for Linux users, and installer for windows users. For example, to install PostgreSQL version 15 on RHEL version 9 running on \verb|x86_64| and setup initial configurations, simply use
 \begin{lstlisting}
@@ -1140,7 +1148,7 @@ PostgreSQL supports a large range of data types, more than other databases such 
 	\item Network address types, such as IPv4 and IPv6 addresses and MAC addresses.
 	\item Array types and associated functions such as accessing, modifying and searching arrays.
 	\item Composite types and associated functions.
-	\item ...
+	\item Many more.
 \end{itemize}
 
 \vspace{0.1in}
@@ -1197,7 +1205,7 @@ For example,
 CREATE TYPE sex_type AS
 enum ('M', 'F');
 \end{lstlisting}
-which creates a new data type called \verb|sex_type|, and it can take enumerated value of either \verb|'M'| or \verb|F|.
+which creates a new data type called \verb|sex_type|, and it can take enumerated value of either \verb|M| or \verb|F|.
 
 \vspace{0.1in}
 \noindent \textbf{PostgreSQL Features: Stored Procedural and Functions}
@@ -1254,7 +1262,7 @@ The following is a list of languages supported by PostgreSQL.
 	\end{itemize}
 \end{itemize}
 
-SQL is sufficient to carry out simple and straight forward tasks such as adding two numbers, as shown in the earlier example. However, when comes to handling conditional statements and loops, etc., procedural language is required. An example is given below. When the function is complex, it is sometimes impossible or inefficient to implement it using SQL, and PL/pgSQL and other procedural languages can solve this problem. An example is given below.
+SQL is sufficient to carry out simple and straight forward tasks such as adding two numbers, as shown in the earlier example. However, when comes to handling conditional statements and loops, etc., procedural language is required. When the function is complex, it is sometimes impossible or inefficient to implement it using SQL, and PL/pgSQL and other procedural languages can solve this problem. An example is given below.
 \begin{lstlisting}
 CREATE OR REPLACE FUNCTION increment_value(value INT, increment INT)
 RETURNS INT AS $$
@@ -1274,20 +1282,42 @@ $$ LANGUAGE plpgsql;
 With the above been said, though convenient and powerful it might be in some use cases, it is often a good practice to keep complex logic in application layer, for logic consistency and database portability.
 
 \vspace{0.1in}
-\noindent \textbf{Database Manipulation}
+\noindent \textbf{Manipulation and Query}
 \vspace{0.1in}
 
-\vspace{0.1in}
-\noindent \textbf{Database Query}
-\vspace{0.1in}
+PostgreSQL adopts SQL for database manipulation and query. SQL has been introduced in earlier sections, hence it is not repeated here. Only selected unique features to PostgreSQL are introduced.
+
+While PostgreSQL server is running, enter its console using \verb|psql| from the shell. One can tell PostgreSQL console by its prompt which looks something like
+\begin{lstlisting}
+postgres-#
+\end{lstlisting}
+or
+\begin{lstlisting}
+postgres->
+\end{lstlisting}
+with ``postgres'' the current selected database.
+
+Once in PostgreSQL console, use \verb|help| to display the basic commands, including \verb|\copyright| that shows the distribution terms, \verb|\h| to check SQL commands, \verb|\?| to check psql commands, and \verb|\q| to quit PostgreSQL console, etc. Notice that both SQL and psql commands can be used in PostgreSQL console. Most, if not all, psql commands start with a back slash ``\verb|\|''.
+
+Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcommands}.
+
+\begin{table}
+	\centering \caption{Widely used psql commands.}\label{ch:db:tab:psqlcommands}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Command & Description \\ \hline
+		\verb|\l| & List databases \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+
 
 \vspace{0.1in}
-\noindent \textbf{DBMS API}
+\noindent \textbf{API}
 \vspace{0.1in}
 
-\subsection{Firebird}
-
-\section{Non-relational Databases Examples}
+\section{Non-relational Databases}
 
 Unlike relational databases where data is stored in relevant tables with pre-designed schematics such as column names, types, and references, non-relational database stores data in different structures such as directed graphs, dictionaries and documents.
 
@@ -1299,17 +1329,15 @@ There are many types of non-relational databases including document-oriented dat
 
 MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with flexible schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., is widely used in database powered web applications.
 
-As a document-oriented database, MongoDB stores data not in related tables, but in separated collections and documents. Each document in the same database can adopt its own schema. When querying data, the user does not need to join documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
+As a document-oriented database, MongoDB stores data not in related tables, but in separated collections (corresponding with tables) and documents (corresponding with rows). Each document in the same collection can adopt its own schema. When querying data, the user does not need to join documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
 \begin{figure}
 	\centering
 	\includegraphics[width=250pt]{chapters/ch-database/figures/mongodb_tree.png}
 	\caption{A demonstration of MongoDB storing data as object-of-object.} \label{ch:database:mongotree}
 \end{figure}
-In Fig. \ref{ch:database:mongotree}, the database is named ``USER''. The database contains two objects, also known as ``collections'' in MongoDB framework. Each collection has a few properties. Different collection may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language'' in this example.
+In Fig. \ref{ch:database:mongotree}, the collection is named ``USER''. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language'' in this example. Different properties may have different types. For example, a property can be string, numeric, or an object, or a list of the above.
 
-Different properties may have different types. For example, a property can be string, numeric, or an object, or a list of the above.
-
-When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and order them in required order.
+When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in required order.
 
 \vspace{0.1in}
 \noindent \textbf{Installation}
@@ -1327,7 +1355,7 @@ Notice that when installing MongoDB server, it is possible that the server comes
 
 Different versions of MongoDB is provided. Choose the correct MongoDB version depending on the CPU and the OS of the machine. MongoDB community server installation size is about 500MB.
 
-MongoDB provides enterprise service as part of its cloud solution, MongoDB Atlas, where user can deploy clusters to host databases. With proper gateway setup, the user can connect to MongoDB Atlas clusters from its local server to retrieve data or to manipulate the databases. MongoDB Atlas is not the covered in this notebook.
+MongoDB provides enterprise service, MongoDB Atlas, as part of its cloud solution where user can deploy clusters to host databases. With proper gateway setup, the user can connect to MongoDB Atlas clusters from his local server to retrieve data or to manipulate the databases. MongoDB Atlas is not the covered in this notebook.
 
 \vspace{0.1in}
 \noindent \textbf{Basic Global Operations}
@@ -1380,7 +1408,7 @@ BSON, on the other hand, is binary-based, which is essentially a list of binary 
 Both JSON and BSON are intuitive and human-readable. MongoDB uses BSON due to its enhanced capability.
 
 \vspace{0.1in}
-\noindent \textbf{Collection}
+\noindent \textbf{Collection Manipulation}
 \vspace{0.1in}
 
 A MongoDB database contains multiple collections. A collection is similar to a table in an RDB in the sense that it is the ``host'' of similar data. However, unlike tables where schematics such as column names and datatypes are enforced upon creation of the table, a collection does not enforce fields and data types. An example of creating a collection inside a database is given below.
