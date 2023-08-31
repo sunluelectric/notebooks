@@ -1295,27 +1295,40 @@ or
 \begin{lstlisting}
 postgres->
 \end{lstlisting}
-with ``postgres'' the current selected database.
+with ``postgres'' the current selected database. It is also possible to specify user name, default database, and other configurations when connecting to PostgreSQL server. Instead of running \verb|psql| as admin, use
+\begin{lstlisting}
+$ psql -h <host> -p <port> -U <username> <default_database>
+\end{lstlisting}
 
-Once in PostgreSQL console, use \verb|help| to display the basic commands, including \verb|\copyright| that shows the distribution terms, \verb|\h| to check SQL commands, \verb|\?| to check psql commands, and \verb|\q| to quit PostgreSQL console, etc. Notice that both SQL and psql commands can be used in PostgreSQL console. Most, if not all, psql commands start with a back slash ``\verb|\|''.
+Once in PostgreSQL console, use \verb|help| to display the basic commands, including \verb|\copyright| that shows the distribution terms, \verb|\h| to check SQL commands, \verb|\?| to check psql commands, and \verb|\q| to quit PostgreSQL console, etc. Notice that both SQL and psql commands can be used in PostgreSQL console. 
 
-Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcommands}.
+Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcommands}. Most, if not all, psql commands start with a back slash ``\verb|\|''.
 
 \begin{table}
 	\centering \caption{Widely used psql commands.}\label{ch:db:tab:psqlcommands}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Command & Description \\ \hline
-		\verb|\l| & List databases \\
+		\verb|SELECT VERSION();| & Check PostgreSQL version. \\ \hdashline
+		\verb|\l| & List databases. \\ \hdashline
+		\verb|\c <database>| & Switch databases. \\ \hdashline
+		\verb|\d| & Describe items. By default, it lists the tables in the current database, and describe each of them. \\ \hdashline
+		\verb|\dt| & List tables. \\ \hdashline
+		\verb|\dv| & List views. \\ \hdashline
+		\verb|\dn| & List schema. \\ \hdashline
+		\verb|\df| & List functions. \\ \hdashline
+		\verb|\du| & List users. \\ \hdashline
+		\verb|\d <table>| & Describe a table. \\ \hdashline
+		\verb|\s| & Show command history. \\ \hdashline
+		\verb|\h| & Show help. \\ \hdashline
+		\verb|\?| & Show psql commands. \\ \hdashline
+		\verb|\!cls| & Clear screen. \\ \hdashline
+		\verb|\q| & Quit DBMS shell. \\
 		\hline
 	\end{tabularx}
 \end{table}
 
-
-
-\vspace{0.1in}
-\noindent \textbf{API}
-\vspace{0.1in}
+SQL commands, such as creating a database, have been introduced earlier, hence is not repeated here.
 
 \section{Non-relational Databases}
 
@@ -1361,7 +1374,11 @@ MongoDB provides enterprise service, MongoDB Atlas, as part of its cloud solutio
 \noindent \textbf{Basic Global Operations}
 \vspace{0.1in}
 
-After installing both MongoDB server and MonghDB shell, use \verb|mongosh| in the command line to login to the DBMS. JavaScript-like commands are used to manipulate the database, including creating databases and inserting data.
+After installing both MongoDB server and MonghDB shell, use
+\begin{lstlisting}
+$ mongosh
+\end{lstlisting}
+in the command line to login to the DBMS. JavaScript-like commands are used to manipulate the database, including creating databases and inserting data.
 
 The object \verb|db| contains many methods using which the user can access and modify the basic configurations of the database. For example,
 \begin{lstlisting}
@@ -1408,15 +1425,37 @@ BSON, on the other hand, is binary-based, which is essentially a list of binary 
 Both JSON and BSON are intuitive and human-readable. MongoDB uses BSON due to its enhanced capability.
 
 \vspace{0.1in}
-\noindent \textbf{Collection Manipulation}
+\noindent \textbf{Create Collection and Document}
 \vspace{0.1in}
 
 A MongoDB database contains multiple collections. A collection is similar to a table in an RDB in the sense that it is the ``host'' of similar data. However, unlike tables where schematics such as column names and datatypes are enforced upon creation of the table, a collection does not enforce fields and data types. An example of creating a collection inside a database is given below.
 \begin{lstlisting}
-> use testdb
-> db.createCollection("users")
+> use testdb;
+> db.createCollection("users");
 \end{lstlisting}
 Use \verb|show collections| to show the collections in the current database.
+
+\begin{shortbox}
+\Boxhead{Should I use semicolon in the end of each MongoDB command?}
+
+If you are using MongoDB shell, then technically speaking, you don't have to. It works both ways. However, if you are using JavaScript environment such as \textit{Node.js} and integrating MongoDB commands as part of the program, you should use semicolon.
+
+For example, to create a new database, in MongoDB shell
+\begin{lstlisting}
+> use myNewDatabase
+\end{lstlisting}
+or 
+\begin{lstlisting}
+> use myNewDatabase;
+\end{lstlisting}
+would both work just fine. However, in \textit{Node.js},
+\begin{lstlisting}
+const newDb = client.db("myNewDatabase");
+\end{lstlisting}
+the semicolon is required.
+
+As a conclusion, semicolon is recommended mostly, just to follow the general JavaScript good practice. Although in JavaScript semicolon is also optional due to Automatic Semicolon Insertion (ASI), it is still widely recommended to use semicolon anyway.
+\end{shortbox}
 
 Data can be installed into a collection. An entry to be inserted to a collection, corresponding with a row of a table in RDB, is called a document. It is possible to insert one or multiple entries at a time. To insert documents, first prepare the document in BSON format. For example, consider the following documents.
 \begin{lstlisting}
@@ -1442,39 +1481,132 @@ Notice that user ``Alice'' and ``Bob'' are represented by JSON and BSON, respect
 
 Then use the following syntax to insert the document into the collection.
 \begin{lstlisting}
-db.<collection_name>.insertOne({...})
-db.<collection_name>.insertMany([{...}, {...}, {...}])
+db.<collection_name>.insertOne({...});
+db.<collection_name>.insertMany([{...}, {...}, {...}]);
 \end{lstlisting}
 where \verb|{...}| is the document in JSON or BSON format as shown earlier. To make it more readable, consider do the following instead.
 \begin{lstlisting}
 const doc = {...};
-db.<collection_name>.insertOne(doc)
+db.<collection_name>.insertOne(doc);
 \end{lstlisting}
 which first store the document in \verb|doc|, then pass it to \verb|insertOne()| method. Upon successful insertion, an insert id (also known as object id) will be created automatically.
 
-
-
-
 \vspace{0.1in}
-\noindent \textbf{DBMS API}
+\noindent \textbf{Query}
 \vspace{0.1in}
 
+MongoDB uses \verb|find({...})|, \verb|findOne({...})| to find documents, where \verb|{...}| is a query argument in the form of JavaScript object. Details are given below.
 
+To obtain all the document under a collection, use
+\begin{lstlisting}
+db.getCollection('<collection_name>').find({});
+\end{lstlisting}
+where an empty query simply matches all documents in the collection. Of course, when \verb|findOne()| is used, it will return only one document. When an object is given in the query, MongoDB returns only the documents containing the same fields.
 
+Notice that
+\begin{lstlisting}
+db.collection_name.some_function()
+\end{lstlisting}
+is equivalent to 
+\begin{lstlisting}	db.getCollection('collection_name').some_function()
+\end{lstlisting}
+The first implementation is more convenient while the second more flexible as it supports dynamic naming, i.e., something like
+\begin{lstlisting}
+collectionName = 'some_collection';
+db.getCollection(collectionName).some_function();
+\end{lstlisting}
+
+Several examples are given below. To find documents that has a certain field with certain values, use the following
+\begin{lstlisting}
+db.getCollection('posts').find({comments: 1})
+\end{lstlisting}
+The above query search documents with field \verb|comments| whose value is $1$ under collection \verb|posts|. To get those posts with at least $1$ comment, use the following
+\begin{lstlisting}
+db.getCollection('posts').find({comments: {$gt: 0}})
+\end{lstlisting}
+where \verb|{$gt: 0}| stands for any value greater than $0$. Commonly seen query operators are given in Table \ref{ch:db:tab:mongodbqueryoperator}, each with an example.
+
+\begin{table}
+	\centering \caption{MongoDB basic query operators.} \label{ch:db:tab:mongodbqueryoperator}
+	\begin{tabularx}{\textwidth}{llX}
+		\hline
+		Operator & Description & Example \\ \hline
+		\verb|$gt| & Greater than & \verb|{age: {$gt: 18}}| \\ \hdashline
+		\verb|$lt| & Less than & \verb|{age: {$lt: 18}}| \\ \hdashline
+		\verb|$and| & And & \verb|{$and: [{age: {$gt: 18}}, {sex: 'M'}]}| \\ \hdashline
+		\verb|$or| & Or &  \verb|{$or: [{age: 18}, {age: 21}]}| \\ \hdashline
+		\verb|$in| & In & \verb|{name: {$in: ['Alice', 'Bob']}}| \\ \hdashline
+		\verb|$nin| & Not in & \verb|{name: {$nin: ['Alice', 'Bob']}}| \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\vspace{0.1in}
+\noindent \textbf{Update and Remove Document}
+\vspace{0.1in}
+
+Two functions, \verb|updateOne(...)| and \verb|updateMany(...)|, are provided to update documents. Details are given below via an example.
+\begin{lstlisting}
+db.getCollection('users').updateOne(
+	{userId: '0015'},
+	{$set: {age: 25}}
+);
+\end{lstlisting}
+The above code query \verb|users| collection, find the document with \verb|userId| being \verb|'0015'|, and change its \verb|age| field to $25$. From this example, it can be seen that the document updating function contains a query and a set of updating operators. Commonly seen updating operators are given in Table \ref{ch:db:tab:mongodbupdateoperator}.
+
+\begin{table}
+	\centering \caption{MongoDB basic update operators..}\label{ch:db:tab:mongodbupdateoperator}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Operator & Description \& Example \\ \hline
+		\verb|$set| & Replace field value \\ & \verb|{<query>}, {$set: {age: 30 } }| \\ \hdashline
+		\verb|$unset| & Remove field \\ & \verb|{<query>}, {$unset: {age: ""} }| \\ \hdashline
+		\verb|$inc| & Increment a field by a value \\ & \verb|{<query>}, {$inc: {age: 1} }| \\ \hdashline
+		\verb|$rename| & Rename field \\ &  \verb|{<query>}, {$rename: {"age": "yearsOld"}}| \\ \hdashline
+		\verb|$currentDate| & Set field value to current date \\ & \verb|{{<query>}, {$currentDate: {lastModified: true}}}| \\ \hdashline
+		\verb|$addToSet| & Add element to array field \\ & \verb|{<query>}, {$addToSet: {hobbies: "reading"}}| \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+To remove a document, use \verb|deleteOne({<query>})| and \verb|deleteMany({<query>})|.
+
+\vspace{0.1in}
+\noindent \textbf{Advanced Features}
+\vspace{0.1in}
+
+MongoDB uses aggregation framework provides way to perform complex data transformations in a ``pipeline''. The data is processed step-by-step.
+
+When a document is added to a collection, a default field \verb|_id| is added. Querying via \verb|_id| is usually faster than with other criteria because otherwise MongoDB has to search for the entire collection to find relevant documents.
+
+Data in MongoDB can be exported or imported from files, such as JSON files.
+
+MongoDB, like many other DBMS especially cloud-based enterprise tier ones, provide replica setting to tackle read-heavy applications. A primary server is replicated to multiple replicas. Writing is allowed only to the primary server, but reading is allowed to all replicas as well as the primary server. In the case of MongoDB, when primary server fails, one of the replicas is automatically promoted to be the primary server.
 
 \subsection{Redis}
 
+Redis, short for \textit{REmote DIctionary Server}, is an open-source in-memory distributed key-value database. It is often used as a lightweight database, cache tool, or message broker. Some key features are listed below.
 
+\begin{itemize}
+\item In-memory storage. This speeds up reading and writing operations.
+\item Persistence. While primarily it is an in-memory database, it also offers variety of ways to persist data on disk without compromising a lot on performance.
+\item Complex data structures and associated atomic operations. Though Redis is key-value store, it supports more complex data structures than that.
+\item High availability via replicas.
+\item Distributed storage via horizontal partitioning.
+\item Lightweight.
+\end{itemize}
 
 
 
 \subsection{AllegroGraph}
 
-
-
-
+Graph-based database is elsewhere introduced in details in notebook \textit{A Notebook on Probability, Statistics and Data Science} under semantic web. Check that notebook for more details.
 
 \section{Database Accessory}
+
+This section discusses the tools or program interfaces used along with the DBMS. Many software programs provide interface or toolkit to connect to a database. For example, MATLAB uses database toolbox to connect to SQLite or Microsoft SQL server. Python, as a ``glue'' language, also provide variety of packages to connect to different databases. IDEs such as VSCode can connect to databases using extensions.
+
+Some of these tools and packages are introduced in this section.
 
 \subsection{RDB Interface with Python}
 
