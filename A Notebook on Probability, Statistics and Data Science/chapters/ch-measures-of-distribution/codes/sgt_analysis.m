@@ -1,11 +1,11 @@
 % sgt_analysis.m
 % pdf maps to https://en.wikipedia.org/wiki/Skewed_generalized_t_distribution
 %% input
-input_p = [2,2,2];
-input_q = [1e6,1e6,1e6];
+input_p = [3,2,2];
+input_q = [1e6, 1e6, 2.5];
 input_sigma = [sqrt(2), sqrt(2), sqrt(2)];
 input_mu = [0, 0, 0];
-input_lambda = [-0.4, 0, 0.4];
+input_lambda = [0, 0, 0];
 %% analysis
 num_of_sgt = length(input_p);
 output_moment_1 = zeros(num_of_sgt,1);
@@ -51,8 +51,8 @@ grid on
 % axis([-10,10,0,0.45])
 xlabel('$x$', 'interpreter', 'latex')
 ylabel('$f(x)$', 'interpreter', 'latex')
-leg = legend('$\gamma_1 < 0$', ...
-    '$\gamma_1 = 0$', ...
-    '$\gamma_1 > 0$');
+leg = legend('$\textup{Ex. Kurtosis} < 0$', ...
+    '$\textup{Ex. Kurtosis} = 0$', ...
+    '$\textup{Ex. Kurtosis} > 0$');
 set(leg, 'interpreter', 'latex')
 

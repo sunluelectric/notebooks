@@ -1,10 +1,6 @@
 \chapter{R Basics} \label{ch:r1}
 
-This chapter introduces R language basics, including the import (from files or databases), tidying, transformation, modeling, verification, and visualization of data. The use of R language in machine learning is also briefly covered.
-
-Given that R is less popular than the more well-known and widely appreciated Python and MATLAB among engineering background researchers, this chapter serves as a basic introduction to R, before digging into its use in data science.
-
-The first part of the chapter from Section \ref{ch:r1:sec:rinstallation} to Section \ref{ch:r1:sec:ggplot} introduces the basic grammar and visualization tools, and the second part of the chapter from Section \ref{ch:r1:sec:datapreparation} onwards more advanced practice of R.
+This chapter introduces the basic use of R language, including data import (from files or databases), tidying, transformation, modeling, verification, and visualization. The use of R language in machine learning is also briefly covered.
 
 \section{R and RStudio Installation} \label{ch:r1:sec:rinstallation}
 
@@ -163,7 +159,7 @@ To transform data from one type to another, use \verb|as.<data-type>()|. Example
 [1] "character"
 \end{lstlisting}
 
-R supports arithmetic calculations of variables, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%| (integer division), \verb|%%| (modulus) and \verb|^| exponential. Examples of arithmetic calculations are given as follows.
+R supports arithmetic calculations of variables, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%| (integer division), \verb|%%| (modulus) and \verb|^| (exponential). Examples of arithmetic calculations are given as follows.
 \begin{lstlisting}
 > a <- 16
 > b <- 3
@@ -376,7 +372,7 @@ An example of using the above to verify the law of the large number is given bel
 
 \subsection{User-Defined Functions}
 
-Define a simple function as follows. Note to run the codes where the function is described before calling the function.
+Define a simple function as follows. Run the codes where the function is described before calling the function.
 \begin{lstlisting}
 <function-name> <- function(<input>[=<default>], ...){
 	<command>
@@ -386,7 +382,7 @@ Define a simple function as follows. Note to run the codes where the function is
 
 \subsection{Vectors}
 
-There are different types of vectors in R. The commonly used vector types include numeric vector (including both double and integer vector) and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type. A single number or character is stored as a vector of length 1.
+There are different types of vectors in R. The commonly used vector types include numeric vector (including both double and integer vector) and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type. Scalars and single characters are stored as a vector of length 1.
 
 Notice that the index of a vector in R starts from 1 instead of 0. This is different with many other computer languages.
 
@@ -430,7 +426,7 @@ A character vector can also be created by splitting strings using \verb|strsplit
 [1] "H" "e" "l" "l" "o" " " "W" "o" "r" "l" "d" "!"
 \end{lstlisting}
 
-To access the element in a vector, use \verb|<vector>[<index>]|. Again, notice that the first element in a vector has the index of 1 instead of 0. The index can be an integer, or a list of integer such as a sequence. Examples are given below.
+To access the element in a vector, use \verb|<vector>[<index>]|. Notice that the first element in a vector has the index of 1 instead of 0. The index can be an integer, or an integer vector. Examples are given below.
 \begin{lstlisting}
 > s <- c("a", "b", "c", "d", "e", "f", "g")
 > s[1]
@@ -442,7 +438,7 @@ To access the element in a vector, use \verb|<vector>[<index>]|. Again, notice t
 > s[c(1L, 3L, 5L)] # s[c(1.1, 3.5, 5.9)] gives the same result; data type auto transferred
 [1] "a" "c" "e"
 \end{lstlisting}
-Notice that accessing a single element in a vector is rarely used in practice, because most operations in R are done by the vector basis. Vectorization operation, also known as single-instruction-multiple-data operation, significantly speeds up the calculation in R, which is quite commonly seen in high-layer languages such as R and Python. This is due to the intepreting and wrapping techniques a high-layer language uses to communicate with the underlying low-layer languages, and also the support many processors have for parallel computing.
+Notice that accessing a single element in a vector is rarely used in practice, because most operations in R are done by the vector basis. Vectorization operation, also known as single-instruction-multiple-data operation, significantly speeds up the calculation in R, which is quite commonly seen in high-layer languages such as R and Python. This is due to the interpreting and wrapping techniques a high-layer language uses to communicate with the underlying low-layer languages, and also the support many processors have for parallel computing.
 
 Most, if not all, of the numerical calculations, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%|, \verb|^|. Examples are given below.
 \begin{lstlisting}
