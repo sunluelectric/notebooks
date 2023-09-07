@@ -1,6 +1,8 @@
 \chapter{R Basics} \label{ch:r1}
 
-This chapter introduces the basic use of R language, including data import (from files or databases), tidying, transformation, modeling, verification, and visualization. The use of R language in machine learning is also briefly covered.
+This chapter and the sequential chapters introduces R language, a widely used statistics analysis and data visualization tool in both academia and industry. 
+
+This chapter focuses on the fundamental setup and basic operations of R language, such as installation of R and RStudio, introducing data types used in R language, and data frame manipulation. Chapter \ref{ch:r2} introduces advanced skills of R, such as commonly used skills for data preparation and the advanced use of list in R language. Finally, Chapter \ref{ch:r3} introduces practical use of R language in data science.
 
 \section{R and RStudio Installation} \label{ch:r1:sec:rinstallation}
 
@@ -380,7 +382,11 @@ Define a simple function as follows. Run the codes where the function is describ
 }
 \end{lstlisting}
 
-\subsection{Vectors}
+\section{Vector and Matrix}
+
+Vector and matrix are the fundamental forms that R organize and calculate data. 
+
+\subsection{Vector}
 
 There are different types of vectors in R. The commonly used vector types include numeric vector (including both double and integer vector) and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type. Scalars and single characters are stored as a vector of length 1.
 
@@ -525,7 +531,7 @@ An example of using the above to analyze the profit of a company is given below.
 [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 \end{lstlisting}
 
-\subsection{Matrices}
+\subsection{Matrix}
 
 A matrix in R is a recording of a table of data. Matrices are important because they are how data is often naturally organized, and they are also the build blocks of data frame in R.
 
@@ -578,6 +584,8 @@ There are alternative ways, other than \verb|rbind()|, to create a matrix. For e
 [3,]    3    6    9
 \end{lstlisting}
 
+\subsection{Matrix with Index Name}
+
 The name of the columns and rows can also be used to access an element, just by replacing the index with the name (with quotation mark) of the associated column or row. The same applies to vectors, as they can be treated as a one dimensional matrix. More details about naming a vector and columns and rows of a matrix are illustrated as follows.
 
 To check the names relevant to a matrix, use \verb|names(<vector>)|, \verb|rownames(<matrix>)| and \verb|colnames(<matrix>)|, depending on dealing with either a vector or a matrix. These commands can also be used to assign names. Examples are given below.
@@ -618,10 +626,11 @@ row1 row2 row3
 row1 row2 row3
 4    5    6
 \end{lstlisting}
-
 To remove the names, simply assign \verb|NULL| to the name.
 
 Like the vector, operators are defined in matrix level as well. For example, for two matrices with the same shape, numerical operations such as  \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%| and \verb|^| can be implemented.
+
+\subsection{Matrix Visualization Using \texttt{matplot()}}
 
 R provides flexible and powerful data visualization tools, many of which more advanced than what is to be introduced in this section. This section introduces a simple matrix visualization function called \verb|matplot()|, which plots the columns of a matrix against each other.
 
@@ -740,7 +749,7 @@ Both matrix and data frame use a table structure to store data, but data frame d
 
 In many applications and sample examples, data are stored and processed in data frame structure. When importing data from the real world, such as from a CSV file, the data is often read into a data frame before further processing.
 
-\subsection{Data Import}
+\subsection{Import Data into Data Frame}
 
 One of the most common sources of data is CSV files. R provides convenient functions to read data from CSV files into data frames. Use the following commands to import data from a CSV file into a data frame.
 
@@ -756,14 +765,14 @@ setwd("<directory>") # navigate to the directory of the csv file
 \end{lstlisting}
 where notice that \verb|getwd()| and \verb|setwd()| are used to get and set current working directory, respectively.
 
-\subsection{Basic Operations}
+\subsection{Access Data in Data Frame}
 
-There are a few ways to access an element in a data frame. The methods used for accessing matrix element, including
+There are a few ways to access an element in a data frame such as the following.
 \begin{lstlisting}
 <df>[<row-index>, <column-index>]
 <df>[<row-index>, "<column-name>"]
 \end{lstlisting}
-still work fine. Do notice that different from a matrix, the rows in a data frame have only indices but not names, while columns have both indices and names. In the case of data frame, \verb|$| can be used to access a column as follows.
+Notice that different from a matrix, the rows in a data frame have only indices but not names, while columns have both indices and names. In the case of data frame, \verb|$| can be used to access a column as follows.
 \begin{lstlisting}
 <df>$<column-name> # equivalent to <df>[, <column-name>]
 \end{lstlisting}
@@ -879,7 +888,7 @@ Ro remove a column, assign \verb|NULL| to all the elements in that column as fol
 <df>$<column> <- NULL
 \end{lstlisting}
 
-\subsection{Filtering}
+\subsection{Filter Data from Data Frame}
 
 Filtering is about selecting specific rows from a data frame that meet specific criteria. A true-false vector can be used as a filter as follows.
 \begin{lstlisting}
@@ -933,7 +942,7 @@ As shown above, it is possible to use \verb|&|, \verb$|$ to form a more complex 
 [1] 13
 \end{lstlisting}
 
-\subsection{Building Data Frames}
+\subsection{Create Data Frames}
 
 To create a data frame from scratch, use function \verb|data.frame()| as follows.
 \begin{lstlisting}
@@ -1328,152 +1337,4 @@ The resulted chart is given in Fig. \ref{ch:r1:fig:mortgage_histogram_theme}. Co
 	\includegraphics[width=250pt]{chapters/ch-r/figures/mortgage_histogram_theme.png}
 	\caption{Mortgage price chart with theme.} \label{ch:r1:fig:mortgage_histogram_theme}
 \end{figure}
-
-\section{Data Preparation} \label{ch:r1:sec:datapreparation}
-
-The data downloaded from sensors usually needs to go through pre-processing procedures such as filtering, normalization, etc., before it can be used by a controller or an AI engine.
-
-\subsection{Data Type Conversion}
-
-Data preparation including data tidy is one of the most tedious and time consuming parts when using R for data analysis. The section introduces useful techniques helpful with data preparation.
-
-It is importnt that the data types of all the columns meet expectation, especially for numeric and factor (categorical) data types. Use \verb|str(<df>)| to check the column data types of a data frame, and convert data types as follows.
-\begin{lstlisting}
-<df>$<column> <- factor(<df>$<column>) # character/numeric to factor
-<df>$<column> <- as.numeric(<df>$<column>) # character to numeric
-<df>$<column> <- as.numeric(as.character(<df>$<column>)) # factor to numeric
-\end{lstlisting}
-
-Notice that when converting factor type to other types, R may deal with the factor using the underlying ``factorization integers'' instead of the factor item names. An example is given below. It can be seen that the original \verb|5.1|, after being converted to factor then back to numeric, becomes \verb|9|. This is because the factorization integer for \verb|5.1| is \verb|9|, as given by printing \verb|my_factor| to the console.
-\begin{lstlisting}
-> library(datasets)
-> iris$Sepal.Length
-  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7
- [17] 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4
- [33] 5.2 5.5 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6
- [49] 5.3 5.0 7.0 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5.0 5.9 6.0 6.1
- [65] 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6.0 5.7
- [81] 5.5 5.5 5.8 6.0 5.4 6.0 6.7 6.3 5.6 5.5 5.5 6.1 5.8 5.0 5.6 5.7
- [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4
-[113] 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6.0 6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1
-[129] 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8
-[145] 6.7 6.7 6.3 6.5 6.2 5.9
-> my_factor <- factor(iris$Sepal.Length)
-> my_numeric <- as.numeric(my_factor)
-> my_numeric
-  [1]  9  7  5  4  8 12  4  8  2  7 12  6  6  1 16 15 12  9 15  9 12  9
- [23]  4  9  6  8  8 10 10  5  6 12 10 13  7  8 13  7  2  9  8  3  2  8
- [45]  9  6  9  4 11  8 28 22 27 13 23 15 21  7 24 10  8 17 18 19 14 25
- [67] 14 16 20 14 17 19 21 19 22 24 26 25 18 15 13 13 16 18 12 18 25 21
- [89] 14 13 13 19 16  8 14 15 15 20  9 15 21 16 29 21 23 33  7 31 25 30
-[111] 23 22 26 15 16 22 23 34 34 18 27 14 34 21 25 30 20 19 22 30 32 35
-[133] 22 21 19 34 21 22 18 27 25 27 16 26 25 25 21 23 20 17
-> typeof(my_factor)
-[1] "integer"
-> my_factor
-  [1] 5.1 4.9 4.7 4.6 5   5.4 4.6 5   4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7
- [17] 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5   5   5.2 5.2 4.7 4.8 5.4
- [33] 5.2 5.5 4.9 5   5.5 4.9 4.4 5.1 5   4.5 4.4 5   5.1 4.8 5.1 4.6
- [49] 5.3 5   7   6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5   5.9 6   6.1
- [65] 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6   5.7
- [81] 5.5 5.5 5.8 6   5.4 6   6.7 6.3 5.6 5.5 5.5 6.1 5.8 5   5.6 5.7
- [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4
-[113] 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6   6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1
-[129] 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6   6.9 6.7 6.9 5.8 6.8
-[145] 6.7 6.7 6.3 6.5 6.2 5.9
-35 Levels: 4.3 4.4 4.5 4.6 4.7 4.8 4.9 5 5.1 5.2 5.3 5.4 5.5 ... 7.9
-\end{lstlisting}
-
-When converting factor to other types, special caution is required. To convert a factor to other types such as numeric, consider converting it to character first as given in the following example.
-\begin{lstlisting}
-> my_numeric <- as.numeric(as.character(my_factor))
-> my_numeric
-  [1] 5.1 4.9 4.7 4.6 5.0 5.4 4.6 5.0 4.4 4.9 5.4 4.8 4.8 4.3 5.8 5.7
- [17] 5.4 5.1 5.7 5.1 5.4 5.1 4.6 5.1 4.8 5.0 5.0 5.2 5.2 4.7 4.8 5.4
- [33] 5.2 5.5 4.9 5.0 5.5 4.9 4.4 5.1 5.0 4.5 4.4 5.0 5.1 4.8 5.1 4.6
- [49] 5.3 5.0 7.0 6.4 6.9 5.5 6.5 5.7 6.3 4.9 6.6 5.2 5.0 5.9 6.0 6.1
- [65] 5.6 6.7 5.6 5.8 6.2 5.6 5.9 6.1 6.3 6.1 6.4 6.6 6.8 6.7 6.0 5.7
- [81] 5.5 5.5 5.8 6.0 5.4 6.0 6.7 6.3 5.6 5.5 5.5 6.1 5.8 5.0 5.6 5.7
- [97] 5.7 6.2 5.1 5.7 6.3 5.8 7.1 6.3 6.5 7.6 4.9 7.3 6.7 7.2 6.5 6.4
-[113] 6.8 5.7 5.8 6.4 6.5 7.7 7.7 6.0 6.9 5.6 7.7 6.3 6.7 7.2 6.2 6.1
-[129] 6.4 7.2 7.4 7.9 6.4 6.3 6.1 7.7 6.3 6.4 6.0 6.9 6.7 6.9 5.8 6.8
-[145] 6.7 6.7 6.3 6.5 6.2 5.9
-\end{lstlisting}
-where \verb|my_factor| is generated previously.
-
-It is possible for some columns in the data frame to look like a factor and a character string, but indeed should be handled as numeric values. For example, \verb|S$6,125.50| in many occasions should be treated just as \verb|6125.0|. These factor or character values cannot be converted to numeric values directly.
-
-In such cases, consider using \verb|sub()| or \verb|gsub()| to replace patterns in a character, then convert it into numeric values. Notice that \verb|sub()| replaces only the first encounter of the pattern, while \verb|gsub()| replaces all the encounters. An example of using \verb|gsub()| is given below.
-\begin{lstlisting}
-> money_character <- c("S$6,273.15", "S$215.3", "S$8,987,756.00")
-> typeof(money)
-[1] "character"
-> a <- gsub(",", "", money) # replace "," with ""
-> a <- gsub("S\\$", "", a) # replace "S$" with ""
-> money_numeric <- as.numeric(a)
-> money_numeric
-[1]    6273.15     215.30 8987756.00
-> typeof(money_numeric)
-[1] "double"
-\end{lstlisting}
-where notice that \verb|$| is a special character defined in R, and to escape from that \verb|\\$| is used. Notice that applying \verb|sub()| and \verb|gsub()| on a factor automatically converts it to character as a hidden step.
-
-\subsection{Handling Missing Data}
-
-There can be missing data in the data frame. There are a few ways to deal with missing data as follows.
-\begin{itemize}
-	\item If the missing data can be derived from other columns, derive the missing data and fill in the blanks.
-	\item If the missing data does not affect the rest analysis, leave it blank.
-	\item Delete the row.
-	\item Use interpolations to fill in the blank.
-	\item Use correlations and similarities to fill in the blank.
-	\item Argument a new column add a ``data-missing'' flag to that row.
-\end{itemize}
-
-If the missing data can be derived from other columns, derive the missing data and fill in the blanks.
-
-In R, \verb|NA| is a special variable used to indicate a missing value, and it is by itself of logical data type in addition to \verb|TURE| and \verb|FALSE|. Operations involving \verb|NA| often return \verb|NA|. Examples are given below.
-\begin{lstlisting}
-> typeof(NA)
-[1] "logical"
-> TRUE == 1 # TRUE is equivalent with 1
-[1] TRUE
-> TRUE == 2
-[1] FALSE
-> FALSE == 0 # FALSE is equivalent with 0
-[1] TRUE
-> FALSE == -1
-[1] FALSE
-> TRUE == FALSE
-[1] FALSE
-> NA == NA
-[1] NA
-> NA == TRUE
-[1] NA
-> NA == FALSE
-[1] NA
-\end{lstlisting}
-
-Use the following to filter for all rows with/without at least one \verb|NA|.
-\begin{lstlisting}
-<df>[complete.cases(<df>),] # all complete rows
-<df>[!complete.cases(<df>),] # all incomplete rows
-\end{lstlisting}
-where \verb|complete.cases(<df>)| returns a list made up of \verb|TRUE| and \verb|FALSE| indicating whether the associated row is complete or now.
-
-Sometimes a blank string \verb|""| that we would expected to be treated as \verb|NA| is not treated as so. To fix that, while importing the data frame (say, from a CSV file), use the following
-\begin{lstlisting}
-df <- read.csv("<csv-name>", na.string=c("<pattern>", ...))
-\end{lstlisting}
-where \verb|"<pattern>"| are the patterns in the original file to be replaced by \verb|NA|, for instance, \verb|""|, \verb|"ERROR"|, etc.
-
-\section{Connectivity with Data Sources} \label{ch:r1:sec:datasource}
-
-This section introduces the connectivity of R to the data sources, such as a file, or a database.
-
-
-
-
-
-
 
