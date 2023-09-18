@@ -1,23 +1,21 @@
 \chapter{R Advanced Skills} \label{ch:r2}
 
-This chapter introduces advanced skills of R language, such as variety of tools and skills in data preparation, advanced use of list, etc.
+This chapter introduces advanced skills of using R language, including data preparation techniques, the use of list, etc. 
 
 \section{Data Preparation} \label{ch:r2:sec:datapreparation}
 
-The data downloaded from sensors usually needs to go through pre-processing procedures such as filtering, normalization, etc., before it can be used by a controller or an AI engine.
+The data downloaded from sensors usually needs to go through pre-processing procedures such as filtering, normalization, etc., before it can be used by a controller, an AI engine, or for further statistics analysis. Data preparation including data tidy is one of the most tedious and time consuming parts when using R for data analysis. The section introduces useful techniques helpful with data preparation.
 
 \subsection{Data Type Conversion}
 
-Data preparation including data tidy is one of the most tedious and time consuming parts when using R for data analysis. The section introduces useful techniques helpful with data preparation.
-
-It is importnt that the data types of all the columns meet expectation, especially for numeric and factor (categorical) data types. Use \verb|str(<df>)| to check the column data types of a data frame, and convert data types as follows.
+It is important that the data types of all the columns meet expectation, especially for numeric and factor (categorical) data types. Use \verb|str(<df>)| to check the column data types of a data frame, and if necessary convert data types using the following commands.
 \begin{lstlisting}
 <df>$<column> <- factor(<df>$<column>) # character/numeric to factor
 <df>$<column> <- as.numeric(<df>$<column>) # character to numeric
 <df>$<column> <- as.numeric(as.character(<df>$<column>)) # factor to numeric
 \end{lstlisting}
 
-Notice that when converting factor type to other types, R may deal with the factor using the underlying ``factorization integers'' instead of the factor item names. An example is given below. It can be seen that the original \verb|5.1|, after being converted to factor then back to numeric, becomes \verb|9|. This is because the factorization integer for \verb|5.1| is \verb|9|, as given by printing \verb|my_factor| to the console.
+Notice that when converting factor type to other types, R may deal with the factor using the underlying ``factorization integers'' instead of the factor item names. An example is given below. It can be seen that the original \verb|5.1|, after being converted to factor then back to numeric, becomes \verb|9|. This is because the factorization integer for \verb|5.1| is \verb|9|, as shown by printing \verb|my_factor| to the console.
 \begin{lstlisting}
 > library(datasets)
 > iris$Sepal.Length
@@ -74,7 +72,7 @@ When converting factor to other types, special caution is required. To convert a
 \end{lstlisting}
 where \verb|my_factor| is generated previously.
 
-It is possible for some columns in the data frame to look like a factor and a character string, but indeed should be handled as numeric values. For example, \verb|S$6,125.50| in many occasions should be treated just as \verb|6125.0|. These factor or character values cannot be converted to numeric values directly.
+It is possible for some columns in the data frame to look like a factor and a character string, but indeed should be handled as numeric values. For example, \verb|S$6,125.50| in many occasions should be treated just as \verb|6125.5|. These factor or character values cannot be converted to numeric values directly.
 
 In such cases, consider using \verb|sub()| or \verb|gsub()| to replace patterns in a character, then convert it into numeric values. Notice that \verb|sub()| replaces only the first encounter of the pattern, while \verb|gsub()| replaces all the encounters. An example of using \verb|gsub()| is given below.
 \begin{lstlisting}
@@ -103,9 +101,21 @@ There can be missing data in the data frame. There are a few ways to deal with m
 	\item Argument a new column add a ``data-missing'' flag to that row.
 \end{itemize}
 
-If the missing data can be derived from other columns, derive the missing data and fill in the blanks.
+\vspace{0.1in}
+\noindent \textbf{Flag Missing Data using \texttt{NA}}
+\vspace{0.1in}
 
-In R, \verb|NA| is a special variable used to indicate a missing value, and it is by itself of logical data type in addition to \verb|TURE| and \verb|FALSE|. Operations involving \verb|NA| often return \verb|NA|. Examples are given below.
+In R, \verb|NA| is a special variable used to indicate a missing value. A general idea is to ``flag'' the missing data in the original data source, what format it may look like, using \verb|NA| during or after the data importing. After that, use a special program in R to filter \verb|NA| and deal with them separately. Sometimes a blank string \verb|""| that we would expected to be treated as \verb|NA| is not treated as so. To fix that, while importing the data frame (say, from a CSV file), use the following
+\begin{lstlisting}
+df <- read.csv("<csv-name>", na.string=c("<pattern>", ...))
+\end{lstlisting}
+where \verb|"<pattern>"| are the patterns in the original file to be replaced by \verb|NA|, for instance, \verb|""|, \verb|"ERROR"|, etc.
+
+\vspace{0.1in}
+\noindent \textbf{Locate and Filter \texttt{NA}}
+\vspace{0.1in}
+
+Notice that \verb|NA| is treated as a logical data type in addition to \verb|TURE| and \verb|FALSE| in a logical expression. These operations involving \verb|NA| often return \verb|NA|. Examples are given below.
 \begin{lstlisting}
 > typeof(NA)
 [1] "logical"
@@ -126,6 +136,68 @@ In R, \verb|NA| is a special variable used to indicate a missing value, and it i
 > NA == FALSE
 [1] NA
 \end{lstlisting}
+This applies to filtering. In filtering, when a variable of value \verb|NA| is asserted with a criterion, the return is most likely \verb|NA|. The filter often does not know how to deal with \verb|NA|, hence it would simply return the rows with \verb|NA| anyway. This can become inconvenient sometimes. An example is given below.
+\begin{lstlisting}
+# create data frame
+region <- rep(c("CBD","City","Suburbs"), each = 5)
+vec_size <-  list(vec_size_cbd = rnorm(5, 75, 10),
+                 vec_size_city = rnorm(5, 100, 15),
+                 vec_size_suburbs = rnorm(5, 150, 25))
+vec_price <- list(vec_price_cbd = vec_size$vec_size_cbd*rnorm(5, 12500, 2500),
+                 vec_price_city = vec_size$vec_size_city*rnorm(5, 7500, 1000),
+                 vec_price_suburbs = vec_size$vec_size_suburbs*rnorm(5, 5000, 1000))
+vec_size <- unlist(vec_size)
+vec_size[sample(1:15, 2)] = NA
+vec_price <- unlist(vec_price)
+vec_price[sample(1:15, 2)] = NA
+
+mortgage_price <- data.frame(Region = region,
+                             Size = vec_size,
+                             Price = vec_price)
+mortgage_price$Region <- as.factor(mortgage_price$Region)
+mortgage_price$Price.Unit <- mortgage_price$Price / mortgage_price$Size
+print(mortgage_price)
+# find price > 750000
+mortgage_price[mortgage_price$Price>750000,]
+\end{lstlisting}
+The return is as follows.
+\begin{lstlisting}
+                   Region      Size     Price Price.Unit
+vec_size_cbd1         CBD  73.47779  947130.9  12890.031
+vec_size_cbd2         CBD        NA  678842.3         NA
+vec_size_cbd3         CBD  85.06748 1261029.7  14823.875
+vec_size_cbd4         CBD  92.35454        NA         NA
+vec_size_cbd5         CBD  71.06649 1276168.6  17957.388
+vec_size_city1       City  68.59874  491912.0   7170.861
+vec_size_city2       City 118.39441  804794.5   6797.572
+vec_size_city3       City        NA  534591.5         NA
+vec_size_city4       City  95.57428  583044.7   6100.436
+vec_size_city5       City  74.45356  468788.0   6296.382
+vec_size_suburbs1 Suburbs 136.88432  939436.6   6862.997
+vec_size_suburbs2 Suburbs 136.57799  810070.0   5931.190
+vec_size_suburbs3 Suburbs 189.66586  561089.2   2958.303
+vec_size_suburbs4 Suburbs 195.97476  913572.2   4661.683
+vec_size_suburbs5 Suburbs 190.63082        NA         NA
+\end{lstlisting}
+\begin{lstlisting}
+                   Region      Size     Price Price.Unit
+vec_size_cbd1         CBD  73.47779  947130.9  12890.031
+vec_size_cbd3         CBD  85.06748 1261029.7  14823.875
+NA                   <NA>        NA        NA         NA
+vec_size_cbd5         CBD  71.06649 1276168.6  17957.388
+vec_size_city2       City 118.39441  804794.5   6797.572
+vec_size_suburbs1 Suburbs 136.88432  939436.6   6862.997
+vec_size_suburbs2 Suburbs 136.57799  810070.0   5931.190
+vec_size_suburbs4 Suburbs 195.97476  913572.2   4661.683
+NA.1                 <NA>        NA        NA         NA
+\end{lstlisting}
+In the above example, the intension of the program is to find all the houses with price larger than $750000$. The program is able to filter out those houses cheaper than the threshold. However, there are two rows of \verb|NA| returned, as explained earlier.
+
+
+
+
+
+
 
 Use the following to filter for all rows with/without at least one \verb|NA|.
 \begin{lstlisting}
@@ -134,11 +206,9 @@ Use the following to filter for all rows with/without at least one \verb|NA|.
 \end{lstlisting}
 where \verb|complete.cases(<df>)| returns a list made up of \verb|TRUE| and \verb|FALSE| indicating whether the associated row is complete or now.
 
-Sometimes a blank string \verb|""| that we would expected to be treated as \verb|NA| is not treated as so. To fix that, while importing the data frame (say, from a CSV file), use the following
-\begin{lstlisting}
-df <- read.csv("<csv-name>", na.string=c("<pattern>", ...))
-\end{lstlisting}
-where \verb|"<pattern>"| are the patterns in the original file to be replaced by \verb|NA|, for instance, \verb|""|, \verb|"ERROR"|, etc.
+
+
+
 
 \section{Connectivity with Data Sources} \label{ch:r2:sec:datasource}
 

@@ -1,10 +1,8 @@
 \chapter{Sampling} \label{ch:sampling}
 
-The data used for statistics analysis is usually a small portion collected from a huge group. The collected data is called a sample, and the huge group from which the sample is collected, the population. For example, the incomes of a random 1000 citizens as a sample may reflect the incomes of the entire city. Another example is that the working efficiency of a machine for the past months as a sample may reflect its working efficiency in its entire lifespan.
+There is an important underlying assumption in statistics: the features observed from samples can somehow reflect the features of the entire population, where the samples are (randomly) selected from the population. Intuitively, this assumption shall hold true in many occasions.
 
-An important underlying assumption behind statistics is that the insights observed from the sample also apply to the population. With that regard, questions naturally come up. Why does this assumption hold? When does this assumption hold? In what extend does this assumption hold? What can be done to make the sample more effective and efficient when reflecting the population?
-
-This chapter tries to answer the above questions. As it is introduced later, the inference from sample to population is not certain, as there is a chance (however small it might be) that the samples are completely biased from the population. Therefore, we must use probability in any statement drawn from statistics analysis.
+Statistics studies how to select samples, how to make the best use of the samples information, and how accurate and reliable the information derived from the samples is when applying them on the population. In this chapter, we start from study sampling.
 
 \section{Sampling Methods}
 
@@ -14,7 +12,7 @@ When selecting elements from the population, make sure that all elements have a 
   \item Sampling without replacement: a member can be chosen no more than once.
 \end{itemize}
 
-Sometimes it is interesting to compare the differences of the two methods, especially then the population is finite. An obvious difference is that by using sampling with replacement all the samples can be considered as ``independent event'', while by using sampling without replacement, previous samples may change the distributions in the remaining population, thus making the samples relevant. In this case, using sampling with replacement can theoretically be considered as sampling from an infinite population (by thinking that the population is duplicated as many times as necessary).
+Sometimes it is interesting to compare the differences of the two methods, especially when the population is finite. An obvious difference is that by using sampling with replacement all the samples can be considered as ``independent event'', while by using sampling without replacement, previous samples may change the distributions in the remaining population, thus making the samples relevant. In this case, using sampling with replacement can theoretically be considered as sampling from an infinite population (by thinking that the population is duplicated as many times as necessary).
 
 In practice, the population is usually so large, that sampling from a finite population can be considered as sampling from an infinite population, and the two methods would make no differences as far as it is concerned.
 
