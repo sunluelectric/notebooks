@@ -1,0 +1,194 @@
+\chapter{Matrix Algebra} \label{ch:matrixalgebra}
+
+This appendix chapter reviews matrix algebra, one of the most fundamental and widely used mathematical tools in this notebook. Notice that this chapter only serves as a brief summary, and cannot replace the linear algebra textbook or notebook.
+
+\section{Basic Operators}
+
+Let $A$, $B$ be two square matrices of the same size. The following holds true
+\begin{eqnarray}
+|A| &=& |A^T| \nonumber \\
+|AB| &=& |A||B| \nonumber
+\end{eqnarray}
+where $|\cdot|$ calculates the determinant of a square matrix. Furthermore, if both $A$, $B$ are nonsingular,
+\begin{eqnarray}
+	(AB)^{-1} = B^{-1}A^{-1} \nonumber
+\end{eqnarray}
+
+Let $A\in\mathbb{R}^{p\times n}$, $B\in\mathbb{R}^{n\times q}$. The following holds true
+\begin{eqnarray}
+(AB)^T &=& B^TA^T \nonumber
+\end{eqnarray}
+Furthermore, if $p=q$,
+\begin{eqnarray}
+	\textup{trace}(AB) &=& \textup{trace}(BA) \nonumber
+\end{eqnarray}
+
+The \textit{Kronecker product} of two matrix $A\in\mathbb{R}^{m\times n}$, $B\in\mathbb{R}^{p\times q}$ is defined as follows.
+\begin{eqnarray}
+	A\otimes B &=& [a_{ij}B] \in \mathbb{R}^{mp\times nq} \nonumber
+\end{eqnarray}
+where $a_{ij}$ is an element in $A$. Notice that some literature defines it as $[Ab_{ij}]$ instead, which is different from the earlier definition.
+
+The stacking operator is defined as follows. Let $A\in\mathbb{R}^{m\times n}$,
+\begin{eqnarray}
+	s(A) = \left[\begin{array}{c}
+		a_{1,1} \\
+		\vdots \\
+		a_{m, 1} \\
+		\vdots \\
+		a_{1, n} \\
+		\vdots \\
+		a_{m, n}
+	\end{array}\right] \nonumber
+\end{eqnarray}
+i.e., it stacks the columns of $A$ into a column vector.
+
+The following holds true
+\begin{eqnarray}
+	s(ABC) &=& s(C^T\otimes A)s(B) \nonumber
+\end{eqnarray}
+Let $A\in\mathbb{R}^{m\times n}$, $B\in\mathbb{R}^{p\times q}$,
+\begin{eqnarray}
+	|A\otimes B| &=& |A|^p|B|^m \nonumber
+\end{eqnarray}
+
+If $\lambda_i$ is an eigenvalue of $A$ with eigenvector $v_i$, then $\lambda_i^{-1}$ is an eigenvalue of $A^{-1}$ with the same eigenvector. This is because
+\begin{eqnarray}
+	Av_i &=& \lambda_iv_i \nonumber
+\end{eqnarray}
+implies that
+\begin{eqnarray}
+	\lambda^{-1}v_i &=& A^{-1}v_i \nonumber
+\end{eqnarray}
+For another matrix $B$ with eigenvalue $\mu_i$ with respect to eigenvector $w_i$, $\lambda_i\mu_i$ is an eigenvalue of $A\otimes B$ w.r.t eigenvector $v_i\otimes w_i$.
+
+The well-known matrix inversion lemma is
+\begin{eqnarray}
+  (A + UCV)^{-1} &=& A^{-1} - A^{-1}U\left(C^{-1}+VA^{-1}U\right)^{-1}VA^{-1} \nonumber
+\end{eqnarray}
+whose proof can be obtained using blockwise matrix inversion, which is neglected here.
+
+\section{Partitioned Matrix}
+
+The following matrix $A$ is \textit{block diagonal} if
+\begin{eqnarray}
+	A &=& \left[\begin{array}{ccc}
+		\ddots &  & 0 \\
+		 & A_{ii} &  \\
+		0 &  & \ddots
+	\end{array}\right] \nonumber
+\end{eqnarray}
+In this case, $A$ can be denoted by $A=\textup{diag}(\ldots, A_{ii}, \ldots)$. Furthermore, if $A_{ii}$ is square matrix, $A$ becomes square matrix, and
+\begin{eqnarray}
+	|A| &=& \Pi_{i}|A_{ii}| \nonumber
+\end{eqnarray}
+If $A$ is nonsingular,
+\begin{eqnarray}
+	A^{-1} &=& \textup{diag}(\ldots, A_{ii}^{-1}, \ldots) \nonumber
+\end{eqnarray}
+
+\section{Quadratic Forms}
+
+Let $x\in\mathbb{R}^n$ a (column) vector. The square of the Euclidean norm is
+\begin{eqnarray}
+	||x||^2 &=& x^Tx \nonumber
+\end{eqnarray}
+Let $S$ be a nonsingular transformation, and $P=S^TS$ a symmetric matrix,
+\begin{eqnarray}
+	||x||_P^2 &=& ||Sx||^2 \nonumber \\
+	&=& x^TS^TSx \nonumber \\
+	&=& xPx^T \nonumber
+\end{eqnarray}
+
+The quadratic form of $x$ looks like the following
+\begin{eqnarray}
+	x^TQx \label{eq:quadraticform}
+\end{eqnarray}
+where $Q$ is real. Notice that $Q$ can be divided into symmetric and asymmetric parts
+\begin{eqnarray}
+	Q &=& Q_s + Q_a \nonumber
+\end{eqnarray}
+where
+\begin{eqnarray}
+	Q_s &=& (Q + Q^T) / 2 \nonumber \\
+	Q_a &=& (Q - Q^T) / 2 \label{eq:asymmetricq}
+\end{eqnarray}
+and \eqref{eq:quadraticform} becomes
+\begin{eqnarray}
+	x^TQx &=& x^T(Q_s + Q_a)x \nonumber \\
+	&=& x^TQ_sx \nonumber
+\end{eqnarray}
+where notice that $x^TQ_ax = 0$. This is because $x^TQ_ax=x^TQ_a^Tx=-x^TQ_ax$ since $x^TQ_ax$ is a scalar and from \eqref{eq:asymmetricq} $Q_a^T=-Q_a$.
+
+In \eqref{eq:quadraticform}, we say $Q>0$ is positive definite if for all nonzero $x$, $x^TQx>0$. This is equivalent of saying that for all eigenvalues $\lambda_i$ of $Q$, $\lambda_i>0$. Semi-positive definite, semi-negative definite, and negative definite can be defined similarly.
+
+\section{Matrix Calculus}
+
+Matrix calculus defines how the differential of a vector/matrix w.r.t another vector/matrix is defined.
+
+Consider $s$ being a scalar and $x\in\mathbb{R}^n$ a factor. Let $x$ be a vector function of $s$. The differential of $x$ w.r.t. $s$ is defined as follows.
+\begin{eqnarray}
+  \dfrac{dx}{ds} &=& \left[\begin{array}{c}
+                             \dfrac{dx_1}{ds} \\
+                             \vdots \\
+                             \dfrac{dx_n}{ds}
+                           \end{array}\right] \nonumber
+\end{eqnarray}
+If $s$ is a function of $x$, the gradient of $s$ w.r.t. $x$ has two forms, the gradient form where the result is a column vector, and the Jacobian form where the result is a row vector. They are transpose of each other. For example, the gradient form is
+\begin{eqnarray}
+   \dfrac{\partial s}{\partial x} = \nabla s
+  = \left[\begin{array}{c}
+           \dfrac{\partial s}{\partial x_1} \\
+           \vdots \\
+           \dfrac{\partial s}{\partial x_n}
+           \end{array}\right] \label{eq:vectordiff}
+\end{eqnarray}
+and
+\begin{eqnarray}
+ds &=& \left(\nabla s\right)^Tdx \nonumber
+\end{eqnarray}
+where $dx = [dx_1, \ldots, dx_n]^T$. The Jacobian form denoted by $J(s)$ is defined as the transpose of \eqref{eq:vectordiff}. Furthermore, if $s$ is a function of multiple vectors, for example both $x$ and $y$,
+\begin{eqnarray}
+ds &=& \left(\dfrac{\partial s}{\partial x}\right)^Tdx + \left(\dfrac{\partial s}{\partial y}\right)^Tdy \nonumber
+\end{eqnarray}
+The \textit{Hessian} of a scalar $s$ w.r.t. a vector $x$ is the second derivative
+\begin{eqnarray}
+  \dfrac{\partial^2s}{\partial x^2} &=& \left[\dfrac{\partial^2s}{\partial x_i \partial x_j}\right] \nonumber
+\end{eqnarray}
+
+Let $f\in\mathbb{R}^{m}$ be a vector function of vector $x\in\mathbb{R}^{n}$. The jacobian of $f$ w.r.t. $x$ is a $m\times n$ matrix given by
+\begin{eqnarray}
+  \dfrac{\partial f}{\partial x} &=& \left[\begin{array}{ccc}
+                                             \dfrac{\partial f_1}{\partial x_1} & \ldots & \dfrac{\partial f_1}{\partial x_n} \\
+                                             \vdots & \ddots & \vdots \\
+                                             \dfrac{\partial f_m}{\partial x_1} & \ldots & \dfrac{\partial f_m}{\partial x_n}
+                                           \end{array}\right] \nonumber
+\end{eqnarray}
+
+Let $A$ be a non-singular square matrix of function of time $t$.
+\begin{eqnarray}
+  \dfrac{d}{dt}\left(A^{-1}\right) &=& -A^{-1}\dfrac{d}{dt}\left(A\right)A^{-1} \nonumber
+\end{eqnarray}
+Notice that in references, the differential of a variable $x$ or a matrix $A$ w.r.t. time can also be denoted as $\dot{x}$ and $\dot{A}$, respectively.
+
+Let $y$, $A$ be constant vector and matrix, respectively, with dimensions so that the following expressions make sense. Then we have
+\begin{eqnarray}
+  && \dfrac{\partial}{\partial x}\left(y^Tx\right) = \dfrac{\partial}{\partial x}\left(x^Ty\right) = y \nonumber \\
+  && \dfrac{\partial}{\partial x}\left(Ax\right) = A \nonumber \\
+  && \dfrac{\partial}{\partial x}\left(y^TAx\right) = \dfrac{\partial}{\partial x}\left(x^TA^Ty\right) = A^Ty \nonumber \\
+  && \dfrac{\partial}{\partial x}\left(y^Tf(x)\right) = \dfrac{\partial}{\partial x}\left(f(x)^Ty\right) = \left(\dfrac{\partial f}{\partial x}\right)^Ty \nonumber \\
+  && \dfrac{\partial}{\partial x}\left(x^TAx\right) = Ax + A^T x \nonumber \\
+  && \dfrac{\partial^2}{\partial x^2}\left(x^TAx\right) = A + A^T \nonumber
+\end{eqnarray}
+In a special case where $Q$ is symmetric,
+\begin{eqnarray}
+  \dfrac{\partial}{\partial x}\left(x^TQx\right) &=& 2Qx \nonumber \\
+  \dfrac{\partial^2}{\partial x^2}\left(x^TQx\right) &=& 2Q \nonumber \\
+  \dfrac{\partial}{\partial x}\left((x-y)^TQ(x-y)\right) &=& 2Q(x-y) \nonumber \\
+  \dfrac{\partial^2}{\partial x^2}\left((x-y)^TQ(x-y)\right) &=& 2Q \nonumber
+\end{eqnarray}
+
+Furthermore, if $f$, $g$ are two vector functions of vector $x$,
+\begin{eqnarray}
+  \dfrac{\partial}{\partial x}\left(f^Tg\right) &=& \left(\dfrac{\partial}{\partial x}f\right)^Tg + \left(\dfrac{\partial}{\partial x}g\right)^Tf \nonumber
+\end{eqnarray}
