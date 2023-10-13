@@ -132,11 +132,79 @@ Other system runs multiple DBMS kernels on concurrently on multiple servers, eac
 
 Some enterprise outsources the database management and maintenance to IT companies such as Microsoft, Oracle or other database service providers. Security challenges introduced by cloud/vendor-based database differ largely from on-premises databases mainly because the DBMS itself is not reliable.
 
-An intuitive solution is of course to encrypt the data to be saved in the database, and this is indeed one of the popular ways implemented in outsourced database security. A downside of this is that when we want to retrieve data from the database using an SQL query, the DBMS may have a difficult time interpreting and filtering the data. ``Searchable encryption'' is required in this case. It allows filtering of data without decrypting it first. 
+\vspace{0.1in}
+\noindent \textbf{User-Encrypted Data: Prevent Data Leakage}
+\vspace{0.1in}
+
+There is a risk that the third-party database service provider may leak the data intentionally or unintentionally.
+
+An intuitive solution of this problem is to encrypt the data in the user-end before saving into the database. A downside of this is that when we want to retrieve data from the database using an SQL query, the DBMS may have a difficult time interpreting and filtering the data. ``Searchable encryption'' is required in this case. It allows filtering of data without decrypting it first.
 
 The result from the outsourced database needs to be audited, mainly to check the authenticity, completeness and freshness of the returned information. Part of the reason is that searchable encryption may fail to return the correct and complete result. More importantly, the underlying assumption is that we cannot entirely trust the DBMS in the first place.
 
+\vspace{0.1in}
+\noindent \textbf{Watermark: Prevent Data Modification}
+\vspace{0.1in}
+
 Watermark can be used to identify the owner and authenticity of the data. It does not affect the normal usage of data, and it is hardly detectable by a third-party, but can be checked and audited conveniently by the party who assigned the watermark. Watermark shall be difficult to remove. The water mark is often added to the least significant bits of a numerical data.
+
+Problems of watermark include
+\begin{itemize}
+	\item It allows multiple entities to assign watermark to the same database. It is difficult to tell who the original owner of the database is.
+	\item If a user wants to remove the watermark, he can simply remove all the LSBs of the data.
+\end{itemize}
+
+\subsection{Big Data Security}
+
+As Industry 4.0 and IoT become more and more popular, we are collecting more data than ever in the history. Many activities such as building data driven models rely heavily on the big data. The major cloud service providers offer enterprise-tier databases optimized for big data management, both SQL and NoSQL such as Dynamo DB by Amazon and Cosmos DB by Azure, Microsoft.
+
+There are some unique challenges when comes to the security of big data. This is not surprising as big data is generated, distributed and utilized very differently from the conventional data.
+\begin{itemize}
+	\item Access control. 
+	\begin{itemize}
+		\item Data generated in big data comes from variety of sources by different types of users. It is difficult to track all the sources and all the users to determine the data accessibility and security tiers using traditional method.
+		\item AI model is used to assist categorizing sources and users, and assigning security tiers.
+	\end{itemize}
+	\item Control and maintenance of data when it is distributed.
+	\begin{itemize}
+		\item It is difficult to protect the privacy of the owner of the user when his data is published into a big data pool. It is possible to use AI model to find the owner of anonymously published data.
+		\item The key is to deny suspicious query and prevent a single entity from querying aggregated information.
+	\end{itemize}
+\end{itemize}
+
+\section{Virtualization Security}
+
+Virtualization has been introduced in Chapter \ref{ch:vac}. While having many beneficial features, the use of virtualization brings new challenges to system security.
+
+\subsection{Security Concerns}
+
+Some major security concerns of VMs are listed below.
+\begin{itemize}
+	\item Isolation between VMs.
+	\item Migration of VMs.
+	\item VM monitoring and supervisory.
+\end{itemize}
+
+VMs are naturally isolated due to the virtualization mechanism. Ideally, though running on the same physical server, a VM cannot bypass the monitored I/O to talk to another VM. When two VMs need to talk, VMM builds special communication channels for the VMs, usually a message queue or a piece of shared memory space. However, this does not guarantee the absolute isolation of information between two VMs. They may fail to wipe out all the data when handling over the hardware resources to another VM. There are potential covert channels where two VMs may communicate with each other, for example via the utilization rate of a hardware resource. 
+
+Migration happens frequently in VM applications due to its frequent scaling up and down. When migrating VMs from one server to the other, it is possible that the undercover malware is also migrated. In such cases, the malware can spread across servers and it will be difficult to trace back to its original source. 
+
+Conventionally, the MAC address of the hardware can be used as the unique identity of a machine. This does not apply to VMs. This makes some of the security measures difficult to implement.
+
+When running a VM, the user who deploys the VM usually have administrative access to the VM guest OS. As introduced earlier in Chapter \ref{ch:vac}, VMM may allow VM guest OS to run some instructions in privileged mode. If there is a flaw in the VMM, the software running in the VM may take advantage of that and use it to attack other VMs hosted on the same server.
+
+\subsection{VMM Security}
+
+The security of VMM is key to the security of VMs as VMM has full control of the hardware and it manages and interacts with all the VMs. If VMM is compromised, all the VMs running on the system is exposed to high risk. In this sense, VMM is the single-point-of-failure to the entire system, hence needs to be monitored at all time.
+
+A secure VMM architecture is helpful. Such architecture can be designed on top of an existing VMM. In practice, the secure VMM architecture may separate critical (``over-powered'') functions of VMM into different domains, and provide additional interface for security monitoring of the VMM. 
+
+
+
+
+
+
+
 
 
 

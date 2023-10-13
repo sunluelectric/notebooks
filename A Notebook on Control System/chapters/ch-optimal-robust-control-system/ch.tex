@@ -245,8 +245,6 @@ The objective of the optimization is to find such $u(k)$ that minimizes the foll
 \end{eqnarray}
 where $N$ is the time to reach a particular goal, $x(N)$ the final state vector at $k=N$, and $L^k$ the cost relevant to the magnitude of $x(k)$ and $u(k)$ at time instant $k$. In some cases, $N$ is a parameter to optimize, for example in a ``do-it-fast'' type of problem. In other cases, $N$ is a fixed value, for example in a ``do-the-best-within-given-time'' type of problem.
 
-\subsection{Commonly Seen Cost Functions}
-
 Some commonly seen cost functions are given below.
 
 \vspace{0.1in}
@@ -279,7 +277,7 @@ Use $u(k)$ to regulate the states to zero (usually from a non-zero initial state
 \begin{eqnarray}
   J &=& \dfrac{1}{2}x(N)^TSx(N) + \dfrac{1}{2}\sum_{k=0}^{N-1}\left(x(k)^TQx(k) + u(k)^TRu(k)\right) \nonumber
 \end{eqnarray}
-where $Q$, $S$ and $R$ are weight matrices that trades of the minimization of regulation error (intermediate state error), final state error or control signal energy. 
+where $Q$, $S$ and $R$ are weight matrices that trades of the minimization of regulation error (intermediate state error), final state error or control signal energy.
 
 \subsection{General Solution} \label{subsec:optimalrobustcs:optimalgeneralsolution}
 
@@ -319,9 +317,7 @@ where notice that the process matrix $A(k)$, input matrix $B(k)$ can be time-var
 \begin{eqnarray}
 	J &=& \dfrac{1}{2}x(N)^TS_Nx(N) + \dfrac{1}{2}\sum_{k=0}^{N-1}\left(x(k)^TQ_kx(k) + u(k)^TR_ku(k)\right) \nonumber
 \end{eqnarray}
-where $|S_N|\geq 0$, $|Q_k| \geq 0$ and $|R_k| >0$ are constant symmetric matrices.
-
-In the above LQR problem, the target of the control is to regulate the state vector to zero while given an non-zero initial state, and meantime tries to keep the control signal energy small.
+where $|S_N|\geq 0$, $|Q_k| \geq 0$ and $|R_k| >0$ are known symmetric matrices. In the LQR problem, the target of the control is to regulate the state vector to zero while given an non-zero initial state, and meantime tries to keep the control signal energy small.
 
 The solution of the problem can be found by constructing the Hamiltonian function as introduced earlier in Section \ref{subsec:optimalrobustcs:optimalgeneralsolution}. Result is given below.
 \begin{eqnarray}
@@ -331,7 +327,7 @@ The solution of the problem can be found by constructing the Hamiltonian functio
 \end{eqnarray}
 where $k=0,\ldots, N-1$. Matrix $K(k)$ in \eqref{eq:optimalrobustcs:lqrkalman} is known as the Kalman gain (it might be more intuitive to simply call it the ``control gain'') and it can be calculated offline.
 
-\subsection{Suboptimal Discrete LQR}
+\subsection{Suboptimal Discrete LQR} \label{subsec:suboptimaldiscretelqr}
 
 Notice that $K(k)$ is time varying in general. Only if $A$, $B$, $Q$ and $R$ are constant and at the same time $N\rightarrow\infty$, $S_k$ becomes a constant and so does $K(k)$. In such case, the cost function becomes
 \begin{eqnarray}
@@ -354,7 +350,7 @@ It is important to verify whether the system remains asymptotically stable when 
 \begin{itemize}
 	\item Equation \eqref{eq:optimalrobustcs:sstatics} has unique positive definite solution, and \eqref{eq:optimalrobustcs:srecursive} converges to that solution.
 	\item The closed-loop plant $(A-BK_\infty)$ is asymptotically stable.
-\end{itemize} 
+\end{itemize}
 The proof is ignored.
 
 This implies that so long as the original system is stabilizable, the suboptimal control $u=-K_\infty x(k)$ guarantees the asymptotic stability of the system.
@@ -373,7 +369,7 @@ where $x(t)\in \mathbb{R}^n$, $u(t)\in\mathbb{R}^m$. Let the cost function be
 \begin{eqnarray}
 	J &=& \phi\left(x(T), T\right) + \int_{0}^{T} L\left(x(t), u(t), t\right)dt \label{eq:optimalrobustcs:jcontinuouslqr}
 \end{eqnarray}
-where $[0, T]$ is the time interval of interest. The final time $T$ may vary when different controls are applied. In addition, define $\psi\left(x(T), T\right)$. The objective of the optimization is to find optimal $u(t)$ on the time interval $[0, T]$, so that $J$ in \eqref{eq:optimalrobustcs:jcontinuouslqr} is minimized, and $\psi\left(x(T), T\right) = 0$. 
+where $[0, T]$ is the time interval of interest. The final time $T$ may vary when different controls are applied. In addition, define $\psi\left(x(T), T\right)$. The objective of the optimization is to find optimal $u(t)$ on the time interval $[0, T]$, so that $J$ in \eqref{eq:optimalrobustcs:jcontinuouslqr} is minimized, and $\psi\left(x(T), T\right) = 0$.
 
 Notice that $\psi$ is different from $\phi$ in \eqref{eq:optimalrobustcs:jcontinuouslqr}. Both of them are about the final state, but $\phi$ is made small while $\psi$ needs to be made exactly zero. This restriction introduced by $psi$ is useful. For example, in a position regulation problem, $\psi$ can be defined as
 \begin{eqnarray}
@@ -409,13 +405,50 @@ It is often not easy to solve analytical solution of $u(t)$ from the above equat
 
 \subsection{Continuous LQR}
 
-LQR in discrete time domain has been introduced earlier. Its application in continuous time domain is introduced in this section as follows.
-
-Let the system dynamics be described by
+LQR in discrete time domain has been introduced earlier. Its application in continuous time domain is introduced in this section as follows. Let the system dynamics be described by
 \begin{eqnarray}
 	\dot{x}(t) = A(t)x(t) + B(t)u(t) \nonumber
 \end{eqnarray}
-where $x(t)\in\mathbb{R}^n$ and $u(t)\in\mathbb{R}^m$. The state vector $x(t)$ is assumed known exactly.
+where $x(t)\in\mathbb{R}^n$ and $u(t)\in\mathbb{R}^m$. The state vector $x(t)$ is assumed known exactly. The cost function is given by
+\begin{eqnarray}
+  J &=& \dfrac{1}{2}x(T)^TS_Tx(T) + \dfrac{1}{2}\int_{0}^{T}\left(x(t)^TQ_tx(t) + u(t)^TR_tu(t)\right)dt \nonumber
+\end{eqnarray}
+where $|S_T|\geq 0$, $|Q_t| \geq 0$ and $|R_t| >0$ are known symmetric matrices.
+
+The solution can be obtained by formulating the Hamiltonian. Result is given below.
+\begin{eqnarray}
+  -\dot{S}(t) &=& A(t)^TS(t) + S(t)A(t) - S(t)B(t)R_t^{-1}B(t)^TS(t) + Q_t \label{eq:optimalrobustcs:csrecursive} \\
+  K(t) &=& R_t^{-1}B(t)^TS(t) \label{eq:optimalrobustcs:lqrckalman} \\
+  u(t) &=& -K(t)x(t) \nonumber 
+\end{eqnarray}
+
+\subsection{Suboptimal Continuous LQR}
+
+Just like Section \ref{subsec:suboptimaldiscretelqr}, the continuous LQR also has suboptimal solution. The motivation remains the same: to tackle the problem where Kalman gain $K(t)$ in \eqref{eq:optimalrobustcs:lqrckalman} is time-varying and can be difficult or tedious to calculate, and we want an alternative solution with constant Kalman gain.
+
+Assume time-invariant $A$, $B$ in the process model and constant $Q$, $R$. Let time-invariant $S$ be the solution of the following ARE
+\begin{eqnarray}
+	0 &=& A^TS + SA - SBR^{-1}B^TS + Q \label{eq:optimalrobustcs:sare}
+\end{eqnarray}
+which is obtained from \eqref{eq:optimalrobustcs:csrecursive} by letting $\dot{S}=0$ assuming convergence. Notice that the solution to \eqref{eq:optimalrobustcs:sare} is not necessarily unique. One of the solutions of $S$ can be obtained by calculating \eqref{eq:optimalrobustcs:csrecursive} until it converges to $S(\infty)$, and $S=S(\infty)$ is obviously a solution to \eqref{eq:optimalrobustcs:sare}. This would be the solution that we would use through out the remaining of the section. Alternatively, $S$ can be calculated using the analytical solution to the ARE which is not covered in this notebook.
+
+With the obtained constant $S=S(\infty)$, Kalman gain in \eqref{eq:optimalrobustcs:lqrckalman} becomes
+\begin{eqnarray}
+	K &=& R^{-1}B^TS(\infty) \nonumber
+\end{eqnarray}
+which is time-invariant. This produces a suboptimal solution but with a constant Kalman gain that is easier for implementation.
+
+\section{LQR Properties}
+
+The problem formulation and the solution of LQR have been introduced in earlier sections. The properties, extensions, practical implementations, etc., have not yet been covered. In this section and the few sections following, these more advanced topics are discussed.
+
+In this section, we will start with the discussion of LQR properties, such as its robustness.
+
+\section{LQR for Tracking Problem}
+
+LQR by itself is a regulator that regulates the state vector $x$ to a constant value $r$, and at the same time balancing the control signal energy. LQR can also be used in tracking, in which case the reference signal is no longer a constant, but time-variant. Tracking is an important extension of LQR.
+
+ 
 
 
 
@@ -427,7 +460,42 @@ where $x(t)\in\mathbb{R}^n$ and $u(t)\in\mathbb{R}^m$. The state vector $x(t)$ i
 
 
 
-\section{LQR for Tracking}
+
+
+
+
+\section{Other LQR Extensions}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 \section{LQG}
 

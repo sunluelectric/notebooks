@@ -1,4 +1,4 @@
-\chapter{Virtualization and Containerization}
+\chapter{Virtualization and Containerization} \label{ch:vac}
 
 Virtualization and containerization are widely appreciated technologies for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization efficiency, while ensuring isolation between applications.
 
@@ -47,6 +47,8 @@ Just like a receipt guaranteeing the consistency of dishes, in containerization,
 
 Virtualization and containerization have been studied for decades. This section gives a brief introduction to both technologies.
 
+\subsection{Virtualization}
+
 In a conventional data center, multiple physical servers are deployed, and each server has a single associated application. Servers may share the same LAN and network-attached storage (NAS) for data exchanging. A big issue of this implementation is the utilization efficiency of the servers and the unevenly distributed loads: some of the servers may not be utilized efficiently, while others may be overwhelmed. To deploy a new application, a new server must be purchased, which can take months of time. With more and more servers, the management and IT cost may grow exponentially.
 
 To solve this problem, we need a systematical and automated way of integrating the resources in a data center and re-distributed them to the applications in an efficient manner. Virtualization is one of the most important technology used in this framework. Virtualization is essentially about running a system on a ``virtualized machine'', where by saying ``virtualized'' we mean that the machine is not a physical machine, but a running environment (known as the virtual execution environment) that is emulated and managed by a special software running on the actual machine (known as the ``hypervisor''). The setup should be transparent to the applications, in the sense that the applications would think that they are running on a physical machine, not a VM.
@@ -57,6 +59,38 @@ Depending on the items to be virtualized, virtualization can be divided into the
   \item Virtualization of operating system. This results in the well-known VM and virtual desktop.
   \item Virtualization of software, mainly programming language and applications. An example is Java virtual machine (JVM) that allows Java to generate consistent result while running on different machines.
 \end{itemize}
+
+There are different virtualization architectures on the market. Widely seen components in a virtualization architecture include
+\begin{itemize}
+	\item Virtual Machine Monitor (VMM), also known as the Hypervisor. This is a software that runs on the host OS, managing all the guest OS, providing them interface to the host OS and the hardware.
+	\item Host OS. The host that runs VMM.
+	\item Virtual Machine (VM), a virtual system that runs in an virtualized isolated environment.
+\end{itemize}
+VMM, host OS and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}. 
+
+Different virtualization techniques are used in different types of VMMs. They can be widely divided into 3 categories.
+\begin{itemize}
+	\item Full virtualization. The VMM virtualizes everything including the hardware. The guest OS can run on the VM without modification or adaptation, just like running on any other machine.
+	\item Paravirtualization. The VMM does not virtualize hardware. The guest OS is modified to certain extent so that it can run on the virtual machine.
+	\item Hardware-assisted virtualization. The physical processors provide some specific services to handle some of the functionality of VMM. Some functions requested by the guest OS, after passing to VMM, is directly run on the hardware, thus enhancing system performance.
+\end{itemize}
+
+VMM is able to virtualize hardware resources such as CPU, memory and I/O. For virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU. 
+
+Notice that unlike the host OS and the hypervisor that can run in privileged mode, guest OS does not run in privileged mode. If the request of the guest OS contain privileged instructions, the CPU will deny the instructions. When that happens, an exception will be raised to the VMM which will take care of the privileged instructions sequentially. Since hypervisor runs in privileged mode, it can execute those instructions.
+
+For virtualization of memory, VMM uses shadow page table to assign memory pages to different VMs. The maximum memory allocated to a VM can change dynamically.
+
+For I/O virtualization, the development trend is that I/O operations will be less and less rely on software and OS, and more and more on hardware. The VMM works directly map the I/O hardware interface to the VMs.
+
+\begin{shortbox}
+	\Boxhead{Hypervisor VS Host OS, Who is the Boss?}
+	Both the hypervisor and the host OS can run in privilege mode (also known as ``Ring 0'' in x86 architecture). However, notice that at one time there can be only one boss, i.e., there can be only one entity that runs in Ring 0 at the same time.
+	
+	Depending on the type of the hypervisor configuration, this entity can be either the hypervisor or the host OS. In a type 1 hypervisor configuration, the hypervisor itself duns in Ring 0 and manages all hardware resources directly. In a type 2 hypervisor configuration, the host OS runs in Ring 0, and the hypervisor runs in a lower privileged ring.
+\end{shortbox}
+
+\subsection{Containerization}
 
 Containerization is an alternative virtualization approach to VM that can also virtualize an independent workspace for an application. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. By saying ``container'', we are referring to one or multiple of the following 3 components: container runtime, container engine, and container orchestration.
 
