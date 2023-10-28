@@ -6,15 +6,15 @@ This chapter introduces the basic concepts, axioms, theorems, and fundamental ca
 
 People use \textit{random} and \textit{stochastic} to describe a situation or a model whose outcome is not precisely predictable.
 
-By saying \textit{randomness}, we often refer to the case where the value of a variable (as in ``random variable'') is not entirely predictable. The value is not known precisely or its outcome not predictable until it is measured. The frequency of its outcome may follow some pattern which can be described as the statistic property of the variable. An example of a random variable would be the result of tossing a coin which can be either head (described by $X=1$) and tail (described by $X=0$).
+By saying \textit{randomness}, we often refer to the case where the value of a variable (as in ``random variable'') is not entirely predictable. The value is not known precisely until it is measured. The chance of it taking particular values may follow some pattern which can be described as the statistic property of the variable. An example of a random variable would be the result of tossing a coin. The pattern of the result is clear. It can be either head ($X=1$) or tail ($X=0$), each with a $50\%$ chance. It remains unknown until the coin is tossed.
 
-By saying \textit{stochasticity}, we often refer to the case where the outcome of a process (as in ``stochastic process'') cannot be modeled or predicted precisely. This might be a result of incomplete modeling, or maybe there are some random variable generation built in to the process. As a result, the process becomes non-deterministic, i.e., using the model configuration and the inputs to the model alone cannot give its precise output. A stochastic process can still be described by a parametric model, just with some unknowns or disturbance coming into the model.
+By saying \textit{stochasticity}, we often refer to the case where the outcome of a process (as in ``stochastic process'') cannot be modeled or predicted precisely. This might be a result of incomplete modeling or random disturbance to the system. As a result, the process becomes non-deterministic, i.e., the output of the system cannot be uniquely determined by the model and the input. A stochastic process can still be described by a parametric model, but with some unknowns (usually described by random variables) in the equations.
 
-In this chapter, we will focus mostly on randomness. There are researches that try to handle stochastic process such as optimal stochastic control and robust control, etc.
+This notebook mainly studies random variables and its impact on data science. Stochastic process and control of stochastic systems are introduced elsewhere in control system related notebooks.
 
 \subsection{Random Experiments}
 
-``Experiment'' is one of the most important concepts in science and engineering. In many cases, experiments are used to verify a theory. In these cases, experiments are carefully designed so that its outcome is deterministic and predictable by the theory. By observing the results of the experiments matching the theory repeatedly, we build confidence in the theory.
+``Experiment'' is one of the most important concepts in science and engineering. Very often, experiments are used to verify a theory. In these cases, experiments are carefully designed so that its outcome is deterministic and predictable as long as the theory is correct. By observing the results of the experiments matching the prediction of the theory, we build confidence in the theory.
 
 However, there are other experiments where we do not have full control over the result due to the lack of information or incomplete modeling. Such experiments include tossing a coin, predicting the GDP of a country next year, etc. These experiments are known as \textit{random experiments}.
 
@@ -22,15 +22,22 @@ However, there are other experiments where we do not have full control over the 
 
 A set $S$ that consists of all possible outcomes of a random experiment is called a \textit{sample space}. 
 
-If a sample space has a finite number of elements, it is called a \textit{finite sample space}. If it has infinite elements as many as there are natural numbers (i.e., its elements can be mapped to $1, 2, 3, \ldots$), it is called a \textit{countably infinite sample space}. If it has infinite elements as many as there are in some intervals on an axis, it is called a \textit{noncountably infinite sample space}. 
+If a sample space has a finite number of elements, it is called a \textit{finite sample space}. Otherwise, it is called a \textit{infinite sample space}. If the elements in an infinite sample space can be mapped to natural numbers, the sample space is also called a \textit{countably infinite sample space}. Otherwise, the sample space is called a \textit{noncountably infinite sample space}. Examples are given below.
+\begin{itemize}
+	\item Finite sample space. Randomly pick 5 balls out of a bag that contains 50 red balls and 50 green balls. The number of red balls in the picked 5 balls forms a finite sample space.
+	\item Countably infinite sample space. The number of products a new machine can manufacture before it is broken forms a countably infinite sample space.
+	\item Noncountably infinite sample space. The precise timestamp someone gets home after work forms a noncountably infinite sample space. 
+\end{itemize}
 
 \begin{shortbox}
 \Boxhead{Infinity VS Infinity}
 Though both infinity, the total number of natural numbers, i.e., the cardinality of $\mathbb{N}$, is less than the total number of real numbers, i.e., the cardinality of $\mathbb{R}$.
 
-The cardinality of $\mathbb{N}$ is known as $\aleph_0$. It is also the cardinality of all rational numbers. In computability theory, it is also the cardinality of all computable numbers (i.e., numbers that can be computed to within any desired precision by a finite terminating algorithm) and computable functions, i.e., algorithms. The total number of real numbers, on the other hand, is known as $\aleph_1$. It is also the cardinality of all irrational numbers and complex numbers, the number of points on an axis or axis interval, or a high dimensional space of $\mathbb{R}^n$ where $n$ is a finite integer. Even larger infinity quantities, such as $\aleph_2, \aleph_3, \ldots, \aleph_\omega, \ldots$ are also defined, though they may not have an intuitive explanation as $\aleph_0$ and $\aleph_1$.
+The cardinality of $\mathbb{N}$ is known as $\aleph_0$. It is also the cardinality of all rational numbers. In computability theory, it is also the cardinality of all computable numbers (i.e., numbers that can be computed to any desired precision by a finite terminating algorithm) and computable functions (i.e., algorithms). The total number of real numbers is known as $\aleph_1$. It is also the cardinality of all irrational numbers and complex numbers, the number of points on an axis, on an axis interval, or in a high dimensional space $\mathbb{R}^n$ where $n$ is a finite integer. 
 
-Deeper discussion of this topic requires advanced set theory, hence is not given here.
+Even larger infinity quantities, such as $\aleph_2, \aleph_3, \ldots, \aleph_\omega, \ldots$ are also defined, though they may not have an intuitive explanation as $\aleph_0$ and $\aleph_1$.
+
+Deeper discussion of this topic requires advanced set theory and is not given in this notebook.
 \end{shortbox}
 
 Finite sample space and countably infinite sample space are also known as \textit{discrete sample space}, whereas noncountably infinite sample space, \textit{nondiscrete sample space}.
@@ -38,21 +45,22 @@ Finite sample space and countably infinite sample space are also known as \texti
 
 \subsection{Events}
 
-An event is a subset $A$ of the sample space $S$, i.e., it is a set of possible outcomes. An event may or may not occur depending on the outcome of an experiment. In the special case where an event covers only a single point in $S$, it is also called an \textit{elementary event}, or just a \textit{sample}. The sample space $S$ can also be taken as a event, which is known as the certain event.
+An event is a subset $A$ of the sample space $S$, i.e., it is a portion of possible outcomes. An event may or may not occur depending on the outcome of an experiment. In the special case where $A$ has only one element, the event is also called an \textit{elementary event}, or just a \textit{sample}. In the special case where $A=S$, the event is also called a certain event.
 
 \section{Probability}
 
-Given an experiment setup and an event, there is always uncertainty as to whether the event will occur or not, and \textit{probability} is a measurement of chance or likelihood that the event is going to occur. For example, by saying a probability of $100\%$ or $1$, we mean that we are certain that the event would occur.
+Given an experiment and an event, there is always uncertainty as to whether the event will occur, and \textit{probability} is a measurement of likelihood that the event is going to occur. For example, by saying a probability of $100\%$ or $1$, we mean that we are certain that the event would occur.
 
 \subsection{Classical and Empirical Probability}
 
-There are different ways to calculate or estimate the probability of an event. In the \textit{classical approach} where we know the total number of outcomes $n$, all of which have a equal chance of happening, and there are $h$ ways for the event to occur, then the probability of the event is $h/p$. In the \textit{frequency approach}, we can repeat the experiment $n$ times where $n$ is a large number, and record the number of instants where the event happened as $h$. The \textit{empirical probability} of the event, which should be close to the actual probability of the event, is $h/p$.
+There are different ways to calculate or estimate the probability of an event. In the \textit{classical approach} where we know the total number of outcomes $n$, all of which have a equal chance of happening, and there are $h$ ways for the event to occur, then the probability of the event is $h/p$. In the \textit{frequency approach}, we can repeat the experiment $n$ times where $n$ is a large number, and record the number of instants where the event happened as $h$. The \textit{empirical probability} of the event is obtained by calculating $h/p$ which should converge to the true probability as $n$ goes large.
 
 \subsection{Axioms}
 
+
 Both the classical approach and the frequency approach have some drawbacks. It is often difficult to define ``equal chance'' and ``large number'' in the two approaches respectively. Therefore, \textit{axiomatic approach} is introduced as follows.
 
-Let the sample space denoted by $S$, and events by $A_i$. For simplicity, assume that $S$ is discrete, or at least part of $S$ associated by the events is discrete. Define $P(\cdot)$ as the probability function, and $P(A)$ the probability of an event $A$, if the following axioms are satisfied:
+Let the sample space be denoted by $S$, and events by $A_i$. For simplicity, assume that $S$ is discrete, or at least part of $S$ associated by the events is discrete. Define $P(\cdot)$ as the probability function and $P(A)$ the probability of an event $A$ subject to following axioms:
 \begin{enumerate}
   \item For every event $A_i$, $P(A_i)\geq 0$.
   \item For the certain event $S$, $P(S)=1$.
@@ -95,18 +103,17 @@ Or equivalently,
 \begin{eqnarray}
   P(A\cap B) &=& P(A)P(B|A) \nonumber
 \end{eqnarray}
-
-In the special case where $P(B|A)=P(B)$, or equivalently $P(A\cap B) = P(A)P(B)$, the two events $A$ and $B$ are said to be \textit{independent events}.
-
 From the above,
 \begin{eqnarray}
   P(B|A) &=& \dfrac{P(B)P(A|B)}{P(A)} \nonumber
 \end{eqnarray}
 which is known as the Bayes' rule.
 
+In the special case where $P(B|A)=P(B)$, or equivalently $P(A\cap B) = P(A)P(B)$, the two events $A$ and $B$ are said to be \textit{independent events}.
+
 \section{Permutation and Combination}
 
-In classical probability, calculating the cardinalities of event $A$ and sample space $S$ is the key to solving the problem. Permutations and combinations are widely used for such calculation.
+In classical probability, calculating the cardinalities of event $A$ and sample space $S$ is the key to solving the problem. Permutations and combinations are widely used for such calculations.
 
 Suppose that there are $n$ distinct objects, and we would like to select $r$ objects from them, and arrange them in a particular order. The permutation
 \begin{eqnarray}
@@ -121,7 +128,7 @@ where $n(n-1)(n-2)\ldots 1$ is often denoted as $n!$. Therefore, \eqref{eq:permu
   nPr &=& \dfrac{n!}{(n-r)!} \nonumber
 \end{eqnarray}
 
-In permutation, the arrangement of the selected $r$ objects matters. In the case where the order of the $r$ objects in the outcome does not matter, combination
+In permutation, the arrangement of the selected $r$ objects matters. When the order does not matter, combination
 \begin{eqnarray}
   nCr &=& \dfrac{nPr}{r!} \nonumber \\ 
   &=& \dfrac{n!}{r!(n-r)!} \nonumber

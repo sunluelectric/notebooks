@@ -1,8 +1,8 @@
 \chapter{Measures of Distribution} \label{ch:measuresdistribution}
 
-Given the probability or probability density distribution of a random variable, a lot of information can be abstracted. For example, the expectation describes the average value of that random variable if the experiment is repeated many times.
+Given the probability or probability density of a random variable, a lot of information can be abstracted such as the expectation which describes the average value of that random variable if the experiment is repeated many times.
 
-Measures of distribution such as expectation and variance are introduced in this chapter.
+Commonly seen measures of a distribution are introduced in this chapter.
 
 \section{Expectation}
 
@@ -43,18 +43,18 @@ For continuous random variables, from \eqref{eq:varderived} the variance is
 \begin{eqnarray}
   \textup{Var}(X) &=& \int_{-\infty}^{\infty} (x-\textup{E}(X))^2f(x)dx \nonumber
 \end{eqnarray}
-This implies that for a non-bias estimation, the Mean Square Error (MSE) of the estimation is identical to the variance of the estimation.
+Think of $X$ as an estimation of a parameter $\theta$. If the estimation is non biased, $E(X)=\theta$. Therefore, from the above equation, for a non-biased estimation, the variance of the estimates (left) equals to the MSE of the estimate (right) with sample numbers approaching infinity.
 
 Some features of variance calculation are given below.
 \begin{eqnarray}
-  \textup{Var}(cX) &=& c^2\textup{Var}(X) \\
+  \textup{Var}(cX) &=& c^2\textup{Var}(X) \nonumber
 \end{eqnarray}
 For independent random variables $X$ and $Y$,
 \begin{eqnarray}
   \textup{Var}(X\pm Y) &=& \textup{Var}(X) + \textup{Var}(Y) \nonumber
 \end{eqnarray}
 
-Mean and standard deviation can be used to standardize a ransom variable as follows.
+Mean and standard deviation can be used to standardize a random variable as follows.
 \begin{eqnarray}
   X^* &=& \dfrac{X-\mu}{\sigma} \nonumber
 \end{eqnarray}
@@ -67,7 +67,7 @@ In mathematics, the $r$-th moment of a continuous function $f(x)$ about $c$ is d
   \mu_n &=& \int_{-\infty}^{\infty}(x-c)^nf(x)dx \nonumber
 \end{eqnarray}
 
-By simply saying \textit{moment} without further explanation of $c$, it is by default that $c=0$. Let $f(x)$ be a PDF. In this sense, the $0$-th order and the $1$-st order moment of a probability density function can be calculated as follows.
+By simply saying \textit{moment} without specifying $c$, it is by default that $c=0$. Let $f(x)$ be a PDF. In this sense, the $0$-th order and the $1$-st order moment of a probability density function can be calculated as follows.
 \begin{eqnarray}
   && \mu_0 = \int_{-\infty}^{\infty}f(x)dx = 1 \nonumber \\
   && \mu_1 = \int_{-\infty}^{\infty}xf(x)dx = \textup{E}(X) \nonumber
@@ -80,20 +80,18 @@ Further more, let $c=\mu_1$ be the mean of the random variable to calculate the 
 \end{eqnarray}
 which is the variance of the random variable.
 
-Using mean and variance to further define \textit{standardized moments} as follows. For $k\geq 3$,
+Using mean and variance to further define \textit{standardized moments} as shown below. Define $\bar{\mu}_k$, $\mu_k$ and $\sigma_k$ for $k\geq 3$ as follows.
 \begin{eqnarray}
-  && \bar{\mu}_k = \dfrac{\mu_k}{\sigma^k} \nonumber \\
-  && \mu_k = \textup{E}\left((X-\mu)\right) = \int_{-\infty}^{\infty}(x-\mu)^kf(x)dx \nonumber \\
-  && \sigma^k = \left(\mu_2\right)^{\dfrac{k}{2}} = \left(\int_{-\infty}^{\infty}(x-\mu)^2f(x)dx\right)^{\dfrac{k}{2}} \nonumber
+  && \bar{\mu}_k = \dfrac{\mu_k}{\sigma^k} \nonumber
 \end{eqnarray}
-where $\mu_1$ and $\mu_2$ are the aforementioned mean ($1$-st order moment) and variance ($2$-nd order central moment) of the random variable, respectively.
+where
+\begin{eqnarray}
+	&& \mu_k = \textup{E}\left((X-\mu_1)^k\right) = \int_{-\infty}^{\infty}(x-\mu_1)^kf(x)dx \nonumber \\
+	&& \sigma^k = \left(\mu_2\right)^{\dfrac{k}{2}} = \left(\int_{-\infty}^{\infty}(x-\mu_1)^2f(x)dx\right)^{\dfrac{k}{2}} \nonumber
+\end{eqnarray}
+with $\mu_1$ and $\mu_2$ used to denote mean ($1$-st order moment) and variance ($2$-nd order central moment) of the random variable, respectively.
 
-The $3$-rd and $4$-th order standardized moments are known as the \textit{skewness} and \textit{kurtosis} of the PDF, respectively, as shown below.
-\begin{eqnarray}
-  && \bar{\mu_3} \equiv \gamma_1 = \dfrac{\textup{E}(x-\mu)^3}{\sigma^3} \nonumber \\
-  && \bar{\mu_4} \equiv \gamma_2 = \dfrac{\textup{E}(x-\mu)^4}{\sigma^4} \nonumber
-\end{eqnarray}
-where $\mu=\mu_1$ and $\sigma = \sqrt{\mu_2}$ are the mean and standard deviation of the random variable, respectively.
+The $3$-rd and $4$-th order standardized moments are known as the \textit{skewness} and \textit{kurtosis} of the PDF, respectively. In some literatures, skewness is denoted by $\gamma_1 = \bar{\mu}_3$, and kurtosis $\gamma_2 = \bar{\mu}_4$.
 
 The skewness $\gamma_1$ is a measure of asymmetry of the PDF. When $\gamma_1 > 0$ or positive skew, the distribution has a long tail on the right side of the PDF. When $\gamma_1 <0$ or negative skew, the distribution has a long tail on the left side. When $\gamma_1 = 0$, the PDF might be symmetric (but not necessarily so). Examples are given in Fig. \ref{fig:skewness_demo}.
 \begin{figure}
@@ -111,11 +109,11 @@ The kurtosis $\gamma_2$ measures the ``tailedness'' of a probability distributio
 
 \section{Covariance and Correlation}
 
-Covariance and correlation are defined for joint distribution with multiple random variables. For simplicity, consider only two random variables $X$, $Y$ whose joint distribution is given by $f_{XY}(x, y)$. The idea derived from here can be generated to more variables.
+Covariance and correlation are defined for a joint distribution with multiple random variables. For simplicity, consider only two random variables $X$, $Y$ whose joint distribution is given by $f_{XY}(x, y)$. The idea derived from here can be generated to more variables.
 
 \subsection{One Variable}
 
-It is straight forward to get the expectation and variance for a single selected variable in the joint distribution. Just integrate the other variables. Examples are given below.
+The PDF of one variable can be derived from the joint distribution using \eqref{eq:jointpdfdowngrade}. It is straight forward to get the expectation and variance for that variable as follows.
 \begin{eqnarray}
   \textup{E}(X) &=& \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}xf(x, y)dxdy \nonumber \\
   \textup{Var}(X) &=& \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}\left(x-\textup{E}(X)\right)^2f(x, y)dxdy \nonumber
@@ -139,7 +137,23 @@ Furthermore,
 \begin{eqnarray}
   \textup{Cov}(X, Y)^2 &\leq& \textup{Var}(X)\textup{Var}(Y) \nonumber
 \end{eqnarray}
-The proof is as follows. Notice the following lemma \eqref{eq:explemma}.
+The proof is as follows. Notice that lemma \eqref{eq:explemma} is used in the proof.
+
+Using \eqref{eq:explemma} on \eqref{eq:covariance1}, \eqref{eq:vardef} gives
+\begin{eqnarray}
+	\textup{Cov}(X, Y)^2 &=& \textup{E}\left((x - \textup{E}(X))(y - \textup{E}(Y))\right)^2 \nonumber \\
+	&\leq& \textup{E}\left((x - \textup{E}(X))\right)^2\textup{E}\left((y - \textup{E}(Y))\right)^2 \nonumber \\
+	&=& \textup{Var}(X)\textup{Var}(Y) \nonumber
+\end{eqnarray}
+or equivalently
+\begin{eqnarray}
+	\sigma_{XY}^2 &\leq& \sigma_X^2\sigma_Y^2 \nonumber
+\end{eqnarray}
+Noticing that while $\sigma_X$, $\sigma_Y$ are always nonnegative while $\sigma_{XY}$ is not,
+\begin{eqnarray}
+	-\sigma_X\sigma_Y \leq \sigma_{XY} \leq \sigma_X\sigma_Y \label{eq:covlemma}
+\end{eqnarray}
+
 \begin{shortbox}
 \Boxhead{Lemma}
 
@@ -147,7 +161,7 @@ For two random variables $X$ and $Y$,
 \begin{eqnarray}
   \textup{E}(XY)^2 &\leq&  \textup{E}(X^2)\textup{E}(Y^2) \label{eq:explemma}
 \end{eqnarray}
-Proof:
+\textbf{Proof}
 \begin{eqnarray}
   0 &\leq& \textup{E}\left(\left(X-Y\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)}\right)^2\right) \nonumber \\
   &=& \textup{E}\left(X^2-2XY\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)}+\textup{E}(Y^2)\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)^2}\right) \nonumber \\
@@ -162,21 +176,6 @@ Therefore
 \end{eqnarray}
 \end{shortbox}
 
-Using \eqref{eq:explemma} on \eqref{eq:covariance1}, \eqref{eq:vardef} gives
-\begin{eqnarray}
-  \textup{Cov}(X, Y)^2 &=& \textup{E}\left((x - \textup{E}(X))(y - \textup{E}(Y))\right)^2 \nonumber \\
-  &\leq& \textup{E}\left((x - \textup{E}(X))\right)^2\textup{E}\left((y - \textup{E}(Y))\right)^2 \nonumber \\
-  &=& \textup{Var}(X)\textup{Var}(Y) \nonumber
-\end{eqnarray}
-or equivalently
-\begin{eqnarray}
-  \sigma_{XY}^2 &\leq& \sigma_X^2\sigma_Y^2 \nonumber
-\end{eqnarray}
-Noticing that while $\sigma_X$, $\sigma_Y$ are always nonnegative while $\sigma_{XY}$ is not,
-\begin{eqnarray}
-  -\sigma_X\sigma_Y \leq \sigma_{XY} \leq \sigma_X\sigma_Y \label{eq:covlemma}
-\end{eqnarray}
-
 \subsection{Correlation}
 
 The \textit{correlation} of two variables is defined and calculated as follows.
@@ -188,7 +187,7 @@ or simply
   \rho &=& \dfrac{\sigma_{XY}}{\sigma_X\sigma_Y} \nonumber
 \end{eqnarray}
 
-From \eqref{eq:covlemma}, apparently $-1\leq \rho \leq 1$. When two variables are uncorrelated or independent, $\rho=0$. If $\rho=1$, it is called \textit{perfect positive correlation}. This happens usually because the two variables are positively linearly depended, for example, $X=2Y$ or $X=Y+1$. If $\rho=-1$, it is called \textit{perfect negative correlation}, and similar idea applies.
+From \eqref{eq:covlemma}, apparently $-1\leq \rho \leq 1$. When two variables are uncorrelated or independent, $\rho=0$. If $\rho=1$, it is called \textit{perfect positive correlation}. This happens usually because the two variables are positively linearly depended, for example, $X=2Y$ or $X=Y+1$. If $\rho=-1$, it is called \textit{perfect negative correlation}, and the similar idea applies.
 
 \section{Important Theorem}
 

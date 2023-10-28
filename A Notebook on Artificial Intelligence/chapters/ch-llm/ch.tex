@@ -1,0 +1,216 @@
+\chapter{Large Language Model}
+
+This chapter serves as an overview of large language model (LLM), a popular and successful natural language processing practice.
+
+The majority of this chapter comes from \cite{zhao2023survey}.
+
+Detailed illustrations to the LLM development platforms such as Google Colab, programming languages and packages such as Pytorch Transformer, and existing solutions such as OpenAI GPT and LLaMA, are introduced in followed up chapters separately.
+
+\section{Introduction}
+
+Natural language processing models and methods have been introduced previously. A brief review is given in this section, mainly to address their limitations
+
+There have been variety of ways to model natural language. For example, consider the following sentence:
+\begin{center}
+	\textit{``I am thirsty. Please give me a bottle of \rule{1cm}{0.15mm}.''}
+\end{center}
+It is quite natural that a human would likely to put ``water'' or ``tea'' in the blank. This is obvious because human has a dictionary of words that he can choose in his mind, and he has been reinforced of learning ``a bottle of water'' expression in many occasions. In addition, it makes sense to a human that when someone is thirsty, he would look for water. 
+
+The challenge using AI to realize the above is to build the dictionary in the machine and quantitatively analyze what word or phrase would make the most sense to be filled into the blank. For that, many models have been developed.
+
+\subsection{Language Models} 
+
+The most popular language models have been evolving over time in the past decades since $1990$th.
+
+\vspace{0.1in}
+\noindent \textbf{Statistical Language Models}
+\vspace{0.1in}
+
+In the early days when AI and ANN were not popular, \textit{statistical language models (SLM)} have been the most popular tool to model natural language. SLM assumes that a sentence is a Markov process, and the last word depends on the context created by the most recent $n$ words. SLM with a fixed context length of $n$ is also called a $n$-gram language model.
+
+Conventionally, the paring information from $n$ words to the next word is obtained from data corpus and stored in a table-like structure. When running the model, it looks up the table for the most probable next word based on the earlier $n$ words. Smoothing technologies are used to handle zeros, i.e., when the record is not found in the table.
+
+An obvious issue of SLM is that the computation and storage of the model increase exponentially with the size of $n$. This limits the context information that the model can use for prediction, hence setting a low performance ceiling. Not to mention that even with a large data corpus, zeros can still happen and the model performance is always an issue in such occasions.
+
+\vspace{0.1in}
+\noindent \textbf{Neural Language Models}
+\vspace{0.1in}
+
+With the introduction of ANN, in particular RNN, \textit{Neural Language Models (NLM)} become popular. RNN-based NLM builds the word prediction function conditioned on the aggregated context features abstracted and passed recurrently from current and previous input sequence.
+
+RNN is not a perfect one-stop solution either. The training of RNN can be difficult due to vanishing and exploding gradient problem. This limits the depth that RNN can go. When handling long sequence of words, the performance of RNN drops significantly because it is weak at building long-term dependencies.
+
+\vspace{0.1in}
+\noindent \textbf{Pre-trained Language Models and Large Language Models}
+\vspace{0.1in}
+
+As introduced in details in earlier chapters, attention mechanism has been proposed to tackle the long-term dependency problem of RNN. Transformer architecture, which relies purely on encoder, decoder and attention mechanism without using RNN is then proposed. It has been verified that transformer architecture is good at abstracting information from sequential data, in particular, natural language. With transformer, it becomes possible to build very deep neural networks and have it trained efficiently with big size data corpus.
+
+Language models based on different transformer-based architectures are often called pre-trained language models (PLM) and large language models (LLM). The main differences between PLM and LLM are the size of the model. The scaling of the model from hundreds of millions of parameters (PLM) to tens or hundreds of billions of parameters (LLM) introduces emergent abilities such as in-context learning to the model, significantly enhancing its capability and intelligence. As of this writing, it is not very clear how the these abilities suddenly emerge with the size of the model.   
+
+\subsection{Scaling Law}
+
+The performance of an LLM, usually referring to its capability in accurately and correctly complete a task, is affect by many factors such as the model architecture, model size, training data set size and quality, etc. Though it is clear that with the scaling up of the system the performance is usually improved, there is no analytical expression that gives full insights about how these factors affect the performance quantitatively.
+
+Many scaling laws have been proposed trying to quantitatively describe the LLM performance as a function of its model size and other factors. Notice that these laws are obtained from empirical experiments and they may work only within a given range of model size.
+
+Just as an example, OpenAI proposed KM scaling law in 2020 that describes LLM cross entropy loss as a function of model size, training data set size and training computation as follows.
+\begin{eqnarray}
+	L(N) &=& \left(\dfrac{N_c}{N}\right)^{\alpha_N} \nonumber \\
+	L(D) &=& \left(\dfrac{D_c}{D}\right)^{\alpha_D} \nonumber \\
+	L(C) &=& \left(\dfrac{C_c}{C}\right)^{\alpha_C} \nonumber
+\end{eqnarray} 
+where $N$, $D$ and $C$ denote the model size, dataset size and training computation, respectively. The rests are constants whose value can be obtained via calibration.
+
+This scaling law works for models with $22M$ to $23B$ parameters. It is assumed that the analysis of a factor can be done independently without other parameters being a bottleneck.
+
+\subsection{Emergent Abilities}
+
+When the size of the model becomes large, usually to the order of at least a few billions parameters, they suddenly gain emergent abilities. Details are discussed as follows.
+
+\vspace{0.1in}
+\noindent \textbf{In-context Learning (ICL)}
+\vspace{0.1in}
+
+ICL allows the behavior of the model be manipulated via not training or fine-tuning of the parameters, but via instructions and demonstrations given as part of the input.
+
+ICL plays an important part in LLM implementation, as it is the basis of prompt engineering. When the LLM is large, it is possible to use prompt engineering instead of fine-tuning for it to complete a task following user defined instructions. This reduces the training cost and makes the implementation more flexible.
+
+\vspace{0.1in}
+\noindent \textbf{Instruction Following}
+\vspace{0.1in}
+
+Supervised learning is commonly used in fine-tuning an LLM. Examples include providing ``ideal responses'' for different types of questions, so that LLM would know how to respond to these questions.
+
+When comes to LLM, it is actually possible to fine-tune the model for a task without presenting it examples. Instead, just give it step-by-step instructions. LLM is able to perform well with these tasks described only by instructions. This is known as instruction tuning.
+
+It is worth mentioning that instruction following is also possible in ICL. Give the LLM instructions in prompt engineering without examples, and the LLM is likely to be able to finish the tasks.
+
+\vspace{0.1in}
+\noindent \textbf{Step-By-Step Reasoning}
+\vspace{0.1in}
+
+When a model is asked to complete a complicated task that involves multiple steps, it may fail to accomplish the task. With a well fine-tuned LLM, the model might be able to break the task into multiple sub-tasks via chain-of-thought (CoT) prompting strategy, and solve them step-by-step till the final result is obtained.
+
+It has been observed that LLM with $100B$ parameters or more, and have been trained on code is likely to have good step-by-step reasoning ability.
+
+\subsection{Milestone Techniques}
+
+This section looks back into the progression tree of LLM, and list down milestone techniques that make LLM what it is today. It is the breakthrough in these areas that revolutionizes LLM development.
+
+\vspace{0.1in}
+\noindent \textbf{Big Data}
+\vspace{0.1in}
+
+The performance of LLM relies on both the modal size and the training data size. It is the advent in internet, Web 3.0, Industry 4.0, IoT and cloud computing/storage that makes collection and aggregation of big data possible.
+
+Almost every large-size enterprise, both IT companies or conventional industrial companies, has its internal database. The database can be used to train domain LLM. Nowadays, there are many open data sources of community LLMs. Such examples include BookCorpus, CommonCrawl, Reddit posts (with high upvotes), Wikipedia, and many more. These open-source datasets makes training LLM for community projects possible.
+
+\vspace{0.1in}
+\noindent \textbf{Large Model and Efficient Training}
+\vspace{0.1in}
+
+The invention of CPU-based neural networks and transformer architecture making creating and training large scale LLM possible. Both closed and open-source LLMs have been proposed, including GPT series by OpenAI and LLaMA family by Meta AI and the community.
+
+Manly libraries have been released to the public to help building, training and fine-tuning LLMs, such as \verb|transformers|, a Python library for building transformer models. Many such libraries are tying up with PyTorch and TensorFlow to provide LLM related functions.
+
+More about these models and libraries are introduced in later sections.
+
+\vspace{0.1in}
+\noindent \textbf{Fine-Tuning}
+\vspace{0.1in}
+
+Technologies such as LoRA has made fine-tuning easier than before.
+
+\vspace{0.1in}
+\noindent \textbf{Prompt Engineering}
+\vspace{0.1in}
+
+There have been a lot of practices on how to make LLM flexible and more efficient in solving particular tasks via prompt engineering.
+
+\vspace{0.1in}
+\noindent \textbf{LLM on Edge Devices}
+\vspace{0.1in}
+
+Many efforts have been put into edge-device based LLMs. The target is to develop LLM that consumes less memory, storage and computation while not sacrificing a lot of performance.
+
+\vspace{0.1in}
+\noindent \textbf{API and Interface}
+\vspace{0.1in}
+
+Multi-modal LLM has enabled different types of inputs to the LLM, not limited to natural language but also sequential signals and even pictures.
+
+Many tools and software have developed APIs for LLM. These tools enhance computation and online information retrieval capabilities of LLM.
+
+\section{Existing Solutions}
+
+Many LLM, both open-source and closed-source, have been proposed. A summary is given in Table \ref{ch:llm:tab:existingmodel}. Notice that the table only covers a small portion of existing models in the market.
+
+\begin{table}
+	\centering \caption{Existing LLM models.}\label{ch:llm:tab:existingmodel}
+	\begin{tabular}{ccccc}
+		\hline
+		Availability & Model Name & Size & Training & Release Time \\ \hline
+		\multirow{4}{*}{open} & CodeGen & $16$ & $577B$ & 2022-Mar \\
+		 & LLaMA & $65$ & $1.4T$ & 2023-Feb \\
+		 & CodeGen2 & $16$ & $400B$ & 2023-May \\
+		 & LLaMA2 & $70$ & $2T$ & 2023-Jul \\ \hdashline
+		\multirow{3}{*}{closed} & GPT-3 & $175$ & $300B$ & 2020-May \\
+		 & Codex$^*$ & $12$ & $100B$ & 2021-Jul \\ 
+		 & GPT-4 & --- & --- & 20223-Mar \\ 
+		\hline
+	\end{tabular}
+\begin{flushleft}
+	\footnotesize 
+	Model size is given in number of parameters in billion. \\
+	Training data size is given in number of tokens. \\
+	$^*$ Codex is trained on top of GPT-3.
+\end{flushleft}
+\end{table}
+
+\subsection{OpenAI Family}
+
+\subsection{LLaMA Family}
+
+\subsection{Others}
+
+
+
+\section{Model Components}
+
+\subsection{Training Set}
+
+\subsection{Encoder and Decoder}
+
+
+\subsection{Normalization}
+
+
+\subsection{Activation Function}
+
+
+\subsection{Position Embedding}
+
+
+\subsection{Attention Mechanism}
+
+\section{Model Training}
+
+\subsection{Pre-training}
+
+\subsection{Decoding}
+
+\section{Model Fine-Tuning}
+
+
+
+
+
+
+\section{Model Evaluation}
+
+
+
+\subsection{Model Implementation}
+
+
