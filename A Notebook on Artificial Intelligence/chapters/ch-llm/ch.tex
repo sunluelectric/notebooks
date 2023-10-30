@@ -14,11 +14,11 @@ There have been variety of ways to model natural language. For example, consider
 \begin{center}
 	\textit{``I am thirsty. Please give me a bottle of \rule{1cm}{0.15mm}.''}
 \end{center}
-It is quite natural that a human would likely to put ``water'' or ``tea'' in the blank. This is obvious because human has a dictionary of words that he can choose in his mind, and he has been reinforced of learning ``a bottle of water'' expression in many occasions. In addition, it makes sense to a human that when someone is thirsty, he would look for water. 
+It is quite natural that a human would likely to put ``water'' or ``tea'' in the blank. This is obvious because human has a dictionary of words that he can choose in his mind, and he has been reinforced of learning ``a bottle of water'' expression in many occasions. In addition, it makes sense to a human that when someone is thirsty, he would look for water.
 
 The challenge using AI to realize the above is to build the dictionary in the machine and quantitatively analyze what word or phrase would make the most sense to be filled into the blank. For that, many models have been developed.
 
-\subsection{Language Models} 
+\subsection{Language Models}
 
 The most popular language models have been evolving over time in the past decades since $1990$th.
 
@@ -46,7 +46,7 @@ RNN is not a perfect one-stop solution either. The training of RNN can be diffic
 
 As introduced in details in earlier chapters, attention mechanism has been proposed to tackle the long-term dependency problem of RNN. Transformer architecture, which relies purely on encoder, decoder and attention mechanism without using RNN is then proposed. It has been verified that transformer architecture is good at abstracting information from sequential data, in particular, natural language. With transformer, it becomes possible to build very deep neural networks and have it trained efficiently with big size data corpus.
 
-Language models based on different transformer-based architectures are often called pre-trained language models (PLM) and large language models (LLM). The main differences between PLM and LLM are the size of the model. The scaling of the model from hundreds of millions of parameters (PLM) to tens or hundreds of billions of parameters (LLM) introduces emergent abilities such as in-context learning to the model, significantly enhancing its capability and intelligence. As of this writing, it is not very clear how the these abilities suddenly emerge with the size of the model.   
+Language models based on different transformer-based architectures are often called pre-trained language models (PLM) and large language models (LLM). The main differences between PLM and LLM are the size of the model. The scaling of the model from hundreds of millions of parameters (PLM) to tens or hundreds of billions of parameters (LLM) introduces emergent abilities such as in-context learning to the model, significantly enhancing its capability and intelligence. As of this writing, it is not very clear how the these abilities suddenly emerge with the size of the model.
 
 \subsection{Scaling Law}
 
@@ -59,7 +59,7 @@ Just as an example, OpenAI proposed KM scaling law in 2020 that describes LLM cr
 	L(N) &=& \left(\dfrac{N_c}{N}\right)^{\alpha_N} \nonumber \\
 	L(D) &=& \left(\dfrac{D_c}{D}\right)^{\alpha_D} \nonumber \\
 	L(C) &=& \left(\dfrac{C_c}{C}\right)^{\alpha_C} \nonumber
-\end{eqnarray} 
+\end{eqnarray}
 where $N$, $D$ and $C$ denote the model size, dataset size and training computation, respectively. The rests are constants whose value can be obtained via calibration.
 
 This scaling law works for models with $22M$ to $23B$ parameters. It is assumed that the analysis of a factor can be done independently without other parameters being a bottleneck.
@@ -142,9 +142,9 @@ Multi-modal LLM has enabled different types of inputs to the LLM, not limited to
 
 Many tools and software have developed APIs for LLM. These tools enhance computation and online information retrieval capabilities of LLM.
 
-\section{Existing Solutions}
+\section{Existing Resources and Solutions}
 
-Many LLM, both open-source and closed-source, have been proposed. A summary is given in Table \ref{ch:llm:tab:existingmodel}. Notice that the table only covers a small portion of existing models in the market.
+Many data corpus, both open source and closed source, are available on the market. Many libraries such as PyTorch compatible Python packages have been developed to automate the training procedures and to convenient the users. Many LLM, both open-source and closed-source, have been proposed. A summary is given in Table \ref{ch:llm:tab:existingmodel}. Notice that the table only covers a small portion of existing models in the market.
 
 \begin{table}
 	\centering \caption{Existing LLM models.}\label{ch:llm:tab:existingmodel}
@@ -156,61 +156,287 @@ Many LLM, both open-source and closed-source, have been proposed. A summary is g
 		 & CodeGen2 & $16$ & $400B$ & 2023-May \\
 		 & LLaMA2 & $70$ & $2T$ & 2023-Jul \\ \hdashline
 		\multirow{3}{*}{closed} & GPT-3 & $175$ & $300B$ & 2020-May \\
-		 & Codex$^*$ & $12$ & $100B$ & 2021-Jul \\ 
-		 & GPT-4 & --- & --- & 20223-Mar \\ 
+		 & Codex$^*$ & $12$ & $100B$ & 2021-Jul \\
+		 & GPT-4 & --- & --- & 20223-Mar \\
 		\hline
 	\end{tabular}
 \begin{flushleft}
-	\footnotesize 
-	Model size is given in number of parameters in billion. \\
-	Training data size is given in number of tokens. \\
+	\footnotesize
+	Model size is given in number of parameters in billion. Training data size is given in number of tokens. \\
 	$^*$ Codex is trained on top of GPT-3.
 \end{flushleft}
 \end{table}
 
+The existing resources and solutions are briefly introduced in this section.
+
+\subsection{Data Corpus}
+
+Enterprise and individual users may have their own closed source data corpus for training and fine-tuning. In this section, only open source data corpora are discussed.
+
+\subsection{Libraries and Packages}
+
 \subsection{OpenAI Family}
+
+OpenAI started investigating language models before the proposition of transformer. In its early days, RNN was explored as the most promising model for natural language. In 2017 when the transformer model was proposed, OpenAI quickly adapted their language model to this new architecture, and as a result generative pre-training (GPT) series has been proposed.
+
+\vspace{0.1in}
+\noindent \textbf{GPT-1}
+\vspace{0.1in}
+
+GPT-1, OpenAI's first transformer based PLM was proposed in 2018. GPT-1 has $117M$ parameters in the model and it adopts a decoder-only architecture, which is different from the original transformer proposal which has a encoder-decoder architecture. GPT-1 was trained via a two-stage procedure, the first stage unsupervised pre-training and the second stage supervised fine-tuning. This two-stage training pipeline, or something of the similar kind, has been adopted by many LLMs coming after.
+
+\vspace{0.1in}
+\noindent \textbf{GPT-2}
+\vspace{0.1in}
+
+GPT-2 is an improvement of GPT-1. It uses much larger number of parameters of $1.5B$ in the model, and it was trained on a much larger dataset WebText. With larger model and training data size, GPT-2 is targeted to be a multi-task solver. The model can be formulated by the following probabilistic form
+\begin{eqnarray}
+  \textup{Pre-trained LLM} &\equiv& P\left(\textup{output}\middle|\textup{input}, \textup{task}\right) \nonumber
+\end{eqnarray}
+In the above formulation, each NLP task can be considered as the word prediction problem based on a subset of the word next, and can be trained during the unsupervised learning stage. Unsupervised pre-training has since then become the most important stage for the LLM to gain knowledge for general tasks.
+
+\vspace{0.1in}
+\noindent \textbf{GPT-3, GPT-3.5 and Chat-GPT}
+\vspace{0.1in}
+
+It is clear now that GPT-2 has $1.5B$ parameters which is too few for an LLM to gain emergent abilities. It is GPT-3 with $175B$ parameters trained on $300B$ tokens that made a capability leap and bring LLM to everyone's attention.
+
+It is GPT-3 that for the first time introduces emergent abilities such as ICL. GPT-3 not only accomplishes commonly seen tasks to test LLM capabilities with flying color, but also demonstrates features not shown by other models before, such as reasoning and domain adaption.
+
+OpenAI has developed many task-oriented models that use GPT-3 as the base model. For example, for coding, Codex was introduced. Codex is basically GPT-3 fine-tuned using code database such as GitHub. Comparing with GPT-3, Codex is able to reason and solve complex mathematical problems, and realize them in codes. RL had already been used to fine-tune and improve performance for GPT-2. The same has been applied on GPT-3. Furthermore, reinforcement learning with human feedback (RLHF) is introduced for GPT-3 that allows the model to continue learning from human demonstrations.
+
+With the above enhancements, i.e. code-based fine-tuning, RL and RLHF, GPT-3.5 has been developed. GPT-3.5 is an enhanced version of GPT-3 and it is obtained from GPT-3 via transfer learning. GPT-3.5 is also scaled up in size, with a parameter number of $335B$.
+
+Chat-GPT was developed on top of GPT-3.5 (and later another version was released developed on top of with GPT-4). It is GPT-3.5 fine-tuned specially optimized for dialogue. It demonstrates how LLM can be used in everyone's daily life as an assistant, consultant and a copilot. Chat-GPT demonstrated good performance in communicating of humans than other GPT models. This is because Chat-GPT is trained on human-generated conversations of both human and AI roles. Later on, plug-ins and APIs are enabled on Chat-GPT, to allow it to communicate with other software.
+
+\vspace{0.1in}
+\noindent \textbf{GPT-4}
+\vspace{0.1in}
+
+GPT-4 is a multimodal LLM, meaning that it can not only take in natural languages, but also other signals such as images. Comparing with GPT-3.5, GPT-4 demonstrates further enhanced capabilities. It is claimed that GPT-4 is safer to use and is less likely to generate toxic and misleading information.
+
+Just as a quick demonstration of its multimodal feature, pass the following Fig. \ref{fig:superpower_cat} to GPT-4 with instruction ``What is in this picture?''. GPT-4 is able to response the following:
+
+\vspace{0.1in}
+\noindent \textit{``The image showcases a majestic cat standing in a fantastical landscape. The cat emits a luminous, ethereal glow, and its fur and tail appear to be infused with swirling, fiery or cosmic energies in brilliant hues of red and gold. These radiant swirls surround the cat, adding to its supernatural aura. Behind the cat, there's a dramatic night sky with clouds illuminated by a hidden light source, possibly lightning or a celestial event. In the foreground, the terrain appears to be a combination of grassy knolls and fiery, ember-lit ground, further emphasizing the magical and otherworldly nature of the scene. The entire setting evokes a sense of wonder and fantasy.''}
+\vspace{0.1in}
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-llm/figs/superpower_cat.png}
+	\caption{A cat with superpower. This picture is generated by DALL$\cdot$E 3.}
+	\label{fig:superpower_cat}
+\end{figure}
+
+\vspace{0.1in}
+\noindent \textbf{Other OpenAI Models}
+\vspace{0.1in}
+
+DALL$\cdot$E is the model OpenAI uses to generate images. As of this writing, its latest version, DALL$\cdot$E 3, has been integrated with the latest ChatGPT. Figure \ref{fig:superpowercat} gives an example where DALL$\cdot$E 3 is used to generate a image of a superpower cat.
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=\textwidth]{./chapters/ch-llm/figs/dalle3_superpowercat.png}
+	\caption{OpenAI DALL$\cdot$E 3 draws cats with superpower.}
+	\label{fig:superpowercat}
+\end{figure}
+
+OpenAI Codex, as introduced earlier, is the GPT model optimized for code generation. As of this writing, Codex has been deprecated because its capability has been integrated into ChatGPT. It is possible to ask ChatGPT to generate a piece of code following user's instruction and description.
+
+OpenAI Codex is the engine that powers GitHub copilot. In this sense, OpenAI Codex remains a live in a different format: not as a standalone software or model, but more as an API.
 
 \subsection{LLaMA Family}
 
-\subsection{Others}
+Large Language Model Meta AI (LLaMA) is the LLM model developed by Meta AI. Different from most of the AI models (GPT-3 and onward) developed by OpenAI, LLaMA is open-source hence has a wide availability. Many efforts in the community have made modifications and improvements to LLaMA, making a big family of models with different characteristics.
 
+As of this writing, a family tree of LLaMA is shown in Figure \ref{fig:llama_family_tree}. The picture is from \cite{zhao2023survey}. The source of the picture is given in the GitHub repository of the paper.
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=\textwidth]{./chapters/ch-llm/figs/lamma_family_tree.png}
+	\caption{LLaMA family tree.}
+	\label{fig:llama_family_tree}
+\end{figure}
+Only a small portion of models in the family tree is briefly introduced here.
 
+\vspace{0.1in}
+\noindent \textbf{LLaMA}
+\vspace{0.1in}
 
-\section{Model Components}
+LLaMA, comparing with GPT-3 which was used as a benchmark, is smaller in model size (maximum $65B$ parameters VS $175B$ parameters in GPT-3) but larger and better in training data size and quality (maximum $1.4T$ tokens VS $300B$ tokens in GPT-3). As a result, LLaMA is able to achieve generally better performance than GPT-3 with less implementation cost due to the small size. LLaMA demonstrates that training data is equality important as model size. It is possible to reach the same level of performance with a small ($<100B$ parameters) but well-trained model.
 
-\subsection{Training Set}
+LLaMA's first release includes 4 models of different model and training sizes. Details are summarized in Table \ref{ch:llm:tab:llamamodels}.
+\begin{table}
+	\centering \caption{LLaMA models.}\label{ch:llm:tab:llamamodels}
+	\begin{tabular}{ccc}
+		\hline
+		Name & Model Size & Training Dataset Size \\ \hline
+		LLaMA 7B & $6.7B$ & $1T$ \\
+		LLaMA 13B & $13.0B$ & $1T$ \\
+		LLaMA 33B & $32.5B$ & $1.4T$ \\
+		LLaMA 65B & $65.2B$ & $1.4T$ \\
+		\hline
+	\end{tabular}
+	\begin{flushleft}
+		\footnotesize
+		Model size is given in number of parameters in billion. Training data size is given in number of tokens.
+	\end{flushleft}
+\end{table}
+The training dataset is purely open-source, including Common Crawl, C4 Dataset, GitHub, Wikipedia, public domain books, arXiv and Stack Exchange.
 
-\subsection{Encoder and Decoder}
+Technical wise, LLaMA has some innovations on top of the original transformer proposition \cite{vaswani2017attention} n the normalization method, activation function, and embedding methods. More details will be introduced in later sections.
 
+Many open-source tools and packages have been developed to fine-tune LLaMA and its variations. More about fine-tuning, such as LoRA\cite{hu2021lora} and QLoRA\cite{dettmers2023qlora}, are introduced in more details in later sections. Notice that fine-tuning or re-training of a model often cost a lot of computational power and vector memory.
 
-\subsection{Normalization}
+\vspace{0.1in}
+\noindent \textbf{Stanford Alpaca}
+\vspace{0.1in}
 
+Stanford Alpaca 7B is Standford's practice in fine-tuning LLaMA 7B. The running cost of this fine-tuning is impressively small (hundreds of USD), and the resulted model has a performance comparable with GPT-3.5 which has $335B$ parameters. It is impressive to see that a small $7B$ model can compete with a large $335B$ model by careful training and fine-tuning. This might be partially because Alpaca 7B is fine-tuned from LLaMA 7B using knowledge distillation from GPT-3.5 (also known as text-davinci-003).
 
-\subsection{Activation Function}
+The details of training Stanford Alpaca can be found in \cite{alpaca}. A brief highlight is given below. The fine-tuning pipeline of Alpaca is shown in Fig. \ref{fig:alpaca_pipeline}. It is a 2-stage process as follows.
+\begin{enumerate}
+	\item Generating instruction-following examples using GPT-3.5 (text-davinci-003).
+	\item Fine-tune LLaMA 7B using the examples.
+\end{enumerate}
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=\textwidth]{./chapters/ch-llm/figs/alpaca_pipeline.jpg}
+	\caption{Alpaca fine-tuning pipeline.}
+	\label{fig:alpaca_pipeline}
+\end{figure}
 
+Examples of the generated instruction and response pairs are given below. The full list is available from the GitHub repository.
+\begin{lstlisting}
+{
+	"instruction": "What are the three primary colors?",
+	"input": "",
+	"output": "The three primary colors are red, blue, and yellow."
+},
+{
+	"instruction": "Give three tips for staying healthy.",
+	"input": "",
+	"output": "1.Eat a balanced diet and make sure to include plenty of fruits and vegetables. \n2. Exercise regularly to keep your body active and strong. \n3. Get enough sleep and maintain a consistent sleep schedule."
+},
+{
+	"instruction": "Extract the facts from the paragraph.",
+	"input": "Online education continues to become more popular for schools and students alike. Its advantages are generally lower costs, less commitment and the ability to study at a time, place and pace that suits the student.",
+	"output": "- Online education is becoming increasingly popular.\n- It has several advantages such as lower costs, less commitment and the ability to study at one\u2019s own time and pace."
+},
+{
+	"instruction": "Arrange the given numbers in ascending order.",
+	"input": "2, 4, 0, 8, 3",
+	"output": "0, 2, 3, 4, 8"
+}
+\end{lstlisting}
 
-\subsection{Position Embedding}
+The fine-tuning code of Alpaca is from Hugging Face. Python packages such as \verb|numpy|, \verb|torch|, \verb|transformers|, etc., are required. Check \verb|requirements.txt| and \verb|train.py| in the repository for more details. Call \verb|train.py| using something like the following
+\begin{lstlisting}
+torchrun --nproc_per_node=4 --master_port=<your_random_port> train.py \
+	--model_name_or_path <your_path_to_hf_converted_llama_ckpt_and_tokenizer> \
+	--data_path ./alpaca_data.json \
+	--bf16 True \
+	--output_dir <your_output_dir> \
+	--num_train_epochs 3 \
+	--per_device_train_batch_size 4 \
+	--per_device_eval_batch_size 4 \
+	--gradient_accumulation_steps 8 \
+	--evaluation_strategy "no" \
+	--save_strategy "steps" \
+	--save_steps 2000 \
+	--save_total_limit 1 \
+	--learning_rate 2e-5 \
+	--weight_decay 0. \
+	--warmup_ratio 0.03 \
+	--lr_scheduler_type "cosine" \
+	--logging_steps 1 \
+	--fsdp "full_shard auto_wrap" \
+	--fsdp_transformer_layer_cls_to_wrap 'LlamaDecoderLayer' \
+	--tf32 True
+\end{lstlisting}
+where \verb|./alpaca_data.json| is the JSON file that contains all the instruction and response pairs.
 
+Notice that later on, Stanford Alpaca 13B is also developed based on LLaMA 13B.
 
-\subsection{Attention Mechanism}
+\vspace{0.1in}
+\noindent \textbf{Vicuna}
+\vspace{0.1in}
 
-\section{Model Training}
+Vicuna 13B is an open-source chatbot fine-tuned on top of LLaMA using $70K$ user-shared conversations collected from ShareGPT (a platform where users share their ChatGPT conversation histories). Its performance is comparable with GPT-3.5 and Bard, and it is slightly better than LLaMA 13B and Alpaca 13B in general.
+
+See \cite{vicuna2023} for more details.
+
+\vspace{0.1in}
+\noindent \textbf{LLaVA and MiniGPT-4}
+\vspace{0.1in}
+
+Large Language and Vision Assistant (LLaVA) is a multimodal LLM that combines a vision encoder and Vicuna for general purpose visual and language understanding. More details are given in \cite{liu2023llava} and \cite{liu2023improvedllava}. Similar with GPT-4, its multimodal encoders allows it take both natural language and image as inputs. An example is given below.
+
+Pass the same Fig. \ref{fig:superpower_cat} to LLaVA with the same instruction ``What is in this picture?''. LLaVA is able to give the following response:
+
+\vspace{0.1in}
+\noindent \textit{``The image features a cat standing on a hill, with a fiery background and a cloudy sky. The cat appears to be looking at the viewer, and there is a sense of motion in the scene.''}
+\vspace{0.1in}
+
+Similar with LLaVA, MiniGPT-4 is a also multimodal LLM that enhances vision interpretation. More details are given in \cite{zhu2023minigpt}. It uses different techniques and realizations from LLaVA. Pass the same Fig. \ref{fig:superpower_cat} to MiniGPT-4 with the same instruction ``What is in this picture?''. MiniGPT-4 is able to give the following response:
+
+\vspace{0.1in}
+\noindent \textit{``The image shows a white cat with flames coming out of its fur, standing on a hill at sunset. The cat’s eyes are closed, and it appears to be in a meditative state. The background is a dark sky with clouds and a full moon. The overall mood of the image is peaceful and mystical.''}
+\vspace{0.1in}
+
+Notice that both LLaVA and MiniGPT-4 model can be downloaded from their GitHub and HuggingFace repositories. As of this writing, live demos are also available for these models.
+
+Multimodal LLM and ``Any-to-Any'' LLM are not the main forecast of this chapter. More details will be introduced in later chapters.
+
+\vspace{0.1in}
+\noindent \textbf{LLaMA 2}
+\vspace{0.1in}
+
+LLaMA 2 is the next generation open source LLM following the original LLaMA. The model is free for research and commercial use. LLaMA 2 70B has $70B$ parameters and it is pre-trained with $2T$ tokens of training data.
+
+\section{LLM Training Pipeline}
+
+\subsection{Architecture Design}
+
+\vspace{0.1in}
+\noindent \textbf{Encoder and Decoder}
+\vspace{0.1in}
+
+\vspace{0.1in}
+\noindent \textbf{Normalization Method}
+\vspace{0.1in}
+
+\vspace{0.1in}
+\noindent \textbf{Activation Function}
+\vspace{0.1in}
+
+\vspace{0.1in}
+\noindent \textbf{Position Embedding Method}
+\vspace{0.1in}
+
+\vspace{0.1in}
+\noindent \textbf{Attention Mechanism}
+\vspace{0.1in}
+
+\subsection{Training Set Preparation}
+
+Commonly used data corpora include the following. 
 
 \subsection{Pre-training}
 
-\subsection{Decoding}
+\subsection{Fine-Tuning}
 
-\section{Model Fine-Tuning}
+\subsection{Model Evaluation}
 
+\section{Multimodal LLM}
 
+\section{Examples}
 
+\subsection{LLM with Fine-Tuning}
 
+\subsection{Semantic Search}
 
+\subsection{Database Powered LLM}
 
-\section{Model Evaluation}
+\subsection{Multimodal LLM for Signal Processing}
 
-
-
-\subsection{Model Implementation}
-
+\subsection{Multimodal LLM for Image Processing}
 

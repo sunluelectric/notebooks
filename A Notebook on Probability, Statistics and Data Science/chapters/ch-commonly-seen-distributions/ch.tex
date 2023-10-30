@@ -1,12 +1,47 @@
 \chapter{Commonly Seen Distributions} \label{ch:commondistribution}
 
-Commonly seen distributions, both discrete and continuous, are introduced here. Some of them are very useful in statistics analysis that will be introduced in later part of the notebook.
+Commonly seen distributions, both discrete and continuous, are introduced here. Some of them are very useful in statistics analysis and are introduced in more details in later part of the notebook.
 
 \section{Bernoulli Distribution}
 
+Bernoulli distribution is a discrete probability distribution of random variable $X$ that can take only 2 values, $0$ or $1$. The probability of $X$ taking $1$ is denoted by $p$, while $0$ is $q=1-p$. Each test is also called a Bernoulli trail.
+
+The expectation, variance, skewness and excess kurtosis of the distribution are $p$, $pq$, $\dfrac{q-p}{\sqrt{pq}}$ and $\dfrac{1-6pq}{pq}$, respectively.
+
 \section{Binomial Distribution}
 
+It is assumed that Bernoulli trails are tested repeatedly. Each bernoulli trail has a probability of $p$ to take value $1$, and $q=1-p$ to take value $0$. The test is carried out $n$ times. The number of the tests returning $1$ is a random variable $0\leq X \leq n$. The discrete distribution of $X$ taking values $0, \ldots, n$ follows binomial distribution as follows
+\begin{eqnarray}
+  f(x) &=& P(X=x) \nonumber \\
+  &=& \left(\begin{array}{c}
+              n \\
+              x
+            \end{array}\right)p^x(1-p)^{n-x} \nonumber \\
+  &=& \dfrac{n!}{x!(n-x)!}p^x(1-p)^{n-x}
+\end{eqnarray}
+
+Bernoulli distribution can be taken as a special case of binomial distribution with $n=1$ at $x=1$. The expectation, variance, skewness and excess kurtosis of the distribution are $np$, $npq$, $\dfrac{q-p}{\sqrt{npq}}$ and $\dfrac{1-6pq}{npq}$, respectively.
+
 \section{Normal Distribution}
+
+Normal distribution, also known as Gaussian distribution, is a continuous distribution, and it is one of the most widely used assumption of random noise. According to central limit theorem, many aggregated values can be characterized by normal distribution.
+
+The PDF of the normal distribution is given by
+\begin{eqnarray}
+  f(x) &=& \dfrac{1}{\sigma\sqrt{2\pi}}e^{-\dfrac{(x-\mu)^2}{2\sigma^2}} \nonumber
+\end{eqnarray}
+where $\mu$, $\sigma^2$ are the mean and variance of the distribution, respectively. The skewness and excess kurtosis of normal distribution are zero.
+
+Let $X$ be a random variable following normal distribution with mean $\mu$ and variance $\sigma^2$. This can be denoted by $X\sim\mathcal{N}(\mu, \sigma^2)$. Let $Z=\dfrac{X-\mu}{\sigma}$, and $Z$ would be a standard normal distribution with mean $0$ and variance $1$.
+
+
+
+
+
+
+
+
+
 
 \subsection{Single Normal Distribution}
 
@@ -28,4 +63,4 @@ Commonly seen distributions, both discrete and continuous, are introduced here. 
 
 \section{$F$ Distribution}
 
-\section{Weibull Distribution}
+\section{Weibull Distribution} 
