@@ -51,13 +51,13 @@ In the opened file, use \verb|Esc| and \verb|i|/\verb|a| to switch between norma
 
 The above basic commands and their relationships are summarized in Fig.~\ref{ch:tfe:fig:vimbasicmodeswitching}. A flowchart to create/open, edit, save, and quit a text file using the aforementioned commands are given in Fig.~\ref{ch:tfe:fig:vimbasicoperationflowchart}.
 
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=250pt]{chapters/ch-text-file-editing/figures/vimbasicmodeswitching.png}
 \caption{Mode switching between normal mode and insert mode, and basic functions associated with the modes.} \label{ch:tfe:fig:vimbasicmodeswitching}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=250pt]{chapters/ch-text-file-editing/figures/vimbasicoperationflowchart.png}
 \caption{A flowchart for simple creating, editing and saving of a text file using \textit{Vim}.} \label{ch:tfe:fig:vimbasicoperationflowchart}
@@ -202,7 +202,7 @@ William Shakespeare (bapt. 26 April 1564 – 23 April 1616) was an English playw
 He is often called England's national poet and the ``Bard of Avon'' (or simply ``the Bard'').
 \end{shortbox}
 
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=250pt]{chapters/ch-text-file-editing/figures/vimdemo1.png}
 \caption{A piece of text of ``William Shakespeare'', for demonstration.} \label{ch:tfe:fig:vimdemo1}
@@ -291,7 +291,7 @@ where \verb|hlsearch| enables highlighting all matching results in the text, and
 Keys \verb|n| and \verb|N| is used to navigate through the searching result, and \verb|zz| is used to pin cursor position in the central of the screen. They are mapped to \verb|-| and \verb|=| in \textit{vimrc}. Notice that they can also be used as motion together with delete/cut, change and copy as given in Table \ref{ch:tfe:tab:deletecut}. Many users in the community have posted their recommended \textit{Vim} user profile configurations, which could be good references when setting up the configurations of your own.
 
 With the above setup, searching for ``he'' using \verb|/he| leads to the following result given in Fig.~\ref{ch:tfe:fig:vimdemo2}.
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=250pt]{chapters/ch-text-file-editing/figures/vimdemo2.png}
 \caption{Search ``he'' in the piece of text of ``William Shakespeare''.} \label{ch:tfe:fig:vimdemo2}
@@ -316,7 +316,7 @@ The three visual modes of \textit{Vim}, namely ``visual'', ``visual-line'' and `
 
 Use \verb|v| to enter the visual mode, then navigate the cursor to select a block of text. This allows the user to select text between any two characters. An example is given by Fig. \ref{ch:tfe:fig:vimvm1}. Alternatively, use \verb|V| to enter the visual-line mode where multiple lines can be easily selected, and use \verb|<ctrl>+v| to enter visual-block mode to select a rectangular block of text.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=100pt]{chapters/ch-text-file-editing/figures/vimvm1.png}
 	\caption{An example of visual mode where a block of text is selected.} \label{ch:tfe:fig:vimvm1}
@@ -418,31 +418,31 @@ noremap K :res-2<CR>
 
 Apart from \textit{Vim}, many other text editors are also widely used in Linux, each with different features. For demonstration purpose, \textit{Vim} and other text editors are used to open a bash shell script that calculates the first 10 elements of Fibonacci series.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=4in]{chapters/ch-text-file-editing/figures/vim_fib.png}
 	\caption{\textit{Vim} (with user's profile customization as introduced in this chapter).}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=4in]{chapters/ch-text-file-editing/figures/nano_fib.png}
 	\caption{\textit{Nano}.}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=4in]{chapters/ch-text-file-editing/figures/emacs_fib.png}
 	\caption{\textit{Emacs}.}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=4in]{chapters/ch-text-file-editing/figures/gedit_fib.png}
 	\caption{\textit{Gedit}.}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=4in]{chapters/ch-text-file-editing/figures/vscode_fib.png}
 	\caption{\textit{Visual Studio Code}.}

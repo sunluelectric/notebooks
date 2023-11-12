@@ -24,7 +24,7 @@ The attacks can be divided into the following categories.
 	\item Denial of Service (DoS). The attacker overwhelms a system and paralyzes its service by sending a lot of requests to the system, more than it can handle.
 	\item Network Sniffing. The attacker passively logs information from the internet, and use them for future attacks.
 	\item TEMPEST (Van Eck phreaking). The attacker collects and analyses data measured from electromagnetic emissions of devices such as mobile phones, and decode information from the measurements.
-	\item Social Engineering. The attacker gathers information of the victims by cheating, phishing emails, etc. 
+	\item Social Engineering. The attacker gathers information of the victims by cheating, phishing emails, etc.
 \end{itemize}
 
 To protect the users from the attacks, we need both computer security and communication security. This chapter focuses on computer security, specifically OS security.
@@ -33,12 +33,11 @@ To protect the users from the attacks, we need both computer security and commun
 
 Linux machine layers are shown in Fig. \ref{ch:ossec:fig:layerstructure}. Machines of other OS may adopt a different structure, but the essence remains similar. It is impractical to secure every component of a system (hardware, OS kernel, OS services, application services, user interface, users, etc.) with a singular universal protection method.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=200pt]{chapters/ch-computer-security-basics/figures/os_layer.png}
 	\caption{Layer structure of an operating system.} \label{ch:ossec:fig:layerstructure}
 \end{figure}
-
 
 A more widely accepted approach is to implement a layered security architecture. In this paradigm, the system is segregated into distinct layers such as the hardware layer, the OS layer, and the application layer. Each layer employs its own security mechanisms targeting specific vulnerabilities.
 
@@ -51,7 +50,7 @@ Among all these layers, securing the OS is particularly crucial for several reas
 A system is considered secure if the following criteria are met.
 \begin{itemize}
 	\item It is secure upon booting, and
-	\item It never perform an action so that it can become insecure from a secure condition. 
+	\item It never perform an action so that it can become insecure from a secure condition.
 \end{itemize}
 Notice that just for clarification, there are some slight differences between two terminologies, ``secure'' and ``trusted'' as follows. System security is the ultimate goal. A system is either secure or insecure, and we want it to stay secure all the time. Trustworthy, on the other hand, is a graded feature that we use to describe an entity in the system. We can, for example, say which parts (services, users, etc.) of the system is trustworthy, and to what extent they can be trusted.
 
@@ -83,7 +82,7 @@ In general, the requirements of secure computer systems include
 	\item Integrity. The data can be trusted, and it cannot be modified by unauthorized entities.
 	\item Accountability. It is possible to trace and audit the actions performed by users and programs.
 	\item Availability. The system should be resistant to attacks and consistently provide services.
-\end{itemize} 
+\end{itemize}
 The primary objective of studying computer security is to ensure that the aforementioned requirements are consistently met and upheld. Regrettably, there is no systematic approach guaranteeing that these requirements are met at all times.
 
 \section{Elements of Security}
@@ -97,18 +96,49 @@ Key components of security under study include:
 
 \subsection{Security Policy}
 
-A security policy establishes the standards and objectives that a system must adhere to, outlining the rules that both users and programs are expected to follow. Deviations from these stipulations or breaches of the rules can compromise the security of the system. It's important to note that a security policy often comprises a set of sub-policies, which may be categorized into areas like confidentiality policies, integrity policies, and so on.
+A security policy establishes the standards and objectives that a system must adhere to, outlining the rules that both users and programs are expected to follow. Deviations from these stipulations or breaches of the rules can compromise the security of the system. A security policy often comprises a set of sub-policies, which may be categorized into areas like confidentiality policies, integrity policies, and so on.
 
-For the sake of clarity and to ensure no misunderstandings arise, it's crucial for the security policy to be articulated in a precise and consistent manner. Instead of relying on colloquial or vague terminology, it's advisable to describe the security policy using more abstract or formalized methods. We use security policy model to formally and precisely describe the security policy. Security policy model should be ambiguity-free and easy to comprehend. Though it does not assume or restrict the security mechanism to be used to realize the policy, it should give some guidance to how the mechanisms can be designed. At the minimum, it should make sure that there is such security mechanism that can fulfill the policy.
+Different systems may implement different policies. There are two commonly seen security policies that concern most of the systems. They are
+\begin{itemize}
+  \item Confidentiality policies: preventing the unauthorized disclosure of information.
+  \item Integrity policies: preventing the unauthorized alteration of information.
+\end{itemize}
+
+For the sake of clarity and to ensure no misunderstandings arise, it's crucial for the security policy to be articulated in a precise and consistent manner. Instead of relying on colloquial or vague terminology, it's advisable to describe the security policy using more abstract or formalized methods. 
+
+We use security policy model and policy language to formally and precisely describe the security policy. Security policy model should be ambiguity-free and easy to comprehend. Though it does not assume or restrict the security mechanism to be used to fulfill the policy, it should give some guidance to how the mechanisms can be designed. At the minimum, it should make sure that the policy is reachable.
+
+More details of security policy, especially security model, is introduced in later sections. There are classic security models such as HRU model that has been proved useful and inspiring.
 
 \subsection{Security Mechanism}
 
+Security mechanisms are the means and tools to fulfill the security policies. Security mechanisms can be widely divided into 3 types:
+\begin{itemize}
+  \item Prevention: (most commonly seen) protect system from being damaged.
+  \item Detection: detect potential risks and damages.
+  \item Recovery: recover a compromised system back to a secure system.
+\end{itemize}
 
+Different systems uses different security mechanisms to fulfill different security policies. Some important concepts are introduced as follows.
 
+Access control and reference monitoring. One of the most commonly used security mechanism is access control which monitors and controls the accessibility of a resource (known as objects) from a user or a program (known as subjects). Access control is managed by implementing reference monitoring (barely a concept). Reference monitoring is done using reference monitor, which refers to the combination of hardware and software that practices access control. Its architecture is given in Fig. \ref{ch:ossec:fig:reference_monitor}.
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=200pt]{chapters/ch-computer-security-basics/figures/reference_monitor.png}
+	\caption{Reference Monitor Architecture.} \label{ch:ossec:fig:reference_monitor}
+\end{figure}
 
+Another important concept is security kernel. Security kernel refers to a small piece of code running in the kernel of OS that concerns system security.
 
+Both reference monitor and security kernel shall have the following features:
+\begin{itemize}
+  \item Completeness. They must be active all the time, and no process can bypass them.
+  \item Isolation. Their content cannot be modified by unauthorized personals.
+  \item Verification. They can be audited, and their effectiveness can be proved and verified. (This implies that their realization cannot be too complex.)
+\end{itemize}
 
+\subsection{Security Assurance}
 
 
 
@@ -129,7 +159,7 @@ Access control is a mechanism that assists systems in determining whether to gra
 
 We use access control matrix to describe the association of subject and object. A demonstrative graph is given in Fig. \ref{ch:ossec:fig:acmatrix}. In this demonstration, the same ``read'', ``write'' and ``execute'' permissions as introduced in Section \ref{ch:fm:sec:accesscontrollist} are used.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-computer-security-basics/figures/acmatrix.png}
 	\caption{A demonstration of access control matrix.} \label{ch:ossec:fig:acmatrix}

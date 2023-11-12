@@ -79,7 +79,7 @@ Speaking of project proposal, development, testing and delivery cycle, it is fai
 	\item (Follow-up) maintain the solution.
 \end{enumerate}
 The philosophy behind waterfall, as its name indicates, is to ``follow the procedures and do not turn back''. When a previous step is considered completed, it is completed and should not be revoked or revised. This is demonstrated by Fig. \ref{ch:cicd:fig:waterfall}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ap/figures/waterfall.png}
 	\caption{Waterfall model.} \label{ch:cicd:fig:waterfall}
@@ -96,7 +96,7 @@ For a new feature to be added into the existing system, it is possible to simply
 Agile is the counterpart of waterfall. It is proposed to tackle the aforementioned issue: rapid change of requirements and adaptations to new technology and tools. It allows continuous integration and deployment of new features into the system in a convenient and systematic way, without introducing blackout.
 
 In agile architecture, each feature is separately modularized. Each feature, before deploying and integrating into production environment, circulates in its own ``development and testing circle'', where it can be tested and reviewed iteratively by the developers and the users audit team, as shown below in Fig. \ref{ch:cicd:fig:agile}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ap/figures/agile.png}
 	\caption{Agile model.} \label{ch:cicd:fig:agile}
@@ -138,7 +138,7 @@ CI/CD is introduced in this section. As a start, pipeline is introduced. Pipelin
 \subsection{Pipeline}
 
 Pipeline is a set of data processing elements in a queue, where the output of the upper stream process is the input of the down stream process. An example is shown in Fig. \ref{ch:cicd:fig:pipeline}. By using a pipeline and let multiple pipelines at different execution phase run in parallel, the efficiency of the system is increased.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ap/figures/pipeline.png}
 	\caption{Pipeline.} \label{ch:cicd:fig:pipeline}
@@ -153,7 +153,7 @@ In the development of a sprint, new codes are rapidly developed, and they are ra
 Conventionally, the integration of a new feature requires involvement from multiple parties. An example is given in Fig. \ref{ch:cicd:fig:conventionalintegration}. It includes the developer who program the software following users (or business analysts) requests, the integration team who integrates the new feature with the existing system and compile the code into packages, and the operations team who upload the new system into the pre-prod environment for real data testing, and the testers who audit the output of the program running in the pre-prod environment.
 
 Should there be any error along the way, the code is roll back the developer team for trouble shooting. When the new system with the updated code survives pre-prod environment, it is then pushed to the production environment.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/conventionalintegration.png}
 	\caption{CI of a new feature.} \label{ch:cicd:fig:conventionalintegration}
@@ -190,13 +190,13 @@ CD is a software development practice that allows software to be released to pro
 \end{itemize}
 
 Ideally, as soon as a version of packages is released by CI, CD can automatically have it deployed and tested, and return the testing results to CI without human interaction. This is shown by Fig. \ref{ch:cicd:fig:cd}. In this CI/CD implementation, the developer is playing a more comprehensive role than what is shown in Fig. \ref{ch:cicd:fig:conventionalintegration}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/cd.png}
 	\caption{CI and CD.} \label{ch:cicd:fig:cd}
 \end{figure}
 
-Under the framework of CI/CD in Fig. \ref{ch:cicd:fig:cd}, the developer not only develops the new feature, but also integrates the features with the help of version control and branch management tool \textit{Git}, compiles the packages using build server, deploys the new packages in the testing environment by preparing machine-readable instruction files, and finally tests the new features using pre-configured test cases in the machine-readable testing scripts. 
+Under the framework of CI/CD in Fig. \ref{ch:cicd:fig:cd}, the developer not only develops the new feature, but also integrates the features with the help of version control and branch management tool \textit{Git}, compiles the packages using build server, deploys the new packages in the testing environment by preparing machine-readable instruction files, and finally tests the new features using pre-configured test cases in the machine-readable testing scripts.
 
 Since the operation team joins the developers team, they are now called the DevOps team. The CI/CD framework shown in Fig. \ref{ch:cicd:fig:cd} is known as the CI/CD pipeline which represents an end-to-end software development lifecycle (SDLC) within its ecosystem.
 
@@ -204,9 +204,9 @@ This CI/CD framework enables fast deployment of new packages. Large IT companies
 
 \section{\textit{GitHub} Action (Part I: Basics)}
 
-\textit{GitHub} has been an amazing platform for managing software projects, especially open-source collaborative projects. 
+\textit{GitHub} has been an amazing platform for managing software projects, especially open-source collaborative projects.
 
-In the early days when CI/CD was not enabled in \textit{GitHub}, developers used third-party CI/CD tools such as Jenkins and Travis CI in conjunction with \textit{GitHub} for automatic integration and deployment. Lately, \textit{GitHub} introduced \textit{GitHub} Action (for short, Action), its own CI/CD solution, as a response to developers' requests. 
+In the early days when CI/CD was not enabled in \textit{GitHub}, developers used third-party CI/CD tools such as Jenkins and Travis CI in conjunction with \textit{GitHub} for automatic integration and deployment. Lately, \textit{GitHub} introduced \textit{GitHub} Action (for short, Action), its own CI/CD solution, as a response to developers' requests.
 
 Action is the practice of CI/CD on GitHub. In short, it allows the developers to create automatic workflows tied to \textit{GitHub} events. Action is widely used to automate the following tasks:
 \begin{itemize}
@@ -242,7 +242,7 @@ Another use case for Action for individual projects is that when a new code is p
 \subsection{Framework}
 
 In Action, the developer needs to prepare CI/CD pipelines known as workflows, either by himself or from Actions Marketplace (a platform where commonly used workflows are shared). The backbone of a workflow is YAML files that describe the environment, the trigger, and the list of actions to execute. When an event such as a pull request happens, the associated workflow is triggered and executed. A demonstrative plot is given in Fig. \ref{ch:cicd:fig:actionframework}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/action_framework.png}
 	\caption{Action framework.} \label{ch:cicd:fig:actionframework}
@@ -299,7 +299,7 @@ The running environment also affects the cost. It is often more expensive if the
 
 As introduced in the previous section, the key to an Action includes defining the triggers and preparing the associated workflows for the triggers. Of course, the developer also needs to map the triggers with the workflows. More details are introduced in this section.
 
-The workflow files are used to define the triggers as well as the associated workflows. They are YAML format files following specific syntax that illustrates environment configurations requirements, jobs, and job steps. They are stored under \verb|.github/workflows| and are managed by the developers just like any other source code. Notice that there are certain events that would trigger only if their associated workflow files exist in the project repository default branch (usually \verb|main| or \verb|master| branch). 
+The workflow files are used to define the triggers as well as the associated workflows. They are YAML format files following specific syntax that illustrates environment configurations requirements, jobs, and job steps. They are stored under \verb|.github/workflows| and are managed by the developers just like any other source code. Notice that there are certain events that would trigger only if their associated workflow files exist in the project repository default branch (usually \verb|main| or \verb|master| branch).
 
 As an example, here is a piece of workflow file from \textit{GitHub} document. \label{code:githubactionsdemo}
 \begin{lstlisting}
@@ -483,7 +483,7 @@ jobs:
       run: |
         conda install pytest
         pytest
-        
+
 \end{lstlisting}
 
 This workflow example defines one job, \verb|build-linux|. The job defines five steps, \verb|Set up Python 3.10|, \verb|Add conda to system path|, \verb|Install dependencies|, \verb|Lint with flake8| and \verb|Test with pytest|. Each step is associated with one \verb|run| that executes a command in the shell, for example,
@@ -519,7 +519,7 @@ Push the repository with the workflow file to \textit{GitHub}. On \textit{GitHub
 Some Action workflows can be as simple as a few lines of shell commands, for example, \verb|GitHub Action Demo| given on page \pageref{code:githubactionsdemo}. Others, however, can be extremely complicated that includes a large set of implementation code, test cases, building, checking for vulnerabilities, packaging, etc. An example of such complicated Action flow is \verb|actions/checkout@v3| which was used in the other example \verb|Python Package using Conda| given in page \pageref{code:pythonpackageusingconda}.
 
 More details of the action can be found at \textit{github.com/actions/checkout}. As of this writing, the latest version of the code is \verb|v4.1.0|, and in its repository it has a long list of files in TypeScript (an enhanced superset of JavaScript), YAML, JSON, shell scripts and other languages, and it is still under development. A screenshot is given in Fig. \ref{ch:cicd:fig:actioncheckout}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/action_checkout.png}
 	\caption{CI and CD.} \label{ch:cicd:fig:actioncheckout}

@@ -21,21 +21,21 @@ The technology used to deploy and manage containers is known as ``containerizati
 As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware is corresponding with the physical resources in kitchen, such as the cooktop, gas, etc. The OS is corresponding with the person who manages the kitchen, say a cook. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries correspond with the skill sets or specific cookers for the dish. Finally, the APP is corresponding with the expected dish.
 
 In the most simple configuration, a dedicated machine is used to run an APP. This is like constructing a dedicated kitchen and hiring a dedicated cook for each dish. The cook is trained to master all necessary skills required for that specific dish. This is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-virtualization-and-containerization/figures/acookinakitchen.png}
 	\caption{PC implementation: a cook in a kitchen.} \label{ch:vac:fig:acookinakitchen}
 \end{figure}
 
 In a VM implementation, a larger and more capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the kitchen can be utilized more effectively.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering \includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/manycooksinakitchen.png}
 	\caption{VM implementation: many cooks in a kitchen, each with a different cookbook.} \label{ch:vac:fig:manycooksinakitchen}
 \end{figure}
 
 While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided from where you can find all information required to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/multitaskcook.png}
 	\caption{Container implementation: one cook in a kitchen, handling multiple dishes, each has a cookbook and stays in its own pan.} \label{ch:vac:fig:multitaskcook}
@@ -66,7 +66,7 @@ There are different virtualization architectures on the market. Widely seen comp
 	\item Host OS. The host that runs VMM.
 	\item Virtual Machine (VM), a virtual system that runs in an virtualized isolated environment.
 \end{itemize}
-VMM, host OS and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}. 
+VMM, host OS and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
 
 Different virtualization techniques are used in different types of VMMs. They can be widely divided into 3 categories.
 \begin{itemize}
@@ -75,7 +75,7 @@ Different virtualization techniques are used in different types of VMMs. They ca
 	\item Hardware-assisted virtualization. The physical processors provide some specific services to handle some of the functionality of VMM. Some functions requested by the guest OS, after passing to VMM, is directly run on the hardware, thus enhancing system performance.
 \end{itemize}
 
-VMM is able to virtualize hardware resources such as CPU, memory and I/O. For virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU. 
+VMM is able to virtualize hardware resources such as CPU, memory and I/O. For virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU.
 
 Notice that unlike the host OS and the hypervisor that can run in privileged mode, guest OS does not run in privileged mode. If the request of the guest OS contain privileged instructions, the CPU will deny the instructions. When that happens, an exception will be raised to the VMM which will take care of the privileged instructions sequentially. Since hypervisor runs in privileged mode, it can execute those instructions.
 
@@ -94,7 +94,7 @@ For I/O virtualization, the development trend is that I/O operations will be les
 
 Containerization is an alternative virtualization approach to VM that can also virtualize an independent workspace for an application. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. By saying ``container'', we are referring to one or multiple of the following 3 components: container runtime, container engine, and container orchestration.
 
-Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to balance API calls, automatically scale up and down the number of running containers, and restart containers upon failure. One of the most widely used container orchestrations is ``kubernetes''. 
+Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to balance API calls, automatically scale up and down the number of running containers, and restart containers upon failure. One of the most widely used container orchestrations is ``kubernetes''.
 
 Container runtime is definitely vital in every containerization implementation. Container engines and container orchestrations must have container runtime built-in. However, the users rarely directly talk to the container runtime. Container engine is the interface and management tool of the container runtime, from where the developer can monitor and control the containers manually. Container engines are widely used especially in small projects or in the development environment. For massive deployment of containers in enterprise-level applications, container orchestration can become handy. In such a case, the container orchestration calls the container engine via API (nowadays a container orchestration may also talk to container runtime directly), instructing it on how the containers should be deployed.
 
@@ -174,20 +174,20 @@ which is a combination of \verb|docker create| and \verb|docker start|. Docker w
 $ docker run -it --name test-alpine alpine
 \end{lstlisting}
 where \verb|-i| stands for ``interactive'', which keeps the container's standard input (i.e., the console in this example) open so that the user can actively interact with the container. Option \verb|-t| allocates a pseudo-TTY to the container. TTY stands for ``TeleTYpewriter'', which enforces the I/O of the container following the typical terminal format and allows the user to interact with the container like a traditional terminal, hence making the interactive interface a bit more user-friendly. Finally, \verb|--name| assigns a name to the container. Without an assigned name, docker will assign a random name to the container.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/dockerrunexp.png}
 	\caption{An example of running \textit{apline} container, with interactive TTY and name \textit{test-apline}.} \label{ch:vac:fig:dockerrunexp}
 \end{figure}
 
 It can be seen from Fig. \ref{ch:vac:fig:dockerrunexp} that once the container is started, the user can interact with the container via shell, and perform actions such as listing items in the current directory in the container. While keeping the container running, open another terminal and use \verb|docker container ls|. The container \verb|test-alpine| shall appear in the list, as shown in Fig. \ref{ch:vac:fig:dockerrunexppart2}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=250pt]{chapters/ch-virtualization-and-containerization/figures/dockerrunexppart2.png}
 	\caption{List the running container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart2}
 \end{figure}
 After exiting from Fig. \ref{ch:vac:fig:dockerrunexp} (by using \verb|exit| in \textit{alpine}), the container will transfer its status from ``running'' to ``exited'', as shown in Fig. \ref{ch:vac:fig:dockerrunexppart3}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=250pt]{chapters/ch-virtualization-and-containerization/figures/dockerrunexppart3.png}
 	\caption{List the exited container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart3}
@@ -261,7 +261,7 @@ $ docker stop <container>
 $ docker kill <container>
 $ docker restart <container>
 \end{lstlisting}
-respectively. The difference between \verb|docker stop| and \verb|docker kill| concerns with how the OS manages process. When \verb|docker stop| is used, a  \verb|SIGTERM| signal is sent to the main process that the container runs. The container still has a little bit of time (maximum $10$ seconds) to do terminating jobs and clean up. When \verb|docker kill| is used, \verb|SIGKILL| signal is sent to the process, and the process is terminated immediately. When a container is stopped, it enters exited status. 
+respectively. The difference between \verb|docker stop| and \verb|docker kill| concerns with how the OS manages process. When \verb|docker stop| is used, a  \verb|SIGTERM| signal is sent to the main process that the container runs. The container still has a little bit of time (maximum $10$ seconds) to do terminating jobs and clean up. When \verb|docker kill| is used, \verb|SIGKILL| signal is sent to the process, and the process is terminated immediately. When a container is stopped, it enters exited status.
 
 To remove an exited container or all exited containers, use
 \begin{lstlisting}
@@ -332,7 +332,7 @@ where \verb|<source>| and \verb|<destination>| refer to the path to the source a
 \noindent \textbf{Commit Container to Image}
 \vspace{0.1in}
 
-A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. Notice that this is generally not recommended. Images shall be created mostly from Dockerfile, as will be introduced in Section \ref{ch:vac:sec:di}. 
+A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. Notice that this is generally not recommended. Images shall be created mostly from Dockerfile, as will be introduced in Section \ref{ch:vac:sec:di}.
 
 To create an image from a container, use
 \begin{lstlisting}
@@ -347,7 +347,7 @@ where \verb|docker commit| command saves the container's file changes or setting
 A container can be configured accessible from not only the host machine but also other computers in LAN or the Internet. In a typical web service application, the host machine and the containers are often designed following the architecture similar with Fig. \ref{ch:vac:fig:containerwebserverarchitecture}. Notice that in practice, the load balancer and the containers may or may not run on the same physical machine.
 
 The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP instances such as \textit{apache} or \textit{nginx} shall run in the containers distributively.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/containerwebserverarchitecture.png}
 	\caption{A simplified architecture where containers are used to host the web service.} \label{ch:vac:fig:containerwebserverarchitecture}
@@ -476,7 +476,7 @@ The Dockerfile is a text document that serves as the blueprint for constructing 
 \end{enumerate}
 A more detailed step-by-step guidance example is given later. The relationship between Dockerfile, image and container is illustrated in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notably, the Dockerfile itself isn't included within the resulting image.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/dockerfiletoimage.png}
 	\caption{A demonstration of how Dockerfile, image and container link to each other.} \label{ch:vac:fig:dockerfiletoimage}
@@ -564,7 +564,7 @@ EXPOSE 8080
 CMD ["node", "index.js"]
 \end{lstlisting}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/dockerlayerdemo.png}
 	\caption{A demonstration of docker image layer structure using the aforementioned example.} \label{ch:vac:fig:dockerlayerdemo}
@@ -627,26 +627,26 @@ $ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --name portainer --restar
 where ports 8000, 9000 and 9443 are used for hosting HTTP traffic in development environments, hosting web interface, and hosting HTTPS or SSL-secured services, respectively. The \verb|docker.sock| is the socket that enables the docker server-side daemon to communicate with its command-line interface. The image name for Portainer community edition (distinguished form the business edition) is \verb|portainer/portainer-ce|.
 
 Use \verb|https://localhost:9443| to login to the container. The following page in Fig. \ref{ch:vac:fig:portainerlogin} should pop up in the first-time login, asking the user to create and administration user.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/portainerlogin.png}
 	\caption{Portainer login page to create admin user.} \label{ch:vac:fig:portainerlogin}
 \end{figure}
 
 After creating the admin user and logging in, the status of images, containers and many more can be monitored via the dashboard, as shown in Figs. \ref{ch:vac:fig:portainerdashboard1}, \ref{ch:vac:fig:portainerdashboard2} and \ref{ch:vac:fig:portainerdashboard3}. Notice that in Fig. \ref{ch:vac:fig:portainerdashboard3}, using the ``quick action'' buttons, the user can check the specifics of the container and interact with its console, just like using \verb|docker container inspect| and \verb|docker exec|
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/portainerdashboard1.png}
 	\caption{Portainer dashboard overview of docker servers.} \label{ch:vac:fig:portainerdashboard1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/portainerdashboard2.png}
 	\caption{Portainer dashboard overview in a docker server.} \label{ch:vac:fig:portainerdashboard2}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/portainerdashboard3.png}
 	\caption{Portainer dashboard list down of all running containers.} \label{ch:vac:fig:portainerdashboard3}

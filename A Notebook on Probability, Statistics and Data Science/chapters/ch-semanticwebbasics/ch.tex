@@ -2,23 +2,23 @@
 
 Ontology is the philosophical study of the nature of being, existence, or reality. In the context of the Semantic Web, ontology refers to a formal specification of concepts, relationships, and categories of a particular domain or knowledge base. Ontology allows the creation of a shared understanding of a particular domain, enabling machines to interpret and reason about data more effectively. Ontology is essentially about “what is everything”. It is about how we as humans mark our existence, and how we preserve and add to our knowledge base for the generations to come.
 
-Ontology inspires people in computer science how we can store and exchange information more efficiently by building an internet based knowledge base. The solution is called the semantic web. An internet powered by semantic web (together with other technologies) defines web 3.0.
+Ontology inspires people in computer science of how we can store and exchange information more efficiently by building an internet-based knowledge base. The solution is called the semantic web. An internet powered by semantic web (together with other technologies) defines Web 3.0.
 
 \section{Web of Data}
 
-The Internet, as we call it today, is a technology that enables information exchange between machines, as well as between machines and human beings. With the power of the Internet, humans can obtain the information they need from remote servers, databases, or knowledge bases.
+The Internet, as we call it today, is a technology that enables information exchange between machines, as well as between machines and humans. With the power of the Internet, humans can obtain the information they need from remote servers, databases, or knowledge bases.
 
-Initially, this information exchange was difficult, and professional computer skills were required to operate the Internet and its human-machine interface. Nowadays, everyone can access the Internet by just using a graphical browser. Public knowledge bases like Wikipedia make obtaining information much easier.
+Initially, this information exchange was difficult, and professional computer skills were required to understand and use the Internet and its human interface. Nowadays, everyone can access the Internet by just using a graphical browser. Public knowledge bases like Wikipedia make obtaining information much easier.
 
-Following this trend, AI knowledge bases combined with human-readable semantic web technologies such as RDF and OWL, will become more and more popular and provide additional help for knowledge transfer and sharing.
+Following this trend, AI knowledge bases combined with human-readable semantic web technologies such as RDF and OWL, will become more and more popular and further boost knowledge transfer and sharing efficiency.
 
 \subsection{Web 1.0 and 2.0}
 
-In the age of Web 1.0, knowledge was stored on individual servers, often in a static manner. Users could open a browser and check the knowledge as it was presented in the form designed by the server owner. It was essentially a one-way data transmission. The experts provide information, and the ordinary users consume the information.
+In the age of Web 1.0, knowledge was stored on individual servers, often in a static manner. Users could open a browser and check the knowledge as it was presented in the form designed by the server owner. It was essentially a one-way data transmission. The experts provide information, and the ordinary users consume the information. Examples of Web 1.0 implementations include static news websites.
 
-In the age of Web 2.0, thanks to more advanced communication technologies, users can interact with web service providers. They can search and filter data from the servers and even upload their own data to the servers and share it with others. The Internet became easier and more flexible to use for information exchange, and data transfer became bidirectional. Ordinary users are both providers and consumers of information on the Internet. Databases are used in the backend which allows the user to push and pull data from the server.
+In the age of Web 2.0, thanks to more advanced communication technologies, users can interact with web service providers. They can search and filter data from the servers and even upload their own data to the servers and share it with others. The Internet became easier and more flexible to use for information exchange, and data transfer became bidirectional. Ordinary users are both providers and consumers of information on the Internet. Databases are used in the backend which allows the user to push and pull data from the server. Examples of Web 2.0 implementations include Blog, Twitter, YouTube and Weibo.
 
-Web 2.0 is useful but still far from perfect, especially given the background of industry 4.0 and data-driven everything.
+Web 2.0 is extremely popular and successful. Yet, there are still things to be improved, especially considering recent advent in how we collect and use data in industry 4.0 and data-driven-everything eras.
 
 One of the biggest challenges that we encounter with Web 2.0 is how to quickly locate the information we want hidden among the vast amount of data on the Internet. Among all the information available, which is important, and which is redundant? Humans have contextual knowledge and experience to solve the problem, but it will take forever.
 
@@ -30,39 +30,34 @@ Today most of the information on the Internet is stored in HTML format. HTML tel
 
 The ultimate goal of Web 3.0 is to allow more efficient information search and transfer using the Internet, given the vast amount of existing data hosted on distributed servers and sensors.
 
-In order to search, exchange, and abstract useful information from distributed sources in an efficient manner, there are at least two things we can do:
-
+In order to search, exchange, and abstract useful information from distributed sources in an efficient manner, there are at least the following two development trends that we can come up with naturally:
 \begin{itemize}
-  \item Let the machine do the job. The AI should be smart enough to precisely capture what the user wants and get back to him with useful and accurate results.
-  \item Make the information stored on the Internet more readable for both humans and machines, i.e., make the information semantic (meaningful).
+  \item Let the machine remember all the knowledge. The AI should be smart enough to precisely capture what the user wants and get back to him with useful and accurate results. This leads to chatbots and copilots, which have become popular recently thanks to the new AI model, the transformer.
+  \item Create a powerful and flexible (NoSQL) database. Make the information in the database more readable for both humans and machines, i.e., make the information semantic. This leads to semantic web, which is one of the most important components of Web 3.0.
 \end{itemize}
 
-The above forms the fundamentals of Web 3.0. The first point leads to smart chatbot, and the second to semantic web.
+To create the powerful and flexible semantic web database, we need to formally express the semantics (meanings) of the information for everything put online. This helps both humans and machines to interpret information and decide whether it is relevant. This introduces the concept of the semantic web, which is a significant component of Web 3.0. In fact, semantic web is so important that it is often considered synonymous with Web 3.0, although the broader vision of Web 3.0 includes other features as well.
 
-Web 3.0 relies on advanced data storage, data searching, and data processing technologies. We need to develop powerful AI so that it can interpret the user demands, search for useful information in its knowledge base efficiently, and finally come back with a human-readable answer. For that, we need advanced natural language processing techniques, and efficient (and potentially online) AI training techniques to keep the sophisticated knowledge base up to date.
+Another feature of Web 3.0 that people often mention is distributed storage of information. Distributed storage has both advantages and disadvantages. On one hand, it provides higher resilience against data loss. On the other hand, it adds difficulty to the searching and collecting of information. Technologies like InterPlanetary File System (IPFS), blockchain, and distributed databases are being used to address these challenges. Distributed storage also brings challenge to semantic web, mainly on how to link and merge small semantic webs into a virtually centralized semantic web.
 
-In addition, we need to formally express the semantics (meanings) of the information for everything put online. This helps both humans and machines to interpret information and decide whether it is useful. This introduces the concept of the semantic web, which is a significant aspect of Web 3.0. In fact, semantics are so important that they are often considered synonymous with Web 3.0, although the broader vision of Web 3.0 includes other features as well.
-
-Distributed storage has both advantages and disadvantages. On one hand, it provides higher resilience against data loss. On the other hand, it adds difficulty to the searching and collecting of information. Technologies like IPFS, blockchain, and distributed databases are being used to address these challenges.
-
-This notebook focuses on the technologies used in semantic web, some of which such as RDF and OWL have already been implemented. We will see how we can use semantic web to collect and organize information, and from where how we can create a knowledge base for both humans and AI.
+This notebook focuses on the technologies used in semantic web such as RDF and OWL. We will see how we can use semantic web to collect and organize information, and create a knowledge base for both humans and AI.
 
 \subsection{Semantic Web Vision}
 
 How to make contents on the Internet meaningful to machines?
 
-Recall the 2 bullet points in the previous section. We always have the choice to use AI with powerful natural language processing capability. This of course relies on technologies in machine learning. We need to design ANN models that can be easily massively trained and it needs to be able to capture long text that humans usually use. With the development of transformer, this is becoming promising. There is another challenge though, which is that the knowledge base formed by AI is a black box, and cannot be interpreted by other machines with a different framework. In other words, you cannot build a knowledge base with AI and use it everywhere without any tuning. Transfer learning and knowledge distillation may help, but they also have constraints.
+Recall the bullet points in the previous section. We always have the choice to use AI with powerful natural language processing capability. This of course relies on technologies in machine learning. We need to design ANN models that can be easily massively trained and it needs to be able to capture long text that humans usually use. With the development of transformer, this is becoming promising. There is another challenge though, which is that the knowledge base formed by AI is a black box, and cannot be interpreted by other machines with a different framework. In other words, you cannot build a knowledge base with AI and use it everywhere without any tuning. Transfer learning and knowledge distillation may help, but they also have constraints.
 
-In the semantic web vision, we mainly focus on another approach, which is **annotating explicit semantic metadata to the existing content**. The semantic metadata shall be encoded the meaning of the content in a machine-readable way.
+In the semantic web vision, we mainly focus on the other approach, which is to create a powerful NoSQL database as the knowledge base. The database is ``semantic'' in the sense that it not only stores plain items and facts, but also the meaning and logic relationship behind the them. The semantic metadata shall be encoded the meaning of the content in a both human and machine-readable way.
 
 Semantic web approach is complementary with AI approach. It has some advantages:
 \begin{itemize}
   \item The knowledge is more transparent, unlike AI where the knowledge is hidden in the ANN as a black box.
-  \item The knowledge is reusable and scalable in a easier way than AI knowledge base which relies on knowledge distilling (reuse) and transfer learning (rescale).
+  \item The knowledge is reusable and scalable more easily than AI which relies on knowledge distilling and transfer learning.
   \item RDF and OWL, the tools we use to organize and store knowledge in semantic web, are more reader-friendly for both humans and machines.
 \end{itemize}
 
-Many research facilities and organizations have tried building semantic web for either global or specific domains. An example is DBPedia \textit{dbpedia.org}. The goal of DBPedia is to create something like Wikipedia, but semantic.
+Many research institutes and organizations have tried building semantic webs of different scales. An example is DBPedia \textit{dbpedia.org}. The goal of DBPedia is to create something like Wikipedia, but semantic.
 
 \subsection{Semantic Web Stack} \label{subsec:semanticwebstack}
 
@@ -75,9 +70,9 @@ A commonly seen semantic web stack looks like Fig. \ref{fig:semanticwebstack}. I
 	\label{fig:semanticwebstack}
 \end{figure}
 
-In the very bottom is the platform that hosts everything. It is also the representation of all the existing knowledge. Uniform Resource Identifier (URI) is the “address” that can be used to identify a information source. It can be in the form of an URL to the web page that introduces an item. For example, ``About: Semantic Web (dbpedia.org)'' \textit{dbpedia.org/page/Semantic_Web} is the URL to the defination of semantic web in DBPedia. The web page represents semantic web as part of the existing knowledge (this web page is not stand alone though, as later we will see that it links to other sources using linked data).
+In the very bottom there is the platform that hosts everything. It is also the representation of all the existing knowledge. Uniform Resource Identifier (URI) is the “address” that can be used to identify an information source. It can be in the form of an URL to the web page that introduces an item. For example, ``About: Semantic Web (dbpedia.org)'' \textit{dbpedia.org/page/Semantic_Web} is the URL to the defination of semantic web in DBPedia. The web page represents semantic web as part of the existing knowledge (this web page is not stand alone though, as later we will see that it links to other sources using linked data).
 
-N3, TURTLE, XML, JSON and Resource Description Framework (RDF) model are used to organize and store data. N3, TURTLE, XML and JSON is the syntax of the text, while RDF demonstrates the knowledge representation structure. The following is an example of using semantic web stored in TURTLE. Only the first few lines are given. Details to the syntax are introduced in later chapters.
+N3, TURTLE, XML, JSON and Resource Description Framework (RDF) model are used to organize and store data. N3, TURTLE, XML and JSON is the syntax of the text, while RDF demonstrates the knowledge representation structure. The following is an example of a semantic web represented by TURTLE syntax. Only the first few lines are given. Details to the syntax are introduced in later chapters.
 
 \begin{lstlisting}
 @prefix dbo:	<http://dbpedia.org/ontology/> .
@@ -97,7 +92,7 @@ dbr:Deborah_McGuinness	dbo:wikiPageWikiLink	dbr:Semantic_Web ;
 	dbo:academicDiscipline	dbr:Semantic_Web .
 \end{lstlisting}
 
-Information is tagged in RDF. RDF, together with RDF Schema (RDFS) provides limited semantics, and it created a foundation of semantic that allows Web Ontology Language (OWL) to build more complicated semantics on top of it, such as adding rules on restrictions and disjoint classes. In this sense, OWL is an extension of RDF.
+Information is tagged in RDF. RDF, together with RDF Schema (RDFS) which is an extension of RDF, provides basic semantics. They create a foundation for Web Ontology Language (OWL) which builds more complicated semantics on top of RDF/RDFS, such as adding rules, creating complex restrictions, and defining disjoint classes. In this sense, OWL is a further extension of RDF/RDFS.
 
 SPARQL (SPARQL Protocol and RDF Query Language) is the standard query language for querying and manipulating RDF data on the Semantic Web. It allows users to search, retrieve, and modify information stored in RDF format.
 

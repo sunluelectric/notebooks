@@ -2,11 +2,11 @@
 
 This chapter and the sequential chapters introduce R language, a widely used programming language for statistical computing and data visualization.
 
-This chapter focuses on the fundamental setup and basic operations such as the installation of R and RStudio, definition of data types, basic manipulation of data frames and basic data visualization methods. Chapter \ref{ch:r2} introduces advanced skills and tools widely used in data preparation and processing with R language. Finally, Chapter \ref{ch:r3} puts the use of R language in data science into practice.
+This chapter focuses on the fundamental setup and basic operations such as the installation of R and RStudio, data types, basic data frames manipulation and visualization methods. Chapter \ref{ch:r2} introduces advanced skills and tools widely used in data preparation and processing with R language. Finally, Chapter \ref{ch:r3} puts the use of R language in data science into practice.
 
 \section{R and RStudio Installation} \label{ch:r1:sec:rinstallation}
 
-\textit{R} is a programming language for statistical computing and visualization. It is widely used among statisticians and data miners for developing statistical software and carrying out data analysis. R is free and can be downloaded from \cite{r}, where more details about R can also be found.
+\textit{R} is a programming language for statistical computing and visualization. It is widely used among statisticians and data miners for developing statistical software and carrying out data analysis. R is free and can be downloaded from \cite{r}, from which more details about R can also be found.
 
 \textit{RStudio}, also known as \textit{Posit}, is an IDE widely used for R programming and testing. RStudio IDE is open-source and free of charge for personal use. It can be downloaded from \cite{rstudio}.
 
@@ -14,7 +14,9 @@ Download R and RStudio from the aforementioned web sites, and install them follo
 
 \section{R Packages Management} \label{ch:r1:sec:rpackage}
 
-R uses packages to boost its capability. R packages, both built-in and third-party, provide powerful functions and for data analysis and visualization in a well-defined format. Sometimes the packages come with demonstrative data frames. The packages can be published and shared online. CRAN is by far the most popular platform to store and share R packages.
+R uses packages to boost its capability. R packages, both built-in and third-party, provide powerful features for data analysis and visualization. Some packages may also come with demonstrative sample data frames. The packages can be published and shared online. CRAN is by far the most popular platform to store and share R packages.
+
+\subsection{Manage Packages with Built-in Functions}
 
 To install or remove a package, use
 \begin{lstlisting}
@@ -35,7 +37,9 @@ For example
 \begin{lstlisting}
 library(pacman)
 \end{lstlisting}
-After loading a package, the data frames and functions defined in that package can be used normally. Alternatively, use prefix \verb|<package>::<function>|, \verb|<package>::<dataframe>| to call the functions and data frames defined in a package without loading it. The later approach can become inconvenient when the function or data frame is used frequently. To unload a package, use
+After loading a package, the data frames and functions defined in that package can be used normally. Alternatively, use prefix \verb|<package>::<function>|, \verb|<package>::<dataframe>| to call the functions and data frames defined in a package without loading it. The later approach can become inconvenient when the function or data frame is used frequently. 
+
+To unload a package, use
 \begin{lstlisting}
 detach("package:<package>", unload = TRUE)
 \end{lstlisting}
@@ -44,7 +48,9 @@ For example,
 detach("package:pacman", unload = TRUE)
 \end{lstlisting}
 
-There are third-party packages that provide package management functions. The package \verb|pacman| is such an example. With \verb|pacman| installed and loaded, use the following commands to install, load and unload packages respectively.
+\subsection{Manage Packages with Third-Party Packages}
+
+There are third-party packages that provide package management functions, for example \verb|pacman|. With \verb|pacman| installed and loaded, use the following commands to install, load and unload packages respectively.
 \begin{lstlisting}
 p_install(<package>, ...) # install
 p_load(<package>, ...) # install and load
@@ -70,9 +76,11 @@ pacman::p_load(
 	tidyr # data tidying
 )
 \end{lstlisting}
-The above command can be executed without loading \verb|pacman| in advance since \verb|pacman::p_load()| prefix is used. The listed packages are commonly used in R projects, and a brief explanation to them is given as comments in the code listing following \verb|#|. Notice that if the package is not installed in the computer, the above command will try to download and install the package which can take some time.
+The above command can be executed without loading \verb|pacman| in advance since \verb|pacman::p_load()| prefix is used. The listed packages are commonly used in R projects, and a brief explanation to them is given as comments in the code listing following \verb|#|. Notice that if a package is not installed in the computer, the above command will try to download and install the package.
 
-RStudio provides a graphical interface to manage packages as shown in Fig. \ref{ch:r1:fig:rstudio_package_management}.
+\subsection{Manage Packages with RStudio IDE}
+
+RStudio provides a graphical interface to manage packages as shown in Fig. \ref{ch:r1:fig:rstudio_package_management}. A package can be loaded or unloaded simply by checking and unchecking the package.
 \begin{figure}
 \centering
 \includegraphics[width=350pt]{chapters/ch-r/figures/rstudio_package_management.png}
@@ -83,7 +91,30 @@ RStudio provides a graphical interface to manage packages as shown in Fig. \ref{
 
 This section introduces the basics of R programming, including its data types and basic syntax.
 
-It is worth mentioning in the beginning that R is case sensitive. Use \verb|#| to lead a comment. Use \verb|print(<variable>)| or simply type the name of the variable to print the value of a variable in the console. Use \verb|?<function>|, \verb|?<dataframe>| to access the manual for a function or data frame.
+It is worth mentioning in the beginning that R is case sensitive. Use \verb|#| to lead a comment. Use \verb|print(<variable>)| or simply type the name of the variable to print the value of a variable to the console. Use \verb|?<function>|, \verb|?<dataframe>| to access the manual for a function or data frame.
+
+As a quick demonstrative example, the following is a small piece of code written in R. It generates generalized $t$-distribution noise and save the noise samples into a local CSV file.
+\begin{lstlisting}
+# Read parameters
+generate_sgt_parameters <- read.csv('generate_sgt_parameters.csv', header = FALSE)
+sgt_mu <- generate_sgt_parameters[,1]
+sgt_sigma <- generate_sgt_parameters[,2]
+sgt_lambda <- generate_sgt_parameters[,3]
+sgt_p <- generate_sgt_parameters[,4]
+sgt_q <- generate_sgt_parameters[,5]
+sgt_n <- generate_sgt_parameters[,6]
+sgt_seed <- generate_sgt_parameters[,7]
+
+# Generate pseudo random numbers
+library('optimx')
+library('numDeriv')
+library('sgt')
+set.seed(sgt_seed)
+x = rsgt(n = sgt_n, mu = sgt_mu, sigma = sgt_sigma, lambda = sgt_lambda, p = sgt_p, q = sgt_q, mean.cent = TRUE, var.adj = FALSE)
+
+# Write data
+write.table(x, 'generate_sgt_data.csv', sep=",", row.names = FALSE, col.names=FALSE)
+\end{lstlisting}
 
 \subsection{Data Types}
 
@@ -333,6 +364,7 @@ where \verb|<vector>| is a list of numbers or characters. Examples are given bel
 [1] "b"
 [1] "c"
 \end{lstlisting}
+where \verb|c()| creates a list from items.
 
 The \verb|while| loop syntax is given as follows.
 \begin{lstlisting}
@@ -385,7 +417,7 @@ Vector and matrix are the fundamental forms that R stores and processes data.
 
 \subsection{Vector}
 
-There are different types of vectors in R depending on the data type of the elements it stores. The commonly used vector types include numeric vector and and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type.
+There are different types of vectors in R depending on the data type of the elements it stores. The commonly used vector types include numeric vector and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type.
 
 Notice that the index of a vector in R starts from 1 instead of 0. This is different with many other computer languages such as C/C++, JavaScript and Python.
 
@@ -454,6 +486,9 @@ To access the element in a vector, use \verb|<vector>[<index>]| or \verb|<vector
 [1] "b" "c" "d" "e"
 > s[c(1L, 3L, 5L)] # s[c(1.1, 3.5, 5.9)] gives the same result; data type auto transferred
 [1] "a" "c" "e"
+\end{lstlisting}
+It is also possible to address an element by its name
+\begin{lstlisting}
 > v <- c(1, 2, 3, 4, 5)
 > names(v) <- c("e1", "e2", "e3", "e4", "e5") 	
 > print(v)
@@ -523,9 +558,7 @@ A vector can also be used as an input argument or output return of a function.
 
 \subsection{Matrix}
 
-Similar with vector, all elements in a matrix must have consistent type. A demonstration of matrix indexing in R is shown in Fig. \ref{ch:r1:fig:r_table_demo}. Let the matrix be named \verb|A|. The elements in the matrix can be accessed by the name of the table followed by the index coordinates. For example, in the figure, \verb|A[1,1]| refers to the first element and \verb|A[4,6]| the last element.
-
-It is possible to index an entire row or column. For example, use \verb|A[1,]| to represent the first row of the matrix.
+Similar with vector, all elements in a matrix must have consistent type. A demonstration of matrix indexing in R is shown in Fig. \ref{ch:r1:fig:r_table_demo}. Let the matrix be named \verb|A|. The elements in the matrix can be accessed by the name of the table followed by the index coordinates. For example, in the figure, \verb|A[1,1]| refers to the first element and \verb|A[4,6]| the last element. It is also possible to index an entire row or column. For example, use \verb|A[1,]| to represent the first row of the matrix.
 
 \begin{figure}
 	\centering

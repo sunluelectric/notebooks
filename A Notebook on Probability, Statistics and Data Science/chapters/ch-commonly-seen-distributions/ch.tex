@@ -2,15 +2,20 @@
 
 Commonly seen distributions, both discrete and continuous, are introduced here. Some of them are very useful in statistics analysis and are introduced in more details in later part of the notebook.
 
-\section{Bernoulli Distribution}
+\section{Bernoulli and Binomial Distribution}
 
-Bernoulli distribution is a discrete probability distribution of random variable $X$ that can take only 2 values, $0$ or $1$. The probability of $X$ taking $1$ is denoted by $p$, while $0$ is $q=1-p$. Each test is also called a Bernoulli trail.
+Bernoulli distribution is a discrete probability distribution of random variable $X$ that can take only 2 values, $0$ or $1$. The probability of $X$ taking $1$ is denoted by $p$, while $0$ is $q=1-p$ as shown below.
+\begin{eqnarray}
+  && f(x) = P(X=x) = \left\{\begin{array}{cc}
+                           p & x=1 \\
+                           q & x=0
+                         \end{array}\right. \nonumber
+\end{eqnarray}
+subject to $0\leq p \leq 1$, $0\leq q \leq 1$ and $p+q=1$. Each test is also called a Bernoulli trail.
 
 The expectation, variance, skewness and excess kurtosis of the distribution are $p$, $pq$, $\dfrac{q-p}{\sqrt{pq}}$ and $\dfrac{1-6pq}{pq}$, respectively.
 
-\section{Binomial Distribution}
-
-It is assumed that Bernoulli trails are tested repeatedly. Each bernoulli trail has a probability of $p$ to take value $1$, and $q=1-p$ to take value $0$. The test is carried out $n$ times. The number of the tests returning $1$ is a random variable $0\leq X \leq n$. The discrete distribution of $X$ taking values $0, \ldots, n$ follows binomial distribution as follows
+It is assumed that Bernoulli trails are tested repeatedly. Each bernoulli trail has a probability of $p$ to take value $1$, and $q=1-p$ to take value $0$. The test is carried out $n$ times. The number of the tests returning $1$ is a random variable $0\leq X \leq n$. The discrete distribution of $X$ taking values $0, \ldots, n$ follows binomial distribution, whose probability mass function is given by
 \begin{eqnarray}
   f(x) &=& P(X=x) \nonumber \\
   &=& \left(\begin{array}{c}
@@ -22,9 +27,46 @@ It is assumed that Bernoulli trails are tested repeatedly. Each bernoulli trail 
 
 Bernoulli distribution can be taken as a special case of binomial distribution with $n=1$ at $x=1$. The expectation, variance, skewness and excess kurtosis of the distribution are $np$, $npq$, $\dfrac{q-p}{\sqrt{npq}}$ and $\dfrac{1-6pq}{npq}$, respectively.
 
+According to central limit theorem, when $n$ is large, binomial distribution can be approximated by normal distribution.
+
+Binomial distribution can be extended to \textit{multinomial distribution}, where instead of a single event $A$ happening with probability $p$ or not happening with probability $q$, s.t. $p+q=1$, consider multiple events $A_1$, $A_2$, ..., each with probability $p_1$, $p_2$, ..., respectively, s.t. $p_1+p_2+\ldots+p_m=1$. Consider a total of $n$ tests. The number of event $A_1$ happening is a random variable $X_1$, event $A_2$, $X_2$, and so on. Multinomial distribution studies the probability of
+\begin{eqnarray}
+  P(X_1=x_1, X_2=x_2,\ldots, X_m = p_m) &=& \dfrac{n}{x_1!x_2!\ldots x_m!}p_1^{x_1}p_2^{x_2}\ldots p_m^{x_m} \nonumber \\
+  \textup{s.t.} && \sum x_i = n \nonumber
+\end{eqnarray}
+
+Do distinguish binomial distribution with \textit{hypergeometric distribution}. Binomial distribution can be used to model ``sampling with replacement'' process. Consider picking up a marbles from a bag containing mixture of red and blue marbles whose numbers are given by $r$ and $b$ respectively. Repeat the test $n$ times. After each test, put the marble back to the bag. The number of blue marbles collected is a random variable $X$ that follows
+\begin{eqnarray}
+f(x) = P(X=x) = \left(\begin{array}{c}
+                        n \\
+                        x
+                      \end{array}\right)\left(\dfrac{b}{b+r}\right)^x\left(\dfrac{r}{b+r}\right)^{n-x} = \left(\begin{array}{c}
+                        n \\
+                        x
+                      \end{array}\right) \dfrac{b^xr^{n-x}}{(b+r)^n} \nonumber
+\end{eqnarray}
+which is a binomial distribution. On the other hand, if after each test the marble is not returned to the bag, it becomes a hypergeometric distribution and the probability follows
+\begin{eqnarray}
+f(x) = P(X=x) = \dfrac{\left(\begin{array}{c}
+                               b \\
+                               x
+                             \end{array}\right)\left(\begin{array}{c}
+                                                       r \\
+                                                       n-x
+                                                     \end{array}\right)}{\left(\begin{array}{c}
+                                                                                 b+r \\
+                                                                                 n
+                                                                               \end{array}\right)} \nonumber
+\end{eqnarray}
+with $\textup{max}(0, n-r) \leq x \leq \textup{min}(n, b)$.
+
+When $b$, $r$ are far larger than $n$, the hypergeometric distribution can be approximated by binomial distribution. When $b$ and $r$ approaches infinity with constant ratio $b/(b+r)$ and $r/(b+r)$, hypergeometric distribution converges to binomial distribution.
+
 \section{Normal Distribution}
 
-Normal distribution, also known as Gaussian distribution, is a continuous distribution, and it is one of the most widely used assumption of random noise. According to central limit theorem, many aggregated values can be characterized by normal distribution.
+Normal distribution, also known as Gaussian distribution, is a continuous distribution, and it is one of the most widely used assumption of random noise. According to central limit theorem, many aggregated values can be characterized by normal distribution. We will discuss single normal distribution first, followed by joint normal distribution.
+
+\subsection{Single Normal Distribution}
 
 The PDF of the normal distribution is given by
 \begin{eqnarray}
@@ -34,33 +76,154 @@ where $\mu$, $\sigma^2$ are the mean and variance of the distribution, respectiv
 
 Let $X$ be a random variable following normal distribution with mean $\mu$ and variance $\sigma^2$. This can be denoted by $X\sim\mathcal{N}(\mu, \sigma^2)$. Let $Z=\dfrac{X-\mu}{\sigma}$, and $Z$ would be a standard normal distribution with mean $0$ and variance $1$.
 
-
-
-
-
-
-
-
-
-
-\subsection{Single Normal Distribution}
+For a random variable $X$ following normal distribution, the probabilities of its value falling between $\pm \sigma$, $\pm 2\sigma$ and $\pm 3\sigma$ are $0.6827$, $0.9545$ and $0.9973$ respectively. In statistics, sometimes we will take samples with residuals larger than $|3\sigma|$ as outliers.
 
 \subsection{Multivariate Normal Distribution}
 
+Multivariate normal distribution describes a vector of random variables $X = \left[X_1, \ldots, X_m\right]$ that follows joint normal distribution. The joint PDF is given by
+\begin{eqnarray}
+  f(x) &=& \dfrac{1}{\sqrt{(2\pi)^m|\Sigma|}}e^{-\dfrac{(x-\mu)^T\Sigma^{-1}(x-\mu)}{2}} \nonumber
+\end{eqnarray}
+where $\mu \in \mathbb{R}^m$ is the mean of $x$ and $\Sigma \in \mathbb{R}^{m\times m}$ the covariance matrix. The off diagonal elements in $\Sigma$ describes the correlation of elements in $X$. The $|\Sigma|$ is the determinant of $\Sigma$.
+
 \section{Poisson Distribution}
+
+Poisson distribution is a discrete probability distribution that takes non-negative integer values $0$, $1$, $2$, $\ldots$.
+
+The probability function of poisson distribution is given by
+\begin{eqnarray}
+  f(x) = P(X=x) = \dfrac{\lambda^xe^{-\lambda}}{x!} \nonumber
+\end{eqnarray}
+where $\lambda >0$ is a constant that describes the shape of the probability function, as shown in Fig. \ref{fig:poisson_pmf}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-commonly-seen-distributions/figs/poisson_pmf.eps}
+	\caption{Poisson distribution with different $\lambda$.} \label{fig:poisson_pmf}
+\end{figure}
+
+The sum of two variables following Poisson distributions with $\lambda = \lambda_1$ and $\lambda = \lambda_2$ follows Poisson distribution with $\lambda = \lambda_1 + \lambda_2$.
+
+Poisson distribution is often used to describe the probability of an event happening in the given window, for example, the number of times a machine fails in a given length of duration (say one year), assuming each failure is independent from another. Binomial distribution probability function converges to Poisson distribution when $n\rightarrow\infty$. In practice, when $n$ is large and $p$ is small so that $np$ is decent, binomial distribution can be approximated by Poisson distribution with $\lambda = np$. A demonstration is given in Fig. \ref{fig:poisson_vs_b}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-commonly-seen-distributions/figs/poisson_vs_b.eps}
+	\caption{Poisson distribution Approximation of Binomial Distributions.} \label{fig:poisson_vs_b}
+\end{figure}
+
+From the demonstration given by Fig. \ref{fig:poisson_vs_b}, we can interpret Poisson distribution as follows. Assume that a test is carried out many times ($n$ times) individually and independently. During each test, an event may happen with a small chance ($p$ probability). The total number of that event happening has an expectation of $\lambda = np$, and it follows Poisson distribution when $n\rightarrow\infty$.
+
+Poisson distribution can be used model things like the failure rates of a machine in its lifespan. The machines runs for many hours which correspond with $n$. In each hour of its running, it has a failure rate which correspond with $p$. It can also model visitors to a shopping mall in a day. Everyone living in the city may visit the shopping mall. The population of the city is correspond with $n$, and the chance for a person to visit the mall, $p$.
+
+The expectation, variance, skewness and excess kurtosis of the distribution are $\lambda$, $\lambda$, $\dfrac{1}{\sqrt{\lambda}}$ and $\dfrac{1}{\lambda}$, respectively.
 
 \section{Uniform Distribution}
 
+Uniform distribution can be divided into continuous distribution and discrete uniform distribution. Under the scope of this discussion, continuous uniform distribution is studied.
+
+The PDF of continuous uniform distribution is given by
+\begin{eqnarray}
+  f(x) &=& \left\{\begin{array}{cc}
+                    \dfrac{1}{b-a} & a \leq x \leq b \\
+                    0 & \textup{otherwise}
+                  \end{array}\right. \nonumber
+\end{eqnarray}
+
+The expectation, variance, skewness and excess kurtosis of the distribution are $\dfrac{a+b}{2}$, $\dfrac{(b-a)^2}{12}$, $0$ and $-\dfrac{6}{5}$, respectively.
+
 \section{Cauchy Distribution}
 
-\section{Gamma Distribution}
+Cauchy distribution, named after Augustin Cauchy, is a continuous distribution. The PDF is given by
+\begin{eqnarray}
+  f(x) &=& \dfrac{1}{\pi\gamma\left(1+\left(\dfrac{x-x_0}{\gamma}\right)^2\right)} \nonumber \\ &=& \dfrac{1}{\pi}\dfrac{\gamma}{(x-x_0)^2+\gamma^2} \nonumber
+\end{eqnarray}
+and it is plotted in Fig. \ref{fig:cauchy_pdf}.
 
-\section{Beta Distribution}
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-commonly-seen-distributions/figs/cauchy_pdf.eps}
+	\caption{Cauchy Distribution.} \label{fig:cauchy_pdf}
+\end{figure}
 
-\section{Chi-Square Distribution}
+From mathematics perspective, Cauchy distribution describes the ratio of two independent normal distributed random variables with mean zero. It is a useful distribution in physics.
 
-\section{Student's $t$ Distribution}
+\section{Gamma, Chi-Squared and Beta Distribution}
 
-\section{$F$ Distribution}
+The $\Gamma$, $\chi^2$ and $\beta$ distributions are introduced as follows.
+
+\subsection{The $\Gamma$ Distribution}
+
+Gamma distribution is a continuous distribution with the following PDF
+\begin{eqnarray}
+  f(x) &=& \left\{\begin{array}{cc}
+                    \dfrac{\beta^\alpha}{\Gamma(\alpha)}x^{k-1}e^{-\beta x} & x > 0 \\
+                    0 & \textup{otherwise}
+                  \end{array}\right. \label{eq:gammapdf}
+\end{eqnarray}
+where $\alpha>0$ and $\beta>0$ are the shape and rate parameters respectively (some literatures uses scale parameter $\theta = 1/\beta$ in the equation), and $\Gamma(\cdot)$ denotes the Gamma function
+\begin{eqnarray}
+  \Gamma(\alpha) &=& \int_{0}^{\infty}t^\alpha-1e^{-t}dt \nonumber
+\end{eqnarray}
+for $\alpha > 0$. Gamma distribution is often used to model the interval of two events in the Poisson process.
+
+The plot of the PDF of Gamma distribution is given in Fig. \ref{fig:gamma_pdf}.
+\begin{figure}
+	\centering
+	\includegraphics[width=350pt]{chapters/ch-commonly-seen-distributions/figs/gamma_pdf.eps}
+	\caption{Gamma Distribution.} \label{fig:gamma_pdf}
+\end{figure}
+
+\begin{shortbox}
+\Boxhead{A Little Bit about Gamma Function}
+
+Gamma function is given by
+\begin{eqnarray}
+  \Gamma(\alpha) &=& \int_{0}^{\infty}t^\alpha-1e^{-t}dt \nonumber
+\end{eqnarray}
+
+It is clear that $\Gamma(1)=1$. If $\alpha > 1$, an integration by parts shows that
+\begin{eqnarray}
+  \Gamma(\alpha) &=& (\alpha-1)\Gamma(\alpha-1) \nonumber
+\end{eqnarray}
+Therefore, $\Gamma(n)=\Gamma(n-1)\Gamma(n-2)\ldots \times 3 \times 2 \times 1 \times \Gamma(1) = (\alpha-1)!$ for $\alpha \in \mathbb{N}^+$, with $0!=1$.
+
+\end{shortbox}
+
+The sum of Gamma distributions with the same scale parameter also follows Gamma distribution. The expectation, variance, skewness and excess kurtosis of the distribution are $\dfrac{\alpha}{\beta}$, $\dfrac{\alpha}{\beta^2}$, $\dfrac{2}{\sqrt{\alpha}}$ and $\dfrac{6}{\alpha}$, respectively.
+
+\subsection{The $\chi^2$ Distribution}
+
+The $\chi^2$ estimation is a special case of Gamma distribution. In \eqref{eq:gammapdf}, let $\alpha = \dfrac{r}{2}$ and $\beta=\dfrac{1}{2}$ to get the PDF of $\chi^2$ distribution as follows.
+\begin{eqnarray}
+  f(x) &=& \left\{\begin{array}{cc}
+                    \dfrac{1}{\Gamma(r/2)2^{r/2}}x^{r/2-1}e^{-x/2} & x > 0  \\
+                    0 & \textup{otherwise}
+                  \end{array}\right. \label{eq:chi2pdf}
+\end{eqnarray}
+Equation \eqref{eq:chi2pdf} is also denoted by $\chi^2(r)$, where $r$ is known as the degrees of freedom of the chi-squared distribution. The plot of PDF are shown in Fig. \ref{fig:chi2_pdf}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-commonly-seen-distributions/figs/chi2_pdf.eps}
+	\caption{The $\chi^2$ Distribution.} \label{fig:chi2_pdf}
+\end{figure}
+
+The $\chi^2$ distribution can be used to model the sum of the squares of $r$ independent standard normal distributions, making it an important distribution is statistics, such as in outlier test. 
+
+The expectation, variance, skewness and excess kurtosis of the distribution are $r$, $2r$, $\sqrt{\dfrac{8}{r}}$ and $\dfrac{12}{r}$, respectively.
+
+\subsection{The $\beta$ Distribution}
+
+Let $X_1$ and $X_2$ be two independent random variables following Gamma distributions with shape parameters $\alpha_1$ and $\alpha_2$ respectively, and with rate parameters $1$. Denote $X=\dfrac{X_1}{X_1+X_2}$. In this case, $X$ would be a random variable following $\beta$ distribution whose PDF can be derived from \eqref{eq:gammapdf} and it is given by
+\begin{eqnarray}
+  f(x) &=& \left\{\begin{array}{cc}
+                    \dfrac{\Gamma(\alpha_1 + \alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{\alpha_2-1} & 0 < x < 1 \\
+                    0 & \textup{otherwise}
+                  \end{array}\right. \label{eq:betapdf}
+\end{eqnarray}
+In some literatures, notation $(a, b)$ or $(\alpha, \beta)$ are used to denote $(\alpha_1, \alpha_2)$ in \eqref{eq:betapdf} respectively.
+
+
+\section{Student's $t$-Distribution}
+
+\section{$F$-Distribution}
 
 \section{Weibull Distribution} 

@@ -15,7 +15,7 @@ Notice that in the past days, docker is the default container engine built-in to
 \subsection{Infrastructure}
 
 Figure \ref{ch:vac:fig:kubernetescluster} demonstrates the key components Kubernetes has inside its cluster.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/kubernetescluster.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
@@ -36,7 +36,7 @@ https://minikube.sigs.k8s.io/docs/start/
 and do not forget to start \textit{minikube} using the following command. Notice that when both \textit{minikube} and \textit{kubectl} are installed, \textit{minikube} needs to be started before \textit{kubectl} can work properly.
 \begin{lstlisting}
 $ minikube start
-\end{lstlisting} 
+\end{lstlisting}
 When starting \textit{minikube}, it would launch a VM using Vertual Box, and install \textit{kubectl} as a built-in. If \textit{kubectl} and \textit{minikube} are installed separately, run the following command to verify the successful installation of both software.
 \begin{lstlisting}
 $ kubectl cluster-info
@@ -118,7 +118,7 @@ Some highlights of the above configuration files are as follows.
 \end{itemize}
 Notice that Kubernetes networking using \verb|kind: Service| is more complicated than shown in the above example. More details of it is given later in a dedicated Section \ref{ch:vac:subsec:k8snetworking}.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=200pt]{chapters/ch-virtualization-and-containerization/figures/nodeport.png}
 	\caption{The NodePort networking service.} \label{ch:vac:fig:nodeport}
@@ -277,7 +277,7 @@ LoadBalancer is a legacy way of getting network traffic into the pods. It is ess
 
 Ingress is a more commonly used Service type than LoadBalancer to get traffic into the Kubernetes containers. There are different types of Ingress, for example, Nginx Ingress by \textit{github.com/kubernetes/ingress-nginx}. An demonstrative example of ingress service realization is given in Fig. \ref{ch:vac:fig:ingress_service}. In this implementation framework, the configuration file (mainly a set of routing rules) of the object is used to define an ``Ingress Controller'' which manages the runtime that controls inbound traffic. In some applications such as \textit{kubernetes/ingress-nginx}, the ingress controller and the runtime are integrated together.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/ingress_service.png}
 	\caption{An example of ingress service framework.} \label{ch:vac:fig:ingress_service}
@@ -444,7 +444,7 @@ With the tools and methodologies introduced so far, we are able to deploy contai
 
 This section briefly introduces the steps to develop and deploy containers in production environment with Kubernetes. Figure \ref{ch:vac:fig:prodenvworkflow} gives an example of overview of what such deployment may look like. Notice that this example is more towards a community project but not an enterprise project.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/prodenvworkflow.png}
 	\caption{An example workflow of creating a production environment with Kubernetes.} \label{ch:vac:fig:prodenvworkflow}

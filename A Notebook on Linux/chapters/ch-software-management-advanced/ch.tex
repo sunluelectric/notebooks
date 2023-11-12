@@ -7,7 +7,7 @@
 \textit{Git}, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files. It is helpful with maintaining data integrity during the collaborative development of a software in distributed non-linear work flows. \textit{Git} is free and open-source software under GNU general public license.
 
 With \textit{Git}, all computers participating in the software development store a copy of the full-fledged repository locally with complete history, and it can synchronize with a centralized remote server. \textit{Git} uses ``master'' and ``slave'' branches to manage the concurrent development of different features of the project, where the ``master branch'' is the stable and shared repository among everyone, and the ``slave branches'' are copies of the master branch where individual features can be developed. For a slave branch, once its developed feature is approved, it can be merged back to the master branch. A demonstration is given in Fig. \ref{ch:sma:fig:gitflow}.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-software-management-advanced/figures/gitflow.png}
 	\caption{\textit{Git} for software development management.} \label{ch:sma:fig:gitflow}
@@ -62,12 +62,12 @@ For simplicity, assume that there is only one branch in the repository, namely t
 
 The mechanism behind version tracking is briefly introduced as follows. This helps the user to better understand how \textit{Git} works and how the CLI commands are designed.
 
-The project directory is split into two parts, outside \verb|./.git/| the workspace, and inside \verb|./.git/| the \textit{Git} repository. The workspace has the up-to-date project contents and it is directly managed by the user, while \textit{Git} repository is managed by \textit{Git} and it is supposed to be invisible to the user unless interacted with the CLI. 
+The project directory is split into two parts, outside \verb|./.git/| the workspace, and inside \verb|./.git/| the \textit{Git} repository. The workspace has the up-to-date project contents and it is directly managed by the user, while \textit{Git} repository is managed by \textit{Git} and it is supposed to be invisible to the user unless interacted with the CLI.
 
 Inside the \textit{Git} repository are metadata of the workspace files such as which files have been changed since the last deployment, etc. It also stores a full back up of every historical versions for the project (with powerful compressing mechanisms, of course). It is worth mentioning that instead of recording the changes of a file from version to version, \textit{Git} records the snapshot of the file in every version, unless it is left untouched between two consecutive versions.
 
 Figure \ref{ch:sma:fig:gitbasics} gives a demonstration of how \textit{Git} manages the project directory. \textit{Git} classifies files in the workspace into different status, as shown in Fig. \ref{ch:sma:fig:gitbasics}. A brief explanation of each types is given in Table \ref{ch:sma:tab:gitbasics}. Detail explanations of ``stage'' and ``commit'' are given later.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-software-management-advanced/figures/gitbasics.png}
 	\caption{The project directory managed by \textit{Git}.} \label{ch:sma:fig:gitbasics}
@@ -225,7 +225,7 @@ An alternative way of integrating two branches is \verb|git rebase|, which ``rew
 $ git rebase <branch name>
 \end{lstlisting}
 A demonstrative Fig. \ref{ch:sma:fig:gitrebase} explains the differences between \verb|git merge| and \verb|git rebase|. It is clear from Fig. \ref{ch:sma:fig:gitrebase} that by using \verb|git rebase|, all feature commits are integrated into the master repositories to form a single repository tracking line, which differs largely from \verb|git merge|.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-software-management-advanced/figures/gitrebase.png}
 	\caption{Two approaches of integrating branches, \texttt{git merge} VS \texttt{git rebase}.} \label{ch:sma:fig:gitrebase}

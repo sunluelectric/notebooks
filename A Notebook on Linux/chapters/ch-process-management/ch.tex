@@ -12,7 +12,7 @@ A process is the fundamental unit for the OS to manage the resources used by a r
 
 To improve the efficiency of the CPU, the OS allows multiple processes (also called tasks, jobs) to share the computational capability and memory of the system, each thinking that it is exclusively using the all machine resources, as shown in Fig. \ref{ch:pm:fig:processflow}.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-process-management/figures/processflow.png}
 	\caption{A demonstration of running multiple processes on a single-core CPU.} \label{ch:pm:fig:processflow}
@@ -36,7 +36,7 @@ The status of a process is stored in its \textit{Process Control Block (PCB)}. T
 
 A process shall at least have the following states. The fundamental states of a process and their transferring are introduced in Fig \ref{ch:pm:fig:processstatetransfer}, where ``blocked'' indicates that the process is waiting for other inputs to carry out the remaining part of the program, and ``suspended'' indicates that the process is hold for some reasons. When a process is offloaded from the CPU, its context is moved from the CPU registers to the PCB of the progress.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-process-management/figures/processstatetransfer.png}
 	\caption{Fundamental states of a process and their transferring.} \label{ch:pm:fig:processstatetransfer}
@@ -49,7 +49,7 @@ A process usually has a relatively isolated environment, and it does not share m
 \subsection{Thread}
 
 A ``thread'' is like a work dispatch inside a process. There can be multiple threads in a process, as shown in Fig \ref{ch:pm:fig:threadinprocess}. Each thread has its own CPU register values and stack, but they share the same program, memory and file storage addresses.
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=200pt]{chapters/ch-process-management/figures/threadinprocess.png}
 	\caption{A demonstration of multiple threads in a process.} \label{ch:pm:fig:threadinprocess}
@@ -77,13 +77,13 @@ $ top
 
 The major difference between these two commands is that \verb|ps| provides a screenshot (in a text format) of a list of processes including their names, process IDs (PID) and owners, etc., running at the instance, while \verb|top| provides a frequently-refreshing display of the running processes as well as their associated resources usage. Figs \ref{ch:pm:fig:pscommand} and \ref{ch:pm:fig:topcommand} give a quick demo of how the execution of the two commands look like.
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-process-management/figures/pscommand.png}
 	\caption{Execution of \texttt{ps} command.} \label{ch:pm:fig:pscommand}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-process-management/figures/topcommand.png}
 	\caption{Execution of \texttt{top} command.} \label{ch:pm:fig:topcommand}
