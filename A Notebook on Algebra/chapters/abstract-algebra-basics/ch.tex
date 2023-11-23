@@ -1,0 +1,72 @@
+\chapter{Abstract Algebra Basics}
+
+What does ``abstract'' mean in abstract algebra? How is it different from the classic algebra introduced in earlier chapters? In short, classic algebra solves a particular problem using algebra algorithms, whereas abstract algebra studies these algorithms themselves.
+
+As an example, consider the following equation
+\begin{eqnarray}
+  Ax &=& y \nonumber
+\end{eqnarray}
+where $x$, $y$ are vectors and $A$ a matrix. Given particular $y$ and $A$, solving probable $x$ is a classic algebra problem. It is obvious that $x$ does not necessarily exist or being unique for different $y$ and $A$. Studying the general rules of when $x$ exists and when it is unique for any $y$ and $A$ becomes an abstract algebra problem.
+
+Consider another example where
+\begin{eqnarray}
+ a+b &=& b+a \nonumber \\
+  ab &=& ba \nonumber
+\end{eqnarray}
+which are often used to demonstrate the commutative property of calculations (summation and multiplication, in this example). In classic algebra, they are considered as ground truth and are used to solve practical problems. In abstract algebra, however, the focus shifts to a more formal and generalized understanding of the property. We need to dig deeper into how commutative property is defined, and why it holds true for summation and multiplication, but not for some other operations such as division.
+
+In conclusion, while classic algebra calculates numbers, vectors and matrices, abstract algebra checks the calculations, tools, concepts, and logic derivations and try to explain why they work in the way we desire, and invent new tools that we can use to do powerful calculations and derivations. 
+
+\section{A Motivating Example}
+
+One of the most famous applications of abstract algebra is to study the analytical solution to the following series of polynomial equations
+\begin{eqnarray}
+  x^n + a_1x^{n-1} + a_2x^{n-2} + \ldots + a_n &=& 0 \label{eq:polynomial-equation}
+\end{eqnarray}
+where $n\geq 1$ is the order of the polynomial and $a_1, \ldots, a_n$ are any arbitrary values. The analytical solutions to \eqref{eq:polynomial-equation} when $n=1$ and $n=2$ are obvious. With some effort, the analytical solutions when $n=3$ and $n=4$ were found in the $16$th century. Since then, people have been struggling to find the analytical solution to the fifth order and beyond $n\geq5$ polynomial equation.
+
+In the $18$th and $19$th century, Euler, Lagrange and Gaussian tried to address this problem. Their conclusion was that there is no analytical solution to polynomial equations of fifth order or higher, but they were not be able to fully solve the problem by giving a very solid proof. The methods they used inspired a lot more people that would put hand to this problem.
+
+In the $19$th century, Abel was able to prove that there is no solution in radicals to general polynomial equations of degree five or higher with arbitrary coefficients (see Abel–Ruffini theorem). Furthermore, he discusses a set of special cases (with non-arbitrary coefficients in the polynomial equation) that can have analytical solution. These special cases form a set of sufficient condition for a fifth order polynomial equation to have the analytical solution. 
+
+The necessary and sufficient condition for a fifth or higher order polynomial to have an analytical solution is finally fully found out and interpreted by the genius Galois at a remarkably young age. Galois was able to create his theorem (known Galois theorem), and use that theorem to find the ultimate answer to this problem that people have been studied for centuries, and his theorem goes far beyond that. Galois theorem will find its usefulness in many areas to come, and eventually it becomes an important building block of a subject known as abstract algebra today. 
+
+\section{Algebraic System}
+
+An algebraic system is essentially a mathematical system consisting of a (non-empty) set (known as the domain) and a series of operations defined on the domain. There are many algebraic systems, and abstract algebra studies the properties of different algebraic systems. As will be introduced in later parts of the notebook, depending on the properties of the algebraic system, we can categorize them as groups, rings, fields, vector spaces, etc.
+
+\subsection{Set, Mapping, Operation and Relation}
+
+Set is one of the most commonly used terms across different mathematical subjects. It is also one of the fundamental concepts in abstract algebra. A set usually refers to a collection of distinct objects. Given a set $U$ and an object $x$, one and only one of the following two statements must be true:
+\begin{itemize}
+  \item Object $x$ is a member of set $U$, denoted by $x \in U$;
+  \item Object $x$ is not a member of set $U$, denoted by $x \notin U$.
+\end{itemize}
+However, notice that due to the Russell's paradox, it is challenging to give a rigorous mathematical definition to a set that fulfill the above features.
+
+Mapping is used to describe the association of elements in two sets. For example, let $A$ be a set, and $A_0 \subset A$ a subset of $A$. For any element $x\in A_0$, define mapping
+\begin{eqnarray}
+  i &:& A_0 \rightarrow A \nonumber
+\end{eqnarray}
+where
+\begin{eqnarray}
+  i(x) &=& x \nonumber
+\end{eqnarray}
+In this case, mapping $i$ is called the \textbf{embedding mapping} from $A_0$ to $A$.
+
+Let $A$, $B$ be two sets, and $A_0 \subset A$ as subset of $A$. Let $f: A\rightarrow B$, and $g: A_0\rightarrow B$. Let $x\in A_0$. If $f(x)=g(x)$, function $f$ is known as an \textbf{extension} of function $g$, and function $g$ a \textbf{restriction} of function $f$ (on $A_0$). This is denoted by $g=f|_{A_0}$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
