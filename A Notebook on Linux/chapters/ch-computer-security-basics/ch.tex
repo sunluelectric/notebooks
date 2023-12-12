@@ -1,45 +1,43 @@
 \chapter{OS Security Mechanism}
 
-Linux as well as other OS uses variety of methods to protect system and data security. This chapter and next few chapters introduces these security methods. As cloud computing is getting more and more popular, the chapters also discuss the security in virtualization.
+Linux as well as other OS uses variety of methods to protect the system and the data. The chapters in this part of the notebook introduce some of these security methods. As cloud computing is getting more and more popular, virtualization security is also discussed
 
 \section{Basic Concepts}
 
-The background and basic concepts of computer security are introduced in this section.
+The background, motivation, and basic concepts of computer security are introduced in this section.
 
 \subsection{Risks and Attacks}
 
-No computer or OS are absolutely safe. Some risks are listed below.
+No computer or OS are absolutely safe. Risks can be introduced by the subjects listed below.
 \begin{itemize}
 	\item Software bugs. The OS and application software may have bugs which leave backdoors to malware.
 	\item Malicious users. A user may perform illegal actions that damage other users sharing the same servers or services.
-	\item Unauthorized access. The user or a program may intentionally or accidentally try to access data confidential to them.
+	\item Unauthorized access. The user or a program may intentionally or accidentally try to access confidential data that they should not view.
 \end{itemize}
-A risk, if not attended, will most likely not turn into an actual damage. However, when a hacker or a malicious user initiate an attack using the risk, it may cause trouble.
+A risk will most likely not turn into an actual disaster by nature. However, when a hacker or a malicious user initiate an attack deliberately taking advantage of the risk, it may cause troubles.
 
 The attacks can be divided into the following categories.
 \begin{itemize}
 	\item Malware. The attacker disguises a piece of malware code as a legitimate software. When the software is executed, the malware carries out harmful activities.
 	\item System Penetration. The attacker accesses a protected system bypassing security mechanisms.
-	\item Man-in-the-Middle Attack (MitM). The attacker intercepts communications between entities, and steal or modify the contents of the communication.
+	\item Man-in-the-Middle Attack (MitM). The attacker intercepts communications between legitimate entities, and steal or modify the contents of the communication.
 	\item Denial of Service (DoS). The attacker overwhelms a system and paralyzes its service by sending a lot of requests to the system, more than it can handle.
 	\item Network Sniffing. The attacker passively logs information from the internet, and use them for future attacks.
 	\item TEMPEST (Van Eck phreaking). The attacker collects and analyses data measured from electromagnetic emissions of devices such as mobile phones, and decode information from the measurements.
 	\item Social Engineering. The attacker gathers information of the victims by cheating, phishing emails, etc.
 \end{itemize}
 
-To protect the users from the attacks, we need both computer security and communication security. This chapter focuses on computer security, specifically OS security.
+To protect the users from the attacks, we need both computer security and communication security. This notebook focuses on computer security, specifically OS security.
 
 \subsection{General Security Architecture}
 
 Linux machine layers are shown in Fig. \ref{ch:ossec:fig:layerstructure}. Machines of other OS may adopt a different structure, but the essence remains similar. It is impractical to secure every component of a system (hardware, OS kernel, OS services, application services, user interface, users, etc.) with a singular universal protection method.
-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=200pt]{chapters/ch-computer-security-basics/figures/os_layer.png}
 	\caption{Layer structure of an operating system.} \label{ch:ossec:fig:layerstructure}
 \end{figure}
-
-A more widely accepted approach is to implement a layered security architecture. In this paradigm, the system is segregated into distinct layers such as the hardware layer, the OS layer, and the application layer. Each layer employs its own security mechanisms targeting specific vulnerabilities.
+Therefore, a more common approach is to implement a layered security architecture. In this paradigm, the system is segregated into distinct layers such as the hardware layer, the OS layer, and the application layer. Each layer employs its own security mechanisms targeting specific vulnerabilities.
 
 Among all these layers, securing the OS is particularly crucial for several reasons:
 \begin{itemize}
@@ -52,7 +50,7 @@ A system is considered secure if the following criteria are met.
 	\item It is secure upon booting, and
 	\item It never perform an action so that it can become insecure from a secure condition.
 \end{itemize}
-Notice that just for clarification, there are some slight differences between two terminologies, ``secure'' and ``trusted'' as follows. System security is the ultimate goal. A system is either secure or insecure, and we want it to stay secure all the time. Trustworthy, on the other hand, is a graded feature that we use to describe an entity in the system. We can, for example, say which parts (services, users, etc.) of the system is trustworthy, and to what extent they can be trusted.
+Notice that just for clarification, there are some slight differences between two terminologies ``secure'' and ``trusted'' as follows. System security is the ultimate goal. A system is either secure or insecure, and we want it to stay secure all the time. Trustworthy, on the other hand, is a graded feature that we use to describe an entity in the system. We can, for example, say which parts (services, users, etc.) of the system is trustworthy, and to what extent they can be trusted.
 
 \subsection{Standards and Requirements}
 
@@ -74,7 +72,7 @@ There are many official standards on computer security. For example, Trusted Com
 \end{itemize}
 Notice that TCSEC is considered outdated due to the rapid advancement of technology. Nowadays, commercialized PCs and OS such as Windows 11 pro, MacOS, RHEL, implement robust security mechanisms that align with various aspects of TCSEC criteria of different tiers, some of which required by Tier B and even Tier A. While TCSEC remains a classic and milestone, newer standards have been developed and adopted globally by various countries and organizations.
 
-In the scope of Linux, there is an open-project, ``Security Enhanced Linux (SELinux)'' that enables mandatory access control in Linux. It started as an add-on module built into the Linux kernel, and today it has become a default module built-in to all Linux distributions.
+In the scope of Linux, there is an open-project, ``Security Enhanced Linux (SELinux)'' that enables mandatory access control in Linux. It started as an add-on module of Linux kernel, and today it has become a default module built into all Linux distributions.
 
 In general, the requirements of secure computer systems include
 \begin{itemize}
@@ -87,7 +85,7 @@ The primary objective of studying computer security is to ensure that the aforem
 
 \section{Elements of Security}
 
-Key components of security under study include:
+Key components in security schema include:
 \begin{itemize}
 	\item Security policy. It defines what needs to be protected and what the desired security outcomes are.
 	\item Security mechanism. It defines the tools, methods, and procedures employed to enforce the security policy.
@@ -119,9 +117,9 @@ Security mechanisms are the means and tools to fulfill the security policies. Se
   \item Recovery: recover a compromised system back to a secure system.
 \end{itemize}
 
-Different systems uses different security mechanisms to fulfill different security policies. Some important concepts are introduced as follows.
+Different systems uses different security mechanisms to fulfill different security policies. Some important concepts are introduced below.
 
-Access control and reference monitoring. One of the most commonly used security mechanism is access control which monitors and controls the accessibility of a resource (known as objects) from a user or a program (known as subjects). Access control is managed by implementing reference monitoring (barely a concept). Reference monitoring is done using reference monitor, which refers to the combination of hardware and software that practices access control. Its architecture is given in Fig. \ref{ch:ossec:fig:reference_monitor}.
+One of the most commonly used security mechanisms is access control, which monitors and controls the accessibility of a resource (known as objects) from users or programs (known as subjects). Access control is managed by reference monitor. Reference monitor refers to the combination of hardware and software that practices access control using the architecture given in Fig. \ref{ch:ossec:fig:reference_monitor}.
 
 \begin{figure}[htbp]
 	\centering
@@ -129,33 +127,108 @@ Access control and reference monitoring. One of the most commonly used security 
 	\caption{Reference Monitor Architecture.} \label{ch:ossec:fig:reference_monitor}
 \end{figure}
 
-Another important concept is security kernel. Security kernel refers to a small piece of code running in the kernel of OS that concerns system security.
+Another important concept is security kernel. Security kernel refers to a small piece of code running in the kernel of OS that addresses system security.
 
 Both reference monitor and security kernel shall have the following features:
 \begin{itemize}
   \item Completeness. They must be active all the time, and no process can bypass them.
   \item Isolation. Their content cannot be modified by unauthorized personals.
-  \item Verification. They can be audited, and their effectiveness can be proved and verified. (This implies that their realization cannot be too complex.)
+  \item Verification. They can be audited, and their effectiveness can be proved and verified. (This implies that their realization cannot be too complicated.)
 \end{itemize}
 
 \subsection{Security Assurance}
 
+Security assurance refers to the degree of confidence in the security features, practices, procedures, and architecture of an information system. It ensures that the system enforces the security policy effectively. Below are key aspects of security assurance:
 
+\begin{itemize}
+	\item \textbf{Verification and Validation}:
+	\begin{itemize}
+		\item Verification: Checking that the system complies with specifications and is correctly implemented.
+		\item Validation: Ensuring the system meets user's needs and its intended purpose.
+	\end{itemize}
+	
+	\item \textbf{Assessment and Evaluation}:
+	\begin{itemize}
+		\item Evaluating the effectiveness of security controls.
+		\item Assessing compliance with security standards.
+	\end{itemize}
+	
+	\item \textbf{Testing}:
+	\begin{itemize}
+		\item Conducting tests to identify security vulnerabilities.
+		\item Penetration testing and automated vulnerability scanning.
+	\end{itemize}
+	
+	\item \textbf{Certification and Accreditation}:
+	\begin{itemize}
+		\item Certification: Evaluation of security features of a system.
+		\item Accreditation: Approval to operate in a secure environment.
+	\end{itemize}
+	
+	\item \textbf{Risk Management}:
+	\begin{itemize}
+		\item Identifying, assessing, and mitigating risks.
+	\end{itemize}
+	
+	\item \textbf{Audit and Compliance}:
+	\begin{itemize}
+		\item Regular audits for policy and standard compliance.
+		\item Maintaining logs and records for security events.
+	\end{itemize}
+	
+	\item \textbf{Continuous Monitoring}:
+	\begin{itemize}
+		\item Real-time threat detection and response.
+	\end{itemize}
+	
+	\item \textbf{Documentation}:
+	\begin{itemize}
+		\item Maintaining records of security policies, procedures, and changes.
+	\end{itemize}
+	
+	\item \textbf{Training and Awareness}:
+	\begin{itemize}
+		\item Training users and administrators in security best practices.
+		\item Creating organizational awareness of security threats.
+	\end{itemize}
+\end{itemize}
 
+Security assurance is an ongoing process that is critical for ensuring that a system is secure by design, in implementation, and in deployment, adapting to new vulnerabilities and attack vectors over time.
 
+\subsection{Trusted Computing Base}
 
+System boundary refers to the boundary between the system and outside world. Everything in the system is protected by the system following the requirements specified by the security policy. 
 
+Security perimeter refers to the imaginary boundary that distinguishes security-relevant components and non-security-relevant components in the system. Security-relevant components include OS, system files, administrators and his files and programs, etc. Non-security-relevant components include user program, user profiles, I/O devices, etc. A demonstrative figure from \cite{gasser1988building} is given in Fig. \ref{ch:ossec:fig:system_boundary}. 
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=300pt]{chapters/ch-computer-security-basics/figures/system_boundary.png}
+	\caption{Reference Monitor Architecture.} \label{ch:ossec:fig:system_boundary}
+\end{figure}
 
+The Trusted Computing Base (TCB) encompasses all the hardware and software components that are crucial for enforcing a system's security policy. This dual perspective implies that:
 
+\begin{itemize}
+	\item Security Assurance. Efforts must be made to ensure the TCB components are as secure as possible. Any vulnerability within the TCB could potentially compromise the security of the entire system. Therefore, the integrity, confidentiality, and availability of the TCB are of utmost importance.
+	\item Assumption of Trust. When designing security mechanisms for the system, the TCB is assumed to be inherently secure and trustworthy. Security mechanisms rely on the TCB to operate correctly and to enforce security policies effectively. This assumption is fundamental to the system's architecture, as the TCB underpins the security of all other components.
+\end{itemize}
+
+The TCB can be likened to a police department in a city. Just as citizens rely on the police force to uphold the law and protect public safety, a system relies on the TCB, the ``police security bureau'' of the system, to enforce its security policies and maintain the integrity of its operations.
+
+Similarly, the well-being and readiness of the police officers are paramount to the security of the city. In the case of the TCB, ensuring the security of these trusted components is crucial because a compromise to any part of the TCB could undermine the security of the entire system. The system's defenses are only as robust as the TCB's integrity and resilience.
+
+Non-trusted components, while not central to the system's security architecture, are analogous to the various elements of a city that the police department does not directly oversee. If these elements are compromised, the immediate risk is localized. However, securing non-trusted components is also important. We always want each and every component in the system to work properly. Maybe more importantly, we want to prevent them from becoming weak links that could be exploited to attack the TCB.
+
+The goal is to keep the TCB, our ``police department'', as streamlined and strong as possible. A smaller, well-protected TCB simplifies the task of maintaining system security and reduces the potential attack surface.
 
 \section{Access Control}
 
-In the realm of computer security, a ``subject'' denotes an active entity that initiates an action, typically a user who takes an active role. On the other hand, an ``object'' represents a passive entity that receives or is acted upon by the action. In most contexts, objects are files, data, or programs. Processes and threads can simultaneously act as both subjects and objects.
+In the realm of computer security, a ``subject'' refers to an active entity that initiates an action, typically a user who takes an active role. On the other hand, an ``object'' refers to a passive entity that receives or is acted upon by the action. In most contexts, objects are files, data, or programs. Processes and threads can simultaneously act as both subjects and objects.
 
-The term ``access'' is used to describe when a subject performs actions on an object. This can encompass various activities such as creating, reading, executing, editing, or deleting the object.
+The term ``access'' is used to describe when a subject performs actions on an object. This can encompass various activities such as creating, reading, executing, editing, or deleting the object. Access control is a mechanism that assists systems in determining whether to grant or deny specific permissions, dictating which subjects can access particular objects and what actions they can undertake with those objects. 
 
-Access control is a mechanism that assists systems in determining whether to grant or deny specific permissions, dictating which subjects can access particular objects and what actions they can undertake with those objects. Typically, a user who plays subject is required to identify themselves by logging into the system using a valid authentication method as a prerequisite. A program that plays subject needs to be assigned with a ``role''. The program can only execute if its role possesses the necessary permissions to do so, including access to required resources like CPU, memory, disk space, and databases.
+Typically, a user who plays subject is required to first identify himself by logging into an account of the system using a valid authentication methods. A user or a program that plays subject needs to be assigned with a ``role''. The program can only execute if its role possesses the necessary permissions to do so, including access to required resources like CPU, memory, disk space, and databases.
 
 We use access control matrix to describe the association of subject and object. A demonstrative graph is given in Fig. \ref{ch:ossec:fig:acmatrix}. In this demonstration, the same ``read'', ``write'' and ``execute'' permissions as introduced in Section \ref{ch:fm:sec:accesscontrollist} are used.
 

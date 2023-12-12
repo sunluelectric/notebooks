@@ -1,20 +1,20 @@
 \chapter{Large Language Model}
 
-This chapter serves as an overview of large language model (LLM), a machine learning model that can handle natural language, read and learn from text documents, and communicate with humans. The focus of this chapter is mostly on high-level motivations, features, basic mechanisms and general training pipeline of LLM.
+This chapter serves as an overview of large language model (LLM), a popular and successful natural language processing practice. 
 
-Detailed introductions to the LLM development platforms (Google Colab, etc.), programming languages and packages (Python, PyTorch package, Transformer package, etc.), and existing solutions (GPT, LLaMA, etc.), will be given in later chapters separately.
+Detailed illustrations to the LLM development platforms such as Google Colab, programming languages and packages such as Pytorch Transformer, and existing solutions such as OpenAI GPT and LLaMA, are introduced in followed up chapters separately.
 
 The majority of this chapter comes from \cite{zhao2023survey}.
 
 \section{Introduction}
 
-There have been variety of ways to model natural language, some of which have been introduced in previous chapters. For example, consider the following sentence:
+Natural language processing models and methods have been introduced previously. A brief review is given in this section, mainly to address their limitations
+
+There have been variety of ways to model natural language. For example, consider the following sentence:
 \begin{center}
 	\textit{``I am thirsty. Please give me a bottle of \rule{1cm}{0.15mm}.''}
 \end{center}
-A human would most likely put ``water'' in the blank. This is because human has been reinforced learning ``a bottle of water'' many times in his life, especially when there is also ``thirsty'' in the context. 
-
-In addition, it makes sense to a human that when someone is thirsty, he would look for water.
+It is quite natural that a human would likely to put ``water'' or ``tea'' in the blank. This is obvious because human has a dictionary of words that he can choose in his mind, and he has been reinforced of learning ``a bottle of water'' expression in many occasions. In addition, it makes sense to a human that when someone is thirsty, he would look for water.
 
 The challenge using AI to realize the above is to build the dictionary in the machine and quantitatively analyze what word or phrase would make the most sense to be filled into the blank. For that, many models have been developed.
 

@@ -1,40 +1,50 @@
 \chapter{Semantic Web Basics} \label{ch:briefintrosemanticweb}
 
-Ontology is the philosophical study of the nature of being, existence, or reality. In the context of the Semantic Web, ontology refers to a formal specification of concepts, relationships, and categories of a particular domain or knowledge base. Ontology allows the creation of a shared understanding of a particular domain, enabling machines to interpret and reason about data more effectively. Ontology is essentially about “what is everything”. It is about how we as humans mark our existence, and how we preserve and add to our knowledge base for the generations to come.
+Ontology is the philosophical study of the nature of being, existence, or reality. It concerns about ``what is everything'' and ``how to define it'' in the context of inductive and deductive reasoning. It discusses how we abstract and preserve knowledge for the generations to come.
 
-Ontology inspires people in computer science of how we can store and exchange information more efficiently by building an internet-based knowledge base. The solution is called the semantic web. An internet powered by semantic web (together with other technologies) defines Web 3.0.
+Ontology inspires people in computer science about how we can store and exchange information efficiently using the internet. The solution is called the semantic web, an internet-based knowledge base schema. The internet powered by semantic web (together with other technologies) defines Web 3.0, a new-generation internet framework.
+
+Notice that there are subtle differences between ``internet'' and ``Internet''. The lower case ``internet'' is a technology that bridges machines to form a network of any size, and the upper case ``Internet'' refers to the specific internet that links the entire world together. In this part of the notebook, however, they are used interchangeably.  
 
 \section{Web of Data}
 
-The Internet, as we call it today, is a technology that enables information exchange between machines, as well as between machines and humans. With the power of the Internet, humans can obtain the information they need from remote servers, databases, or knowledge bases.
+The internet is a technology that enables information exchange among machines and humans. With the power of the internet, a user can obtain the information he needs from remote servers, databases, or knowledge bases.
 
-Initially, this information exchange was difficult, and professional computer skills were required to understand and use the Internet and its human interface. Nowadays, everyone can access the Internet by just using a graphical browser. Public knowledge bases like Wikipedia make obtaining information much easier.
-
-Following this trend, AI knowledge bases combined with human-readable semantic web technologies such as RDF and OWL, will become more and more popular and further boost knowledge transfer and sharing efficiency.
+In the early days, the use of internet required professional skills. Nowadays, everyone can access the internet using a graphical-interface browser that he can easily find on a computer or a mobile device. Public knowledge bases such as Wikipedia has made obtaining information much easier.
 
 \subsection{Web 1.0 and 2.0}
 
-In the age of Web 1.0, knowledge was stored on individual servers, often in a static manner. Users could open a browser and check the knowledge as it was presented in the form designed by the server owner. It was essentially a one-way data transmission. The experts provide information, and the ordinary users consume the information. Examples of Web 1.0 implementations include static news websites.
+Under the Web 1.0 framework which was popular in the early stage of internet development, information is stored on individual servers in a static manner. A user can browse the contents, but he cannot edit them. It is essentially a one-way data transmission. The ``authority'' such as a news company provides the information, and the users consume it. Examples of Web 1.0 implementations include news websites, static web gallery, etc.
 
-In the age of Web 2.0, thanks to more advanced communication technologies, users can interact with web service providers. They can search and filter data from the servers and even upload their own data to the servers and share it with others. The Internet became easier and more flexible to use for information exchange, and data transfer became bidirectional. Ordinary users are both providers and consumers of information on the Internet. Databases are used in the backend which allows the user to push and pull data from the server. Examples of Web 2.0 implementations include Blog, Twitter, YouTube and Weibo.
+One-way data transmission in Web 1.0 cannot meet the expectation from the users who want to share their information to other users on the internet. Thanks to the advent in information science and communication, under the Web 2.0 framework users can interact with the internet bidirectionally. A user can search and filter data from the servers and even upload his own data and share it with others. The Internet became far more powerful in terms of information exchange. The source of information does not necessarily come from the authority. The users are generators and consumers of information at the same time. Examples of Web 2.0 implementations include Blog, Twitter, YouTube and Weibo.
 
-Web 2.0 is extremely popular and successful. Yet, there are still things to be improved, especially considering recent advent in how we collect and use data in industry 4.0 and data-driven-everything eras.
+Web 2.0 is extremely popular and successful even to date. Yet, under the background of industry 4.0, big data and data-driven modeling of almost everything, there are still limitations and downsides to Web 2.0 that we would wish to improve.
 
-One of the biggest challenges that we encounter with Web 2.0 is how to quickly locate the information we want hidden among the vast amount of data on the Internet. Among all the information available, which is important, and which is redundant? Humans have contextual knowledge and experience to solve the problem, but it will take forever.
+One of the biggest challenges that we encounter with Web 2.0 is how to quickly locate the information we want among the vast amount of irrelevant data. Conventionally in Web 2.0, keyword-based searching engines are used. These searching engines do not comprehend the contextual knowledge of the contents, and as a result they may fail to return what a user truly expects. The user often needs to further manually pick up relevant information from the searching results. Nowadays searching engines are becoming smarter, and they can sometimes pre-filter the results. Nevertheless, it is still quite common that many returned results are useless to the user. Keyword-based engines also struggle with polysemous, synonyms and implicit information from pictures in the searching range, again due to the lack of understanding of the contents.
 
-Keyword search engines are widely used in the Web 2.0 framework, and it is the main method one can rely on when pulling information from the Internet. Keyword search engines may struggle with polysemous, synonyms, unintended personalizing, and implicit information from pictures.
+The problem here, however, is not caused by the searching engines alone.  It is rather that the information stored on the internet does not come with its corresponding semantics in the first place. Today most of the information on the internet is stored in HTML format. HTML tells only the contents but not the meaning behind them. It is difficult for a machine to understand the meaning of the information from HTML corpus. This potentially makes it difficult for a machine to retrieve data efficiently. Even with the recent breakthrough in LLM enabling the machine to summarize articles, it is still unpractical for it to go through all the returned contents of a searching engine which sometimes contains hundreds of pages of information.
 
-Today most of the information on the Internet is stored in HTML format. HTML tells the contents links to the information, but not the meaning behind it. It is difficult for a machine to understand the meaning of the information from HTML files. As will be introduced later, this potentially makes it difficult for a machine to retrieve data efficiently.
+Data structure determines its functions. To solve the problem once for all, new data structures to store and share the information need to be introduced.
 
 \subsection{Web 3.0}
 
-The ultimate goal of Web 3.0 is to allow more efficient information search and transfer using the Internet, given the vast amount of existing data hosted on distributed servers and sensors.
+The goal of Web 3.0 is to allow more efficient information retrieval and sharing using the internet. Ideally, we would want the searching engine to truly understand the user's demand, and return only the most relevant information summarized in a nice manner. If there is no readily available response on the internet, the searching engine shall derive the response based on existing information, i.e., it should be capable of doing simple reasoning. 
 
-In order to search, exchange, and abstract useful information from distributed sources in an efficient manner, there are at least the following two development trends that we can come up with naturally:
+For this purpose, there are at least the following two development trends:
 \begin{itemize}
-  \item Let the machine remember all the knowledge. The AI should be smart enough to precisely capture what the user wants and get back to him with useful and accurate results. This leads to chatbots and copilots, which have become popular recently thanks to the new AI model, the transformer.
-  \item Create a powerful and flexible (NoSQL) database. Make the information in the database more readable for both humans and machines, i.e., make the information semantic. This leads to semantic web, which is one of the most important components of Web 3.0.
+  \item Let the LLM-based AI remember all the knowledge. The LLM should be smart enough to precisely capture what the user wants and get back to him with useful and accurate information. This leads to chatbots and copilots.
+  \item Create a powerful and flexible NoSQL database. Make the information in the database readable for both humans and machines, and somehow integrate the semantics of the contents into the database. This leads to semantic web.
 \end{itemize}
+
+In practice, it is most recommended to use both LLM-based AI and semantic web simultaneously. The reasons are as follows.
+\begin{itemize}
+	\item Using LLM-based AI alone makes scaling up of knowledge difficult, especially expanding knowledge in real-time. LLM is also weak in reasoning, and sometimes it generates misleading information.
+	\item Using semantic web alone requires a steep learning curve. Semantic web also lacks of the ability to summarize the returned contents to form a proper answer to the user's question.
+\end{itemize}
+
+
+
+
 
 To create the powerful and flexible semantic web database, we need to formally express the semantics (meanings) of the information for everything put online. This helps both humans and machines to interpret information and decide whether it is relevant. This introduces the concept of the semantic web, which is a significant component of Web 3.0. In fact, semantic web is so important that it is often considered synonymous with Web 3.0, although the broader vision of Web 3.0 includes other features as well.
 

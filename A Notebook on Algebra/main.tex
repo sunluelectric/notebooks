@@ -1,27 +1,11 @@
 % ---
-% This LaTeX template is obtained from ``https://www.overleaf.com/talex/templates/tagged/book'' under ``Krantz book template''
-% The template is downloaded from the above website on March 15, 2021.
+% sunlu
 % ---
-\documentclass[krantz1,ChapterTOCs]{krantz}
-\usepackage{fixltx2e,fix-cm}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{subfigure}
-\usepackage{makeidx}
-\usepackage{multicol}
-\usepackage{multirow}
-%\usepackage[dvips]{hyperref}
-
-\usepackage{footnote}
-
-
-\frenchspacing
-\tolerance=5000
+\input{../style/documentclass.tex}
+\input{../style/packages.tex}
+\input{../style/preamble.tex}
 
 \makeindex
-
-\include{frontmatter/preamble} %place custom commands and macros here
 
 \begin{document}
 
@@ -32,18 +16,14 @@
 
 \maketitle
 
-\include{frontmatter/dedication}
-%\cleardoublepage
-%\setcounter{page}{7} %previous pages will be reserved for frontmatter to be added in later.
+\input{../frontmatter/dedication.tex}
 \tableofcontents
-\include{frontmatter/foreword}
+\input{../frontmatter/foreword.tex}
 \include{frontmatter/preface}
 \listoffigures
 \listoftables
-%\include{frontmatter/contributor}
-%\include{frontmatter/symbollist}
 
-\mainmatter
+\mainmatter\_
 
 \part{Linear Algebra}
 
