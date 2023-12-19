@@ -1,16 +1,14 @@
 \chapter{Semantic Web Practice} \label{ch:semanticwebpractice}
 
-This chapter studies the design and development of ontology and semantic web model in practice. Both methodologies (ontological engineering) and tools (triplestores) are introduced. Examples are given.
+This chapter studies the design, development and deployment of ontology and semantic web model. Both the methodologies and the tools are concerned.
 
-\section{Brief Introduction to Ontological Engineering}
+\section{Ontological Engineering}
 
-Ontological engineering focuses on the methodology to design the ontology or the semantic web for a specific application or task (recall Fig. \ref{fig:ontologylevel}).
+Different ontologies (class, property, hierarchy, interpretation, logic, etc.) can be used to describe the identical knowledge. This is known as the ``problem of semantic gap''. It is challenging to find the optimal and consistent way of representing the knowledge using ontology and semantic web.
 
-In practice, to model a physical system, we need to define classes, properties, and instances. For class, we need to define class hierarchy and classes relationships (intersection, union, etc.). For properties, we need to define property type, hierarchy, domain and range, property features (transitive, symmetric, etc.) and restrictions. There might be many different ways to design and describe the same physical system. Ontological engineering studies the systematical way of designing, comparing, and merging of ontologies.
-
-Ontology engineering has the following sub areas:
+Ontological engineering studies the systematic ways to design the ontology and the semantic web for a specific domain, application or task (recall Fig. \ref{fig:ontologylevel}). It concerns with at least the following:
 \begin{itemize}
-	\item Ontology design: it studies the methods to systematically design, develop, and devploy ontology models.
+	\item Ontology design: it studies the methods to systematically design, develop, and develop ontology models.
 	\item Ontology mapping: it studies the methods to efficiently compare different ontology models.
 	\item Ontology merging: it studies the methods to efficiently combine ontology models.
 	\item Ontology learning: it studies the automatic learning of new knowledge by an existing ontology model, when new data sets are provided.
@@ -18,11 +16,11 @@ Ontology engineering has the following sub areas:
 
 \section{Ontology Design}
 
-Ontology design methodology describes all activities necessary for the construction of an ontology model. It helps with consistent, efficient, and distributed (collaborative) ontology model design.
+Ontology design describes all activities necessary for the construction of an ontology model. It helps with consistent, efficient, and distributed (collaborative) ontology model design.
 
 \subsection{Ontology Management Activity}
 
-Design, develop and deploy ontology model for a sophisticated system can be time and manpower consuming. It is important to manage each step during the entire procedure to ensure healthy development of the system. This include
+Design, develop and deploy ontology model for a sophisticated system can be time and manpower consuming. It is important to manage each step during the entire procedure to ensure healthy development of the system. This includes
 \begin{enumerate}
 	\item Scheduling: identify tasks and problems to be solved by the semantic web; plan and arrange resources, time, manpower and money ahead.
 	\item Control: guarantee correct execution of tasks and problems to be solved.
@@ -58,21 +56,21 @@ This section introduces the basics of ontology design. It covers a subset of the
 
 \section{Triplestore}
 
-Triplestore is the DBMS of RDF/RDFS and OWL. 
+Triplestore is the database engine of the RDF model. 
 
-When it comes to relational database, there are many choices of DBMS such as Microsoft DBMS, Oracle DBMS, MySQL, MariaDB, and many more. Similarly, there are many choices of triplestore for semantic web. To name a few, a list of widely used triplestores is given below.
+When it comes to relational database, there are many choices of DBMS such as Microsoft SQL Server, Oracle DBMS, MySQL and MariaDB. Similarly, there are many choices of triplestores for semantic web. A list of widely used triplestores is given below, just to name a few.
 \begin{itemize}
 	\item GraphDB: a commercialized enterprise-tier semantic graph database management system compliant with W3C standards. It is famous for its performance and inference capabilities. It also provides free-tier for learning and for small projects, with limited capability.
 	\item Apache Jena: an open-source Java framework for building semantic web and linked data applications. It has RDF APIs that can read and process RDF and SPARQL written in XML, Turble, JSON-LD and N-Triples.
 	\item Virtuoso: a multi-model DBMS for both RDB and NoSQL databases such as RDF. It is famous for its scalability and standards compliance.
-	\item Many more, such as Stardog, Blazegraph, AllegroGraph, etc.
+	\item AllegroGraph: a closed source triplestore which is designed to store RDF triples. It also operates as a document store designed for storing, retrieving and managing document-oriented information, in JSON-LD format. AllegroGraph is currently in use in commercial projects and a US Department of Defense project. It offers both free-tier license and enterprise-tier license.
 \end{itemize}
 
-More triplestores can be found at W3C, where a list of triple stores is maintained. At this moment of 2023, there are 50 triplestores registered at W3C.
+More triplestores can be found at W3C, where a list of triplestores is maintained \cite{triplestore,largetriplestore}. As of this writing, there are 50 triplestores registered at W3C.
 
 For the demonstrations given in this notebook, GraphDB is used, unless otherwise mentioned. A full instruction on using GraphDB, including applying for access and installation of the software, can be found at \textit{graphdb.ontotext.com}.
 
-Notice that RDF/RDFS/OWL/SPARQL APIs can be enabled using packages or libraries of many programming languages. For example, in Python, there are several packages available for semantic web operations, including \verb|rdflib|, \verb|Owlready2|, \verb|SPARQLWrapper|, etc. Some of these packages have ``lite'' triplestore engine built-in which provides some SPARQL features for in-memory operations. They do not have all the features of a triplestore. However, they can connect to a triplestore API, in which case they serve as Python-to-triplestore interfaces.
+Notice that RDF/RDFS/OWL/SPARQL APIs can be enabled using packages or libraries in many programming languages. For example, in Python, there are several packages available for semantic web operations, including \verb|rdflib|, \verb|Owlready2|, \verb|SPARQLWrapper|, etc. Some of these packages have ``lite'' triplestore engine built-in which provides some SPARQL features for in-memory operations. They do not have all the features of a triplestore. However, they can connect to a triplestore API, in which case they serve as Python-to-triplestore interfaces.
 
 
 \section{Example: Semantic Web for Home Assets}

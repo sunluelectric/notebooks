@@ -1,44 +1,32 @@
-\chapter{Semantic Web Architecture}
+\chapter{Resource Description Framework}
 
-Semantic web uses URI to identify an existing name or resource, RDF/RDFS and OWL to store new information, and SPARQL to query from the knowledge base. The semantic web stack is already given earlier in Section \ref{subsec:semanticwebstack}. More details are introduced in this chapter.
+Semantic web uses URI to identify an existing interpretation, RDF/RDFS and OWL to store semantics, and SPARQL to query and manipulate the database. RDF and RDFS are discussed in this chapter.
 
-\section{Uniform Resource Identifier (URI)}
+\section{Uniform Resource Identifier}
 
-Humans uses symbol and concept to help interpret things and link to objects in real life. This is demonstrated by semiotic triangle as shown in Fig. \ref{fig:semiotictriangle}. The interpretation of ``apple'' is used as an example. The concept is shared among humans in the form of knowledge.
-
+Human use symbols to represent objects in reality. The concept associated with a symbol is used to help define and interpret objects. An example of interpreting ``Apple'' is given in Fig. \ref{fig:semiotictriangle}.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{./chapters/ch-semanticwebarchitecture/figures/semiotic_triangle.png}
-	\caption{Semiotic triangle. The symbol is an ``representation'' of a category of items. The concept is the abstracted general properties of an item.}
+	\caption{Semiotic triangle of Apple.}
 	\label{fig:semiotictriangle}
 \end{figure}
 
-Uniform resource identifier (URI) is the way to identify a resource of information or knowledge. URI is unique from resource to resource.
+URI points to the interpretation of the symbols used in the semantic web. In practice, the resource is either the definition of the class/object/property, or the higher-level ontology (maybe also in the format of semantic web). For example, consider building a semantic web to describe an apple farm. Consider using \texttt{dbpedia.org/page/Apple} from DBpedia as the URI of interpretation of apple, which already gives a clear and rich definition of apple such as abstract, Wikipedia link, emoji, sugar level, etc. This saves the time of building the interpretation of apple from scratch.
 
-For example, DBpedia gives concept of the apple here: \textit{dbpedia.org/page/Apple}. This is an URL to the web page that contains information of the apple. This URL is an example of URI. In this example, the information can be accessed by HTTP call to the URL.
-
-In semantic web, the URI of a resource identifies an item or a class. Using the URI, the representation (meta data) of the item/class can be accessed. The representation is like the symbol in Fig. \ref{fig:semiotictriangle}, and although it is not a specific instance of the item, it is usually sufficient for us to use the symbol to discuss the item. This is shown in Fig. \ref{fig:identificationflow}.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/identificationflow.png}
-	\caption{Identification flowchart.}
-	\label{fig:identificationflow}
-\end{figure}
-
-URI shall contain at least two pieces of information: the address (locator), and the identity (name). URI is often ASCII encoded, but it is possible to extend to unicode. The generic syntax is given below, and the URL is a subset of the syntax.
+URI shall contain at least two pieces of information: the address (locator), and the identity (name). URI is often ASCII encoded, but it is possible to extend to unicode. The generic syntax is given below. If it looks similar with Uniform Resource Locator (URL), that is because URL is considered as a type of URI.
 \begin{lstlisting}
 scheme:[//authority]path[?query][#fragment]
 \end{lstlisting}
 where
 \begin{itemize}
 \item \verb|scheme| specifies the protocol used to access the resource. Common schemes include \verb|http|, \verb|https|, \verb|ftp|, \verb|mailto|, \verb|file|, and \verb|data|. The scheme is followed by a colon \verb|:|.
-\item \verb|authority| component is optional and typically includes the user information, host, and port, separated by an at sign \verb|@| and a colon \verb|:|, respectively. The authority is preceded by a double forward slash \verb|//|.
+\item \verb|authority| specifies the user information, host, and port, separated by an at sign \verb|@| and a colon \verb|:|, respectively. The authority is preceded by a double forward slash \verb|//|.
 \item \verb|path| identifies the specific resource within the context of the scheme and authority. It is a sequence of segments separated by forward slashes \verb|/|.
-\item \verb|query| component is optional and provides additional information that the resource can use for processing. It is a series of key-value pairs separated by an ampersand \verb|&|. The query starts with a question mark \verb|?|.
-\item \verb|fragment| component is optional and allows for the identification of a specific part or section within the resource. It is typically used with HTML documents to indicate a specific anchor or location within the page. The fragment starts with a hash sign \verb|#|.
+\item \verb|query| provides additional information that the resource can use for processing. It is a series of key-value pairs separated by an ampersand \verb|&|. The query starts with a question mark \verb|?|.
+\item \verb|fragment| identifies a specific part or section within the resource. It is typically used with HTML documents to indicate a specific anchor or location within the page. The fragment starts with a hash sign \verb|#|.
 \end{itemize}
-More details can be found on
+More details can be found at
 \begin{lstlisting}
 https://www.rfc-editor.org/rfc/rfc3986.html#section-3.1
 \end{lstlisting}
@@ -46,45 +34,41 @@ which happens to be a good example of an URI in https scheme.
 
 \section{Resource Description Framework (RDF)}
 
-The representations of the knowledge shown in \ref{fig:identificationflow} need to be presented in a consistent way. In practice, RDF is introduced to represent knowledge.
+RDF is the backbone data model of the semantic web. It stores data in the form of triples. Notice that RDF alone is not powerful enough to record DL. In practice, RDF usually works with RDFS which expand its vocabulary to include class, subclass, etc., and OWL which further expand its vocabulary and introduce DL features, to together form a comprehensive semantic web. RDF is the fundamental of RDFS and OWL.
 
-Notice that RDF itself is not a programming language. It is the structure using which information is stored. Therefore, it needs a markup language to host the RDF framework. Commonly used markup language the following. There are tools to automatically transfer them from one to another.
+Notice that RDF is not a syntax by itself. A markup language is needed to host the RDF framework. Commonly used markup languages are listed below. They can be translated from one to the other.
 \begin{itemize}
   \item RDF/XML: has good compatibility with old machines.
   \item Terse RDF Triple Language (Turtle): easy to use, human-readable.
   \item JSON for Linked Data (JSON-LD): popular in web applications and APIs where JSON-based format is required.
   \item N-Triples: simple, machine-readable format for data exchange between tools.
 \end{itemize}
-Turtle is very self-explanatory. Unless otherwise mentioned, Turtle is used in this notebook.
+Unless otherwise mentioned, Turtle is used in this notebook.
 
 \subsection{Triple Representation}
 
-RDF uses ``node-edge-node'' triples to represent knowledge. The triple refers to the combination of:
-\begin{itemize}
-  \item Subject
-  \item Predicate
-  \item Object
-\end{itemize}
-For example, consider representation of knowledge ``Einstein was born in Ulm''. In RDF, ``Einstein'' is the subject of the knowledge, and ``Ulm'' the object. The predicate is ``has birthPlace'', where ``birthPlace'' is a property assigned to ``Einstein''. The graph representation is given by Fig. \ref{fig:einsteinexp}.
+RDF uses ``subject-predicate(property)-object'' triple to represent knowledge. A triple is corresponding with an edge in a directed graph, which is often used to visualize RDF. 
+
+For example, consider representation of knowledge ``Einstein was born in Ulm''. In RDF, ``Einstein'' is the subject, and ``Ulm'' the object. The predicate is ``has birthPlace'', where ``birthPlace'' is a property assigned to ``Einstein''. The graph representation is given by Fig. \ref{fig:einsteinexp}.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/einsteinexp.png}
 	\caption{Graph representation of triple for knowledge ``Einstein was born in Ulm''.}
 	\label{fig:einsteinexp}
 \end{figure}
-The RDF is given as follows.
+The RDF in Turtle is given as follows.
 \begin{lstlisting}
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix dbr: <http://dbpedia.org/resource/> .
 
 dbr:Albert_Einstein dbo:birthPlace dbr:Ulm .
 \end{lstlisting}
-where \verb|Albert_Einstein| and \verb|Ulm| are defined in \verb|dbpedia.org/resource/| as name and place, and \verb|birthPlace| in \verb|dbpedia.org/ontology/| as an attribute, respectively. To give more details:
+where \verb|Albert_Einstein| and \verb|Ulm| are defined in \verb|dbpedia.org/resource/| as name and place, and \verb|birthPlace| in \verb|dbpedia.org/ontology/| as a property. To breakdown the Turtle in more details:
 \begin{itemize}
   \item \verb|@prefix| keyword is used to define prefixes for namespaces, making it easier to write URIs.
   \item \verb|dbr:Albert_Einstein| is the subject, representing Albert Einstein as a resource in the DBpedia namespace.
   \item \verb|dbo:birthPlace| is the predicate, representing the "birthPlace" property from the DBpedia ontology.
-  \item \verb|dbr:Ulm|is the object, representing the city of Ulm as a resource in the DBpedia namespace.
+  \item \verb|dbr:Ulm| is the object, representing the city of Ulm as a resource in the DBpedia namespace.
   \item \verb|.| indicates the end of a statement.
 \end{itemize}
 
@@ -141,7 +125,7 @@ Lists help to make the code clean and readable. There are two types of lists, th
 \end{figure}
 Notice that the blank node has a type \verb|rdf:Seq|. This tells that the items stored in the container follows an ordered set. There are other container types, such as \verb|rdf:Bag| (unordered set) and \verb|rdf:Alt| (alternatives of elements; only one element is relevant for the application).
 
-The collection, on the other hand, defines a closed list as shown by Fig. \ref{fig:lectureexp4}. In turtle, this can be done by using nested \verb|[]| iteratively.
+The collection, on the other hand, defines a closed list as shown by Fig. \ref{fig:lectureexp4}. In Turtle, this can be done by using nested \verb|[]| iteratively.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/lectureexp4.png}
@@ -165,7 +149,7 @@ RDF permits interleaving of statements, i.e., to make a statement about another 
 
 \subsection{Converting RDB to RDF}
 
-For small-scale relational database, it is possible to convert it to semantic web RDF manually. For example, consider an RDB for all the books in a study. There are three tables in the database, for books, authors and publishers, respectively. Each table contains a few dozens of entries. The RDB can be converted to RDF as shown in Fig. \ref{fig:bookexp}. It can be realized very easily, simply by defining everything as nodes and stack triples for all relationships.
+For small-scale relational database, it is possible to convert it to semantic web RDF manually. For example, consider an RDB for all the books in a study. There are three tables in the database, books, authors and publishers, respectively. Each table contains a few dozens of entries. The RDB can be converted to RDF as shown in Fig. \ref{fig:bookexp}. It can be realized very easily, simply by defining everything as nodes and stack triples for all relationships.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/bookexp.png}
@@ -189,21 +173,21 @@ RDFS enforces schema to the RDF model. By using RDF/RDFS, a more consistent and 
 
 RDF is flexible. It is so flexible that sometimes it becomes difficult to maintain consistency of the RDF model, let alone performing sophisticated reasoning from it. RDFS, also known as RDF vocabulary description language, enforce schema to the RDF model by adding more ``meta information'' which builds more connections among the nodes.
 
-RDFS expands the vocabulary of RDF. It introduces the concepts of ``class'' and ``subclass'' to RDF. It provides built-in predefined classes such as \verb|rdfs:Literal|, \verb|rdfs:Resource|, \verb|rdfs:Datatype|, etc., and enforce the nodes to be linked to these classes. RDF already defines \verb|rdf:Property|. RDFS further expands the properties and relations. All above makes the RDF modeling more consistent and semantic.
+RDFS expands the vocabulary of RDF. It introduces the concepts of ``class'' and ``subclass'' to RDF. It provides built-in predefined classes such as \verb|rdfs:Literal|, \verb|rdfs:Resource|, \verb|rdfs:Datatype|, etc., and enforce the nodes to be linked to these classes. RDF already defines \verb|rdf:Property|. RDFS further expands the properties and relations. All above makes the RDF/RDFS modeling more consistent and semantic than using RDF alone.
 
-In the deeper insights, RDFS helps to add ``ontology'' to the RDF model by introducing the schema. It essentially integrate common understanding and domain knowledge to tine information. For example, by creating a property ``\verb|:hasSpouse|'' whose domain and range person, it demonstrates the common knowledge that a person can be married to another person.
+In the deeper insights, RDFS helps to add ``ontology'' to the RDF model by introducing the schema. It essentially integrate common understanding and domain knowledge to the information. For example, by creating a property ``\verb|:hasSpouse|'' whose domain and range person, it demonstrates the common knowledge that a person can be married to another person.
 
 \subsection{RDF Versus RDF/RDFS via an Example} \label{subsec:rdfvsrdfs}
 
-The following example applies RDF versus RDF/RDFS on the same statement. Consider statement ``banana is yellow, apple is red, and orange is orange color''. In a RDF implementation, this would be simply be Fig. \ref{fig:fruitexp} green-colored elements. It is a disconnected graph, where the three statements are completely independent.
+The following example compares RDF and RDF/RDFS implementations on the same context. Consider statement ``banana is yellow, apple is red, and orange is orange color''. In a RDF implementation, this would look like the green-colored elements in Fig. \ref{fig:fruitexp}. It is a disconnected graph. The semantic web failed to bridge the triples together and realize that all of them are discussing colors of fruits.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/fruitexp.png}
-	\caption{Semantic web of a fruits, with the green color RDF and green + red RDF/RDFS implementations.}
+	\caption{Semantic web of fruits and their colors, with RDF implementation in green RDF/RDFS in red.}
 	\label{fig:fruitexp}
 \end{figure}
 
-In a RDF/RDFS implementation, class/subclass and property are enforced in the RDF model, with property domain and range specified. All classes eventually root to \verb|rdfs:Resource|. This is shown by the green + red color in Fig. \ref{fig:fruitexp}. The corresponding Turtle is
+In a RDF/RDFS implementation, class/subclass and property are enforced in the RDF model, and each property must be associated with clearly defined domain and range. All classes eventually root to \verb|rdfs:Resource|. This is shown by the green + red color in Fig. \ref{fig:fruitexp}. The corresponding Turtle is
 \begin{lstlisting}
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -239,25 +223,25 @@ example:Apple example:hasColor example:Green .
 example:Orange example:hasColor example:Orange .
 
 \end{lstlisting}
-where only the last 3 lines would be used in RDF implementation. It can be seen from this example that RDF/RDFS uses more ``complicated'' structure to enforce schema of the model. In this example, ``a fruit has color of a color'' is enforced. Notice that predicate \verb|rdf:type| can be used interchangeably with turtle keyword \verb|a|. They both declares a instance of a class.
+Notice that to build the RDF model shown by the green-colored elements in Fig. \ref{fig:fruitexp} (without RDFS), only the last 3 lines would be required. It can be seen from this example that RDF/RDFS uses more ``complicated'' structures to enforce schema of the model. In this example, ``a fruit has color of a color'' is enforced. Notice that predicate \verb|rdf:type| can be used interchangeably with Turtle keyword \verb|a|. They both declares a instance of a class.
 
 \subsection{RDFS Expanded Class and Properties}
 
-Special classes and properties are defined, some of which already used in the above example. Some commonly seen ones include:
+RDFS expands the vocabulary of RDF by introducing classes and properties hierarchy as well as domain and range for a property. As a brief summary, the following list shows some of the introduced concepts by RDFS.
 \begin{itemize}
 	\item \verb|rdfs:Resource|
 	\item \verb|rdfs:Class|
-	\item \verb|rdf:Property|
+	\item \verb|rdf:Property| (Notice that ``Property'' is already defined in RDF framework; RDFS enhanced its capability by introducing new mechanisms.)
 	\item \verb|rdfs:subClassOf|
 	\item \verb|rdfs:subPropertyOf|
 	\item \verb|rdfs:domain|
 	\item \verb|rdfs:range|
 \end{itemize}
 
-Commonly seen further properties of a node include the following. They help to make the RDF model more human-readable.
+RDFS introduces additional powerful properties for a class. They help to make the RDF model more human-readable. The following is a short list of some of the new properties.
 \begin{itemize}
 	\item \verb|rdfs:seeAlso| points to a resource where a detailed explanation of the node can be found.
-	\item \verb|isDefinedBy| defines the relation of a resource to its definition.
+	\item \verb|rdfs:isDefinedBy| defines the relation of a resource to its definition.
 	\item \verb|rdfs:comment| points to text comment.
 	\item \verb|rdfs:label| assign a more human-readable name to the node.
 \end{itemize}
@@ -266,30 +250,30 @@ More details of the latest version of RDF/RDFS defined classes and properties ar
 
 \subsection{Semantics inside RDF/RDFS}
 
-The semantics in RDF/RDFS, such as Fig. \ref{fig:fruitexp}, is stored in the format of connections linked via properties, with domain and range specified. The name of a class or a property makes no sense to a machine when it is doing reasoning and query. The connection matters.
-
-The following gives some intuitive examples for semantic reasoning.
+The semantics in RDF/RDFS are given by both the triples in the RDF model as well as the class and property hierarchies introduced by RDFS. Here are some examples of different types of hierarchies, and the semantics behind them.
 \begin{itemize}
-	\item Via class inheritance. In Fig. \ref{fig:fruitexp}, if apple is a subclass of fruit, and fruit a subclass of plant, then apple must also be a subclass of a plant. There is an ``hidden arrow'' pointing from the apple to the plant.
-	\item Via property domain and range. In Fig. \ref{fig:fruitexp}, if an unknown object ``hasColor'', then its object must be a fruit, and the subject a color. There are associated ``hidden arrows'', even if these arrows are not specified in the programming.
-	\item Via property inheritance. Consider two properties, ``isMotherOf'' and ``isParentOf''. Both properties have the same domain and range of ``person'', and ``isMotherOf'' is a sub property of ``isParentOf''. In this case ``A is the mother of B'' can derive ``A is the parent of B''.
+	\item Class inheritance. If apple is a subclass of fruit, and fruit a subclass of plant, then apple must also be a subclass of a plant.
+	\item Property domain and range. Let ``hasColor'' predicate be associated with domain ``fruit'' and range ``color''. If an object ``hasColor'', then the object must be a fruit, and corresponding subject in the triple must be a color.
+	\item Property inheritance. Consider two predicates, ``isMotherOf'' and ``isParentOf''. Both predicates have the same domain and range of ``person''. Predicate ``isMotherOf'' is a sub property of ``isParentOf''. In this case ``A is the mother of B'' leads to ``A is the parent of B''.
 \end{itemize}
 
-Though not given by the input directly, the hidden information exists in the semantic web and should be accessible from API
+The semantics allows some extent of reasoning, allowing ``hidden information'' to be derived.
 
 \section{SPARQL Protocol and RDF Query Language (SPARQL)}
 
-SPARQL is the query language for semantic web. It is SQL-like in the API syntax perspective, but notice that the underlying technologies of SQL and SPARQL differ largely, as SQL is for operations on structured tabular, while SPARQL for those of graphical database. The details of the internal mechanism of SPARQL, which involves a lot of graph theory, pattern searching and data structuring, are not covered in this chapter.
+SPARQL is a widely used query and manipulation language for semantic web. It is SQL-like in the syntax, but its underlying mechanisms differ largely from how a relational database management system run SQL.
 
-In the recent update by W3C standard for SPARQL, namely SPARQL 1.1, more operations such as advanced query and interfering, updating triples, etc., have been added to the existing SPARQL 1.0 standard, making it more powerful and capable. SPARQL 1.1 is already supported by many triplestores.
+In the lately released SPARQL 1.1 standard, more operations such as advanced query and interfering are included, making it more powerful and capable than what SPARQL 1.0 standard described. SPARQL 1.1 is already supported by many triplestores.
 
-Notice that SPARQL is not only a language, but also a protocol layer. The input and return have specific formats which are also illustrated by the SPARQL standard. However, introducing of SPARQL from a protocol perspective is not the focus of this chapter, hence it is not covered in details.
+Notice that SPARQL is not only a language, but also a protocol layer. The input and return have specific formats which are also defined by the SPARQL standard. Introducing SPARQL from a protocol perspective is not the focus of this chapter, hence it is not covered in details. 
 
 More details of SPARQL 1.1 can be found at \textit{w3.org/TR/sparql11-query/}.
 
+SPARQL is not the only language for semantic web query and manipulation. It is good at general tasks. However, when comes to specific tasks such as expressive querying, data validation and advanced reasoning, there might be better choices.
+
 \subsection{SPARQL for Basic Query}
 
-Many query types are defined in SPARQL, each with a different purpose and associated with a different return type. For example,
+SPARQL offers flexible ways of querying data. There are different commands to trigger a query, each fulfilling a different purpose. For example,
 \begin{itemize}
 	\item SELECT returns a tabular just like SQL.
 	\item CONSTRUCT returns a new RDF graph based on the query result.
@@ -297,7 +281,7 @@ Many query types are defined in SPARQL, each with a different purpose and associ
 	\item DESCRIBE returns the schematic of a resource; this is useful when the structure of RDF data in the data source is unclear.
 \end{itemize}
 
-The basic syntax of SPARQL is inspired by SQL as follows.
+The basic syntax of SPARQL looks similar with SQL as shown below.
 \begin{lstlisting}
 SELECT [?s ?p ?o]
 [FROM rdfSource]
@@ -308,7 +292,7 @@ WHERE {
 [LIMIT limitNum]
 [PFFSET offsetNum]
 \end{lstlisting}
-where \verb|?variableName| denotes a variable, and without \verb|?|, a constant. Recall the fruit example used in Section \ref{subsec:rdfvsrdfs}. To perform a query to look for fruits with yellow color, use the following
+where \verb|?variableName| denotes a variable, and without \verb|?|, a constant. Recall the fruit example used in Section \ref{subsec:rdfvsrdfs}. The following is an example of querying that semantic web.
 \begin{lstlisting}
 PREFIX ex: <http://www.example.com/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -337,11 +321,7 @@ WHERE {
 } # return triples related to ex:Banana
 \end{lstlisting}
 
-Always put in mind that SPARQL is essentially pattern matching. The triples given in the WHERE clause are the patterns to be matched. Only the elements or triples that matches all the patterns in the WHERE clause can be returned, on top of which other filtering functions (such as FILTER which is introduced later) can be carried out.
-
-Notice that some triplestore may require each query to be passed to the engine one at a time, instead of putting everything into a gigantic file and ``run all''.
-
-When there are string and numerical attributes, ``\verb|FILTER|'' keyword can be used to filter the result and returns only the entries matching the filter condition. An example is given below. It is worth mentioning that only triples in the WHERE clause need to end with a period ``.''. The filter condition lead by \verb|FILTER ()| does not require the period.
+The ``\verb|FILTER|'' keyword can be used to quantitatively filter a numerical or string-like variable. An example is given below. It is worth mentioning that only triples clauses need to end with a period ``.''. The filter condition lead by \verb|FILTER ()| does not require the period.
 \begin{lstlisting}
 PREFIX ex: <http://example.org/>
 
@@ -351,10 +331,9 @@ WHERE {
 	FILTER (?age >= 30 && ?age <= 40)
 }
 \end{lstlisting}
-
 Commonly used keywords and operators in FILTER clause include \verb|&&| (and), \verb$||$ (or), \verb|!| (not), as well as string functions \verb|STR|, \verb|LANG|, \verb|CONTAINS|, \verb|STRSTARTS|, \verb|STRENDS|, \verb|STRLEN|, \verb|SUBSTR|, \verb|REGEX| (regular expression matching), etc., and numeric functions \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|>|, \verb|>=|, \verb|<|, \verb|<=|, \verb|ABS|, \verb|ROUND|, \verb|CEIL|, \verb|FLOOR|, etc., and comparison operators \verb|=|, \verb|!=|.
 
-Similar with FILTER clause, there are also other clauses such as OPTIONAL, UNION, etc. The OPTIONAL clause indicates that if the entry does not have the attribute to be evaluated in the clause, it still passes the query. An example of is given below, where RDF and SPARQL are given separately. RDF:
+There are also other clauses such as \verb|OPTIONAL| and \verb|UNION|. When \verb|OPTIONAL| clause is applied on a property as part of the \verb|WHERE| clause, it allows both entities with the correct property values as well as entities without the property to pass the filter. An example is given below. RDF:
 \begin{lstlisting}
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
@@ -378,9 +357,9 @@ WHERE {
 	OPTIONAL { ?person foaf:mbox ?email . }
 }
 \end{lstlisting}
-The above returns both names and Alice's email, and it won't fail although Bob does not have an attribute of email.
+The above returns both names and Alice's email. Though Bob does not have a property of \verb|foaf:mbox|, his name is still included in the query result.
 
-The UNION clause allows the combination of two queries as one return, given that the structure of the queries matches. An example is given below.
+The \verb|UNION| clause allows combining the returns of two queries together, given that the returns follow the same structure. An example is given below.
 \begin{lstlisting}
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 SELECT ?name
@@ -400,7 +379,7 @@ which would return both people and company names in one go.
 
 \subsection{SPARQL for Advanced Operations}
 
-SPARQL 1.0 provides basic query functions based on graph pattern matching, as already explained in the previous section. SPARQL 1.1 provides advanced query functions as follows.
+SPARQL 1.0 provides basic query functions. In the lately released SPARQL 1.1 standard, advanced query and triple manipulation are supported. They are introduced in this section.
 
 \vspace{0.1in}
 \noindent \textbf{Advanced Query}
@@ -432,8 +411,27 @@ WHERE {
 \end{lstlisting}
 counts the total number of fruits in the database. Notice that when using aggregate functions, new variable name (in this example, \verb|?numOfFruit|) must be assigned. Otherwise, there will be an syntax error.
 
+SPARQL 1.1 supports nested query. An example is given below.
+\begin{lstlisting}
+PREFIX : <http://example.org/schema#>
+
+SELECT ?book ?publisher
+WHERE {
+	# Find the publisher of "BookA"
+	{
+		SELECT ?publisher
+		WHERE {
+			:BookA :publishedBy ?publisher .
+		}
+	}
+	# Find other books published by the same publisher
+	?book :publishedBy ?publisher .
+	FILTER(?book != :BookA)
+}
+\end{lstlisting}
+
 \vspace{0.1in}
-\noindent \textbf{Data Editing}
+\noindent \textbf{Triple Manipulation}
 \vspace{0.1in}
 
 SPARQL provides operations to insert, edit, and delete elements in a semantic web as follows.
@@ -442,7 +440,7 @@ SPARQL provides operations to insert, edit, and delete elements in a semantic we
 	\item DELETE deletes triples from a graph.
 \end{itemize}
 
-Recall the fruit example used in Section \ref{subsec:rdfvsrdfs}. To create that RDF/RDFS database from scratch using SPARQL, use the following (notice that ``orange is orange color is changed to pear is green'')
+An example of creating a semantic web that contains fruits and their colors is given below.
 \begin{lstlisting}
 PREFIX ex: <http://www.example.com/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -471,8 +469,9 @@ INSERT DATA {
 
 \subsection{Default Graph and Named Graph}
 
-It is worth mentioning that it is possible to create and query ``disjoint'' graphs using SPARQL. If the graph name is not specified during the inserting of the data, the data is inserted into the default graph. A query can have multiple FROM clause, each specifying a graph. If the graph name is not specified during the query, all graphs will be searched. An example of inserting and querying named graph is given below.
+There can be multiple semantic webs in a triplestore, each semantic web corresponding with a graph name. When querying, data can be retrieved across multiple semantic webs. If graph name is not specified in the SPARQL command in a insert command, the default graph of the database is used.
 
+An example of inserting and querying a specific graph is given below.
 \begin{lstlisting}
 INSERT DATA {
 	GRAPH <http://example.org/mygraph> {
@@ -489,12 +488,11 @@ SELECT ?book ?title WHERE {
 	}
 }
 \end{lstlisting}
+The semantic web name (graph name) is given in the form of a URI, and can be used as a reference resources in other semantic webs.
 
-The relationship of the graphs is somehow like the different tables in an RDS. They usually represent logically separated things, but they can have some overlaps. When doing analysis information can be extracted from multiple graphs at the same time.
+\subsection{SPARQL Programming Returns}
 
-\subsection{SPARQL Returns}
-
-As introduced earlier, SPARQL is an HTML based protocol. The returned result of a SPARQL query can be specified in the HTML header. There are several return types defined in the standard. When SELECT or ASK are used, the return types can be:
+SPARQL is an HTML based protocol. The returned result of a SPARQL query in the protocol layer can be specified in the HTML header. There are several return types defined in the standard. When SELECT or ASK are used, the return types can be:
 \begin{itemize}
 	\item XML
 	\item JSON
@@ -507,52 +505,53 @@ When CONSTRUCT or DESCRIBE are used, the return is an RDF that can be in
 	\item N-Triples
 	\item JSON-LD
 \end{itemize}
-and a few more. The decoding of the return can be done my relative tools and packages, and are not given in details here.
+and a few more. The decoding of the return can be done using variety of tools and packages, and they are not discussed here.
 
-\subsection{A Bit More Insights on RDF/RDFS}
+\subsection{Underlying Data Structure of Triplestores}
 
-RDF can be represented as a set of triples, which makes it readable for both humans and machines. When using SPARQL to query or edit RDF database, RDF is treated as directional graphs with some sort of hierarchy. This is the interface of RDF database, following W3C standard.
+RDF is a data model or framework that stores data in the form of triples. The benefit of doing so is to enable DL reasoning and hence build semantics into the data. 
 
-How about the underlying data structure that ultimately supports the interface, making sure that everything runs smoothly and efficiently? Different triplestores may have different preference when choosing the underlying data structure. Some of them are introduced below.
+When comes to the underlying data structure that actually processes the data in the computer memory and runs the RDF functions (such as SPARQL query based on graph pattern matching) efficiently, each triplestore may have its preferences. Some triplestores may develop dedicated graph database engines to store data and process queries. Others may utilize existing SQL or NoSQL database structures and engines and build an RDF interface on top of them.
 
-\vspace{0.1in}
-\noindent \textbf{Structured Tables}
-\vspace{0.1in}
-
-An intuitive way of storing triples is to use a structured table that contains 3 columns: subject, predicate (property), and object. To save some space, all subjects, predicates and objects can be encoded into integers, where there are additional translation tables that can be used to decode the data.
-
-In this case, a SPARQL query needs to be convert into SQL (introducing self-join) then performed on the table. One of the major problems of this architecture is that it is too computationally expensive when the query is complicated.
-
-RDF should support multiple graphs. To enable multiple graphs, an additional column indicating graph ID needs to be added to all the tables mentioned above.
+The mechanisms of these different engines and data structures are not discussed in details here. Only a brief introduction is given as follows.
 
 \vspace{0.1in}
-\noindent \textbf{RDB}
+\noindent \textbf{Table-Based Data Structure}
 \vspace{0.1in}
 
-To reduce self-join in the query, table size needs to be made smaller. The big structured tables need to be split into multiple small tables via aggregation. Due to the nature of triples, there will be many ``NULL'' in the tables. Implementing multi-value property, etc., can also be complicated. Overall, it is just too difficult to design the optimal RDB schematics, let along creating a database of that schematics.
+An intuitive way of storing triples is to use a structured table that contains three columns: subject, predicate (property), and object. To save some space, all subjects, predicates and objects can be encoded into integers, where there are additional translation tables that can be used to decode the data. RDF should support multiple graphs. To enable multiple graphs, an additional column indicating graph ID needs to be added to all the tables mentioned above.
 
-To systematically and automatically split big tables into small tables without warring too much about the schematics, someone has proposed destruct the table to the very ground level. Each property becomes a small table that contains its subjects and objects. The problem of this approach, however, is that it becomes time consuming to loop over all the tables when the RDF model is large. The performance of the architecture will be bad, and things such as inserting will become expensive.
+In this case, a SPARQL query needs to be converted into SQL (introducing self-join) then performed on the table. One of the major problems of this data structure is that it is too computationally expensive when the query is complicated.
+
+To reduce self-join in the query, table size needs to be made small. The big structured tables need to be split into multiple small tables via aggregation. Due to the nature of triples, there will be many ``NULL'' in the tables. Implementing multi-value property, etc., can also be complicated. Overall, it is just too difficult to design the optimal RDB schematics, let along creating a database of that schematics.
+
+To systematically and automatically split big tables into small tables without warring too much about the schematics, one idea is to destruct the table to the very ground level. Each property becomes a small table that contains its subjects and objects. The problem of this approach, however, is that it becomes time consuming to loop over all the tables when the RDF model is large. The performance of the architecture will be bad, and things such as inserting will become expensive.
 
 \vspace{0.1in}
-\noindent \textbf{NoSQL}
+\noindent \textbf{NoSQL-Based Data Structure}
 \vspace{0.1in}
 
 Structured table and RDB approaches are rarely used in commercialized triplestores due to the expensive computational cost. The most widely used approaches nowadays are NoSQL based.
 
 Two commonly seen NoSQL data structures are vertically partitioned tables and hexastores. These structures help to either reduce or speed up joins, making the computation more efficient than the RDB based methods.
 
-\section{Web Ontology Language (OWL)} \label{sec:owl}
+\vspace{0.1in}
+\noindent \textbf{Dedicated Graph Database}
+\vspace{0.1in}
 
-By adding schema to RDF, RDFS already boosts the capability and adds ontology to the RDF model. However, there are still a number of limitations using RDF/RDFS alone that can cause problems and issues. OWL is proposed to solve these problems and further expand the capability of the RDF model.
+Some triplestores use dedicated graph database engines designed to natively store and process graph-structured data. These engines are optimized for the kinds of operations that are common in RDF and SPARQL, such as complex graph traversals and pattern matching.
 
-Notice that it is OWL, not WOL, for historical contexts reasons. OWL, the English word for the bird, also embodies qualities like wisdom and perceptiveness, which align well with the goals of the language.
+\chapter{Web Ontology Language} \label{sec:owl}
 
-\subsection{RDF/RDFS Limitations} \label{subsec:rdfrdfslimitations}
+By adding schema to RDF, RDFS already boosts the capability and adds ontology to the RDF model. As demonstrated in the previous chapter, RDF/RDFS is able to process simple logic reasoning. However, RDF/RDFS alone cannot handle DL. OWL is, therefore, proposed to enable DL in the semantic web.
+
+Notice that it is OWL the abbreviation of web ontology language, not WOL, for historical contexts reasons.
+
+\section{RDF/RDFS Limitations} \label{subsec:rdfrdfslimitations}
 
 Several examples are given to demonstrate the limitations of RDF/RDFS.
 
-RDF/RDFS brings schema to the RDF model by introducing hierarchy to classes and properties. For example, in the schematic part of the model we can create ``animal eats food'', where ``eat'' is a property with domain ``animal'' and range ``food''. We can then add instances to animal and food classes. This is demonstrated in Fig. \ref{fig:coweatgrass}. The SPARQL to create such an RDF model is given below.
-
+RDFS brings schema to the RDF model by introducing class and property hierarchy. For example, in the schematic design of the model we can create ``animal eats food'', where ``eat'' is a property with domain ``animal'' and range ``food''. We can then add instances to animal and food classes. This is demonstrated in Fig. \ref{fig:coweatgrass}. The SPARQL to create such an RDF model is given below.
 \begin{lstlisting}
 PREFIX ex: <http://www.example.com/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -571,65 +570,68 @@ INSERT DATA {
 	ex:eat rdf:type rdf:Property ;
 	rdfs:domain ex:Animal ;
 	rdfs:range ex:Food .
+	
+	# Define triples
+	ex:Human ex:eat ex:Meat .
+	ex:Human ex:eat ex:Cabbage .
+	ex:Cow ex:eat ex:Cabbage .
 }
 \end{lstlisting}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebarchitecture/figures/coweatgrass.png}
-	\caption{An RDF model that demonstrates animal eats food.}
+	\caption{An RDF model that demonstrates ``animal eats food''.}
 	\label{fig:coweatgrass}
 \end{figure}
 
-From Fig. \ref{fig:coweatgrass}, it can be seen that in this RDF model, we can derive all the following statements:
+From Fig. \ref{fig:coweatgrass}, under OWA when querying what animals eat what food, the following would be returned:
 \begin{itemize}
 	\item Human eats rib-eye.
 	\item Human eats cabbage.
 	\item Cow eats rib-eye (this is not what we expect).
 	\item Cow eats cabbage.
 \end{itemize}
-Since both vegetable and meat are defined as sub classes of food, and animal eats food in general, ``cow eats rib-eye'' can be deduced. RDF/RDFS cannot exclude cow from eating meat, or to say it in general, RDF/RDFS cannot add restrictions the property for a specific object.
+Since it is not explicitly denied that cow cannot eat meat, under OWA, semantic web thinks that there is the possibility of cows eating meat. RDF/RDFS cannot exclude meat from the menu of a cow, or to say it in general, RDF/RDFS cannot add restrictions to a property.
 
-A walk around of this is to make ``vegetable'' and ``meat'' completely separated classes without the shared parent ``food'', and define 3 properties, namely ``human eats vegetable'', ``human eats meat'' and ``cow eats vegetable''. However, this destroys the schema of the model and make null the effort of RDFS.
+A walk around is to define two properties, ``eatMeat'' and ``eatVegetable'', each with their associated ranges. Let human have both properties while cow have only ``eatVegetable'' property. However, this complicates the connection of symbols and destroys the schema of the model, essentially making null the effort of RDFS.
 
-Similarly, consider an example where ``hasVisualAcuity'' is used to describe human's clarity of vision. A person usually have two visual acuity values for the two eyes. In RDF, that means a person should have two and only two of this property. This cannot be enforced by RDF/RDFS.
+Similarly, consider an example where ``hasVisualAcuity'' is used to describe human's clarity of vision. A person usually have two visual acuity values for the two eyes. In RDF, that means a person should have two and only two ``hasVisualAcuity'' property. This cannot be enforced by RDF/RDFS.
 
-Consider another example where ``man is a sub class of human'' and ``woman is a sub class of human''. With only RDF/RDFS, however, there is no way to add restrictions that says ``an instant cannot be man and human at the same time'', i.e., to disjoint man class and woman class.
+Consider another example where ``man is a subclass of human'' and ``woman is a subclass of human''. With only RDF/RDFS, however, there is no way to add restrictions that says ``a person cannot be man and woman at the same time'', i.e., to disjoint man class and woman class.
 
-RDF/RDFS does not support class combinations. For example, for existing classes ``Car'', ``Motorcycle'', ``Bicycle'', ``Ship'', ``Plane'', RDF/RDFS cannot create a new class ``AllTranportationTool'' to automatically include every instant from the above classes. In general, with RDF/RDFS alone, it is not possible to define a class which is a union/intersect/complement of other classes.
+RDF/RDFS does not support class combinations. For example, for existing classes ``Car'', ``Motorcycle'', ``Bicycle'', ``Ship'', ``Plane'', RDF/RDFS cannot create a new class ``AllTranportationTool'' to automatically include every instance from the above classes. In general, with RDF/RDFS alone, it is not possible to define a class which is a union/intersect/complement of other classes.
 
 In semantic web stack Fig. \ref{fig:semanticwebstack}, one layer above RDF/RDFS, OWL is proposed to solve the above problems.
 
-\subsection{OWL Vision}
+\section{OWL Vision}
 
-As explained earlier in Section \ref{sec:dlalc}, OWL essentially introduces DL inference to semantic web, making it more expressive and capable of more complicated reasoning. With that in mind, OWL provides additional features to enforce and enhance the schema of an RDF model, and solve the problems mentioned in Section \ref{subsec:rdfrdfslimitations}. It allows adding relations and attributes constraints (rules) to the REF model. The following summarizes the main features introduced by OWL.
+OWL essentially introduces DL inference to the semantic web, making it more expressive and capable of complicated reasoning. With that in mind, OWL provides additional features to enforce and enhance the schema of an RDF model, thus addressing the problems mentioned in Section \ref{subsec:rdfrdfslimitations}. It allows adding relations and property constraints to the RDF model. The following summarizes the main features introduced by OWL.
 \begin{itemize}
 	\item Allow the disjoint of sub classes (an instant cannot be man and woman at the same time).
 	\item Allow enforcing the number of attributes of each property type (one can have only one social security number, but can have many mail addresses)
-	\item Allow enforcing the range of the values an attribute can take.
+	\item Allow enforcing the range of the values an attribute can take (the age of a person must be a positive integer).
 	\item Offer more expressive class definitions including union, intersection, complement, etc.
 	\item Enlarge the vocabulary sets on top of RDF/RDFS.
 \end{itemize}
-which align well with what is capable in DL. This is not surprising as OWL is DL practice in semantic web technology.
 
-For the machine to interpret the additional semantics, there are at least two things to consider: the interface, which concerns how a user tells the rules to the machine; the underlying structure and mechanism, which concerns how the machine enforce the rules. In this section, we mainly focus on the interface.
-
-The latest version of OWL is currently OWL 2, as has been recommended by W3C since 2009. It makes the following assumptions on top of DL:
+As of this writing, OWL 2 is the latest version of OWL recommended by W3C. It makes the following assumptions:
 \begin{itemize}
-	\item OWA is made. In this context, the knowledge base is considered open, and absence of information must not be valued as negative information.
+	\item OWA. In this context, the knowledge base is considered open, and absence of information must not be valued as negative.
 	\item An instance can have non unique names, i.e., multiple syntax can be mapped to the same instance via interpretation.
 \end{itemize}
-In practice OWL comes in different flavors, including OWL Lite, OWL DL and OWL Full, just to name a few. OWL 2 supports different choices of syntax, including RDF-syntax, XML-syntax, functional-syntax, Manchester-syntax, and turtle.
 
-\subsection{OWL Basic Syntax}
+In practice, OWL comes in different flavors, including OWL Lite, OWL DL and OWL Full, just to name a few. OWL 2 supports different choices of syntax, including RDF-syntax, XML-syntax, functional-syntax, Manchester-syntax, and Turtle.
 
-Unless otherwise mentioned, turtle is used when introducing OWL syntax. Classes, individuals, and properties are already introduced in RDF/RDFS. OWL also defines these concepts, each with enriched features. It is worth mentioning that OWL defines two special classes, \verb|owl:Thing| and \verb|owl:Nothing|, corresponding with the top class (universal set) and bottom class (empty set) in DL, respectively.
+\section{OWL Basic Syntax}
+
+Unless otherwise mentioned, Turtle is used when introducing OWL syntax. Classes, individuals, and properties are already introduced in RDF/RDFS. OWL also defines these concepts, each with enriched features. It is worth mentioning that OWL defines two special classes, \verb|owl:Thing| and \verb|owl:Nothing|, corresponding with the top class (universal set) and bottom class (empty set) in DL, respectively.
 
 \vspace{0.1in}
 \noindent \textbf{Class and Subclass}
 \vspace{0.1in}
 
-Defining a class from the root \verb|owl:Class| using OWL is given in the following example in turtle.
+Defining a class from the root \verb|owl:Class| using OWL is given below.
 \begin{lstlisting}
 :Fruit a owl:Class ;
 \end{lstlisting}
@@ -637,7 +639,7 @@ where \verb|a| can be replaced by \verb|rdf:type|. To define an individual via c
 \begin{lstlisting}
 :Apple a :Fruit .
 \end{lstlisting}
-which in DL this is equivalent of saying \verb|Fruit(Apple)|. It is also possible to define an individual without a named class as follows, which indicates that the named class will be added in a later stage. In this case, \verb|owl:NamedIndividual| is used.
+which is equivalent of saying \verb|Fruit(Apple)| in DL. It is also possible to define an individual without a named class as follows, which indicates that the named class will be added in a later stage. In this case, \verb|owl:NamedIndividual| is used.
 \begin{lstlisting}
 :ANewThing a owl:NamedIndividual .
 \end{lstlisting}
@@ -681,13 +683,13 @@ There are two types of properties defined in OWL, namely the object property whi
 \end{lstlisting}
 where notice that XML schema definition (XSD) defines many data types and sub data types, including \verb|xsd:integer|, \verb|xsd:string|, \verb|xsd:decimal|, \verb|xsd:boolean|, \verb|xsd:date| (a calendar date), \verb|xsd:time| (time in a day), \verb|xsd:dateTime|, \verb|xsd:double| (64-bit floating number), \verb|xsd:float| (32-bit floating number), \verb|xsd:anyURI|, \verb|xsd:language|, etc.
 
-\subsection{OWL Advanced Syntax}
+\section{OWL Advanced Syntax}
 
 \vspace{0.1in}
 \noindent \textbf{Equivalent and Different Individuals}
 \vspace{0.1in}
 
-In RDF/RDFS, different individuals are distinguished by their names, and each individual can have one and only one name (it is technically possible for an individual to have no name, but it is not often a good practice). In OWL, it is possible to map multiple names to the same individual, and to emphasize that two names are pointing to different individuals (this is sometimes necessary due to the OWA). Examples are given below.
+In RDF/RDFS, different individuals are distinguished by their names, and each individual can have one and only one name (it is technically possible for an individual to have no name, but it is not often a good practice). In OWL, it is possible to either map multiple names to the same individual, or to emphasize that two names are pointing to different individuals (this is sometimes necessary due to the OWA). Examples are given below.
 \begin{lstlisting}
 :Computer a owl:Class .
 :HarryPc a :Computer .
@@ -720,7 +722,7 @@ It is possible to define an enumerate class, whose instances are taken from indi
 		:Thursday
 		:Friday ) .
 \end{lstlisting}
-which indicates that any individuals to be defined under class ``Weekdays'' must be one of the 5 individuals ``Monday'', ``Tuesday'', etc. Do not confuse \verb|owl:oneOf| with \verb|owl:unionOf|, as the former creates class from individuals, and the later creates class from classes.
+which indicates that any individuals to be defined under class ``Weekdays'' must be one of the 5 individuals ``Monday'', ``Tuesday'', etc. Do not confuse \verb|owl:oneOf| with \verb|owl:unionOf|, as the former defines a class as an enumerate of individuals, and the later defines a class as an enumerate of subclasses.
 
 \vspace{0.1in}
 \noindent \textbf{Class Constructors}
@@ -750,17 +752,17 @@ Intersection, union and complement are the commonly seen class (set) constructor
 \noindent \textbf{Property Restrictions}
 \vspace{0.1in}
 
-It has been introduced earlier that the type of the property can be specified by using either \verb|owl:ObjectProperty| (specify range as a class) or \verb|owl:DatatypeProperty| (specify range as a datatype such as string, decimal, integer, etc). In the context of OWL, more restrictions can be enforced to properties, including the number of each property, and the values each property can take. Details are given below.
+It has been introduced earlier that the type of the property can be specified by using either \verb|owl:ObjectProperty| (specify range as a class) or \verb|owl:DatatypeProperty| (specify range as a datatype such as string, decimal, integer, etc). In the context of OWL, more restrictions can be enforced to properties, including the number of appearance of each property, and the values each property can take. Details are given below.
 
 The syntax of adding different property restrictions may differ slightly. A general syntax is given by
 \begin{lstlisting}
-:<ClassOfProperty> rdfs:subClassOf [
+:<Class> rdfs:subClassOf [
     rdf:type owl:Restriction ;
     owl:onProperty :<PropertyName> ;
     owl:<RestrictionType> <RestrictionDetails>
 ] .
 \end{lstlisting}
-where notice that blank node is used for property restrictions.
+where the blank node is used for property restrictions.
 
 For example, to indicate that the value of a property must be taken from a class, use
 \begin{lstlisting}
@@ -773,7 +775,7 @@ And to indicate that among all the property values of a property, at least one o
 
 To indicate that a property must take specific value, use \verb|owl:hasValue| at the restriction type, and put the value as \verb|<RestrictionDetails>|, whether an individual or a datatype value.
 
-To restrict the number of a property, use \verb|owl:maxCardinality|, \verb|owl:minCardinality| or \verb|owl:cardinality|, and put a number as \verb|<RestrictionDetails>|.
+To restrict the number of a property, use \verb|owl:maxCardinality|, \verb|owl:minCardinality| or \verb|owl:cardinality|, and put the maximum, minimum or fixed number as \verb|<RestrictionDetails>|.
 
 It is possible to define a class from property restrictions, essentially saying ``the class is defined as a collection of individuals that satisfy the following property restrictions''. To do that, use \verb|rdfs:subClassOf| with property restrictions as given in the example below.
 \begin{lstlisting}
@@ -809,11 +811,11 @@ OWL further defines the following features of a property.
 \begin{itemize}
 	\item \verb|owl:TransitiveProperty|: if \verb|Property(a,b)| and \verb|Property(b,c)|, then \verb|Property(a,c)|. An example is ``isAncestorOf''.
 	\item \verb|owl:SymmetricProperty|: if \verb|Property(a,b)|, then \verb|Property(b,a)|. An example is ``isColleagueWith''; there is also \verb|owl:AsymmetricProperty|, which indicates that if \verb|Property(a,b)|, it is not possible that \verb|Property(b,a)|.
-	\item \verb|owl:FunctionalProperty|: if \verb|Property(a,b)| and \verb|Property(a,c)|, then \verb|a=c|. An example is \verb|hasMother|.
+	\item \verb|owl:FunctionalProperty|: if \verb|Property(a,b)| and \verb|Property(a,c)|, then \verb|b=c|. An example is \verb|hasMother|.
 	\item \verb|owl:InverseFunctionalProperty|: if \verb|Property(a,c)| and \verb|Property(b,c)|, then \verb|a=b|. Examples are \verb|isMotherOf|, \verb|hasId| (assuming ID is unique for each individual).
 \end{itemize}
 
-Similar with class declaration where \verb|owl:disjointWith|, \verb|owl:AllDisjointClasses| can be used to claim disjoint of classes, it is possible to declare disjunctive properties using \verb|owl:propertyDisjointWith| and \verb|owl:AllDisjointProperties| as follows. Disjunctive properties cannot take the same value. For example,
+Restrictions \verb|owl:disjointWith| and \verb|owl:AllDisjointClasses| can be used to claim disjoint of classes, it is possible to declare disjunctive properties using \verb|owl:propertyDisjointWith| and \verb|owl:AllDisjointProperties| as follows. Disjunctive properties cannot take the same value. For example,
 \begin{lstlisting}
 :hasParent a owl:ObjectProperty ;
 	rdfs:domain :Person ;
@@ -824,20 +826,20 @@ Similar with class declaration where \verb|owl:disjointWith|, \verb|owl:AllDisjo
 
 In OWL, top and bottom classes are defined, corresponding to the universal set and empty set, respectively. Similar ideas apply to properties. Object and datatype properties each has its top and bottom properties.
 
-It is possible to enforce NOT related via a property. An example is given below.
+It is possible to declare a negative assertion as a property to state that a relation does not hold for two individuals. An example is given below.
 \begin{lstlisting}
 [] a owl:negativePropertyAssertion ;
 	owl:sourceIndividual :SherlockHolmes ;
 	owl:assertionProperty :isMurderOf ;
 	owl:targetIndividual :Watson .
 \end{lstlisting}
-Notice that negative assertion is supported only at individual-to-individual level. It is currently not possible to claim that Sherlock Holmes is not a murder of any victims, i.e, \verb|:Watson| cannot be replaced by a class such as \verb|:Person|. In FOL, this would have been possible. But currently OWL does not adopt FOL for a good reason (FOL can be undecidable, and too computationally expensive).
+which claims that it is not true that ``SherlockHolmes'' has the property ``isMurderOf'' with the range ``Watson''. Notice that negative assertion is supported only at individual-to-individual level. It is currently not possible to claim that Sherlock Holmes is not a murder of any victims, i.e, \verb|:Watson| cannot be replaced by a class such as \verb|:Person|. In FOL, this would have been possible. But currently OWL does not adopt FOL for a good reason (FOL can be undecidable, and too computationally expensive).
 
 \vspace{0.1in}
 \noindent \textbf{General Role Inclusion}
 \vspace{0.1in}
 
-If we define ``B is the father of A'' and ``C is the brother of B'', then naturally, ``C is the uncle of A'' can be derived. This role chain can be realized via OWL general role inclusion. However, this adds uncertainty to the reasoning, and may cause the model to be undecidable. This is one of the reasons why different tiers of OWL and OWL 2 have been proposed. More features usually mean more computations and higher risks of undecidable results, and the user needs to decide which tier to use.
+If we define ``B is the father of A'' and ``C is the brother of B'', then naturally, ``C is the uncle of A'' can be derived. This role chain can be realized via OWL general role inclusion. However, this adds uncertainty to the reasoning, and may cause the model to be undecidable. This is one of the reasons why different tiers of OWL have been proposed. More features usually mean more computations and higher risks of undecidable results, and the user needs to decide which tier to use.
 
 And do notice that due to the G\"odel's incompleteness theorems, there is no sophisticated enough system or knowledge base that can use finite input to derive all the knowledge in a complete (every statement can be proved true or false) and consistent (no contradiction) way.
 
@@ -849,12 +851,37 @@ Using role chain, we can define \verb|isUncleOf| as follows.
 
 It is not recommended ot use role chain in a semantic web.
 
-\subsection{Beyond OWL: Rules}
+\section{Semantic Web with Rules}
 
-Rules (rule-based systems, also known as rule-based engines) are used to express logic beyond DL, i.e., beyond what RDF/RDFS and OWL can describe.
+Rules (rule-based systems, also known as rule-based engines) are used to express logic beyond DL, i.e., beyond what RDF/RDFS and OWL can describe. From this perspective, one can think of rules-based semantic web as a further enhancement beyond RDF/RDFS and OWL.
 
 The basic syntax of a rule is simply
 \begin{lstlisting}
-	IF A THEN B
+IF A THEN B
 \end{lstlisting}
-but there are many variations. There are different types of rules, such as logical rules (FOL rules, similar with $A\rightarrow B$), procedural rules, and logic programming rules. There are semantic web triplestores that support rules. 
+where \verb|A| and \verb|B| are premises and conclusion respectively. There are many variations, including logical rules (FOL rules, for example), procedural rules, and logic programming rules.
+
+A FOL rule often looks like the following:
+\begin{eqnarray}
+	A \rightarrow B \nonumber
+\end{eqnarray}
+or
+\begin{eqnarray}
+	A_1 \land \ldots \land A_n \rightarrow B \nonumber
+\end{eqnarray}
+They can be equivalently converted to
+\begin{eqnarray}
+	\neg A \lor B \nonumber
+\end{eqnarray}
+and
+\begin{eqnarray}
+	\neg A_1 \lor \ldots \lor \neg A_n \lor B \nonumber
+\end{eqnarray}
+respectively. 
+
+Notice that implementing FOL rules (by using ALC just like we did for DL) in general would cause undecidability. However, it is possible to implement a subset of FOL rules while keeping the semantic web decidable. There are syntaxes to do that such as Declarative Logic Programming Language (also known as Datalog). By implementing the (decidable subset of) FOL rules, the expressiveness of the semantic web can be boosted.
+
+There are semantic web triplestores that support the implementation of rules. Rules add expressiveness and meantime complexity and additional computational load to the semantic web.
+
+Semantic Web Rule Language (SWRL) is based on the combination of parts of OWL and Datalog. The motivation of SWRL is to implement Datalog rules to the OWL ontology. Rule Interchange Format (RIF) is a collection of languages, rules, datatypes and frameworks recommended by W3C that tries to standardize rule-based semantic web description. 
+
