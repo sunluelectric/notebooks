@@ -4,53 +4,128 @@ This chapter studies the design, development and deployment of ontology and sema
 
 \section{Ontological Engineering}
 
-Different ontologies (class, property, hierarchy, interpretation, logic, etc.) can be used to describe the identical knowledge. This is known as the ``problem of semantic gap''. It is challenging to find the optimal and consistent way of representing the knowledge using ontology and semantic web.
+Different ontologies (class, property, hierarchy, interpretation, logic, etc.) can be used to describe the identical knowledge. This is known as the ``problem of semantic gap''. It is challenging (maybe impossible) to find the optimal and consistent way of representing the knowledge using ontology and semantic web. 
 
-Ontological engineering studies the systematic ways to design the ontology and the semantic web for a specific domain, application or task (recall Fig. \ref{fig:ontologylevel}). It concerns with at least the following:
+Ontological engineering studies the systematic ways to design the ontology and the semantic web for a specific domain, application or task (recall Fig. \ref{fig:ontologylevel}). It has at least the following research interests:
 \begin{itemize}
-	\item Ontology design: it studies the methods to systematically design, develop, and develop ontology models.
-	\item Ontology mapping: it studies the methods to efficiently compare different ontology models.
-	\item Ontology merging: it studies the methods to efficiently combine ontology models.
-	\item Ontology learning: it studies the automatic learning of new knowledge by an existing ontology model, when new data sets are provided.
+	\item Ontology design concerns with the methods to systematically design, develop, and develop ontology models.
+	\item Ontology mapping concerns with the methods to efficiently compare different ontology models.
+	\item Ontology merging concerns with the methods to efficiently combine ontology models.
+	\item Ontology learning concerns with the automatic learning of new knowledge by an existing ontology model, when new data sets are provided.
 \end{itemize}
 
 \section{Ontology Design}
 
-Ontology design describes all activities necessary for the construction of an ontology model. It helps with consistent, efficient, and distributed (collaborative) ontology model design.
+Ontology design describes all activities necessary for the construction of an ontology model. The goal is to design ontology models efficiently, consistently, and sometimes distributively (collaboratively) if required. Notice that a good ontology model is not built in one go. It is often iteratively improved. 
 
-\subsection{Ontology Management Activity}
+\subsection{General Tasks}
 
 Design, develop and deploy ontology model for a sophisticated system can be time and manpower consuming. It is important to manage each step during the entire procedure to ensure healthy development of the system. This includes
-\begin{enumerate}
+\begin{itemize}
 	\item Scheduling: identify tasks and problems to be solved by the semantic web; plan and arrange resources, time, manpower and money ahead.
 	\item Control: guarantee correct execution of tasks and problems to be solved.
 	\item Quality assurance: guarantee all steps are done correctly, including using the correct software, and everything is documented in details.
-\end{enumerate}
+\end{itemize}
 
 In pre-development stage, environment study needs to be carried out. This is mainly to identify what software to use to host the semantic web, and what interface/API shall the semantic have, and what applications would call the API to talk to the semantic web. A feasibility study is also necessary. For example, we need to consider whether it makes sense to develop a semantic web for the application, and whether the semantic web design is realizable.
 
-In development stage, domain expert needs to come in to structure domain knowledge in a conceptual model. Knowledge engineer or data scientist then formalize the conceptual model into a computable (formal) model, then into ontology representation language.
+In development stage, domain expert needs to come in to build domain knowledge in a conceptual model. Knowledge engineer or data scientist then formalize the conceptual model into a computable (formal) model, then into ontology representation language.
 
 Finally, in the post-development phase, pipeline needs to be designed to maintain, update and scale up and down the ontology model. In the case where the ontology model needs to be migrated into different platforms, used by unplanned applications, or merged with other models, necessary changes need to be made to the model. In the case when the knowledge in a model needs to be exported, knowledge recycle needs to be supported. 
 
-There are many ontology support activities. These activities need to be carried out during the different stages of ontology development. Below is a list of these activities summarized in bullet points.
+There are many ontology support activities. These activities need to be carried out during the different stages of ontology development. Below is a list of some of these activities.
 \begin{itemize}
 	\item Knowledge acquisition. Interview experts in the field and learn domain knowledge from them. This is referred as ontology learning. This is often done manually by the knowledge engineer or data scientist in the beginning stage. It is also possible to develop tools to automatically gather information and transfer it into ontology models, and even merge it with existing models.
-	\item Technical evaluation. A domain expert checks occasionally to make sure the ontology model is correct.
+	\item Technical evaluation. A domain expert checks the developing ontology model occasionally to make sure everything is correct.
 	\item Integration and merging. This refers to the case where a big (scaled-up) ontology model can be built from a small existing ontology model.
-	\item Alignment. Where there are multiple ontology models describing the same physical thing, alignment needs to be made to make sure knowledge consistency.
-	\item Documentation and configuration management.
+	\item Alignment. Where there are multiple ontology models describing the same physical thing, alignment needs to be made to ensure knowledge consistency.
+	\item Documentation and version management.
 \end{itemize}
 
-\subsection{Ontology Design Basics}
+\subsection{Ontology Design Basics} \label{subsec:ontology_design_basics}
 
-To design a complicated ontology model, many methods and techniques need to be used comprehensively. It is too complicated to be covered here.
+Designing comprehensive ontology model and associated semantic web requires professional skills from knowledge engineers and data scientists. In this section, a basic method is introduced for tutorial purpose. The method introduced in this section, like many other ontology design methods, involves the iterative designing and refining the model.
 
-This section introduces the basics of ontology design. It covers a subset of the aforementioned methods and techniques in a very brief manner.
+If there is an expert from the domain of interest, discuss with him each step during the design.
 
+\vspace{0.1in}
+\noindent \textbf{Determine the Scope}
+\vspace{0.1in}
 
+As a first step, decide what knowledge should be included in the semantic web. It is important to draw a clear boundary between what the ontology should include, and what should not.
+
+Decide what the ontology would be used for, who would use it, and what kind of information the user needs to query from the ontology model. Think of a list of competence questions, i.e., the questions that the semantic web would be asked in its practical usage.
+
+Notice that the scope of the ontology model, especially the competence questions may change during the development of the semantic web. Try to leave some margin and look at the bigger picture.
+
+Look for existing ontology model of similar scope, and consider reusing them instead of starting from scratch whenever possible. This should same the cost. In addition to the semantic web itself, the interface, add-on tools, etc., can also be reused.
+
+\vspace{0.1in}
+\noindent \textbf{Determine the Vocabularies: Symbols and Interpretations}
+\vspace{0.1in}
+
+As the first step to design the schema of the semantic web, it is often a good idea to brainstorm the symbols and interpretations the semantic web would want to include as part of the knowledge base.
+
+For example, to build a semantic web for fruits, visit a local store and list down all the fruits on sale on a piece of paper, as well as the food that goes well with the fruits. This would often serve as a good starting point.
+
+If the domain of interest already has a database (not necessarily semantic web), let the existing data stored in the database to inspire the ontology design. The data usually reflects the features that people concerns with the most, and they shall probably be covered in the semantic web as well.
+
+\vspace{0.1in}
+\noindent \textbf{Design Hierarchy and Associate Properties}
+\vspace{0.1in}
+
+Once we have a big picture of what symbols and terms to be included in the semantic web, go through the vocabularies and categorize them into classes, relations and properties. Design class and property hierarchies accordingly. 
+
+Furthermore, associate properties with classes, i.e., decide the domain and range of properties as well as the constraints.
+
+\vspace{0.1in}
+\noindent \textbf{Populate Classes with Individuals}
+\vspace{0.1in}
+
+Finally, once the schema is ready, populate the classes with individuals, and assign properties to these individuals. The individuals may come from an existing database, in which case information conversion is required. A program that automates the information conversion would become handy when the amount of data is huge.
+
+\vspace{0.1in}
+\noindent \textbf{Iterative Development}
+\vspace{0.1in}
+
+Notice that the above processes shall be carried out iteratively to improve the ontology model and the semantic web. 
+
+\subsection{Semantic Web Design for Enterprise}
+
+The basic semantic web design method introduced in Section \ref{subsec:ontology_design_basics} is not suitable for large size enterprise tier semantic webs, in the later case of which a more formal workflow is often required. Continuous inputs from domain experts and knowledge engineers are expected.
+
+An demonstration of the workflow is given in Fig. \ref{fig:swdesignwf}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebpractice/figures/semantic_web_design_workflow.png}
+	\caption{Semantic web design workflow.}
+	\label{fig:swdesignwf}
+\end{figure}
+In the workflow, domain experts and knowledge engineers get different involvement at different stages of the workflow. The workflow is iteratively executed for many times, each time with a different focus. For example, in an early stage of the design, an iteration may focus on the lexicon of the semantic web, while in an late stage, on OWL.
+
+There are existing ontology ``templates'' available in the community. These templates are essentially reusable ontology models one can learn from and adapt to his application as a starting point. An repository of such templates is given in 
+\begin{lstlisting}
+http://ontologydesignpatterns.org/
+\end{lstlisting}
 
 \section{Linked Data Engineering}
+
+Linked Data is a set of design principles for sharing machine-readable interlinked data on the internet. Linked Data engineering, as its name suggests, is the practice of creating, managing and sharing machine-readable (and also human readable, in most occasions) data on the web.
+
+As an example, thinking of obtaining data from the web server as shown in Fig. \ref{fig:webbrowsing}. The address of the server, in this case a URL, is used to identify the server. HTTP protocol is used to shake hand and transmit the data between the server and the local machine. Behind the screen, the server retrieves the data either from another web server or from its internal database.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebpractice/figures/webbrowsing.png}
+	\caption{Linked Data example: web browsing.}
+	\label{fig:webbrowsing}
+\end{figure}
+
+A web server is like an isolated data island. Different web server may apply different web APIs. The web API decides how the local machine can access the data on the server. When a server changes its web APIs, all applications linked to the server also need to change the associated interfaces. Besides, though sometimes the information on the data islands overlaps semantically, it is difficult for a machine to detect the links.  
+
+
+
+
+
 
 \section{Semantic Search}
 
