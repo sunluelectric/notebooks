@@ -112,7 +112,9 @@ http://ontologydesignpatterns.org/
 
 Linked Data is a set of design principles for sharing machine-readable interlinked data on the internet. Linked Data engineering, as its name suggests, is the practice of creating, managing and sharing machine-readable (and also human readable, in most occasions) data on the web.
 
-As an example, thinking of obtaining data from the web server as shown in Fig. \ref{fig:webbrowsing}. The address of the server, in this case a URL, is used to identify the server. HTTP protocol is used to shake hand and transmit the data between the server and the local machine. Behind the screen, the server retrieves the data either from another web server or from its internal database.
+\subsection{Web of Data}
+
+Consider the conventional way of retrieving data from a web server as shown in Fig. \ref{fig:webbrowsing}. The address of the server, in this case a URL, is used to identify the server. The local machine request for services using the web API defined by the server. HTTP/HTTPS protocol is used to shake hand and transmit the data between the server and the local machine. Behind the screen, the server retrieves the data either from other web servers or from its internal database.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebpractice/figures/webbrowsing.png}
@@ -120,14 +122,65 @@ As an example, thinking of obtaining data from the web server as shown in Fig. \
 	\label{fig:webbrowsing}
 \end{figure}
 
-A web server is like an isolated data island. Different web server may apply different web APIs. The web API decides how the local machine can access the data on the server. When a server changes its web APIs, all applications linked to the server also need to change the associated interfaces. Besides, though sometimes the information on the data islands overlaps semantically, it is difficult for a machine to detect the links.  
+A web server is like an isolated data island. Different web servers may apply different web APIs. The web API decides what services the server provides as well as how the local machine can interact with the server. When a server changes its web APIs, all applications linked to the server also need to change the associated interfaces. 
+
+In addition, since the servers are isolated both physically and logically, it is difficult for the local machine to retrieve, compare and process semantically relevant data across machines. This is certainly a drawback as the data retrieving and processing would have been more efficient and reliable if the data is linked together from the semantic perspective.
+
+Linked Data tries to address the above issues by standardize the way data is stored and shared. Some important principles include:
+\begin{itemize}
+	\item Use (HTTP) URIs as the names for information pieces. URIs are standardized and both human and machine readable. When HTTP URIs are used, people can conveniently access the information pieces and look up things.
+	\item Use RDF to store information, and support SPARQL for querying information. This adds semantics, flexibility and scalability to the information.
+	\item In each knowledge piece, include links (in the form of URIs) to other knowledge pieces. This allows linking information pieces together, though they might be stored physically distributively.
+\end{itemize} 
+
+As an example, the following is the URI to HTML page of ``William Shakespeare'' on DBpedia.
+\begin{lstlisting}
+https://dbpedia.org/page/William_Shakespeare
+\end{lstlisting}
+The RDF that backs up this web page can be downloaded from
+\begin{lstlisting}
+https://dbpedia.org/data/William_Shakespeare.rdf
+\end{lstlisting}
+Both the above links are accessible by the public. Inside the RDF are not only the introduction to Shakespeare (for example, his name in more than 10 languages) but also many links to other relevant resources such as figures of him on Wikipedia. This RDF is a good example of practicing linked data in storing information.
+
+The result of Linked Data is the ``Web of Data''. We have been using DBpedia as an example of RDF database. In fact, DBpedia is not an isolated database, but an important component of the existing web of data project, where it links to other RDF databases such as friend-of-a-friend (FOAF) and many more. URIs that link to these databases can be found everywhere in the RDFs of DBpedia.
+
+The web of data is growing. ``The Linked Open Data Cloud'' website \textit{lod-cloud.net} gives an overview of some of the databases. A screenshot is given in Fig. \ref{fig:webofdata}. DBpedia sits in the center of this figure, as it was one of the earliest and most comprehensive knowledge base. 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./chapters/ch-semanticwebpractice/figures/webofdata.png}
+	\caption{The linked open data cloud from \textit{lod-cloud.net}.}
+	\label{fig:webofdata}
+\end{figure}
+
+\subsection{Semantic Search in Semantic Web}
+
+Consider the following query: ``tell me something about Armstrong who landed the eagle on the moon''. Conventionally, the search engine would go through websites, documents, database and other resources, looking for keywords ``Armstrong'', ``landed'', ``eagle'', ``moon''. It will return the sentences or paragraphs that hit most of the matching. This might work. However, it has some drawbacks such as being weak to typo and synonyms.
+
+Semantic search refers to the search of content by meaning, not by keywords. For example, in the context of the increasingly popular LLM, semantic search can be realized using a ``encoder'' (a component in the Transformer) to translate the query to the semantic space. The paragraphs whose semantic space images are close to the query are returned.
+
+In the context of semantic web, semantic search refers to the locating and retrieval of information from the semantic web efficiently based on the query. It is semantic in the sense that the triplestore is able to use logic reasoning during the searching.
+
+In this example, with the semantic web, the search engine interprets ``Armstrong'' not just as a plain word that spells ``a-r-m-s-t-r-o-n-g'', but as a person, ``Neil Armstrong'', with his birthday, birthplace, nationality, etc., all available in one place from his URI (in the case of DBpedia, \textit{https://dbpedia.org/data/Neil\_Armstrong.rdf}). The search engine will understand that ``landing the eagle on the moon'' refers to ``Apollo 11 mission'' as this event is also well defined and has a URI called ``\textit{dbr:Moon\_landing}'' (notice that \textit{dbr} refers to an HTTP URI defined elsewhere). 
+
+Since the semantic web links all the information pieces together, we could have also searched ``tell me something about the first person landed on the moon'' to retrieve everything about ``Neil Armstrong'' all the same, as he can be traced both from his name and from the activities he participated.
 
 
 
 
 
 
-\section{Semantic Search}
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Triplestore}
 

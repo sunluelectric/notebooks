@@ -1,8 +1,6 @@
-\chapter{Measures of Distribution} \label{ch:measuresdistribution}
+\chapter{Measures of Distributions} \label{ch:measuresdistribution}
 
-Given the probability or probability density of a random variable, a lot of information can be abstracted such as the expectation which describes the average value of that random variable if the experiment is repeated many times.
-
-Commonly seen measures of a distribution are introduced in this chapter.
+Given the probability function or PDF of a random variable, a lot of information can be extracted. Commonly seen measures of a distribution are introduced in this chapter.
 
 \section{Expectation}
 
@@ -10,11 +8,11 @@ In probability and statistics sense, \textit{expectation} (also known as \textit
 \begin{eqnarray}
   \textup{E}(X) &=& \sum_{i=1}^{n}x_iP(x_i) \label{eq:expectationdiscrete}
 \end{eqnarray}
-where $\textup{E}(\cdot)$ is used to denote the expectation, and $n$ the cardinality of the sample space. For continuous random variable, it is
+where $\textup{E}(\cdot)$ is used to denote the expectation, and $n$ the cardinality of the sample space. In the case of countably infinite sample space, replace $n$ with $\infty$ in \eqref{eq:expectationdiscrete}. For continuous random variable, it is
 \begin{eqnarray}
   \textup{E}(X) &=& \int_{-\infty}^{\infty}xf(x)dx \label{eq:expectationcontinuous}
 \end{eqnarray}
-Expectation is sometimes denoted as $\mu$ in literatures.
+Expectation is sometimes denoted by $\mu$ in literatures.
 
 Some features of expectation calculation are given below.
 \begin{eqnarray}
@@ -35,9 +33,9 @@ Variance and standard deviation describe how spread samples are from its expecta
   \textup{Var}(X) &=& \textup{E}\left(\left(X-\textup{E}(X)\right)^2\right) \label{eq:vardef} \\
   &=& \textup{E}\left(X^2-2X\textup{E}(X)+\textup{E}(X)^2\right) \nonumber \\
   &=& \textup{E}\left(X^2\right)-\textup{E}(X)^2 \label{eq:varderived} \\
-  \sigma_X &=& \sqrt{\textup{Var}(X)} \nonumber
+  \textup{Std}(X) &=& \sqrt{\textup{Var}(X)} \nonumber
 \end{eqnarray}
-Variance and standard deviation are sometimes denoted as $\sigma^2$ and $\sigma$ respectively.
+Variance and standard deviation are sometimes denoted as $\sigma^2$ and $\sigma$ respectively. Notice that \eqref{eq:varderived} also implies that $\textup{E}\left(X^2\right) \geq \textup{E}(X)^2$, a conclusion used in many lemma derivations.
 
 For continuous random variables, from \eqref{eq:varderived} the variance is
 \begin{eqnarray}
@@ -72,7 +70,7 @@ By simply saying \textit{moment} without specifying $c$, it is by default that $
   && \mu_0 = \int_{-\infty}^{\infty}f(x)dx = 1 \nonumber \\
   && \mu_1 = \int_{-\infty}^{\infty}xf(x)dx = \textup{E}(X) \nonumber
 \end{eqnarray}
-where it can be seen that the $0$-th and $1$-st moment of a PDF is 1 and its mean, respectively.
+where it can be seen that the $0$-th and $1$-st moments of a PDF are 1 and its mean, respectively.
 
 Further more, let $c=\mu_1$ be the mean of the random variable to calculate the second \textit{central moment} $\mu_2$ as follows.
 \begin{eqnarray}
@@ -80,7 +78,7 @@ Further more, let $c=\mu_1$ be the mean of the random variable to calculate the 
 \end{eqnarray}
 which is the variance of the random variable.
 
-Using mean and variance to further define \textit{standardized moments} as shown below. Define $\bar{\mu}_k$, $\mu_k$ and $\sigma_k$ for $k\geq 3$ as follows.
+Using mean and variance to further define \textit{standardized moments} as shown below. Define $\bar{\mu}_k$ for $k\geq 3$ as follows.
 \begin{eqnarray}
   && \bar{\mu}_k = \dfrac{\mu_k}{\sigma^k} \nonumber
 \end{eqnarray}
@@ -89,9 +87,9 @@ where
 	&& \mu_k = \textup{E}\left((X-\mu_1)^k\right) = \int_{-\infty}^{\infty}(x-\mu_1)^kf(x)dx \nonumber \\
 	&& \sigma^k = \left(\mu_2\right)^{\dfrac{k}{2}} = \left(\int_{-\infty}^{\infty}(x-\mu_1)^2f(x)dx\right)^{\dfrac{k}{2}} \nonumber
 \end{eqnarray}
-with $\mu_1$ and $\mu_2$ used to denote mean ($1$-st order moment) and variance ($2$-nd order central moment) of the random variable, respectively.
+with $\mu_1$ and $\mu_2$ the mean ($1$-st order moment) and variance ($2$-nd order central moment) of the random variable respectively.
 
-The $3$-rd and $4$-th order standardized moments are known as the \textit{skewness} and \textit{kurtosis} of the PDF, respectively. In some literatures, skewness is denoted by $\gamma_1 = \bar{\mu}_3$, and kurtosis $\gamma_2 = \bar{\mu}_4$.
+The $3$-rd and $4$-th order standardized moments are known as the \textit{skewness} and \textit{kurtosis} of the PDF respectively. In some literatures, skewness is denoted by $\gamma_1 = \bar{\mu}_3$, and kurtosis $\gamma_2 = \bar{\mu}_4$.
 
 The skewness $\gamma_1$ is a measure of asymmetry of the PDF. When $\gamma_1 > 0$ or positive skew, the distribution has a long tail on the right side of the PDF. When $\gamma_1 <0$ or negative skew, the distribution has a long tail on the left side. When $\gamma_1 = 0$, the PDF might be symmetric (but not necessarily so). Examples are given in Fig. \ref{fig:skewness_demo}.
 \begin{figure}
@@ -138,7 +136,26 @@ Furthermore,
   \textup{Cov}(X, Y)^2 &\leq& \textup{Var}(X)\textup{Var}(Y) \nonumber
 \end{eqnarray}
 The proof is as follows. Notice that lemma \eqref{eq:explemma} is used in the proof.
+\begin{mdframed}[frametitle={Lemma}]
 
+For two random variables $X$ and $Y$,
+\begin{eqnarray}
+	\textup{E}(XY)^2 &\leq&  \textup{E}(X^2)\textup{E}(Y^2) \label{eq:explemma}
+\end{eqnarray}
+\noindent Proof:
+\begin{eqnarray}
+	0 &\leq& \textup{E}\left(\left(X-Y\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)}\right)^2\right) \nonumber \\
+	&=& \textup{E}\left(X^2-2XY\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)}+\textup{E}(Y^2)\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)^2}\right) \nonumber \\
+	&=& \textup{E}(X^2) - 2\textup{E}(XY)\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)} + \textup{E}(Y^2)\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)^2} \nonumber \\
+	&=& \textup{E}(X^2) - 2\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} + \dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} \nonumber \\
+	&=& \textup{E}(X^2) - \dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} \nonumber
+\end{eqnarray}
+Therefore
+\begin{eqnarray}
+	\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} &\leq& \textup{E}(X^2) \nonumber \\
+	\textup{E}(XY)^2 &\leq&  \textup{E}(X^2)\textup{E}(Y^2) \nonumber
+\end{eqnarray}
+\end{mdframed}
 Using \eqref{eq:explemma} on \eqref{eq:covariance1}, \eqref{eq:vardef} gives
 \begin{eqnarray}
 	\textup{Cov}(X, Y)^2 &=& \textup{E}\left((x - \textup{E}(X))(y - \textup{E}(Y))\right)^2 \nonumber \\
@@ -149,71 +166,45 @@ or equivalently
 \begin{eqnarray}
 	\sigma_{XY}^2 &\leq& \sigma_X^2\sigma_Y^2 \nonumber
 \end{eqnarray}
-Noticing that while $\sigma_X$, $\sigma_Y$ are always nonnegative while $\sigma_{XY}$ is not,
+Noticing that while $\sigma_X$, $\sigma_Y$ are always nonnegative, $\sigma_{XY}$ is not,
 \begin{eqnarray}
 	-\sigma_X\sigma_Y \leq \sigma_{XY} \leq \sigma_X\sigma_Y \label{eq:covlemma}
 \end{eqnarray}
 
-\begin{shortbox}
-\Boxhead{Lemma}
 
-For two random variables $X$ and $Y$,
-\begin{eqnarray}
-  \textup{E}(XY)^2 &\leq&  \textup{E}(X^2)\textup{E}(Y^2) \label{eq:explemma}
-\end{eqnarray}
-\textbf{Proof}
-\begin{eqnarray}
-  0 &\leq& \textup{E}\left(\left(X-Y\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)}\right)^2\right) \nonumber \\
-  &=& \textup{E}\left(X^2-2XY\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)}+\textup{E}(Y^2)\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)^2}\right) \nonumber \\
-  &=& \textup{E}(X^2) - 2\textup{E}(XY)\dfrac{\textup{E}(XY)}{\textup{E}(Y^2)} + \textup{E}(Y^2)\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)^2} \nonumber \\
-  &=& \textup{E}(X^2) - 2\dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} + \dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} \nonumber \\
-  &=& \textup{E}(X^2) - \dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} \nonumber
-\end{eqnarray}
-Therefore
-\begin{eqnarray}
-  \dfrac{\textup{E}(XY)^2}{\textup{E}(Y^2)} &\leq& \textup{E}(X^2) \nonumber \\
-  \textup{E}(XY)^2 &\leq&  \textup{E}(X^2)\textup{E}(Y^2) \nonumber
-\end{eqnarray}
-\end{shortbox}
 
 \subsection{Correlation}
 
 The \textit{correlation} of two variables is defined and calculated as follows.
 \begin{eqnarray}
-  \rho &=& \dfrac{\textup{Cov}(X, Y)}{\sqrt{\textup{Var}(X)}\sqrt{\textup{Var}(Y)}} \nonumber
+  \rho &=& \dfrac{\textup{Cov}(X, Y)}{\sqrt{\textup{Var}(X)}\sqrt{\textup{Var}(Y)}} \nonumber \\
+   &=& \dfrac{\sigma_{XY}}{\sigma_X\sigma_Y} \nonumber
 \end{eqnarray}
-or simply
-\begin{eqnarray}
-  \rho &=& \dfrac{\sigma_{XY}}{\sigma_X\sigma_Y} \nonumber
-\end{eqnarray}
-
 From \eqref{eq:covlemma}, apparently $-1\leq \rho \leq 1$. When two variables are uncorrelated or independent, $\rho=0$. If $\rho=1$, it is called \textit{perfect positive correlation}. This happens usually because the two variables are positively linearly depended, for example, $X=2Y$ or $X=Y+1$. If $\rho=-1$, it is called \textit{perfect negative correlation}, and the similar idea applies.
 
-\section{Important Theorem}
+\section{Important Theorems}
 
 There are a few important theorems frequently used in the study of probability and statistics. They are introduced here.
 
 \subsection{Law of Large Numbers}
 
-The \textit{Law of Large Numbers (LLN)} is a theorem that basically says if performing the same experiment a large number of times, the average of the outcome of the experiments should eventually converges to an expected value. The larger the number of times the experiment is repeated, the closer the average to the expected value.
+The \textit{Law of Large Numbers (LLN)} is a theorem that basically says if performing the same experiment a large number of times, the average of the outcomes of the experiments should eventually converge to a certain value which is the empirical expectation of the experiment. The larger number of trails, the closer the average to the empirical expectation.
 
-In mathematics form, let $X$ be a random variable which represents the outcome of an experiment. Let $X_i$ be a sample of the outcome. According to LLN,
+In mathematical expression, let $X$ be a random variable which represents the outcome of an experiment. Let $X_i$ be a sample of the outcome. According to LLN,
 \begin{eqnarray}
   \lim_{n\rightarrow\infty} \sum_{i=1}^{n}\dfrac{X_i}{n} &=& \bar{X} \nonumber
 \end{eqnarray}
 
 \subsection{Central Limit Theorem}
 
-\textit{Central Limit Theorem (CLT)} states the following observation. For independent and identically distributed (i.i.d) random variables not necessarily normal distribution, the sampling distribution of the standardized sample mean tends towards the standard normal distribution.
+\textit{Central Limit Theorem (CLT)} states the following observation. For independent and identically distributed (i.i.d) random variables not necessarily following normal distribution, the empirical mean of the samples taken from these distributions tends towards normal distribution when the number of samples is large.
 
-Let $X$ be a random variable not necessarily normal distribution, and it has mean and variance of $\mu$ and $\sigma^2<\infty$. Let $X_i$ be samples of the random variable. The standardized sample mean of the $n$ samples are calculated as follows.
+Let $X$ be a random variable not necessarily following normal distribution, and it has mean and variance of $\mu$ and $\sigma^2<\infty$ respectively. Let $X_i$ be samples of the random variable. The empirical mean of the samples is calculated by
 \begin{eqnarray}
-   \textup{standardized sample mean} &=& \dfrac{\bar{X}_n-\mu}{\sigma_{\bar{X}_n}} \nonumber
+	\bar{X}_n &=& \dfrac{1}{n}\sum_{i=1}^{n}X_i \nonumber
 \end{eqnarray}
-where
+CLT states that $\bar{X}_n$ follows normal distribution when $n$ is large. The mean and variance of the normal distribution are $\mu$ and $\dfrac{\sigma^2}{n}$ respectively, i.e.,
 \begin{eqnarray}
-  \bar{X}_n &=& \sum_{i=1}^{n}X_i \nonumber \\
-  \sigma_{\bar{X}_n} &=& \dfrac{\sigma}{\sqrt{n}} \nonumber
+	\dfrac{\bar{X}_n-\mu}{\dfrac{\sigma}{\sqrt{n}}} \nonumber
 \end{eqnarray}
-
-For a large $n$, the distribution of the standardized sample mean should look like normal distribution.
+follows standard normal distribution.

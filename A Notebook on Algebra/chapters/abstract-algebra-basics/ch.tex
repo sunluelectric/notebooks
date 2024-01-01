@@ -410,11 +410,30 @@ Subgroup has the following properties.
 
 \subsection{Coset}
 
-Let $\{G;\oplus\}$ be a group, $H \leq G$ a subset, and $a\in G$. Define \textbf{left coset} $aH$ as follows.
+Let $\{G;\oplus\}$ be a group, $H < G$ a subgroup, and $a\in G$. Define \textbf{left coset} of $H$ about $a$, $aH$, as follows.
 \begin{eqnarray}
   aH &=& \left\{a\oplus h| h \in H \right\} \nonumber
 \end{eqnarray} 
 Similarly, the \textbf{right coset} $Ha$ can be defined.
+
+Let $\{G;\oplus\}$ be a group, $a,b \in G$ and $H<G$. Define the following relation 
+\begin{eqnarray}
+  aRb &=& \left\{(a,b) \middle| a^{-1}\oplus b\in H \right\}  \label{eq:subgroup_equivalence_relation}
+\end{eqnarray}
+It can be proved that the above relation is a equivalence relation and the equivalence class of $a$ is nothing but $aH$. This theorem associate a subgroup $H$ with a equivalence relation \eqref{eq:subgroup_equivalence_relation}.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
