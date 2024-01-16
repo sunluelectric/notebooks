@@ -103,7 +103,7 @@ where $\lambda >0$ is the shape parameter as shown in Fig. \ref{fig:poisson_pmf}
 
 Notice that The sum of two Poisson distribution with shape parameters $\lambda_1$ and $\lambda_2$ is also Poisson distribution with $\lambda = \lambda_1 + \lambda_2$.
 
-Poisson distribution is often used to describe the probability of an event happening in the given window, for example, the number of times a machine fails in a given length of duration (say one year), assuming each failure is independent from another. 
+Poisson distribution is often used to describe the probability of an event happening a particular number of times in a given window, assuming each occurrence of the event is independent. For example, it can model the number of times a machine fails in a year, assuming each failure is independent from another (the failures are completely random and independent). 
 
 Binomial distribution is closely connected with Poisson distribution. Poisson distribution can be taken a limiting case of binomial distribution when $n\rightarrow\infty$, $p\rightarrow 0$ is small, and $\lambda = np$ a decent value. A demonstration is given in Fig. \ref{fig:poisson_vs_b}.
 \begin{figure}
@@ -117,6 +117,28 @@ An intuitive explanation is given using the following example. Consider studying
 Another example of Poisson distribution is the number of visitors of a website in a given period of time. Each internet user has a small probability $p$ to visit the shopping site. The total number of internet users is $n$ which is a large number. The number of visitors to the website follows Poisson distribution with $\lambda=np$ being the expected visitor number.
 
 The expectation, variance, skewness and excess kurtosis of the distribution are $\lambda$, $\lambda$, $\dfrac{1}{\sqrt{\lambda}}$ and $\dfrac{1}{\lambda}$, respectively.
+
+\section{Exponential Distribution} \label{sec:exponential_distribution}
+
+Exponential distribution can be used to model the duration of time between two events in a Poisson distribution. For example, it can model the operating time of a machine between two failures, assuming that the failures are independent and random.
+
+Exponential distribution is a special case of the gamma distribution which will be introduced in more details later. Since it is an important widely used distribution, exponential distribution is introduced here, right after the normal and the Poisson distributions.
+
+The PDF is the exponential distribution is given by
+\begin{eqnarray}
+	f(x) &=& \left\{\begin{array}{cc}
+		\lambda e^{-\lambda x} & x \geq 0 \\
+		0 & \textup{otherwise}
+	\end{array}\right. \label{eq:exponential_pdf}
+\end{eqnarray}
+where $\lambda$ is the shape parameter. Exponential distributions with different choice of $\lambda$ is plotted in Fig. \ref{fig:exponential}.
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-commonly-seen-distributions/figs/exponential_pdf.eps}
+	\caption{Exponential distributions with different $\lambda$.} \label{fig:exponential}
+\end{figure}
+
+The expectation, variance, skewness and excess kurtosis of the distribution are $\dfrac{1}{\lambda}$, $\dfrac{1}{\lambda^2}$, $2$ and $6$, respectively.
 
 \section{Uniform Distribution}
 

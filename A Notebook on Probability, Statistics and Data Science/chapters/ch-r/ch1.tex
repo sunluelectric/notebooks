@@ -1,8 +1,10 @@
-\chapter{R Basics} \label{ch:r1}
+\chapter{R (Part I: Basics)} \label{ch:r1}
 
-This chapter and the sequential chapters introduce R language, a widely used programming language for statistical computing and data visualization.
+This chapter and the sequential chapters introduce R language, a widely used programming language for data statistics analysis and visualization. 
 
-This chapter focuses on the fundamental setup and basic operations such as the installation of R and RStudio, data types, basic data frames manipulation and visualization methods. Chapter \ref{ch:r2} introduces advanced skills and tools widely used in data preparation and processing with R language. Finally, Chapter \ref{ch:r3} puts the use of R language in data science into practice.
+This chapter focuses on the fundamental setup and basic operations such as the installation of R and RStudio, data types, basic vector and data frame manipulation and visualization methods. Chapter \ref{ch:r2} introduces advanced data analysis skills and tools. Finally, Chapter \ref{ch:r3} practices data analysis with R language to solve actual problems.
+
+R language is case sensitive. Character \verb|#| is used to lead a single-line comment in the code.
 
 \section{R and RStudio Installation} \label{ch:r1:sec:rinstallation}
 
@@ -57,7 +59,7 @@ p_load(<package>, ...) # install and load
 p_unload(<package>, ...) # unload
 p_unload(all) # unload all
 \end{lstlisting}
-An example of using \verb|pacman| to load packages are given as follows.
+Assume that \verb|pacman| is already installed. An example of using \verb|pacman| to load packages are given as follows.
 \begin{lstlisting}
 pacman::p_load(
 	pacman, # package management
@@ -76,7 +78,7 @@ pacman::p_load(
 	tidyr # data tidying
 )
 \end{lstlisting}
-The above command can be executed without loading \verb|pacman| in advance since \verb|pacman::p_load()| prefix is used. The listed packages are commonly used in R projects, and a brief explanation to them is given as comments in the code listing following \verb|#|. Notice that if a package is not installed in the computer, the above command will try to download and install the package.
+The above command can be executed without loading \verb|pacman| in advance since \verb|pacman::p_load()| prefix is used. The listed packages are commonly used in R projects, and a brief explanation to them is given as comments in the code demo. Notice that if a package is not installed in the computer, the above command will try to download and install the package.
 
 \subsection{Manage Packages with RStudio IDE}
 

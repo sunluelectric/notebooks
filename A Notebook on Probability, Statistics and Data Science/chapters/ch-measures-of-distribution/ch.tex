@@ -58,21 +58,21 @@ Mean and standard deviation can be used to standardize a random variable as foll
 \end{eqnarray}
 where $\mu$, $\sigma$ are the mean and standard deviation of random variable $X$ respectively. The standardized random variable, $X^*$, has a mean of $0$ and standard deviation of $1$.
 
-\section{Moments}
+\section{Moments} \label{sec:moments}
 
 In mathematics, the $r$-th moment of a continuous function $f(x)$ about $c$ is defined as follows.
 \begin{eqnarray}
   \mu_n &=& \int_{-\infty}^{\infty}(x-c)^nf(x)dx \nonumber
 \end{eqnarray}
 
-By simply saying \textit{moment} without specifying $c$, it is by default that $c=0$. Let $f(x)$ be a PDF. In this sense, the $0$-th order and the $1$-st order moment of a probability density function can be calculated as follows.
+By simply saying \textit{moment} without specifying $c$, it is by default that $c=0$. Let $f(x)$ be a PDF. In this sense, the $0$-th order and the $1$st order moment of a probability density function can be calculated as follows.
 \begin{eqnarray}
   && \mu_0 = \int_{-\infty}^{\infty}f(x)dx = 1 \nonumber \\
   && \mu_1 = \int_{-\infty}^{\infty}xf(x)dx = \textup{E}(X) \nonumber
 \end{eqnarray}
-where it can be seen that the $0$-th and $1$-st moments of a PDF are 1 and its mean, respectively.
+where it can be seen that the $0$th and $1$st moments of a PDF are 1 and its mean, respectively.
 
-Further more, let $c=\mu_1$ be the mean of the random variable to calculate the second \textit{central moment} $\mu_2$ as follows.
+Further more, let $c=\mu_1$ be the mean of the random variable to calculate the $2$nd order \textit{central moment} $\mu_2$ as follows.
 \begin{eqnarray}
   \mu_2 = \int_{-\infty}^{\infty}(x-\mu_1)^2f(x)dx = \textup{Var}(X) \nonumber
 \end{eqnarray}
@@ -87,7 +87,7 @@ where
 	&& \mu_k = \textup{E}\left((X-\mu_1)^k\right) = \int_{-\infty}^{\infty}(x-\mu_1)^kf(x)dx \nonumber \\
 	&& \sigma^k = \left(\mu_2\right)^{\dfrac{k}{2}} = \left(\int_{-\infty}^{\infty}(x-\mu_1)^2f(x)dx\right)^{\dfrac{k}{2}} \nonumber
 \end{eqnarray}
-with $\mu_1$ and $\mu_2$ the mean ($1$-st order moment) and variance ($2$-nd order central moment) of the random variable respectively.
+with $\mu_1$ and $\mu_2$ the mean ($1$st order moment) and variance ($2$nd order central moment) of the random variable respectively.
 
 The $3$-rd and $4$-th order standardized moments are known as the \textit{skewness} and \textit{kurtosis} of the PDF respectively. In some literatures, skewness is denoted by $\gamma_1 = \bar{\mu}_3$, and kurtosis $\gamma_2 = \bar{\mu}_4$.
 

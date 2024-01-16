@@ -15,7 +15,7 @@ plot(x, y4, 'c-+')
 hold off
 grid on
 xlabel('$x$', 'interpreter', 'latex')
-ylabel('Poisson', 'interpreter', 'latex')
+ylabel('Poisson Distribution', 'interpreter', 'latex')
 legend({'$\lambda=1$', '$\lambda=2$', '$\lambda=5$', '$\lambda=10$'}, 'interpreter', 'latex')
 %%
 clear
@@ -105,6 +105,21 @@ legend({'$r = 1$', '$r = 2$', '$r = 3$', '$r = 5$', '$r = 8$'}, 'interpreter', '
 axis([0,10,0,0.6])
 
 
+%%
+% exponential distribution pdf
+x = 0:0.01:3;
+lambda = [3,2,1,0.5];
+mu = 1./lambda;
+y = zeros(length(lambda),length(x));
+for ind = 1:length(lambda)
+    y(ind,:) = exppdf(x,mu(ind));
+end
 
-
+figure
+ax = subplot(1,1,1);
+plot(ax,x,y)
+xlabel('$x$', 'interpreter', 'latex')
+ylabel('Exponential Distribution', 'interpreter', 'latex')
+legend(ax, {'$\lambda=3$', '$\lambda=2$', '$\lambda=1$', '$\lambda=0.5$'}, 'interpreter', 'latex')
+grid on
 

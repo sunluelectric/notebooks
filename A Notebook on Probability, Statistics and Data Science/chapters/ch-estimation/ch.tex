@@ -1,1 +1,219 @@
-\chapter{Estimation} \label{ch:estimation}
+\chapter{Estimation of Population Statistics} \label{ch:estimation}
+
+The statistics of the population, such as its mean, variance, etc., can be estimated using the samples. For more insights, we can assume a distribution for the population, and consequently using the samples to estimate the 
+parameters in the distribution. Commonly seen methods are introduced in this section.
+
+\section{Method of Moments}
+
+The statistics of the samples can in some extent reflect the system. The most intuitive assumption that one may make is that the samples share the same statistical features with the population. The larger size of the sample set, the more likely this statement is true. This statement can be proved correct for some of the statistical properties such as the mean.
+
+\subsection{Mean and Variance}
+
+The sample mean and variance are calculated as follows. Let $X_1, \ldots, X_m$ be the samples. For sampling number $m\geq 2$,
+\begin{eqnarray}
+	\bar{X} &=& \dfrac{1}{m}\sum_{i=1}^{m}X_i \label{eq:sample_mean} \\
+	S^2 &=& \dfrac{1}{m-1}\sum_{i=1}^{m}\left(X_i - \bar{X}\right)^2 \label{eq:sample_variance}
+\end{eqnarray}
+
+Equations \eqref{eq:sample_mean} and \eqref{eq:sample_variance} are often used to estimate the mean and variance of the population, respectively. Note the denominator $m-1$ instead of $m$ in \eqref{eq:sample_variance}. This is to ensure that there is no static bias in the estimation of the population variance using the sample variance when the samples are chosen without replacement (this is often the case when the population size is extremely large).
+
+The proof that \eqref{eq:sample_variance} is an unbiased estimation of the population variance is given as follows. Let the true mean and variance (not the sample mean and variance) of $X_i$ be denoted by $E[X_i] = \mu$ and $\textup{Var}(X_i)=\sigma^2$ respectively. The objective is to prove $E\left[S^2\right]=\sigma^2$.
+
+From \eqref{eq:sample_variance},
+\begin{eqnarray}
+	E\left[S^2\right] &=& E\left[\dfrac{1}{m-1}\sum_{i=1}^{m}\left(X_i - \bar{X}\right)^2\right] \nonumber \\
+	&=& \dfrac{1}{m-1} E\left[\sum_{i=1}^{m}\left(X_i^2 - 2X_i\bar{X} + \bar{X}^2\right)\right] \label{eq:proof_samplevar_1} \\
+	&=& \dfrac{1}{m-1} E\left[\sum_{i=1}^{m}\left(X_i^2 - \bar{X}^2\right)\right] \nonumber \\
+	&=& \dfrac{1}{m-1}\sum_{i=1}^{m} E\left[X_i^2\right] - \dfrac{1}{m(m-1)}E\left[\left(\sum_{i=1}^{m}X_i\right)^2\right] \label{eq:proof_samplevar_2} \\
+	&=& \dfrac{1}{m-1}\sum_{i=1}^{m} \left(\textup{Var}(X_i) + E[X_i]^2\right) \nonumber \\ && -  \dfrac{1}{m(m-1)}\left(\textup{Var}\left(\sum_{i=1}^{m}X_i\right) + E\left[\sum_{i=1}^{m}X_i\right]^2\right) \nonumber \\
+	&=& \dfrac{m}{m-1}\left(\sigma^2 + \mu^2\right) - \dfrac{1}{m(m-1)}\left(m\sigma^2 + m^2\mu^2\right) \nonumber \\
+	&=& \dfrac{1}{m-1}\left(m\sigma^2 + m\mu^2 - \sigma^2 - m\mu^2\right) \nonumber \\
+	&=& \sigma^2 \nonumber
+\end{eqnarray}
+where notice that in \eqref{eq:proof_samplevar_1} $\sum_{i=1}^{m}X_i = \sum_{i=1}^{m}\bar{X}$ and in \eqref{eq:proof_samplevar_2} $E\left[X^2\right] = \textup{Var}(X) + E[X]^2$ for any random variable $X$ from \eqref{eq:varderived}.
+
+This use of $m-1$ in \eqref{eq:sample_variance} is essentially due to the fact that $\bar{X}$ is also obtained from the samples. Imagine a scenario where the mean of the population $\mu$ is known beforehand. In that case, we could have used
+\begin{eqnarray}
+	{S^*}^2 &=& \dfrac{1}{m}\sum_{i=1}^{m}\left(X_i - \mu\right)^2 \nonumber
+\end{eqnarray}
+as the sample variance to estimate the population variance $\sigma^2$, which also gives a non-biased estimation.
+
+\subsection{Other Moments}
+
+Recall from Section \ref{sec:moments} that the mean and the variance are the $1$st order moment and the $2$nd order central moment respectively. The mean and variance obtained from the samples are closely related their correspondents in the population. It is natural to expand the idea to other moments. This is known as the \textit{method of moments} in population estimation.
+
+Commonly used moments and central of moments are $4$th order or lower. Notice that bias might be introduced when using central of moments and the central is obtained from the samples, just like illustrated earlier for the sample variance.
+
+\section{Maximum Likelihood and Maximum a Posteriori Estimations}
+
+Assume that the distribution of the population follows PDF $f(x;\theta)$ where $\theta$ is the collection of parameters in the distribution. For example, if $f(x)$ follows normal distribution, $\theta=[\mu, \sigma^2]$ is the collection of the mean and variance of the normal distribution.  In the case where the population is discrete and finite, it is assumed that the population are populated from $f(x)$
+
+The objective is to estimate $\theta$ given samples $X_1, \ldots, X_m$.
+
+\subsection{Maximum Likelihood Estimation}
+
+In MLE, we assume that there is no priori knowledge of the possible value of $\theta$. The estimation is to ``guess'' $\theta$ that maximizes $P(x|\theta)$, hence the name, maximum likelihood.
+
+There are many ways to solve an MLE problem. In the special cases where $f(x)$ is a special distribution, such as Gaussian, Laplace, etc., the MLE becomes weighted least squares (WLS) estimator, least absolute value (LAV) estimator, etc., respectively.
+
+A general way of solving MLE is given below. Let cost function
+\begin{eqnarray}
+	J &=& -\sum_{i=1}^{m}\textup{ln}f(X_i) \label{eq:mlecostfunc}
+\end{eqnarray}
+and the solution is given by
+\begin{eqnarray}
+	\hat{\theta} &=& \arg\min_{x} J \nonumber
+\end{eqnarray}
+which can be solved using commonly used optimization algorithms such as Newton Raphson Method.
+
+\subsection{Maximum a Posteriori Estimation}
+
+Maximum a Posteriori (MAP) estimation is also known as the Bayesian estimation. Unlike MLE which maximizes $P(x|\theta)$ using \eqref{eq:conditionalpdf2} and \eqref{eq:posteriorimemo}. To summarize, MLP finds such $\theta$ that maximizes the following posteriori probability
+\begin{eqnarray}
+	P(\theta|x) &=& \dfrac{P(x|\theta)P(\theta)}{P(x)} \nonumber
+\end{eqnarray}
+or in PDF form,
+\begin{eqnarray}
+	g(\theta) &=& \dfrac{f(x)f_{\theta}(\theta)}{f_{X}(x)} \label{eq:mappdf}
+\end{eqnarray}
+where $f_{\theta}(\theta)$ and $f_{X}(x)$ is the ground truth distribution of $\theta$ and $x$, respectively. Notice that $f_{X}(x)$ is not affected by the guess of $\theta$. Hence, maximizing \eqref{eq:mappdf} is essentially maximizing $f(x)f_{\theta}(\theta)$.
+
+A general way of solving MAP is given below. Modify the cost function of MLE in \eqref{eq:mlecostfunc} as follows to consider the priori knowledge $f_\theta(\theta)$
+\begin{eqnarray}
+	J &=& -\sum_{i=1}^{m}\textup{ln}f(X_i) - \textup{ln}f_\theta(\theta) \label{eq:mapcostfunc}
+\end{eqnarray}
+and \eqref{eq:mapcostfunc} can be solved likewise.
+
+\subsection{Relation of MLE and MAP}
+
+MLE and MAP differ in the objective function. MLE maximizes $f(x)$ while MAP maximizes $f(x)f_{\theta}(\theta)$. The difference lies on the priori knowledge of $f_{\theta}(\theta)$, i.e., how $\theta$ is distributed without taking into account the samples. MAP requires the priori knowledge of $f_{\theta}(\theta)$ while MLE does not.
+
+When $f_{\theta}(\theta)$ is unknown, MLE is the preferred choice. MLE can also be taken as a special case of MAP where $f_\theta(\theta)$ is constant, i.e., in the priori knowledge, $\theta$ is distributed evenly for all its possible values. When $f_{\theta}(\theta)$ is known, MAP can be used.
+
+In some literatures, $f_{\theta}(\theta)$ is considered as part of the MLE cost function as given by \eqref{eq:mapcostfunc}. Though it is called an MLE in those literatures, it is effectively an MAP estimator.
+
+\section{Comparison of Different Estimation Methods}
+
+With the same set of samples, different methods (methods of moments, MLE and MAP with different likelihood functions, etc.) will give different results. There is no universally best way to estimate the statistical features of the population. It is important to choose the appropriate estimation method case by case depending on the problem.
+
+With that been said, there are benchmarks to evaluate the performance of an estimation method. One of them is bias, which has been briefly mentioned in the previous section. Other benchmarks include efficiency, robustness, etc. Commonly seen ones are introduced in this section.
+
+\subsection{Unbiased Estimation}
+
+Recall that we use samples to estimate the statistics parameters of the population. When distributions are used to model the population, the samples are used to estimate the parameters in the distributions. We have been taken it as granted that:
+\begin{itemize}
+	\item The estimation can have error;
+	\item The expectation of the estimation error should be zero.
+\end{itemize}
+The above implies that if we repeat the estimation many times (each time using new samples) and aggregate the results, the positive and negative error would cancel out, eventually giving us the estimates very close to the true parameters values. So long as we have enough samples, the error can be reduced to be as small as we need. When the sample size approaches infinity, the estimation error should approach zero.
+
+When the expectation of the estimation error is zero, the estimation is said to be \textit{unbiased}. This is often considered a good feature of the estimation. However, this is not always the case. It is difficult to make the estimation unbiased in reality. For those estimators claimed to be unbiased, rigorous mathematical proof is often required.
+
+There are several factors that may contribute to the bias:
+\begin{itemize}
+	\item Samples are not selected randomly. This is often not as much of a concern in science and engineering as compared with social science.
+	\item Measurement noise is skewed. We often assume normal distribution for the measurement noise of sensors, which is non-skewed. However, normal distribution is only an approximation to the reality. The actual measurement noise may be skewed and not zero-mean.
+	\item The estimator is biased. Depending on the configurations of an estimator such as the noise assumption in the MLE, the estimator itself can be biased.
+\end{itemize}
+
+\subsection{Mean Squared Error}
+
+Consider unbiased estimation. The magnitude of the estimation error can be evaluated using MSE and RMSE as defined below. 
+
+Let $\theta$ be a parameter and $\hat{\theta}_i$ its estimation in the $i$th Monte-Carlo run. Let $n$ be the total number of Monte-Carlo runs. Define MSE and RMSE over the $n$ Monte-Carlo runs as follows.
+\begin{eqnarray}
+	\textup{MSE} &=& \dfrac{1}{n}\sum_{i=1}^{n}\left(\hat{\theta}_i-\theta\right)^2 \nonumber \\
+	\textup{RMSE} &=& \sqrt{\textup{MSE}} \nonumber
+\end{eqnarray}
+Notice that in practice, MSE and RMSE are meaningful only when $n$ is large enough so that their values converge. Let $n$ approaches infinity and we can observe that
+\begin{eqnarray}
+	\textup{Var}(\hat{\theta}) = E\left[\left(\hat{\theta}-E\left[\hat{\theta}\right]\right)^2\right] = E\left[\left(\hat{\theta}-\theta\right)^2\right] = \textup{MSE} \nonumber
+\end{eqnarray}
+for unbiased estimator because $E\left[\hat{\theta}\right]=\theta$, and the MSE approaches the variance of the estimate. From this point of view, we can use the variance of the estimate, $\textup{Var}(\hat{\theta})$, interchangeably with MSE as an evaluation of the performance of the estimation. In most literatures, $\textup{Var}(\hat{\theta})$ is used, implying that the result is theoretical and derived under the assumption of ``infinite runs''.
+
+The smaller $\textup{Var}(\hat{\theta})$, the more precise the estimation. There is a limitation to how small $\textup{Var}(\hat{\theta})$ can be regardless of the design of the estimator. This is intuitive because there is only so much information contained in the samples, given limited sample size and measurement error. So long as the estimation is done using those samples, its precision is limited. 
+
+The maximum information contained in the samples can be described by \textit{Fisher Information Matrix} named after Sir Ronald Fisher. The following equation describes the relation between $\textup{Var}(\hat{\theta})$ and Fisher Information Matrix $I(\theta)$ for a scalar unbiased estimator.
+\begin{eqnarray}
+	\textup{Var}(\hat{\theta}) &\geq& I(\theta)^{-1} \label{eq:crlb}
+\end{eqnarray}
+which is known as the \textit{Cram\'{e}r–Rao lower bound} (CRLB) of the estimator. From \eqref{eq:crlb}, it can be seen that the ``larger'' $I(\theta)$, the lower $\textup{Var}(\hat{\theta})$  can possibly reach.
+
+It is possible (although in many cases difficult) to check and prove whether an estimator hits the bound and provides the smallest possible $\textup{Var}(\hat{\theta})$ by comparing it with its corresponding CRLB. If its variance equals to CRLB, the estimator is said to be \textit{optimal}.
+
+A more general CRLB for biased estimator can also be derived. The detailed derivations of Fisher Information Matrix and general CRLB are not given in this notebook.
+
+\section{Interval Estimation}
+
+The estimation obtained from empirical data may bias from its true value due to the randomness introduced by the samples. From CLT, we know that the more samples, the more confident we are that the true value is close to the estimate. 
+
+To put it into perspective, we can derive the probability of the true value $\theta$ actually lying with a given interval $\left[\hat{\theta}_{\textup{min}},\hat{\theta}_{\textup{max}}\right]$, $P\left(\hat{\theta}_{\textup{min}} \leq \theta \leq \hat{\theta}_{\textup{max}}\right)$, as a function of estimation algorithm, measurement noise and samples number. The interval is known as the Confidence Interval (CI). Each CI is corresponding with a probability.
+
+The purpose of interval estimation is to obtain the probability of a CI or find the CI for a specific probability given the samples.
+
+\subsection{Estimate the Mean of a Normal Distribution}
+
+As an example, consider estimating the CI of a normal distribution using samples taken from that distribution. Notice that this is only one of the many scenarios of interval estimation.
+
+Let $\mathcal{N}(\mu,\sigma^2)$ be a normal distribution, and $X_1, \ldots, X_m$ a set of $m$ samples generated from the distribution. Let $\mu^*$, ${\sigma^2}^*$ be the mean and variance estimate of the distribution respectively. The objective is to calculate the CI of $\mu$ using $\bar{X}$, ${\sigma^2}^*$ and $m$.
+
+Apparently, $\mu$ does not necessarily equal to $\mu^*$. The smaller $\sigma^2$ and larger $m$, the more likely that $\mu$ is close to $\mu^*$. The error $\mu - \mu^*$ is a random variable, with variance
+\begin{eqnarray}
+	\textup{Var}[\mu-\mu^*] &=& E\left[\left(\mu-\dfrac{1}{m}\sum_{i=1}^{m} X_i\right)^2\right] \nonumber \\
+	&=& \dfrac{1}{m^2}E\left[\sum_{i=1}^{m}\left(\mu-X_i\right)^2\right] \label{eq:sample_mean_var1} \\
+	&=& \dfrac{1}{m}\sigma^2 \label{eq:sample_mean_var2}
+\end{eqnarray}
+Though \eqref{eq:sample_mean_var2} can be used to derive the CI, it is useless in the empirical approach because the statistics of the original distribution, $\mu$ and $\sigma$, is not known exactly. Therefore, \eqref{eq:sample_mean_var2} needs to be reformulated to include $\mu^*$ and ${\sigma^2}^*$.
+
+Denote $\tilde{\mu} = \mu-\mu^*$. Note that 
+\begin{eqnarray}
+	\textup{Var}[\mu-\mu^*] = E\left[\left(\tilde{\mu}-E[\tilde{\mu}]\right)^2\right] = E[\tilde{\mu}^2] \nonumber
+\end{eqnarray}
+because $E[\tilde{\mu}]=E[\mu]-E[\mu^*]=0$. Rewrite \eqref{eq:sample_mean_var1} as follows.
+\begin{eqnarray}
+	\textup{Var}[\mu-\mu^*] &=& E[\tilde{\mu}^2] \nonumber \\
+	 &=& \dfrac{1}{m^2}E\left[\sum_{i=1}^{m}\left(\mu^*+\tilde{\mu}-X_i\right)^2\right] \nonumber \\
+	&=& \dfrac{1}{m^2}E\left[\sum_{i=1}^{m}\left(\mu^*-X_i\right)^2\right] + \dfrac{2}{m^2}E\left[\sum_{i=1}^{m}\left(\mu^*-X_i\right)\tilde{\mu}\right] + \dfrac{1}{m^2}E\left[\sum_{i=1}^{m}\tilde{\mu}^2\right] \nonumber \\
+	&=& \dfrac{m-1}{m^2}{\sigma^2}^* + \dfrac{1}{m}E[\tilde{\mu}^2] \label{eq:sample_mean_var3}
+\end{eqnarray}
+Solving \eqref{eq:sample_mean_var3} for $E[\tilde{\mu}^2]$ gives
+\begin{eqnarray}
+	\textup{Var}[\mu-\mu^*] &=& \dfrac{1}{m}{\sigma^2}^* \label{eq:sample_mean_var4}
+\end{eqnarray}
+Equations \eqref{eq:sample_mean_var2} and \eqref{eq:sample_mean_var4} look similar except that $\sigma^2$ is replaced by ${\sigma^2}^*$. Notice that \eqref{eq:sample_mean_var4} gives the variance. For the standard deviation,
+\begin{eqnarray}
+	\textup{Std}(\mu-\mu^*) = \dfrac{1}{\sqrt{m}}\sqrt{{\sigma^2}^*} = \dfrac{1}{\sqrt{m}}\sigma^* \label{eq:sample_mean_var5}
+\end{eqnarray} 
+where $\sigma^*$ is the estimate of the standard deviation using the samples. Given the confidence, CI can be determined using \eqref{eq:sample_mean_var5} as
+\begin{eqnarray}
+	\left[\mu^*-\dfrac{u_{\alpha}}{\sqrt{m}}\sigma^*, \mu^*+\dfrac{u_{\alpha}}{\sqrt{m}}\sigma^*\right] \label{eq:intervalci}
+\end{eqnarray}
+where $u_{\alpha}$ is a gain determined by the desired confidence, i.e., $P\left(\hat{\theta}_{\textup{min}} \leq \theta \leq \hat{\theta}_{\textup{max}}\right)$. The gain $u_{\alpha}$ can be derived from the CDF of the noise assumption. The higher $P$, the larger $u_{\alpha}$. Some commonly used $u_{\alpha}$ and confidence pairs are listed below for normal distribution noise assumption:
+\begin{itemize}
+	\item $u_{\alpha}=1$, $P=0.683$;
+	\item $u_{\alpha}=1.96$, $P=0.95$;
+	\item $u_{\alpha}=2$, $P=0.954$;
+	\item $u_{\alpha}=2.58$, $P=0.99$;
+	\item $u_{\alpha}=3$, $P=0.997$;
+	\item $u_{\alpha}=3.29$, $P=0.999$.
+\end{itemize}
+
+In general, $u_{\alpha}$ can be derived from the CDF of the normal distribution as follows.
+\begin{eqnarray}
+	\textup{F}(u_\alpha) = \dfrac{1}{2}\left(1+\textup{erf}\left(\dfrac{u_\alpha}{\sqrt{2}}\right)\right) = \dfrac{P+1}{2} \nonumber
+\end{eqnarray}
+or equivalently
+\begin{eqnarray}
+	\textup{erf}\left(\dfrac{u_\alpha}{\sqrt{2}}\right) &=& P \nonumber
+\end{eqnarray}
+where $F(\cdot)$ is the CDF of the standard normal distribution and $\textup{erf}(\cdot)$ the error function.
+
+
+\subsection{General Interval Estimation}
+
+In the previous example, the problem is to estimate the CI of the mean of a normal distribution. In practice, there are many other problems. 
+
+For example, instead of using normal distribution as the noise assumption, $t$-distribution might be used, especially if the number of samples are small. The $t$-distribution has the ``heavy tail'' to emulate outliers, thus making the result more robust.
+
+Depending on the choice of noise assumption, CI may look different and/or $u_{\alpha}$ may differ. There are CI tables for different types of noise.
+
