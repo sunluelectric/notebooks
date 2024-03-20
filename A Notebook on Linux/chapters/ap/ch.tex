@@ -53,7 +53,11 @@ set scrolloff=3
 noremap sc :set spell!<CR>
 \end{lstlisting}
 
-\chapter{Continuous Integration and Delivery}
+\section{\textit{Neovim} Configuration Files}
+
+\textit{Neovim} is fork from \textit{Vim} and it has gained popularity in the past years. Just like \textit{Vim}, \textit{Neovim} can be customized by user-defined configuration files. These configuration files are usually packed into \textit{lua} file tree, where \textit{lua} is a computer programming language that \textit{Neovim} supports by nature.
+
+\chapter{Continuous Integration and Delivery} \label{ch:cicd}
 
 This notebook is mainly about Linux. In this appendix chapter, the boundary of the notebook is slightly expanded to software development, which is quite often how Linux is used in practice.
 
@@ -323,91 +327,7 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
 \end{lstlisting}
 
-For the convenience of the reader, here is a brief introduction of YAML syntax.
-
-\begin{mdframed}
-\centerline{\textbf{YAML Syntax}}
-
-YAML shares a lot of similarities with JSON. It is essentially a ``dictionary of dictionary'' document storage of information. The stored item under each field can be a string (can span multiple lines), a dictionary, or a list of items where each item can again be a string, a dictionary or a list of items.
-
-For example, to store the basic information of a person in YAML, one may consider using
-\begin{lstlisting}
-name: Tom
-job: developer
-address: 1 Christmas Road
-hobby: table tennis
-\end{lstlisting}
-where in this example all the items are single-line strings. This is the most simple implementation of YAML. Notice that space is allowed in both keys and values. However, it is not recommended to use spaces in keys as it is inconsistent with other languages.
-
-Consider items that are dictionaries. For example, in the earlier example, the address may contain two fields, unit number and street name. In that case, use indent to represent dictionary layer as follows.
-\begin{lstlisting}
-name: Tom
-job: developer
-address:
-  unit: 01-01
-  street: Christmas Road
-hobby: table tennis
-\end{lstlisting}
-
-Consider items that are lists. For example, in the earlier example, the person has multiple hobbies as follows.
-\begin{lstlisting}
-name: Tom
-job: developer
-address:
-  unit: 01-01
-  street: Christmas Road
-hobby:
-  - table tennis
-  - football
-\end{lstlisting}
-
-Consider items that are list of dictionaries. For example, in the earlier example, the person has multiple addresses, each address represented by a dictionary containing unit and street information as follows.
-\begin{lstlisting}
-name: Tom
-job: developer
-address:
-  - house_1:
-      unit: 01-01
-      street: 1 Christmas Road
-  - house_2:
-      unit: 09-27
-      street: 127 Bell street
-hobby:
-  - table tennis
-  - football
-\end{lstlisting}
-
-Though less common, there are alternative ways to represent dictionary and lists which look more like JSON as follows.
-\begin{lstlisting}
-name: Tom
-job: developer
-address: [house_1: {unit: 01-01, street: 1 Christmas Road}, house_2:{unit: 09-27, street: 127 Bell street}]
-hobby: [table tennis, football]
-\end{lstlisting}
-
-To span a string in multiple lines, use the following
-\begin{lstlisting}
-address: |
-  01-01
-  1 Christmas Road
-\end{lstlisting}
-which includes the new line markers, and as a result the record in the above example would be a two-line string as seen, and
-\begin{lstlisting}
-address: >
-  01-01
-  1 Christmas Road
-\end{lstlisting}
-which excludes the new line markers, and as a result it is equivalent to
-\begin{lstlisting}
-address: 01-01 1 Christmas Road
-\end{lstlisting}
-
-Finally, YAML allows comments that start with \verb|#|.
-
-In general, YAML is similar with JSON, but more human-readable and supports additional features such as string spanning and comments.
-
-\end{mdframed}
-
+YAML and its syntax are introduced in more details in Appendix \ref{ch:yaml}.
 
 \subsection{Trigger}
 
@@ -530,33 +450,183 @@ To package such a complicated action, there must be an \verb|action.yml| or \ver
 
 It would be too detailed to go through all the files in \textit{github.com/actions/checkout}. The message here is that an action can be designed to be very complicated and powerful.
 
+\chapter{A Brief Introduction to YAML} \label{ch:yaml}
+
+YAML is widely used as configuration files and workflow description files. Under the scope of this notebook, YAML is used at least in \textit{GitHub Actions} and \textit{Kubernetes}. A brief introduction to YAML and its syntax is given here.
+
+\section{Overview}
+
+YAML is a human-readable data serialization language widely used for writing configuration files. The name YAML was initially interpreted as ``Yet Another Markup Language'' because the motivation for the authors to develop YAML was to simplify XML. However, in the later stage the authors pointed out that YAML is more of a data serialization language (like JSON) than a markup language. Hence, it is now more often known as the recursive acronym ``YAML Ain't Markup Language''.
+
+\begin{mdframed}
+\Boxhead{Markup VS Serialization Languages}
+
+Markup languages focus on the marking up of various elements in a text document. In the early days, the editor of a book often needed to put marks on the manuscripts to show where each line should go, etc., before sending it to the publisher. These marks inspired markup languages, and hence the name.
+
+Data serialization languages, on the other hand, focus on using texts to represent data structures. Data serialization languages like JSON and YAML are able represent ``objects'' such as Python dictionaries, JavaScript objects, etc., using its textual syntax. Data serialization languages are useful as they maintain the data structures, allowing a machine to decode easily. Therefore, they are widely used in configuration files, data storage, and machine-to-machine data transfer.
+
+It is possible that markup and serialization languages overlaps in some applications. For example, XML, a typical markup language, can also be used to serialize data.
+
+\end{mdframed}
+
+\section{Syntax}
+
+Commonly used YAML file extensions include \verb|.yaml| and \verb|.yml|. When learning YAML syntax, it is helpful to compare it side-by-side with JSON, as both of them are serialization languages and can be translated from one to the other.
+
+Like Python, YAML uses line separation and indentation as part of its syntax. This makes it reader friendly.
+
+YAML uses \verb|#| to lead a comment. YAML is case-sensitive. Use \verb|---| in a new line to separate a single YAML file into multiple logical sectors.
+
+\subsection{Key-Value Pair}
+
+Key-value pair is the most basic syntax in YAML as follows.
+\begin{lstlisting}
+<key>: <value>
+\end{lstlisting}
+For example,
+\begin{lstlisting}
+name: myApp
+port: 9000
+version: 1.1
+tested: true
+\end{lstlisting}
+
+YAML is able to automatically interpret the data types of different variables. In the above example, for instance, port number $9000$ is identified as an integer, while application name \verb|myApp|, a string. To enforce it to interpret values as strings, use quotation marks. Notice that \verb|true/yes/on| and their associated \verb|false/no/off| are regarded as boolean values.
 
 
+\subsection{Object and Nested Object}
+
+Use indention to indicate object trees. See the example below. Object can be nested.
+\begin{lstlisting}
+<object name>:
+  <key1>: <value1>
+  <key2>: <value2>
+  <key3>:
+    <key31>: <value31>
+    <key32>: <value32>
+\end{lstlisting}
+where object \verb|object name| contains 3 key-value pairs. The third key \verb|key3| is associated with a value who is a nested object that contains another 2 key-value pairs.
+
+\subsection{List}
+
+It is possible that the value of a key being a list of items. See the example below. Be careful with the indentation when items in the list are nested objects.
+\begin{lstlisting}
+<list1>:
+  - <item1>
+  - <item2>
+  - <item3>
+<list2>:
+  - <item1 key>: <item1 value>
+  - <item2 key>: <item2 value>
+  - <item3 key>: <item3 value>
+<list3>:
+  - <item1 key1>: <item1 value1>
+    <item1 key2>: <item1 value2>
+    <item1 key3>: <item1 value3>
+  - <item2 key1>: <item2 value1>
+    <item2 key1>: <item2 value2>
+    <item2 key1>: <item2 value3>
+  - <item3 key1>: <item3 value1>
+    <item3 key1>: <item3 value2>
+    <item3 key1>: <item3 value3>
+\end{lstlisting}
+In the example above, the value of \verb|<list1>| is simply a list of 3 items, \verb|<item1>|, \verb|<item2>|, \verb|<item3>|. The value of \verb|<list2>| is a list of 3 key-value pairs in the form \verb|<itemN key>: <itemN value>|. The value of \verb|<list3>| is a list of 3 objects, each object containing 3 key-value pairs, in the form of \verb|<itemN keyM>: <itemN valueM>|.
+
+Items in a list in YAML do not need to have the same data type or object structure.
+
+For a list whose items are primitive data types, such as integer, float, boolean, string, etc., or a mix of them, it is also possible to use \verb|[item1, item2, ...]|. For example, the following two expressions are equivalent.
+\begin{lstlisting}
+port:
+  - 9000
+  - 9001
+  - 9002
+\end{lstlisting}
+versus
+\begin{lstlisting}
+port: [9000, 9001, 9002]
+\end{lstlisting}
+where the former and later expressions are known as the block style and flow style respectively.
+
+It is possible to have a list of only one item. Examples are given below.
+\begin{lstlisting}
+<list1>:
+  - <item1>
+<list2>: [<item2>]
+<list3>:
+  - <item3 key>: <item3 value>
+<list4>:
+  - <item4 key1>: <item4 value1>
+    <item4 key2>: <item4 value2>
+    <item4 key3>: <item4 value2>
+\end{lstlisting}
+In the above example, all 4 lists, \verb|<list1>| to \verb|<list4>|, have 1 items. The first two lists \verb|<list1>| and \verb|<list2>| have primitive items \verb|<item1>| and \verb|<item2>| respectively. List \verb|<list3>| has one item which is a key-value pair. List \verb|<list4>| has one item which is an object that contains 3 key-value pairs.
 
 
+\subsection{Multi-line String}
 
+Sometimes the value to be stored in YAML can be a long or multi-line string, for example, a command. Use \texttt{|} to indicate a multi-line string. An example is given below.
+\begin{lstlisting}
+<key>: |
+  this is the first line of a string
+  this is the second line of a string
+  this is the third line of a string
+\end{lstlisting}
+A practical example is given below.
+\begin{lstlisting}
+run: |
+  ls \
+  -la \
+  > files.txt
+\end{lstlisting}
+where a bash command \verb|ls -la > files.txt| is stored as the value of key \verb|run|.
 
+Do not confuse a multi-line string with a wrapped single-line string. For example,
+\begin{lstlisting}
+<key>: |
+  abc
+  def
+  ghi
+\end{lstlisting}
+is different from
+\begin{lstlisting}
+<key>: abcdefghi
+\end{lstlisting}
+This is because when \texttt{|} is used, YAML automatically adds line break characters between different rows.
 
+To express the wrap of a single string, use \verb|>| instead of \texttt{|} as follows.
+\begin{lstlisting}
+<key>: >
+  abc
+  def
+  ghi
+\end{lstlisting}
+which is equivalent with
+\begin{lstlisting}
+<key>: abc def ghi
+\end{lstlisting}
+because \verb|>| adds a space instead of a line break character to each row.
 
+Notice that both \texttt{|} and \verb|>|, if used alone, will generate a line breaker in the end of the entire text. If no such line breaker is designed, use \texttt{|-} and \verb|>-| instead.
 
+To express a very long continuous string without even a space, consider using
+\begin{lstlisting}
+<key>: "abc\
+  def\
+  ghi"
+\end{lstlisting}
+which is equivalent to
+\begin{lstlisting}
+<key>: abcdefghi
+\end{lstlisting}
+Sometimes for better readability, one may consider storing long strings into lists, then concatenate them later using the program that takes in the YAML file.
 
+\section{Commonly Seen YAML Use Cases}
 
+YAML has gained its popularity among configuration files, especially when containers, cloud service and CI/CD are involved. Some commonly seen services that support YAML are given below. This is only a small portion of all the services and programs that use YAML.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\begin{itemize}
+	\item \textit{GitHub Actions} configuration files. \textit{GitHub Actions} uses YAML as the workflow configuration files.
+	\item \textit{Kubernetes} configuration files. \textit{Kubernetes} pods, images, services, deployments, etc., have to be configured by the developer using YAML.
+	\item AWS CloudFormation. AWS CloudFormation is the manuscript using which AWS can start and configure a service automatically so that the user does not need to do everything using the dashboard. It is useful when the user needs to run similar and repetitive services. The AWS CloudFormation instruction file is written in YAML.
+	\item Azure pipeline, and many other CI/CD services. Many CI/CD services uses YAML for the configuration of pipelines.
+\end{itemize}

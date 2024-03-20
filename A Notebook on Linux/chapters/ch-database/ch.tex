@@ -2,13 +2,13 @@
 
 Database and database manage systems (DBMS) are introduced in this chapter. Both relational and non-relational databases are covered. Tools and languages to manipulate databases, such as structured query language (SQL) for relational databases, are introduced.
 
-\section{Brief Introduction}
+\section{Brief Introduction to Database}
 
-Database, in a broad view, refers to an organized collection of data of any format. In this sense, any file format that hosts information in an meaningful and explainable way, such as \textit{CSV}, \textit{XML} and \textit{JSON}, is a database. These file formats often work fine when the data is stored in a centralized manner and its size small.
+Database, in a broad view, refers to an organized collection of data of any format. In this sense, any file format that hosts information in a meaningful and explainable way, such as \textit{CSV}, \textit{XML} and \textit{JSON}, is a database. These file formats often work fine when the data is stored in a centralized manner and its size small.
 
-As the data size grows, the robustness and efficiency of storing and retrieving data may become a challenge, and different database models have been proposed to tackle it. Dedicated software, namely DBMS, is developed to manage and maintain the database and provide an interface for the users to create, retrieve, update and delete data. Different database models require different database engines and DBMS, and different DBMS may provide different interfaces for the users.
+As the data size grows, the robustness and efficiency of storing and retrieving data become challenging, and different database models have been proposed to tackle it. Dedicated software, namely DBMS, is developed to manage and maintain the database and provide an interface for the users to create, retrieve, update and delete data. Different database models require different database engines and DBMS, and different DBMS may provide different interfaces for the users.
 
-There are hundreds of database models available in the market. In general, the most widely seen database models can be divided into two categories, namely the relational databases (RDB) and the non-relational databases.
+There are many database models available in the market. The most widely seen database models can be divided into two categories, namely the relational databases (RDB) and the non-relational databases.
 
 \subsection{Relational Database}
 
@@ -19,7 +19,7 @@ Relational database was proposed in 1970s by IBM. Some important features of a r
 	\item Provide relational operations that manipulate the data in the tables, for example, joining tables together and aligning them using an attribute.
 \end{itemize}
 
-Structured query language (SQL), a domain-specific language, can be used in managing RDB and interfacing relational DBMS.  Most commercialized RDB management systems (RDBMS) adopt SQL as the query language. There are alternatives, but they are rarely used compared to SQL. There is a evolving standard on what operations should an RDBMS support using SQL. The latest version as of this writing is \verb|SQL:2023|.
+SQL, a domain-specific language, can be used in managing RDB and interfacing relational DBMS.  Most commercialized RDB management systems (RDBMS) adopt SQL as the query language. There are alternatives, but they are rarely used compared to SQL. There is a evolving standard on what operations should an RDBMS support using SQL. The latest version as of this writing is \verb|SQL:2023|.
 
 Examples of relational databases include \textit{Oracle}, \textit{MySQL}, \textit{Microsoft SQL Server}, \textit{MariaDB}, \textit{IBM Db2}, \textit{Amazon Redshift}, \textit{Amazon Aurora} and \textit{PostgreSQL}.
 
@@ -31,11 +31,11 @@ As it may not sound as intuitive as RDB, NoSQL database can become more efficien
 
 Unlike SQL which applies to almost all RDB, there is no universally adopted language for NoSQL databases. We use ``NoSQL'' to refer to a collective set of languages used for NoSQL database management.
 
-Database services, both RDB and NoSQL, are very important on servers such as a Linux based web server. In this chapter, both relational and non-relational databases are introduced in the remaining sections.
+Database services, both RDB and NoSQL, have become critical to our daily life and they are massively deployed on servers. In this chapter, both relational and non-relational databases are introduced in the remaining sections.
 
-\section{RDB and SQL}
+\section{Structured Query Language}
 
-As of this writing, RDB is the most commonly used database, and SQL is its standard manipulating and querying language. They are introduced as follows.
+As of this writing, RDB is the most commonly used database, and SQL is its standard manipulating and querying language. They are introduced below.
 
 \subsection{Tables and Columns} \label{ch:db:subsec:tables}
 
@@ -71,7 +71,7 @@ A foreign key is the attribute(s) that link a table to another table. It is ofte
 
 The introducing of foreign key helps to maintain the consistency and integrity of the database. For example, when adding a new member to Table \ref{ch:db:tab:relationaldbexample}, the DBMS will first check whether the membership type is registered in Table \ref{ch:db:tab:relationaldbexampleanother}. If not, the insert operation will be rejected. This guarantees that all registered members have valid membership types.
 
-Notice that a table can have multiple foreign keys. The foreign key can not only relate a table to another, but also relate a table to itself. For example, the ``referee-id'' attribute in Table \ref{ch:db:tab:relationaldbexample} could be the foreign key that relates to ``user-id'' of the same table.
+Notice that a table can have multiple foreign keys. The foreign key can not only relate a table to another, but also relate a table to itself. For example, the ``referee-id'' attribute in Table \ref{ch:db:tab:relationaldbexample} could be the foreign key that links to ``user-id'' of the same table.
 
 \subsection{RDB Naming Conventions}
 
@@ -110,15 +110,15 @@ It is recommended that the following naming conventions be applied to databases,
 	\item \verb|_total|: the total number of a collection of values.
 	\item \verb|_num|: a number.
 	\item \verb|_date|: a date.
-	\item \verb|_name|: the name of a person or product.
+	\item \verb|_name|: the name of a person or a product.
 \end{itemize}
 \end{itemize}
 
 \subsection{General Introduction to SQL}
 
-SQL is the most widely used language for interacting with RDBMS for data query and maintenance. SQL is very powerful and flexible in its full capability, and it is hardly possible to cover everything in one section. Hence, in this section only the basic SQL operations are introduced.
+SQL is the most widely used language for interacting with DBMS for data query and maintenance. SQL is very powerful and flexible in its full capability, and it is hardly possible to cover everything in one section. Hence, in this section only the basic SQL operations are introduced.
 
-Notice that the support of different RDBMS to SQL may differ slightly. This is because an RDBMS may (in fact, very likely) fail to adopt everything in the latest SQL standard. However, most of the commands especially the widely used ones such as creating tables, inserting rows and most of the querying, shall be universally consistent.
+Notice that the support of different DBMS to SQL may differ slightly. This is because an DBMS may (in fact, very likely) fail to adopt everything in the latest SQL standard. However, most of the commands especially the widely used ones such as creating tables, inserting rows and most of the querying, shall be universally consistent.
 
 SQL is a hybrid language consisting of the following 4 sub-languages.
 \begin{itemize}
@@ -128,7 +128,7 @@ SQL is a hybrid language consisting of the following 4 sub-languages.
   \item Data manipulation language: insert, update and delete data from a database.
 \end{itemize}
 
-SQL supports variety of data types, and different RDBMS may cover slightly different data types. Some of the most commonly used data types are summarized in Table \ref{ch:db:tab:sqldatatypes}. Nowadays, many RDBMS supports more complicated types such as objects (also known as object-relational database), and many more. For the full list of data types that a DBMS supports, check the manuals and documents of that DBMS.
+SQL supports variety of data types, and different DBMS may cover slightly different data types. Some of the most commonly used data types are summarized in Table \ref{ch:db:tab:sqldatatypes}. Nowadays, many DBMS supports more complicated types such as objects (the associated database is also known as the object-relational database), and many more. For the full list of data types that a DBMS supports, check the manuals and documents of that DBMS.
 
 \begin{table}
 	\centering \caption{Widely used SQL data types.}\label{ch:db:tab:sqldatatypes}
@@ -212,9 +212,11 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 
 \subsection{General Syntax}
 
+Notice that different DBMS may use slightly different syntax for the same or similar function. In the rest of the chapter, unless otherwise mentioned, MySQL/MariaDB syntax is used. 
+
 All SQL commands shall end with a semicolon ``\verb|;|''.
 
-The programming of SQL shall follow the following general rules wherever possible. This helps to maintain the good quality and portability of the code.
+The programming of SQL shall follow the following common practices wherever possible. This helps to maintain the good quality and portability of the code.
 \begin{itemize}
 	\item Use standard SQL functions over user-defined functions wherever possible for better portability.
 	\item Do NOT use object-oriented design principles in SQL and database schema wherever possible.
@@ -578,7 +580,7 @@ The same idea applies to right join as well, as shown below.
 +---------+---------+---------+--------------+---------+---------+---------+
 \end{lstlisting}
 
-Some RDBMS supports ``outer join'', which is basically a union of the left and right join results. More about union is introduced later.
+Some DBMS supports ``outer join'', which is basically a union of the left and right join results. More about union is introduced later.
 
 The statement \verb|<filter-condition>| applies filtering to the results. Commonly seen filter criteria \verb|<filter-condition>| are summarized as follows.
 \begin{itemize}
@@ -748,7 +750,7 @@ DROP TRIGGER <trigger-name>;
 
 \subsection{SQL Demonstrative Example}
 
-An an example to demonstrate the use of SQL, a database is created from scratch. MariaDB is used as the DBMS in this example. More about MariaDB is introduced in later Section \ref{ch:db:sec:mariadb}. The database is used in the smart home project to trace the resources obtained and consumed by the user. The resources in this context may refer to groceries bought from the supermarket, books purchased online, subscriptions of magazines and services, etc. For simplicity, the prompt is ignored in the rest of this section.
+An an example to demonstrate the use of SQL, a database is created from scratch. MariaDB is used as the DBMS in this example. More about MariaDB is introduced in later Section \ref{ch:db:sec:mariadb}. The database is used in the smart home project to track the resources obtained and consumed by the user. The resources in this context may refer to groceries bought from the supermarket, books purchased online, subscriptions of magazines and services, etc. For simplicity, the prompt is ignored in the rest of this section.
 
 Check the existing databases as follows.
 \begin{lstlisting}
@@ -937,11 +939,9 @@ ADD FOREIGN KEY (payment_method_id)
 REFERENCES payment_method(payment_method_id);
 \end{lstlisting}
 
-\section{Relational Databases}
+\section{RDB Example: MySQL and MariaDB} \label{ch:db:sec:mariadb}
 
-Commonly seen RDBMS examples include Oracle Database, MySQL, Microsoft SQL Server, PostgreSQL, SQLite, MariaDB, and many more. Some of them are briefly introduced in this section.
-
-\subsection{MySQL and MariaDB} \label{ch:db:sec:mariadb}
+Commonly seen DBMS examples include Oracle Database, MySQL, Microsoft SQL Server, PostgreSQL, SQLite, MariaDB, and many more. Some of them are briefly introduced in this section. Here are some examples.
 
 MariaDB and MySQL are two widely used relational DBMS. MariaDB is initially a fork of MySQL, and in this sense they share many similarities. While MySQL moves towards a dual license approach (free community license and paid enterprise license with proprietary code), MariaDB is designed to be fully open-source under GNU license, and plays as a replacement of MySQL.
 
@@ -958,7 +958,7 @@ Some of the main features of MySQL and MariaDB are summarized as follows.
 Different databases may propose different minimum system requirements. There is no standard on how these minimum requirements are calculated. Therefore, it is often unfair to directly compare the requirements of different databases. Nevertheless, a summary table is given in Table \ref{ch:db:tab:rdbrequirements}. Notice that this is merely an estimation and can differ largely from practice.
 
 \begin{table}
-	\centering \caption{An estimation of RDBMS hardware requirements.} \label{ch:db:tab:rdbrequirements}
+	\centering \caption{An estimation of DBMS hardware requirements.} \label{ch:db:tab:rdbrequirements}
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
 		 & \multirow{2}{*}{OS} & \multicolumn{3}{c|}{Minimum Requirements} \\ \cline{3-5}
@@ -978,9 +978,7 @@ Different databases may propose different minimum system requirements. There is 
 
 In the remaining of this section, MariaDB is used for demonstration.
 
-\vspace{0.1in}
-\noindent \textbf{MariaDB Installation}
-\vspace{0.1in}
+\subsection{MariaDB Installation}
 
 To install MariaDB, follow the instruction on the official website. Different OS, such as RHEL and Ubuntu, may require different ways of installation. For example, on RHEL
 \begin{lstlisting}
@@ -1003,9 +1001,7 @@ and to check its status, use
 $ sudo systemctl status mariadb
 \end{lstlisting}
 
-\vspace{0.1in}
-\noindent \textbf{MariaDB Basic Configuration}
-\vspace{0.1in}
+\subsection{MariaDB Basic Configuration}
 
 After installation of and starting MariaDB, use
 \begin{lstlisting}
@@ -1024,9 +1020,7 @@ Enter Password:
 \end{lstlisting}
 Depending on the setup, remote login to the database from other machine, especially using root account, might be forbidden.
 
-\vspace{0.1in}
-\noindent \textbf{MariaDB Console}
-\vspace{0.1in}
+\subsection{MariaDB Console}
 
 After login to MariaDB console, a prompt that looks like the following would show up.
 \begin{lstlisting}
@@ -1052,9 +1046,7 @@ MariaDB [(none)]> exit
 \end{lstlisting}
 to quite MariaDB console.
 
-\vspace{0.1in}
-\noindent \textbf{Execute SQL File}
-\vspace{0.1in}
+\subsection{Execute SQL File}
 
 In many occasions, instead of executing SQL commands line by line, an SQL file is prepared in advance and the DBMS is asked to execute the SQL file as a whole. In the Linux shell, execute the following command and MariaDB shall be able to execute an SQL file on the specified host, on behalf of the user, on the selected database.
 \begin{lstlisting}
@@ -1065,7 +1057,7 @@ If the user already logs into the MariaDB console, use the following command ins
 MariaDB [(none)]> source file.sql
 \end{lstlisting}
 
-\subsection{PostgreSQL}
+\section{RDB Example: PostgreSQL}
 
 PostgreSQL (or Postgres) is claimed to be the world's most advanced open-source RDB, and it has some great features. It is a object-relational database where the user can define customized data types in the form of objects. The database functions are modularized, meaning that it has a small base installation (only 40MB) as given in Table \ref{ch:db:tab:rdbrequirements}, and the user can expand its capability by installing additional modules per required. It complies very well with the latest SQL standard, with additional powerful add-ons.
 
@@ -1084,9 +1076,7 @@ Some of the main features of PostgreSQL are summarized as follows.
 	\item Steep learning curve.
 \end{itemize}
 
-\vspace{0.1in}
-\noindent \textbf{Installation}
-\vspace{0.1in}
+\subsection{Installation}
 
 PostgreSQL supports a large range of operating systems including Linux, MacOS, Windows, and more. The source code and very detailed documentations of PostgreSQL are available on its websites and can be downloaded to a local machine freely. Due to the lite weight of the base installation, PostgreSQL can be used conveniently in containers. The associated images can be found on Docker Hub.
 
@@ -1137,9 +1127,7 @@ CMD ["/bin/sh", "/var/lib/postgresql/user-scripts/start.sh"]
 \end{lstlisting}
 
 
-\vspace{0.1in}
-\noindent \textbf{PostgreSQL Features: New Data Types}
-\vspace{0.1in}
+\subsection{PostgreSQL-Specific New Data Types}
 
 PostgreSQL supports a large range of data types, more than other databases such as MySQL and MariaDB. In addition to the commonly seen numeric types, character types, date and time types and boolean type, the following data types are supported.
 \begin{itemize}
@@ -1151,9 +1139,7 @@ PostgreSQL supports a large range of data types, more than other databases such 
 	\item Many more.
 \end{itemize}
 
-\vspace{0.1in}
-\noindent \textbf{PostgreSQL Features: User-Defined Data Types}
-\vspace{0.1in}
+\subsection{PostgreSQL User-Defined Data Types}
 
 User-defined data types can be used to demonstrate the object-relational database aspect of PostgreSQL. It essentially means that the attribute of an element can be an object, and can have some complex and comprehensive features.
 
@@ -1207,9 +1193,8 @@ enum ('M', 'F');
 \end{lstlisting}
 which creates a new data type called \verb|sex_type|, and it can take enumerated value of either \verb|M| or \verb|F|.
 
-\vspace{0.1in}
-\noindent \textbf{PostgreSQL Features: Stored Procedural and Functions}
-\vspace{0.1in}
+\subsection{PostgreSQL Stored Procedural and Functions}
+
 
 Many databases including Oracle SQL, Microsoft SQL Server, MySQL, MariaDB and PostgreSQL, support stored procedures and user defined functions. This feature has been there for a very long time, but it is often not introduced in a typical introductory course. Though useful, they may introduce performance and portability issues, hence need to be handled with caution. Besides, nowadays it is often regarded as a better practice to implement the logics in the application layer, not in DBMS. Nevertheless, they are briefly introduced as follows.
 
@@ -1281,9 +1266,7 @@ $$ LANGUAGE plpgsql;
 
 With the above been said, though convenient and powerful it might be in some use cases, it is often a good practice to keep complex logic in application layer, for logic consistency and database portability.
 
-\vspace{0.1in}
-\noindent \textbf{Manipulation and Query}
-\vspace{0.1in}
+\subsection{Manipulation and Query}
 
 PostgreSQL adopts SQL for database manipulation and query. SQL has been introduced in earlier sections, hence it is not repeated here. Only selected unique features to PostgreSQL are introduced.
 
@@ -1330,31 +1313,41 @@ Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcomman
 
 SQL commands, such as creating a database, have been introduced earlier, hence is not repeated here.
 
-\section{Non-relational Databases}
+\section{Non-RDB Example: MongoDB}
 
 Unlike relational databases where data is stored in relevant tables with pre-designed schematics such as column names, types, and references, non-relational database stores data in different structures such as directed graphs, dictionaries and documents.
 
-Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful.
+Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful. For example, some NoSQL databases are more effective when dealing with massive parallel requests, handling large data, and providing highly scalable and available services.
 
 There are many types of non-relational databases including document-oriented databases, directed graph databases, etc., Each of them has some unique features, pros and cons over other databases, and may adopt its own database manipulation language. It is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}.
 
-\subsection{MongoDB}
+MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with flexible schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., can be used to create database-powered web applications.
 
-MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with flexible schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., is widely used in database powered web applications.
+Comparing with conventional RDBs, MongoDB is more capable at
+\begin{itemize}
+	\item Massive data storage (in the order of TBs and PBs);
+	\item Frequent and parallel operations such as insert and query;
+	\item Flexible scalability and high availability.
+\end{itemize}
+Notice that MongoDB as well as many other NoSQL databases are not suitable to handle financial transactions due to the consistency issue that many NoSQL databases suffer. But things might change as new technologies emerge.
+Examples of scenarios that MongoDB can be used include
+\begin{itemize}
+	\item Posts and streaming management on social media websites or APPs;
+	\item Online gaming information storage;
+	\item Logistics industry and supply chain management;
+	\item IoT data management.
+\end{itemize}
 
-As a document-oriented database, MongoDB stores data not in related tables, but in separated collections (corresponding with tables) and documents (corresponding with rows). Each document in the same collection can adopt its own schema. When querying data, the user does not need to join documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
+As a document-oriented database, MongoDB stores data not in relational tables, but in separated collections (corresponding with tables) and documents (corresponding with rows). Each document in the same collection can adopt its own schema. When querying data, the user does not need to join collections and map documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=250pt]{chapters/ch-database/figures/mongodb_tree.png}
 	\caption{A demonstration of MongoDB storing data as object-of-object.} \label{ch:database:mongotree}
 \end{figure}
-In Fig. \ref{ch:database:mongotree}, the collection is named ``USER''. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language'' in this example. Different properties may have different types. For example, a property can be string, numeric, or an object, or a list of the above.
 
-When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in required order.
+In Fig. \ref{ch:database:mongotree}, a collection ``USER'' is defined. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language''. Different properties may have different data types. For example, a property can be string, numeric, or an object, or a list of the above. When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in required order.
 
-\vspace{0.1in}
-\noindent \textbf{Installation}
-\vspace{0.1in}
+\subsection{Installation}
 
 MongoDB, like many other DBMS, has both community and enterprise versions. MongoDB community server can be installed following the instructions in the official website
 \begin{lstlisting}
@@ -1366,13 +1359,11 @@ https://www.mongodb.com/try/download/shell
 \end{lstlisting}
 Notice that when installing MongoDB server, it is possible that the server comes with MongoDB Compass, the GUI for MongoDB DBMS. The GUI can also be used to interact with the databases.
 
-Different versions of MongoDB is provided. Choose the correct MongoDB version depending on the CPU and the OS of the machine. MongoDB community server installation size is about 500MB.
+Different versions of MongoDB are available. Choose the correct MongoDB version depending on the CPU and the OS of the machine. MongoDB community server installation size is about 500MB.
 
 MongoDB provides enterprise service, MongoDB Atlas, as part of its cloud solution where user can deploy clusters to host databases. With proper gateway setup, the user can connect to MongoDB Atlas clusters from his local server to retrieve data or to manipulate the databases. MongoDB Atlas is not the covered in this notebook.
 
-\vspace{0.1in}
-\noindent \textbf{Basic Global Operations}
-\vspace{0.1in}
+\subsection{Basic Global Operations}
 
 After installing both MongoDB server and MonghDB shell, use
 \begin{lstlisting}
@@ -1412,21 +1403,17 @@ On a clean installation, the above should return the 3 default databases, \verb|
 \end{lstlisting}
 Notice that there is no ``create database'' command in MongoDB. To create a database, switch to that database using the above command (even though it does not exist yet), and create some data such as a collection there. The database will be automatically created. This is again a feature closely related to JavaScript.
 
-\vspace{0.1in}
-\noindent \textbf{Data Format}
-\vspace{0.1in}
+\subsection{Data Format}
 
-MongoDB is a document-oriented database program. The data is stored in the format of ``binary JSON'' (BSON), which can be taken as an extension of JSON that supports more data types. Since BSON and JSON have a strong connection to the JavaScript object datatype, which looks very similar to a ``dictionary'', one may claim that MongoDB uses key-value pairs to store data. That statement is partially correct because BSON indeed adopts key-value pair structure to store data, but it may over simplifies the reality and might be misleading sometimes. In fact, BSON supports much more complicated data types other than string-to-string, such as array and nested objects.
+MongoDB is a document-oriented database program. The data is stored in the format of ``binary JSON'' (BSON), which can be taken as an extension of JSON that supports more data types. Since BSON and JSON have a strong connection to the JavaScript object datatype, which looks very similar to a ``dictionary'', one may claim that MongoDB uses key-value pairs to store data. That statement is partially correct because BSON indeed adopts key-value pair structure to store data, but it may over simplifies the reality and be misleading sometimes. In fact, BSON supports much more complicated data types other than string-to-string, such as array and nested objects.
 
-JSON supports 6 datatypes: number, string, boolean (true or false), object, array and null. Notice that JSON is text-based, which is essentially a string. It is a notation of data. It does not concern how the data would be stored and used in the program who takes JSON as the input file. For example, from JSON's point of view, it does not distinguish different types of number, being integer or float or double. In JSON, it is just a notation of number, say ``$108$''. It is the program's responsibility to decide how to treat the number, either as an integer, or as a 32-bit float, or a 64-bit float.
+JSON supports 6 datatypes: number, string, boolean (true or false), object, array and null. Notice that JSON is text-based, which is essentially a string. It is a notation of data. It does not concern how the data would be stored and used in the program that takes JSON as the input file. For example, from JSON's point of view, it does not distinguish different types of number, being integer or float or double. In JSON, it is just a notation of number, say ``$108$''. It is the program's responsibility to decide how to treat the number, either as an integer, or as a 32-bit float, or a 64-bit float.
 
 BSON, on the other hand, is binary-based, which is essentially a list of binary numbers. This makes BSON more efficient (but less flexible and more difficult to use sometimes) than JSON. In BSON, more datatypes are supported, including: double (64-bit float), string, object, array, binary data (a binary string), object id, boolean, date, null, regular expression, JavaScript code, 32-bit integer, 64-bit integer, timestamp, etc. When using BSON, the user needs to be more specific on how the data should be stored. For example, for a number ``$108$'', the user needs to specify whether to store it as a 32-bit integer or a 64-bit integer, or maybe as a 64-bit float.
 
 Both JSON and BSON are intuitive and human-readable. MongoDB uses BSON due to its enhanced capability.
 
-\vspace{0.1in}
-\noindent \textbf{Create Collection and Document}
-\vspace{0.1in}
+\subsection{Create Collection and Document}
 
 A MongoDB database contains multiple collections. A collection is similar to a table in an RDB in the sense that it is the ``host'' of similar data. However, unlike tables where schematics such as column names and datatypes are enforced upon creation of the table, a collection does not enforce fields and data types. An example of creating a collection inside a database is given below.
 \begin{lstlisting}
@@ -1491,9 +1478,7 @@ db.<collection_name>.insertOne(doc);
 \end{lstlisting}
 which first store the document in \verb|doc|, then pass it to \verb|insertOne()| method. Upon successful insertion, an insert id (also known as object id) will be created automatically.
 
-\vspace{0.1in}
-\noindent \textbf{Query}
-\vspace{0.1in}
+\subsection{Query}
 
 MongoDB uses \verb|find({...})|, \verb|findOne({...})| to find documents, where \verb|{...}| is a query argument in the form of JavaScript object. Details are given below.
 
@@ -1541,9 +1526,7 @@ where \verb|{$gt: 0}| stands for any value greater than $0$. Commonly seen query
 	\end{tabularx}
 \end{table}
 
-\vspace{0.1in}
-\noindent \textbf{Update and Remove Document}
-\vspace{0.1in}
+\subsection{Update and Remove Document}
 
 Two functions, \verb|updateOne(...)| and \verb|updateMany(...)|, are provided to update documents. Details are given below via an example.
 \begin{lstlisting}
@@ -1569,21 +1552,36 @@ The above code query \verb|users| collection, find the document with \verb|userI
 	\end{tabularx}
 \end{table}
 
-To remove a document, use \verb|deleteOne({<query>})| and \verb|deleteMany({<query>})|.
+Use either \verb|deleteOne({<query>})| or \verb|deleteMany({<query>})| to remove documents.
 
-\vspace{0.1in}
-\noindent \textbf{Advanced Features}
-\vspace{0.1in}
+\subsection{Sharding and Indexing}
+
+Given that MongoDB is often used with massive data storage, efficient query from massive storage becomes critical. MongoDB implements a few technologies to speed up the query, including sharding and indexing.
+
+Sharding is a method of distributing data across multiple servers or instances. In MongoDB, a shard consists of a subset of the total dataset, and each shard is responsible for managing a portion of the data. This distribution allows MongoDB to scale horizontally by adding more servers, thereby spreading the load and the data volume across a cluster. When a query is executed, it only needs to be processed by the shards that contain relevant data, rather than the entire dataset. This can significantly reduce query times in a large, distributed system. Sharding is particularly useful for very large datasets and high throughput operations, where a single server would not be sufficient to store the data or provide acceptable performance.
+
+Indexing is a technique used to speed up the retrieval of documents within a database. MongoDB uses indexes to quickly locate data without having to scan every document in a collection. Indexes are a critical component of database optimization, as they can drastically reduce the amount of data MongoDB needs to look through to find documents that match a query.
+
+MongoDB primarily uses B-Tree data structures for its indexes. A B-Tree is a self-balancing tree data structure that maintains sorted data in a way that allows searches, sequential access, insertions, and deletions in logarithmic time. The ``B'' in B-Tree stands for ``balanced'' and indicates that the tree is designed to keep the data balanced, ensuring that operations are efficient even as the dataset grows. The B-Tree structure allows MongoDB to perform efficient searches. Instead of scanning every document in a collection, MongoDB can use the B-Tree index to quickly navigate through a small subset of the data to find the documents that match the query criteria.
+
+There are many ways to define the index. For example, it is possible to use a single field to form a single field index, or to use multiple fields to form a compound index. Index by itself is also an argumented data structure and it consumes disk space. Each time there is a write operation, the index needs to be updated. Therefore, a very complicated index schema slows down data insertion. It is critical to design appropriate index to optimize the overall performance of the database.
+
+MongoDB provides commands to check, set and remove indexes. To check the indexes of a system, use
+\begin{lstlisting}
+db.collection_name.getIndexes()
+\end{lstlisting}
+
+\subsection{Other Features}
 
 MongoDB uses aggregation framework provides way to perform complex data transformations in a ``pipeline''. The data is processed step-by-step.
 
-When a document is added to a collection, a default field \verb|_id| is added. Querying via \verb|_id| is usually faster than with other criteria because otherwise MongoDB has to search for the entire collection to find relevant documents.
+When a document is added to a collection, a default field \verb|_id| is added. Querying via \verb|_id| is usually faster than with other criteria because otherwise MongoDB has to search for the entire collection to find relevant documents. 
 
-Data in MongoDB can be exported or imported from files, such as JSON files.
+Data in MongoDB can be exported or imported from files, such as BSON and JSON files.
 
 MongoDB, like many other DBMS especially cloud-based enterprise tier ones, provide replica setting to tackle read-heavy applications. A primary server is replicated to multiple replicas. Writing is allowed only to the primary server, but reading is allowed to all replicas as well as the primary server. In the case of MongoDB, when primary server fails, one of the replicas is automatically promoted to be the primary server.
 
-\subsection{Redis}
+\section{Non-RDB Example: Redis}
 
 Redis, short for \textit{REmote DIctionary Server}, is an open-source in-memory distributed key-value database. It is often used as a lightweight database, cache tool, or message broker. Some key features are listed below.
 
@@ -1596,9 +1594,7 @@ Redis, short for \textit{REmote DIctionary Server}, is an open-source in-memory 
 \item Lightweight.
 \end{itemize}
 
-
-
-\subsection{AllegroGraph}
+\section{Non-RDB Example: AllegroGraph}
 
 Graph-based database is elsewhere introduced in details in notebook \textit{A Notebook on Probability, Statistics and Data Science} under semantic web. Check that notebook for more details.
 

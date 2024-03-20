@@ -14,14 +14,14 @@ Human use symbols to represent objects in reality. The concept associated with a
 
 URI points to the interpretation of the symbols used in the semantic web. In practice, the resource is either the definition of the class/object/property, or the higher-level ontology (maybe also in the format of semantic web). For example, consider building a semantic web to describe an apple farm. Consider using \texttt{dbpedia.org/page/Apple} from DBpedia as the URI of interpretation of apple, which already gives a clear and rich definition of apple such as abstract, Wikipedia link, emoji, sugar level, etc. This saves the time of building the interpretation of apple from scratch.
 
-URI shall contain at least two pieces of information: the address (locator), and the identity (name). URI is often ASCII encoded, but it is possible to extend to unicode. The generic syntax is given below. If it looks similar with Uniform Resource Locator (URL), that is because URL is considered as a type of URI.
+URI shall contain at least two pieces of information: the address (locator), and the identity (name). URI is often ASCII encoded, but it is possible to extend to unicode. The generic syntax is given below. If it looks similar with Uniform Resource Locator (URL), that is because URL is considered as a subclass of URI.
 \begin{lstlisting}
 scheme:[//authority]path[?query][#fragment]
 \end{lstlisting}
 where
 \begin{itemize}
 \item \verb|scheme| specifies the protocol used to access the resource. Common schemes include \verb|http|, \verb|https|, \verb|ftp|, \verb|mailto|, \verb|file|, and \verb|data|. The scheme is followed by a colon \verb|:|.
-\item \verb|authority| specifies the user information, host, and port, separated by an at sign \verb|@| and a colon \verb|:|, respectively. The authority is preceded by a double forward slash \verb|//|.
+\item \verb|authority| specifies the user information, host, and port, separated by \verb|@| and \verb|:|, respectively. The authority is preceded by a double forward slash \verb|//|.
 \item \verb|path| identifies the specific resource within the context of the scheme and authority. It is a sequence of segments separated by forward slashes \verb|/|.
 \item \verb|query| provides additional information that the resource can use for processing. It is a series of key-value pairs separated by an ampersand \verb|&|. The query starts with a question mark \verb|?|.
 \item \verb|fragment| identifies a specific part or section within the resource. It is typically used with HTML documents to indicate a specific anchor or location within the page. The fragment starts with a hash sign \verb|#|.
@@ -34,7 +34,7 @@ which happens to be a good example of an URI in https scheme.
 
 \section{Resource Description Framework (RDF)}
 
-RDF is the backbone data model of the semantic web. It stores data in the form of triples. Notice that RDF alone is not powerful enough to record DL. In practice, RDF usually works with RDFS which expand its vocabulary to include class, subclass, etc., and OWL which further expand its vocabulary and introduce DL features, to together form a comprehensive semantic web. RDF is the fundamental of RDFS and OWL.
+RDF is the backbone data model of the semantic web. It stores data in the form of triples. RDF alone is not powerful enough to record DL. In practice, RDF usually works with RDFS which expand its vocabulary to include class, subclass, etc., and OWL which further expand its vocabulary and introduce DL features, to together form a comprehensive semantic web. RDF is the fundamental of RDFS and OWL.
 
 Notice that RDF is not a syntax by itself. A markup language is needed to host the RDF framework. Commonly used markup languages are listed below. They can be translated from one to the other.
 \begin{itemize}
@@ -49,7 +49,7 @@ Unless otherwise mentioned, Turtle is used in this notebook.
 
 RDF uses ``subject-predicate(property)-object'' triple to represent knowledge. A triple is corresponding with an edge in a directed graph, which is often used to visualize RDF. 
 
-For example, consider representation of knowledge ``Einstein was born in Ulm''. In RDF, ``Einstein'' is the subject, and ``Ulm'' the object. The predicate is ``has birthPlace'', where ``birthPlace'' is a property assigned to ``Einstein''. The graph representation is given by Fig. \ref{fig:einsteinexp}.
+For example, consider ``Einstein was born in Ulm''. In RDF, ``Einstein'' is the subject, and ``Ulm'' the object. The predicate is ``has birthPlace'', where ``birthPlace'' is a property assigned to ``Einstein''. The graph representation is given by Fig. \ref{fig:einsteinexp}.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebarchitecture/figures/einsteinexp.png}

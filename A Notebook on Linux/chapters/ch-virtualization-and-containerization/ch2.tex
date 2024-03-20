@@ -1,16 +1,16 @@
 \chapter{Kubernetes}
 
-Kubernetes is one of the most widely used container orchestrations. Many cloud platforms provide Kubernetes support. Container orchestrations other than Kubernetes may also include it as a plug-in.
+Kubernetes is one of the most widely used container orchestration tools. Many cloud platforms provide Kubernetes support. Many opponent container orchestration tools are built on top of Kubernetes.
 
 \section{Basic Kubernetes}
 
 \textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications. While Kubernetes is more flexible than Portainer, it's also more complex and has a steeper learning curve.
 
-Notice that running Kubernetes on a local server differs significantly from running it on a cloud platform  which often offers managed Kubernetes services with additional features and simplified managing interface. For example, AWS has Elastic Kubernetes Service (EKS) and Google cloud Google Kubernetes Engine (GKE). Both of them have developed their own tools and interfaces for interacting with Kubernetes. So, while learning Kubernetes can be beneficial, one might not need to learn all the low-level details if he is using one of the above platforms instead of DIY everything.
+Notice that running Kubernetes on a local server differs significantly from running it on a cloud platform that often offers managed Kubernetes services with additional features and simplified managing interface. For example, AWS has Elastic Kubernetes Service (EKS) and Google cloud Google Kubernetes Engine (GKE). Both of them have developed their own tools and interfaces for interacting with Kubernetes. So, while learning Kubernetes can be beneficial, one might not need to learn all the low-level details if he is using one of the above platforms instead of DIY everything.
 
-The majority part of this chapter focuses on introducing running Kubernetes on a local server. In this scenario, the following common practice is adopted: \textit{kubectl} is used as the user interface to Kubernetes and \textit{minikube} the software to manage the host machine. Minikube is an open-source software developed by the Kubernetes community to run a single-node Kubernetes cluster on a local machine, which is suitable for developers to learn and test different things in development environment.
+The majority part of this chapter focuses on introducing running Kubernetes on a local server, in which case \textit{kubectl} is used as the user interface to Kubernetes and \textit{minikube} the software to manage the host machine. Minikube is an open-source software developed by the Kubernetes community to run a single-node Kubernetes cluster on a local machine, which is suitable for developers to learn and test different things in development environment.
 
-Notice that in the past days, docker is the default container engine built-in to Kubernetes, and Kubernetes uses a special program ``dockershim'' that talks to docker engine. As of now, docker support is deprecated in Kubernetes and dockershim is removed from the installation.
+Notice that in the past days, docker is the default container engine built-in to Kubernetes, and Kubernetes uses a special program ``dockershim'' that talks to the docker engine. As of now, docker support is deprecated in Kubernetes and dockershim is removed from the installation.
 
 \subsection{Infrastructure}
 
@@ -37,13 +37,13 @@ and do not forget to start \textit{minikube} using the following command. Notice
 \begin{lstlisting}
 $ minikube start
 \end{lstlisting}
-When starting \textit{minikube}, it would launch a VM using Vertual Box, and install \textit{kubectl} as a built-in. If \textit{kubectl} and \textit{minikube} are installed separately, run the following command to verify the successful installation of both software.
+Upon the start of \textit{minikube}, use the following command to verify the successful running of \textit{kubectl}.
 \begin{lstlisting}
 $ kubectl cluster-info
 Kubernetes control plane is running at https://192.168.49.2:8443
 CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 \end{lstlisting}
-If \textit{minikube} is installed, and \textit{kubectl} is considered as a built-in installation to \textit{minikube}, use the following command
+Notice that when starting \textit{minikube}, it would launch a VM using Vertual Box, and install \textit{kubectl} as a built-in. Therefore, it is probable to use that built-in \textit{kubectl} instead of manually installing one separately. In that case, use the following command to verify the successful running of \textit{kubectl}
 \begin{lstlisting}
 $ minikube kubectl cluster-info
 Kubernetes control plane is running at https://192.168.49.2:8443
@@ -51,15 +51,15 @@ CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/se
 \end{lstlisting}
 in which case \verb|alias kubectl="minikube kubectl --"| may make things easier.
 
-It is possible to run Docker and Kubernetes directly on a host machine OS without VM, if that machine is running Linux. However, this is not recommended for reasons pertaining to access control, security, and isolation. It is generally a better practice to deploy Kubernetes clusters in a VM.
+It is possible to run Kubernetes cluster directly on a host machine OS without VM if that machine is running Linux. However, this is not recommended for reasons pertaining to access control, security, and isolation. It is generally a better practice to deploy Kubernetes clusters in a VM.
 
-The \verb|kubectl| command is a command-line interface (CLI) for interacting with Kubernetes clusters. Its behavior is governed by a configuration file, typically located at \verb|~/.kube/config|, which determines which Kubernetes cluster \verb|kubectl| communicates with. This could be a cluster running on the host machine, or a cluster running in a VM managed by tools like Minikube. It's worth noting that, for better isolation and control, it is recommended to deploy the Kubernetes cluster in a VM, instead of directly on the host machine.
+The \verb|kubectl| command is a command-line interface (CLI) for interacting with Kubernetes clusters. Its behavior is governed by a configuration file, typically located at \verb|~/.kube/config|, which determines which Kubernetes cluster \verb|kubectl| communicates with. This could be a cluster running on the host machine, or a cluster running in a VM managed by tools like Minikube. 
 
 \subsection{Kubernetes Configuration Files}
 
-Managing containers via container orchestration such as Kubernetes is different from doing so using container engines such as docker engine. Unlike docker engine where we started from building an image from a dockerfile, Kubernetes requires that all images to be used are already available. Instead of having one configuration file where each entry in that file corresponds with a container, when using Kubernetes, multiple configuration files are required, each file corresponding with an object to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, or any other ``thing'' in the Kubernetes framework. There are more involving manual setups of networking when using Kubernetes as well. Details are introduced in the remaining of this section.
+Kubernetes requires that all images to be used are pre-built. When using Kubernetes, multiple configuration files are required, each file corresponding with an object to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, or any item in the Kubernetes framework. There are manual setups of networking. Details are introduced in the remaining of this section.
 
-The following two configuration files are given as examples \cite{stephen2023docker} to demonstrate how these files look like. This example comes from Udemy course \textit{Docker and Kubernetes: The Complete Guide} by Stephen Grinder. They are both written in YAML. Configuration file to setup a pod:
+The following two configuration files are given as examples to demonstrate how the configuration files of Kubernetes look like. This example comes from Udemy course \textit{Docker and Kubernetes: The Complete Guide} by Stephen Grinder \cite{stephen2023docker}. They are both written in YAML. Configuration file to setup a pod:
 \begin{lstlisting}
 apiVersion: v1
 kind: Pod
@@ -111,7 +111,7 @@ Commonly used Kubernetes object types are summarized in Table \ref{ch:vac:tab:ob
 \end{table}
 Some highlights of the above configuration files are as follows.
 \begin{itemize}
-	\item \verb|apiVersion| plays as the prefix that decides what configuration types are supported. For example, under the scope of \verb|v1|, \verb|Pod|, \verb|Service|, \verb|configMap|, \verb|Namespace|, etc., are supported. In a different \verb|apps/v1|, a different set of configuration types \verb|ControllerRevision|, \verb|StatefulSet|, etc., are supported. It's important to choose the correct apiVersion for the Kubernetes API version you are working with to ensure the compatibility and availability of the desired configuration options.
+	\item \verb|apiVersion| plays as the prefix that decides what configuration types are supported. For example, under the scope of \verb|v1|, \verb|Pod|, \verb|Service|, \verb|configMap|, \verb|Namespace|, etc., are supported. In a different \verb|apps/v1|, a different set of configuration types \verb|ControllerRevision|, \verb|StatefulSet|, etc., are supported. It's important to choose the correct apiVersion for the Kubernetes API version to ensure the compatibility and availability of the desired configuration options.
 	\item \verb|kind| This indicates the type of the object that the configuration file describes. For example, \verb|Pod| represents a pod that is used to host containers, and \verb|Service| the primary object type that defines networking, with subtypes \verb|NodePort| (see example above), \verb|ClusterIP|, \verb|LoadBalancer| and \verb|Ingress|.
 	\item \verb|metadata| indicates the name and labels of the object. For example, \verb|component: web| is defined as a label of the pod. This information is passed to the networking service under \verb|selector|, so that the networking service knows which object it should link to.
 	\item \verb|port|, \verb|targetPort| and \verb|nodePort| are used to specify ports used in the service. The \verb|targetPort| indicates which port in the pod should be exposed to the service, and it is consistent with \verb|containerPort| defined in the pod. Assume that there is another pod in the node who needs to talk to this pod via the service. The other pod's port that communicates with the service is fed into \verb|port|. Finally, \verb|nodePort| is the port with value between 30000 and 32767 that is exposed from the service to outside the node. If \verb|nodePort| is not assigned, a random number within the range will be assigned. This is shown in Fig. \ref{ch:vac:fig:nodeport}.
@@ -167,7 +167,7 @@ It is possible to consolidate the configuration files of objects into one conjun
 
 \subsection{Cluster Update} \label{ch:vac:subsec:updatek8s}
 
-Without container orchestration such as Kubernetes, one of the most challenging tasks is to update the container for a different configuration, for example, changing the underlying image. With the help of Kubernetes declarative approach, it is possible update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks the names and kinds of the revised configuration files, comparing them with existing running objects, and update them if necessary.
+Without container orchestration tools such as Kubernetes, one of the most challenging tasks is to update the container for a different configuration, for example, changing the underlying image. With the help of Kubernetes declarative approach, it is possible update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks the names and kinds of the revised configuration files, comparing them with existing running objects, and update them if necessary.
 
 Check the status of the pods using \verb|kubectl get pods|. After updating, the pods are often restarted, hence it is expected to see increment in the ``RESTARTS'' tag. To double confirm that updates have been made, use \verb|kubectl describe| to check the details of the relevant objects.
 
@@ -440,7 +440,7 @@ where a new tag \verb|env| is defined under template, specifications, containers
 
 \section{Container Deployment in Production Environment}
 
-With the tools and methodologies introduced so far, we are able to deploy containers in development environment. This is good enough for testing purpose or for small individual projects. However, when comes to enterprise tier projects or collaborative projects, there is often a CI/CD pipeline that standardize the integration and delivery of the containers in production environment. Container orchestrations such as Kubernetes is often a must have.
+With the tools and methodologies introduced so far, we are able to deploy containers in development environment. This is good enough for testing purpose or for small individual projects. However, when comes to enterprise tier projects or collaborative projects, there is often a CI/CD pipeline that standardize the integration and delivery of the containers in production environment. Container orchestration tools such as Kubernetes is often a must have.
 
 This section briefly introduces the steps to develop and deploy containers in production environment with Kubernetes. Figure \ref{ch:vac:fig:prodenvworkflow} gives an example of overview of what such deployment may look like. Notice that this example is more towards a community project but not an enterprise project.
 

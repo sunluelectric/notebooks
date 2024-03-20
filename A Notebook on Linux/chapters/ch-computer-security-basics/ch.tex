@@ -1,8 +1,8 @@
-\chapter{OS Security Mechanism}
+\chapter{Introduction to OS Security}
 
-Linux as well as other OS uses variety of methods to protect the system and the data. The chapters in this part of the notebook introduce some of these security methods. As cloud computing is getting more and more popular, virtualization security is also discussed
+Linux, as well as other OSs, uses variety of methods to protect the system and the data. The chapters in this part of the notebook introduce some of these security methods. As cloud computing is getting more and more popular, virtualization security is also discussed.
 
-\section{Basic Concepts}
+\section{Basics}
 
 The background, motivation, and basic concepts of computer security are introduced in this section.
 
@@ -19,7 +19,7 @@ A risk will most likely not turn into an actual disaster by nature. However, whe
 The attacks can be divided into the following categories.
 \begin{itemize}
 	\item Malware. The attacker disguises a piece of malware code as a legitimate software. When the software is executed, the malware carries out harmful activities.
-	\item System Penetration. The attacker accesses a protected system bypassing security mechanisms.
+	\item System Penetration. The attacker accesses a protected system bypassing security checks.
 	\item Man-in-the-Middle Attack (MitM). The attacker intercepts communications between legitimate entities, and steal or modify the contents of the communication.
 	\item Denial of Service (DoS). The attacker overwhelms a system and paralyzes its service by sending a lot of requests to the system, more than it can handle.
 	\item Network Sniffing. The attacker passively logs information from the internet, and use them for future attacks.
@@ -31,13 +31,12 @@ To protect the users from the attacks, we need both computer security and commun
 
 \subsection{General Security Architecture}
 
-Linux machine layers are shown in Fig. \ref{ch:ossec:fig:layerstructure}. Machines of other OS may adopt a different structure, but the essence remains similar. It is impractical to secure every component of a system (hardware, OS kernel, OS services, application services, user interface, users, etc.) with a singular universal protection method.
+It is impractical to secure every component of a system (hardware, OS kernel, OS services, application services, user interface, users, etc.) with a singular universal protection method. Therefore, a more common approach is to implement a layered security architecture as shown in Fig. \ref{ch:ossec:fig:layerstructure}. In this paradigm, the system is segregated into distinct layers such as the hardware layer, the OS layer, and the application layer. Each layer employs its own security mechanisms targeting specific vulnerabilities.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=200pt]{chapters/ch-computer-security-basics/figures/os_layer.png}
 	\caption{Layer structure of an operating system.} \label{ch:ossec:fig:layerstructure}
 \end{figure}
-Therefore, a more common approach is to implement a layered security architecture. In this paradigm, the system is segregated into distinct layers such as the hardware layer, the OS layer, and the application layer. Each layer employs its own security mechanisms targeting specific vulnerabilities.
 
 Among all these layers, securing the OS is particularly crucial for several reasons:
 \begin{itemize}
@@ -50,7 +49,7 @@ A system is considered secure if the following criteria are met.
 	\item It is secure upon booting, and
 	\item It never perform an action so that it can become insecure from a secure condition.
 \end{itemize}
-Notice that just for clarification, there are some slight differences between two terminologies ``secure'' and ``trusted'' as follows. System security is the ultimate goal. A system is either secure or insecure, and we want it to stay secure all the time. Trustworthy, on the other hand, is a graded feature that we use to describe an entity in the system. We can, for example, say which parts (services, users, etc.) of the system is trustworthy, and to what extent they can be trusted.
+Notice that just for clarification, there are some slight differences between ``secure'' and ``trusted'' as follows. System security is the ultimate goal. A system is either secure or insecure, and we want it to stay secure all the time. Trustworthy, on the other hand, is a graded feature that we use to describe an entity in the system. We can, for example, say which parts (services, users, etc.) of the system is trustworthy, and to what extent they can be trusted.
 
 \subsection{Standards and Requirements}
 
@@ -72,7 +71,7 @@ There are many official standards on computer security. For example, Trusted Com
 \end{itemize}
 Notice that TCSEC is considered outdated due to the rapid advancement of technology. Nowadays, commercialized PCs and OS such as Windows 11 pro, MacOS, RHEL, implement robust security mechanisms that align with various aspects of TCSEC criteria of different tiers, some of which required by Tier B and even Tier A. While TCSEC remains a classic and milestone, newer standards have been developed and adopted globally by various countries and organizations.
 
-In the scope of Linux, there is an open-project, ``Security Enhanced Linux (SELinux)'' that enables mandatory access control in Linux. It started as an add-on module of Linux kernel, and today it has become a default module built into all Linux distributions.
+In the scope of Linux, there is an open-project, ``Security Enhanced Linux (SELinux)'' that enables mandatory access control in Linux. It started as an add-on module of Linux kernel, and today it has become a default module.
 
 In general, the requirements of secure computer systems include
 \begin{itemize}
@@ -102,9 +101,7 @@ Different systems may implement different policies. There are two commonly seen 
   \item Integrity policies: preventing the unauthorized alteration of information.
 \end{itemize}
 
-For the sake of clarity and to ensure no misunderstandings arise, it's crucial for the security policy to be articulated in a precise and consistent manner. Instead of relying on colloquial or vague terminology, it's advisable to describe the security policy using more abstract or formalized methods. 
-
-We use security policy model and policy language to formally and precisely describe the security policy. Security policy model should be ambiguity-free and easy to comprehend. Though it does not assume or restrict the security mechanism to be used to fulfill the policy, it should give some guidance to how the mechanisms can be designed. At the minimum, it should make sure that the policy is reachable.
+For the sake of clarity and to ensure that no misunderstandings arise, it is crucial for the security policy to be articulated in a precise and consistent manner. Instead of relying on colloquial or vague terminology, we use security policy model and policy language to formally and precisely describe the security policy. Security policy model should be ambiguity-free and easy to comprehend. Though it does not assume or restrict the security mechanism to be used to fulfill the policy, it should give some guidance to how the mechanisms can be designed. At the minimum, it should make sure that the policy is reachable.
 
 More details of security policy, especially security model, is introduced in later sections. There are classic security models such as HRU model that has been proved useful and inspiring.
 
@@ -204,21 +201,19 @@ Security perimeter refers to the imaginary boundary that distinguishes security-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-computer-security-basics/figures/system_boundary.png}
-	\caption{Reference Monitor Architecture.} \label{ch:ossec:fig:system_boundary}
+	\caption{Reference Monitor Architecture \cite{gasser1988building}.} \label{ch:ossec:fig:system_boundary}
 \end{figure}
 
 The Trusted Computing Base (TCB) encompasses all the hardware and software components that are crucial for enforcing a system's security policy. This dual perspective implies that:
 
 \begin{itemize}
-	\item Security Assurance. Efforts must be made to ensure the TCB components are as secure as possible. Any vulnerability within the TCB could potentially compromise the security of the entire system. Therefore, the integrity, confidentiality, and availability of the TCB are of utmost importance.
+	\item Security Assurance. Efforts must be made to ensure that the TCB components are as secure as possible. Any vulnerability within the TCB could potentially compromise the security of the entire system. Therefore, the integrity, confidentiality, and availability of the TCB are of utmost importance.
 	\item Assumption of Trust. When designing security mechanisms for the system, the TCB is assumed to be inherently secure and trustworthy. Security mechanisms rely on the TCB to operate correctly and to enforce security policies effectively. This assumption is fundamental to the system's architecture, as the TCB underpins the security of all other components.
 \end{itemize}
 
-The TCB can be likened to a police department in a city. Just as citizens rely on the police force to uphold the law and protect public safety, a system relies on the TCB, the ``police security bureau'' of the system, to enforce its security policies and maintain the integrity of its operations.
+The TCB can be likened to a police department in a city. Just as citizens rely on the police force to uphold the law and protect public safety, a system relies on the TCB, the ``police security bureau'' of the system, to enforce its security policies and maintain the integrity of its operations. Similarly, the well-being and readiness of the police officers are paramount to the security of the city. In the case of the TCB, ensuring the security of these trusted components is crucial because a compromise to any part of the TCB could undermine the security of the entire system. The system defenses are only as robust as the TCB's integrity and resilience.
 
-Similarly, the well-being and readiness of the police officers are paramount to the security of the city. In the case of the TCB, ensuring the security of these trusted components is crucial because a compromise to any part of the TCB could undermine the security of the entire system. The system's defenses are only as robust as the TCB's integrity and resilience.
-
-Non-trusted components, while not central to the system's security architecture, are analogous to the various elements of a city that the police department does not directly oversee. If these elements are compromised, the immediate risk is localized. However, securing non-trusted components is also important. We always want each and every component in the system to work properly. Maybe more importantly, we want to prevent them from becoming weak links that could be exploited to attack the TCB.
+Non-trusted components, while not central to the system security architecture, are analogous to the various elements of a city that the police department does not directly oversee. If these elements are compromised, the immediate risk is localized. However, securing non-trusted components is also important. We always want each and every component in the system to work properly. Maybe more importantly, we want to prevent them from becoming weak links that could be exploited to attack the TCB.
 
 The goal is to keep the TCB, our ``police department'', as streamlined and strong as possible. A smaller, well-protected TCB simplifies the task of maintaining system security and reduces the potential attack surface.
 
@@ -230,18 +225,32 @@ The term ``access'' is used to describe when a subject performs actions on an ob
 
 Typically, a user who plays subject is required to first identify himself by logging into an account of the system using a valid authentication methods. A user or a program that plays subject needs to be assigned with a ``role''. The program can only execute if its role possesses the necessary permissions to do so, including access to required resources like CPU, memory, disk space, and databases.
 
-We use access control matrix to describe the association of subject and object. A demonstrative graph is given in Fig. \ref{ch:ossec:fig:acmatrix}. In this demonstration, the same ``read'', ``write'' and ``execute'' permissions as introduced in Section \ref{ch:fm:sec:accesscontrollist} are used.
-
+We use access control matrix to describe the association of subject and object. A demonstrative graph is given in Fig. \ref{ch:ossec:fig:acmatrix}. In this demonstration, like introduced in Section \ref{ch:fm:sec:accesscontrollist}, ``read'', ``write'' and ``execute'' permissions are controlled, each using $3$-bit ``r'', ``w'' and ``x'', together forming the nine permission bits.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/ch-computer-security-basics/figures/acmatrix.png}
 	\caption{A demonstration of access control matrix.} \label{ch:ossec:fig:acmatrix}
 \end{figure}
 
+The most popular ways to manage the access control matrix include discretionary access control (DAC) and mandatory access control (MAC).
 
+\subsection{Discretionary Access Control}
 
+In the DAC model, the owner of the data, or the group to which the owner belongs, determines the access control matrix for the data. This means that the owner has complete authority over who can access the data and in what manner. Additionally, the owner has the flexibility to delegate full access privileges to others if desired. This level of flexibility makes DAC a popular choice in many operating systems, including Linux.
 
+Under DAC, the operating system can track the capability of each user's access to data. One method involves using a capability list, which outlines all the data a user can access. The users cannot modify their own capability lists. However, they can extend their access capabilities to other users. When a capability list is associated with each subject rather than individual users, it is referred to as a profile. Conversely, an object can be assigned an ACL as introduced in Section \ref{ch:fm:sec:accesscontrollist} that records which users or subjects have access. This latter method of assigning ACLs to objects is more widely adopted.
 
+As mentioned in Section \ref{ch:fm:sec:accesscontrollist}, in Linux access control is managed through a system of ``9 permission bits''. These bits define the accessibility for three distinct user categories: the owner, the group (the primary group of the owner, or a group the owner specifies), and others. Each category's permissions are represented by three bits, indicating whether the data is readable (\verb|r| or \verb|-|), writable (\verb|w| or \verb|-|) and executable (\verb|x| or \verb|-|). 
+
+While this method is straightforward, it does have limitations, notably its simplistic division of subjects into only three categories, which may not offer sufficient flexibility for all use cases. But it suits most of our needs on a personal computer.
+
+\subsection{Mandatory Access Control}
+
+Though flexible, DAC adds risks to the system. A malware such as a Trojan horse is able to change ACL of files on behalf of the data owner without his notice or permission. To tackle this issue, consider MAC instead. MAC is popular on machines with sensitive data, such as government servers.
+
+Unlike DAC where the owner can change the ACLs of his files, when MAC is implemented, the owner cannot change the ACLs of the files. Only the system can change the ACLs of the files according to predefined security policies.
+
+As a special case of mandatory access control, consider multi-label security mechanism. In this implementation, security labels are assigned to both subjects and objects. Only the subject with a equal or higher security level than the object can access that object.
 
 
 

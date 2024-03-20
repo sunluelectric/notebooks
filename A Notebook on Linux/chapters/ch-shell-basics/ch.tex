@@ -1,12 +1,14 @@
-\chapter{Shell Basics} \label{ch:sb}
+\chapter{Shell} \label{ch:sb}
 
-Linux command line tool, usually known as the ``shell'', is the most powerful tool for Linux operations including configuration and control of the OS. Notice that the use of the shell is not compulsory for casual users when the graphical desktop is present. Though the shell is not as intuitive as the graphical tools, it is more powerful, flexible and better-supported by the community.
+Linux command line interface (CLI), usually known as the ``shell'', is the most available, flexible and powerful tool for the users and programs to interact with the OS and perform certain actions.
 
-Linux shell will be used rapidly in the remaining parts of this notebook.
+Notice that the use of the shell is not compulsory for casual users when the graphical desktop is present. Still, it is strongly recommended that the users shall understand at least the basics of shell because it is more flexible and powerful than the graphical desktop and hence can become handy time to time.
 
-\section{Brief Introduction}
+Linux shell will be used rapidly in the remaining of this notebook.
 
-Linux command line tool, usually known as Linux shell, was invented before the graphical tools, and it has been more powerful and flexible than the graphical tools from the first day. On those machines where no graphical desktops are installed, the use of shell is critical.
+\section{Shell as a Command Line Interface}
+
+Linux's default CLI, usually known as the ``shell'', was invented before the graphical tools, and it has been more powerful and flexible than the graphical tools from the first day. On those machines where no graphical desktops are installed, the use of shell is critical.
 
 \subsection{Shell Types}
 
@@ -34,20 +36,20 @@ r=`fib $n`
 echo "$r"
 \end{lstlisting}
 
-Some other shells such as ``C Shell'' and ``Korn Shell'' are also popular among certain users or certain Linux distributions. For example, C Shell supports C-like shell programming, which is sometimes more convenient than the bash shell. In case where the Linux distribution does not have these shells pre-installed, the user can install and use these shells just like installing other software.
+Some other shells such as ``C Shell'' and ``Korn Shell'' are also popular among certain users or certain Linux distributions. For example, C Shell supports C-like shell programming, which is sometimes more convenient than the bash shell. In case where the Linux distribution does not have these shells pre-installed, the user can install and use these shells just like installing any other software.
 
-In this notebook, bash shell is assumed unless otherwise mentioned.
+In this notebook, bash shell is used unless otherwise mentioned.
 
-\subsection{Prompt and Basic Concepts}
+\subsection{Prompt}
 
-After opening the shell or terminal, a string (usually containing username, hostname, current working directory, etc.) followed by either a \verb|$| or \verb|#| appears, following which the user inputs the shell command. The string may look like the following:
+After opening the shell or terminal, a string (usually containing username, hostname, current working directory, etc.) followed by either a \verb|$| or \verb|#| should appear. Following the string, the user can key in the shell commands. The string may look like the following:
 \begin{lstlisting}
 <username>@<hostname>:~$
 \end{lstlisting}
 
 The above string is called a \textit{prompt}, indicating the start of a user command. By default, for regular user, the ending of the prompt is \verb|$| while for the root user, the ending is \verb|#|. The prompt can be customized by changing the environment variable \verb|PS1|. See Sections \ref{ch:sb:subsec:shellenvvar}, \ref{ch:sb:subsec:others} for details about environment variable and shell configuration, respectively.
 
-For the term ``root user'', we are referring to a special user with username and user ID (UID) ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid vital damage by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
+For the term ``root user'', we are referring to a special user with username and user ID (UID) ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
 
 Notice that the root user is different from a ``sudoer'', later of which is basically a regular user equipped with \textit{sudo privilege}. A sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
 \begin{lstlisting}
@@ -57,27 +59,27 @@ root@<hostname>:/home/<username>#
 \end{lstlisting}
 More about sudo privilege, \verb|sudo| and \verb|su| commands are introduced later.
 
-Key in a command after the prompt followed by \verb|Enter| key to execute the command. A Linux shell command usually has the following form.
+Key in a command and press \verb|Enter| to execute the command. A Linux shell command looks like the following in general
 \begin{lstlisting}
 $ <command> [<option>] [<input>]
 \end{lstlisting}
 
-\subsection{Set Shell Environment Variables}\label{ch:sb:subsec:shellenvvar}
+\subsection{Shell Environment Variables}\label{ch:sb:subsec:shellenvvar}
 
 To execute a command by its name, the OS needs to know where the command is located at. Commonly used commands shall be included in the PATH environment of the shell, so that they can be executed anytime from any working directory. The PATH environment is a series of directories (locations) in the system, and it is initialized automatically when the shell is started. Check the PATH environment by
 \begin{lstlisting}
 $ echo $PATH
 <directory-1>:<directory-2>:<directory-3>: ...
 \end{lstlisting}
-where \verb|echo| displays a line of text, and \verb|$PATH| is a built-in enviornmental variable that records the PATH environment of the current bash. It is possible to include new directories to PATH environment either temporarily or permanently to integrate more commands.
+where \verb|echo| displays a line of text, and \verb|$PATH| is a built-in environment variable that records the PATH environment of the current bash. Some default directories in the PATH environment are introduced as follows.
 
-Most Linux-defined user commands are stored under \verb|/bin|, \verb|/usr/bin|, and administrative commands in \verb|/sbin|, \verb|/usr/sbin|. Commands local to a specific user can be stored under \verb|/home/<username>/bin|. To determine the location of a particular command, use \verb|type| if the command is in \verb|$PATH|, or \verb|locate|, \verb|mlocate| to search all the accessible files in the system. An example is given below.
+Most Linux built-in commands for regular users are stored under \verb|/bin|, \verb|/usr/bin|, and for administrators, in \verb|/sbin|, \verb|/usr/sbin|. Commands for a specific user is often stored under \verb|/home/<username>/bin|. To determine the location of a particular command, use \verb|type| if the command can be found in the PATH environment. Alternatively, use \verb|locate|, \verb|mlocate| to search all the accessible files in the system to find a command. An example is given below.
 \begin{lstlisting}
 $ type <command>
 <command-location>
 \end{lstlisting}
 
-In addition to \verb|PATH|, there is a list of other shell environment variables for the user to monitor and control and status of the system. Table \ref{ch:sb:tab:shellenvironmentvars} summarizes commonly used shell environment variables. Command \verb|echo $<variable-name>| can be used to check the values of these variables. Use command \verb|env| to check a list of environment variables in the shell.
+In addition to \verb|PATH|, there are other shell environment variables for the user to monitor and control the OS. Table \ref{ch:sb:tab:shellenvironmentvars} summarizes commonly used shell environment variables. Command \verb|echo $<variable-name>| can be used to check the values of these variables. Use command \verb|env| to check a list of environment variables in the shell.
 
 \begin{table}
 	\centering \caption{Commonly used shell environment variables.}\label{ch:sb:tab:shellenvironmentvars}
@@ -100,7 +102,7 @@ In addition to \verb|PATH|, there is a list of other shell environment variables
 	\end{tabularx}
 \end{table}
 
-The environmental variables can be edited and new environmental variables can be created as follows.
+The environmental variables can be created or updated as follows.
 \begin{lstlisting}
 <variable-name> = <variable-value> ; export <variable-name>
 \end{lstlisting}
@@ -108,13 +110,16 @@ For example,
 \begin{lstlisting}
 PATH = $PATH:/getstuff/bin ; export PATH
 \end{lstlisting}
-adds a new directory \verb|/getstuff/bin| to the \verb|PATH| environmental variable. Notice that each time the shell is restarted, the environmental variables are also reset. To permanently change the value of an environmental variable, consider changing it in the bash start scripts such as \verb|~/.bashrc|.
+adds a new directory \verb|/getstuff/bin| to the \verb|PATH| environmental variable. This allows temporary change to the PATH environment variable. Notice that each time the shell is restarted, the environmental variables are also reset. 
+
+To permanently change the value of an environmental variable, consider adding the above command in the bash start scripts such as \verb|~/.bashrc|, which is the user script (initialization script) of the user's shell.
+
 
 \section{Basic Commands}
 
 Some basic and useful commands are briefly introduced in this section by categories.
 
-\subsection{Display User Information}
+\subsection{Displaying User/Machine Information}
 
 Administrative users may need to frequently check the basic system information, such as hardware configuration, OS version, username, hostname, disk usage, running process, system clock, etc. Some useful commands are summarized below.
 
@@ -125,10 +130,8 @@ $ whoami
 $ grep <username> /etc/passwd
 <username>:x:<uid>:<gid>:<gecos>:<home-directory>:<shell>
 \end{lstlisting}
-In the above, \verb|whoami| is used to display the current login user's username. Command \verb|grep| is used to search a content (in this case, the user name) in the selected file \verb|/etc/passwd| where the user information is stored. This should return the username, the password (for encrypted password, an ``x'' is returned), UID, group id (GID), user id info (GECOS), home directory and default shell location of the user.
+In the above, \verb|whoami| is used to display the current login user's username. Command \verb|grep| is used to search a content, in this case the user name, in a selected file, in this case \verb|/etc/passwd| where the user information is stored. This should return the username, the password (for encrypted password, an ``x'' is returned), UID, group id (GID), user id info (GECOS), home directory and default shell location of the user.
 Another command \verb|id| also returns the UID and GID information of the current user.
-
-\subsection{Display Machine Information}
 
 The following commands show the date and hostname of the machine.
 \begin{lstlisting}
@@ -138,14 +141,14 @@ $ hostname
 <hostname>
 \end{lstlisting}
 
-The following command \verb|lshw| lists down hardware information in details. Sudo privilege is recommended when using this command, to give detailed and accurate information of the system. Sometimes the displayed information can be too detailed, thus it is more convenient to use \verb|-short| argument.
+The following command \verb|lshw| lists down hardware information in details. Sudo privilege is recommended when using this command, to give more detailed and accurate information of the system. Sometimes the displayed information can be too detailed. Use \verb|-short| argument with the command to shorten the output.
 \begin{lstlisting}
 $ sudo lshw
 \end{lstlisting}
 
-\subsection{Perform Simple Files Operations}
+\subsection{Performing Files Operations}
 
-The most important commands for navigating in the file system is to display the current working directory (may be included as part of prompt) and list down files and directories in the current working directory as follows.
+The most important commands for navigating in the file system is to display the current working directory and list down files and subdirectories in the current working directory as follows.
 \begin{lstlisting}
 $ pwd
 <working-directory-path>

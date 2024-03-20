@@ -1,10 +1,8 @@
 \chapter{R (Part I: Basics)} \label{ch:r1}
 
-This chapter and the sequential chapters introduce R language, a widely used programming language for data statistics analysis and visualization. 
+This chapter and the sequential chapters introduce R language, a widely used programming language for data mining and visualization. 
 
-This chapter focuses on the fundamental setup and basic operations such as the installation of R and RStudio, data types, basic vector and data frame manipulation and visualization methods. Chapter \ref{ch:r2} introduces advanced data analysis skills and tools. Finally, Chapter \ref{ch:r3} practices data analysis with R language to solve actual problems.
-
-R language is case sensitive. Character \verb|#| is used to lead a single-line comment in the code.
+This chapter focuses on the fundamental setup and basic operations such as the installation of R and RStudio, basic data types, vector and data frame manipulation, and finally basic visualization methods. Chapter \ref{ch:r2} introduces advanced data analysis skills and tools. Finally, Chapter \ref{ch:r3} put things into practice to solve actual problems.
 
 \section{R and RStudio Installation} \label{ch:r1:sec:rinstallation}
 
@@ -16,11 +14,11 @@ Download R and RStudio from the aforementioned web sites, and install them follo
 
 \section{R Packages Management} \label{ch:r1:sec:rpackage}
 
-R uses packages to boost its capability. R packages, both built-in and third-party, provide powerful features for data analysis and visualization. Some packages may also come with demonstrative sample data frames. The packages can be published and shared online. CRAN is by far the most popular platform to store and share R packages.
+R uses packages (sometimes known as libraries) to boost its capability. R packages, both built-in and third-party, provide powerful features for data analysis and visualization. Some packages may also come with demonstrative sample data frames. The packages can be published and shared online. CRAN is by far the most popular platform to store and share R packages.
 
 \subsection{Manage Packages with Built-in Functions}
 
-To install or remove a package, use
+There are a number of default packages that come along with R and they do not need separate installation. Only third-party packages need additional installation. To install or remove a package, use
 \begin{lstlisting}
 install.packages("<package>")
 remove.packages("<package>")
@@ -29,9 +27,8 @@ respectively. For example,
 \begin{lstlisting}
 install.packages("pacman")
 \end{lstlisting}
-Built-in packages come along with R installation. Only third-party libraries need additional installation.
 
-To load a package, use
+To load a package, both default and third-party, use
 \begin{lstlisting}
 library(<package>)
 \end{lstlisting}
@@ -55,7 +52,7 @@ detach("package:pacman", unload = TRUE)
 There are third-party packages that provide package management functions, for example \verb|pacman|. With \verb|pacman| installed and loaded, use the following commands to install, load and unload packages respectively.
 \begin{lstlisting}
 p_install(<package>, ...) # install
-p_load(<package>, ...) # install and load
+p_load(<package>, ...) # load (if not installed, also install)
 p_unload(<package>, ...) # unload
 p_unload(all) # unload all
 \end{lstlisting}
@@ -78,7 +75,7 @@ pacman::p_load(
 	tidyr # data tidying
 )
 \end{lstlisting}
-The above command can be executed without loading \verb|pacman| in advance since \verb|pacman::p_load()| prefix is used. The listed packages are commonly used in R projects, and a brief explanation to them is given as comments in the code demo. Notice that if a package is not installed in the computer, the above command will try to download and install the package.
+The above command can be executed without loading \verb|pacman| in advance since \verb|pacman::p_load()| prefix is used. The listed packages are commonly used in R projects, and a brief explanation to them is given as comments in the above demo. 
 
 \subsection{Manage Packages with RStudio IDE}
 
@@ -89,11 +86,11 @@ RStudio provides a graphical interface to manage packages as shown in Fig. \ref{
 \caption{RStudio's graphical interface for package management.} \label{ch:r1:fig:rstudio_package_management}
 \end{figure}
 
-\section{R Programming Basics} \label{ch:r1:sec:rprogramming}
+\section{Basic Syntax} \label{ch:r1:sec:rprogramming}
 
-This section introduces the basics of R programming, including its data types and basic syntax.
+This section introduces the basic syntax and commonly used data types of R programming.
 
-It is worth mentioning in the beginning that R is case sensitive. Use \verb|#| to lead a comment. Use \verb|print(<variable>)| or simply type the name of the variable to print the value of a variable to the console. Use \verb|?<function>|, \verb|?<dataframe>| to access the manual for a function or data frame.
+It is worth mentioning in the beginning that R is case sensitive. Use \verb|#| to lead a comment. In the console, use \verb|print(<variable>)| or simply type the name of the variable to print the value of a variable to the console. Use \verb|?<function>|, \verb|?<dataframe>| to access the manual for a function or data frame.
 
 As a quick demonstrative example, the following is a small piece of code written in R. It generates generalized $t$-distribution noise and save the noise samples into a local CSV file.
 \begin{lstlisting}
@@ -222,7 +219,7 @@ R uses built-in and third-party functions which extend its capability. There is 
   \centering \caption{Numerical calculations.}\label{ch:r1:tab:numericalcalculation}
   \begin{tabularx}{\textwidth}{lX}
     \hline
-    Syntax (Example) & Description \\ \hline
+    Syntax & Description \\ \hline
     \verb|abs(x)| & Absolute value. \\
     \verb|sqrt(x)| & Square root. \\
     \verb|ceiling(x)| & Smallest larger/equal integer. \\
@@ -243,7 +240,7 @@ R uses built-in and third-party functions which extend its capability. There is 
   \centering \caption{Logical comparisons.}\label{ch:r1:tab:logicalcomparison}
   \begin{tabularx}{\textwidth}{lX}
     \hline
-    Syntax (Example) & Description \\ \hline
+    Syntax & Description \\ \hline
     \verb|x == y| & Equal. \\
     \verb|x != y| & Not equal. \\
     \verb|x > y|, \verb|x < y| & Greater than; less than. \\
@@ -260,9 +257,9 @@ R uses built-in and third-party functions which extend its capability. There is 
   \centering \caption{String operations.}\label{ch:r1:tab:stringoperation}
   \begin{tabularx}{\textwidth}{lX}
     \hline
-    Syntax (Example) & Description \\ \hline
-    \verb|substr(s, n1, n2)| & Segment of a string, from the $n_1$-th character to $n_2$-th character, both characters included. \\
-    \verb|grep(p, s)| & Searching of a pattern in a string. \\
+    Syntax & Description \\ \hline
+    \verb|substr(s, n1, n2)| & Segment of a string, from the $n_1$-th character to $n_2$-th character, both characters included. The index starts from $1$ instead of $0$. \\
+    \verb|grep(p, s)| & Searching for a pattern in a string. \\
     \verb|sub(s1, s2, s)| & Find and replace patterns in a string. \\
     \verb|paste(s1, s2, ..., p="")| & Concatenate strings. \\
     \verb|strsplit(s, p)| & Split a string. \\
@@ -276,7 +273,7 @@ R uses built-in and third-party functions which extend its capability. There is 
 	\centering \caption{Probability related operations.}\label{ch:r1:tab:probabilityfunction}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
-		Syntax (Example) & Description \\ \hline
+		Syntax & Description \\ \hline
 		\verb|dnorm(x, m=0, std=1)| & Calculate the PDF of Gaussian distribution. \\
 		\verb|pnorm(x, m=0, std=1)| & Calculate the CDF of Gaussian distribution. \\
 		\verb|qnorm(x, m=0, std=1)| & Inverse function of \verb|pnorm()|. \\
@@ -301,7 +298,7 @@ R uses built-in and third-party functions which extend its capability. There is 
 	\centering \caption{Statistics related functions.}\label{ch:r1:tab:statisticsfunction}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
-		Syntax (Example) & Description \\ \hline
+		Syntax & Description \\ \hline
 		\verb|mean(l)| & Mean. \\
 		\verb|sd(l)| & Standard deviation. \\
 		\verb|median(l)| & Median. \\
@@ -366,7 +363,7 @@ where \verb|<vector>| is a list of numbers or characters. Examples are given bel
 [1] "b"
 [1] "c"
 \end{lstlisting}
-where \verb|c()| creates a list from items.
+where \verb|c()| defines a list from items. This command is widely used. More details will be introduced later.
 
 The \verb|while| loop syntax is given as follows.
 \begin{lstlisting}
@@ -415,19 +412,19 @@ Define a simple function as follows. Run the codes where the function is describ
 
 \section{Vector and Matrix}
 
-Vector and matrix are the fundamental forms that R stores and processes data.
+Vector and matrix are the fundamental forms using which R stores and processes data.
 
 \subsection{Vector}
 
 There are different types of vectors in R depending on the data type of the elements it stores. The commonly used vector types include numeric vector and character vector. All elements in a vector must have the same data type. When different data type values are stored in a vector, they will be transferred to the most general data type.
 
-Notice that the index of a vector in R starts from 1 instead of 0. This is different with many other computer languages such as C/C++, JavaScript and Python.
+Notice that the index of a vector in R starts from 1 instead of 0. This is different from many other computer languages such as C/C++, JavaScript and Python.
 
 Use the following syntax to create a vector.
 \begin{lstlisting}
 <vector> <- c(<value>, ...)
 \end{lstlisting}
-where \verb|<value>| can be single element or a vector. For example,
+where \verb|<value>| can be single element or a vector. Nested vector is expanded. For example,
 \begin{lstlisting}
 > x <- c(1,2,3,4,5)
 > x
@@ -458,7 +455,7 @@ Alternative ways to create a vector are given as follows. Use sequence to create
 
 Use replica to create a vector as follows.
 \begin{lstlisting}
-<vector> <- rep(<value>, <repeate>)
+<vector> <- rep(<value>, <repeat>)
 \end{lstlisting}
 where \verb|<value>| can be a numeric number, a character, or a vector. For example,
 \begin{lstlisting}
@@ -466,7 +463,7 @@ where \verb|<value>| can be a numeric number, a character, or a vector. For exam
 > print(l)
 [1] "a"   "b"   "cde" "a"   "b"   "cde"
 \end{lstlisting}
-Replica can also be used to create empty vector vy \verb|rep(NA, n)|.
+Replica can also be used to create empty vector with \verb|rep(NA, n)|.
 
 A character vector can also be created by splitting strings using \verb|strsplit()|. For example,
 \begin{lstlisting}
@@ -486,7 +483,7 @@ To access the element in a vector, use \verb|<vector>[<index>]| or \verb|<vector
 [1] "g"
 > s[2:5]
 [1] "b" "c" "d" "e"
-> s[c(1L, 3L, 5L)] # s[c(1.1, 3.5, 5.9)] gives the same result; data type auto transferred
+> s[c(1, 3, 5)]
 [1] "a" "c" "e"
 \end{lstlisting}
 It is also possible to address an element by its name
@@ -504,9 +501,7 @@ e3
 3
 \end{lstlisting}
 
-Notice that it is inefficient to use deep-layer loops to access and process data in vector or matrix one-by-one because most operations in R are done by the vector basis. Vectorization operation significantly speeds up the calculation, hence quite commonly seen in high-layer languages such as R and Python.
-
-Most numerical calculations, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%|, \verb|^|, support vectorization operation. Examples are given below.
+Vectorization operation significantly speeds up the calculation comparing with looping over elements, hence is quite commonly seen in high-layer languages such as R and Python. Most numerical calculations, including \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%|, \verb|^|, support vectorization operation. Examples are given below.
 \begin{lstlisting}
 > a <- c(1,2,3,4,5)
 > b <- c(5,4,3,2,1)
@@ -560,7 +555,7 @@ A vector can also be used as an input argument or output return of a function.
 
 \subsection{Matrix}
 
-Similar with vector, all elements in a matrix must have consistent type. A demonstration of matrix indexing in R is shown in Fig. \ref{ch:r1:fig:r_table_demo}. Let the matrix be named \verb|A|. The elements in the matrix can be accessed by the name of the table followed by the index coordinates. For example, in the figure, \verb|A[1,1]| refers to the first element and \verb|A[4,6]| the last element. It is also possible to index an entire row or column. For example, use \verb|A[1,]| to represent the first row of the matrix.
+Similar with vector, all elements in a matrix must have the consistent type. A demonstration of matrix indexing in R is shown in Fig. \ref{ch:r1:fig:r_table_demo}. Let the matrix be named \verb|A|. The elements in the matrix can be accessed by the name of the table followed by the index coordinates. For example, in the figure, \verb|A[1,1]| refers to the first element and \verb|A[4,6]| the last element. It is also possible to index an entire row or column. For example, use \verb|A[1,]| to represent the first row of the matrix.
 
 \begin{figure}
 	\centering
@@ -568,7 +563,7 @@ Similar with vector, all elements in a matrix must have consistent type. A demon
 	\caption{A demonstration of a matrix in R.} \label{ch:r1:fig:r_table_demo}
 \end{figure}
 
-A matrix can be created from scratch by stacking rows as follows. First, create rows in the matrix. Then, use \verb|rbind()| to bind rows. Notice that the columns and rows of a matrix can have names in addition to their associated numeric indices, and the names can also be used to for index. This is different from MATLAB or Python \verb|numpy|.
+A matrix can be created from scratch by stacking rows as follows. First, create rows in the matrix. Then, use \verb|rbind()| to bind rows.
 \begin{lstlisting}
 # build rows
 <row1> <- c(<value11>, ..., <value1n>)
@@ -576,11 +571,6 @@ A matrix can be created from scratch by stacking rows as follows. First, create 
 <rowm> <- c(<valuem1>, ..., <valuemn>)
 # build matrix
 <matrix> <- rbind(<row1>, ..., <rowm>)
-# (optional) clean rows
-rm(<row1>, ..., <rowm>)
-# give names
-colnames(<matrix>) <- c("<column-name1>", ..., "<column-namen>")
-rownames(<matrix>) <- c("<row-name1>", ..., "<row-namem>")
 \end{lstlisting}
 
 There are alternative ways, other than \verb|rbind()|, to create a matrix. For example, \verb|matrix()| convert a vector into a matrix. Similar with \verb|rbind()|, \verb|cbind()| binds the columns to form a matrix. Examples to create matrices using different methods are given below.
@@ -605,15 +595,8 @@ There are alternative ways, other than \verb|rbind()|, to create a matrix. For e
 [3,]    3    6    9
 \end{lstlisting}
 
-To check or assign names for a vector or matrix, use \verb|names(<vector>)|, \verb|rownames(<matrix>)| and \verb|colnames(<matrix>)|, depending on dealing with either a vector or a matrix. These commands can also be used to assign names. Examples are given below.
+As illustrated earlier that \verb|names(<vector>)| can be used to view and assign names to elements in a vector, likewise \verb|rownames(<matrix>)| and \verb|colnames(<matrix>)| can be used to view and assign names to the rows and columns of a matrix. Examples are given below.
 \begin{lstlisting}
-> v <- c(1, 2, 3, 4, 5)
-> names(v) <- c("e1", "e2", "e3", "e4", "e5")
-> v
-e1 e2 e3 e4 e5
-1  2  3  4  5
-> names(v)
-[1] "e1" "e2" "e3" "e4" "e5"
 > A <- matrix(1:9, 3, 3)
 > colnames(A) <- c("col1", "col2", "col3")
 > rownames(A) <- c("row1", "row2", "row3")
@@ -638,6 +621,28 @@ row3    3    6    9
 To remove the names, simply assign \verb|NULL| to the name.
 
 Vectorization operators are defined for matrix level as well. For example, for two matrices with the same shape, numerical operations such as  \verb|+|, \verb|-|, \verb|*|, \verb|/|, \verb|%/%|, \verb|%%| and \verb|^| can be used.
+
+As introduced earlier, a matrix or a vector can be split and segmented to form a smaller matrix or vector. It is worth mentioning that when a single column or row is selected, R will automatically treated the return as a vector instead of a matrix. An example is given below. When a matrix downgrades to a vector, the row name (if it has only one row), or the column name (if it has only one column) will be removed.
+\begin{lstlisting}
+	> A <- matrix(1:9, 3, 3)
+	> is.matrix(A)
+	[1] TRUE
+	> is.vector(A)
+	[1] FALSE
+	> is.matrix(A[1,])
+	[1] FALSE
+	> is.vector(A[1,])
+	[1] TRUE
+\end{lstlisting}
+
+To get consistent results, when segmenting matrix to get a single row or column vector, deliberately ask R to not drop the matrix dimensions. This can be done as follows. By doing this, the names assigned to columns and rows preserve.
+\begin{lstlisting}
+	> A <- matrix(1:9, 3, 3)
+	> is.matrix(A[1,,drop=F]) # select a row/column
+	[1] TRUE
+	> is.matrix(A[2,3,drop=F]) # select an element
+	[1] TRUE
+\end{lstlisting}
 
 \subsection{Matrix Visualization Using \texttt{matplot()}}
 
@@ -673,31 +678,7 @@ where \verb|t()| used inside \verb|matplot()| calculates the transpose of a matr
 	\caption{A demonstration of using \texttt{matplot} to plot trends.} \label{ch:r1:fig:matplot_demo}
 \end{figure}
 
-Notice that \verb|matplot()| is not widely used in practice.
-
-As introduced earlier, a matrix or a vector can be split and segmented to form a smaller matrix or vector. It is worth mentioning that when a single column or row is selected, R will automatically treated the return as a vector instead of a matrix. An example is given below. When a matrix downgrades to a vector, the row name (if it has only one row), or the column name (if it has only one column) will be removed.
-\begin{lstlisting}
-> A <- matrix(1:9, 3, 3)
-> is.matrix(A)
-[1] TRUE
-> is.vector(A)
-[1] FALSE
-> is.matrix(A[1,])
-[1] FALSE
-> is.vector(A[1,])
-[1] TRUE
-\end{lstlisting}
-
-To get consistent results, when segmenting matrix to get a single row or column vector, deliberately ask R to not drop the matrix dimensions. This can be done as follows. By doing this, the names assigned to columns and rows preserve.
-\begin{lstlisting}
-> A <- matrix(1:9, 3, 3)
-> is.matrix(A[1,,drop=F]) # select a row/column
-[1] TRUE
-> is.matrix(A[2,3,drop=F]) # select an element
-[1] TRUE
-\end{lstlisting}
-
-An example of using the above to analyze the performance of players through a series of basketball games are given below.
+Another example of analyzing the performance of players through a series of basketball games are given below.
 \begin{lstlisting}
 # generate table
 player_name <- c("player1", "player2", "player3")
@@ -736,7 +717,7 @@ myplot(penalty_point / penalty_attempt, "match", "penalty success rate") # penal
 myplot((total_point - penalty_point) / throw_attempt, "match", "average gained point per throw") # average point gained per throw
 \end{lstlisting}
 
-The results of the above codes are given in Figs. \ref{ch:r1:fig:basket_exp1}, \ref{ch:r1:fig:basket_exp2}.
+The results of the above codes are given in Figs. \ref{ch:r1:fig:basket_exp1} and \ref{ch:r1:fig:basket_exp2}.
 
 \begin{figure}
 	\centering
@@ -750,13 +731,15 @@ The results of the above codes are given in Figs. \ref{ch:r1:fig:basket_exp1}, \
 	\caption{Plot of average point gained per throw attempt for the 3 players in 10 matches.} \label{ch:r1:fig:basket_exp2}
 \end{figure}
 
+Notice that \verb|matplot()| is not widely used in practice comparing with the other visualization tools to be introduced in later sections.
+
 \section{Data Frames} \label{ch:r1:sec:df}
 
-Data frame, just like vector and matrix, is another data structure defined in R.
-
-Both matrix and data frame use a table structure to store data, but data frame does not require all data to have the same data type, which makes it maybe the most important and commonly used data structure in R.
+Data frame, just like vector and matrix, is another data structure defined in R. Both matrix and data frame use tables to store data, but data frame does not require all data to have the same data type, which makes it more flexible and hence very widely used in R. Another difference between matrix and data frame is that data frame rows do not have names.
 
 \subsection{Import Data into Data Frame}
+
+Data frame can be created from scratch by concatenating columns just like matrix. However, in practice it is more common that a data frame is obtained by importing data from other data sources. Hence, data importing is introduced first and data concatenating will be introduced in a later section.
 
 One of the most common sources of data is CSV files. R provides convenient functions to read data from CSV files into data frames. Use the following commands to import data from a CSV file into a data frame.
 
@@ -769,21 +752,21 @@ The following commands import a specified CSV file.
 setwd("<directory>") # navigate to the directory of the csv file
 <data-frame> <- read.csv("<csv-file>.csv")
 \end{lstlisting}
-where notice that \verb|getwd()| and \verb|setwd()| are used to get and set current working directory, respectively.
+where notice that \verb|getwd()| and \verb|setwd()| can be used to get and set current working directory respectively.
 
 \subsection{Access Data in Data Frame}
 
 There are a few ways to access an element in a data frame as shown below.
 \begin{lstlisting}
-<df>[<row_index>, <column_index>]
-<df>[<row_index>, "<column_name>"]
-<df>[, <column-name>][<row_index>]
+<df>[<row_index>,<column_index>]
+<df>[<row_index>,"<column_name>"]
+<df>[,<column-name>][<row_index>]
 <df>$<column_name>[<row_index>]
 \end{lstlisting}
-where
+where the later two essentially adopt a 2-step precedure and
 \begin{lstlisting}
-	<df>[, <column-name>]
-	<df>$<column-name>
+<df>[, <column-name>]
+<df>$<column-name>
 \end{lstlisting}
 are used to access the entire column in a data frame. Notice that different from a matrix, rows in data frame do not have names.
 
@@ -841,7 +824,7 @@ Examples of applying these functions to \verb|iris| data frame from the built-in
  Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199
  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800
  Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500
-> levels(iris$Species) # only works discrete-value columns
+> levels(iris$Species) # only works for discrete-value columns
 [1] "setosa"     "versicolor" "virginica"
 \end{lstlisting}
 
@@ -948,7 +931,7 @@ As shown above, it is possible to use \verb|&|, \verb$|$ to form a more complex 
 
 \subsection{Create Data Frames}
 
-So far we have been using existing \verb|iris| data frame in the case study. To create a new data frame from scratch, use function \verb|data.frame()| as follows.
+So far we have been importing data or using existing \verb|iris| data frame in the well-defined library \verb|datasets| in the case study. Data frame can also be created from scratch using columns of data. To create a new data frame from scratch, use function \verb|data.frame()| as follows.
 \begin{lstlisting}
 <df> <- data.frame(<vector>, ...) # add a column
 colnames(<df>) <- c("<column-name>", ...)
@@ -985,7 +968,7 @@ which gives the following result
 6    CBD 82.43867 1208589.0
 \end{lstlisting}
 
-A data frame can also be created from two existing data frames by joining them together. It works like the ``JOIN'' function in SQL, and it supports ``INNER JOIN'', ``LEFT JOIN'', ``RIGHT JOIN'' and ``OUTER JOIN''. The syntax is given below.
+A data frame can also be created from two existing data frames by joining them together using \verb|merge()|. It works like the ``JOIN'' function in SQL, and it supports ``INNER JOIN'', ``LEFT JOIN'', ``RIGHT JOIN'' and ``OUTER JOIN''. The syntax is given below.
 \begin{lstlisting}
 <df> <- merge(
     <df1>,
@@ -1002,7 +985,7 @@ In case the two data frames have duplicated columns other than the joining colum
 
 \section{Basic Data Visualizations Using \texttt{qplot()}} \label{ch:r1:sec:qplot}
 
-The package \verb|ggplot2| provides useful tools for visualization of a data frame. For example, both \verb|qplot()| and \verb|ggplot()| in \verb|ggplot2| provide plot function. Notice that in the late versions of \verb|ggplot2|, \verb|qplot()| is deprecated to encourage using of the more powerful \verb|ggplot()|. Both functions are powerful enough to produce many different types of plots.
+The package \verb|ggplot2| provides useful tools for visualization of a data frame including \verb|qplot()| and \verb|ggplot()|. Notice that in the late versions of \verb|ggplot2|, \verb|qplot()| is deprecated to encourage using of the more powerful \verb|ggplot()|. Both functions are powerful enough to produce many different types of plots.
 
 An example of using \verb|qplot()| is given below, just to show some of its capabilities. Run the following codes to get Fig. \ref{ch:r1:fig:qplot_demo}. It can be seen that \verb|qplot()| is smart enough to automatically choose plot type, background color, etc.
 \begin{lstlisting}
@@ -1062,7 +1045,7 @@ qplot(data=mortgage_price, x=Region, y=Price.Unit, geom="boxplot")
 
 \section{Advanced Data Visualizations Using \texttt{ggplot()}} \label{ch:r1:sec:ggplot}
 
-Function \verb|ggplot()| is the main data visualization tool in \verb|ggolot2| package. It provides very flexible tools for data plotting.
+Function \verb|ggplot()| is the main data visualization tool in \verb|ggolot2| package. It provides very flexible features for data plotting.
 
 \subsection{Grammar of Graphics}
 

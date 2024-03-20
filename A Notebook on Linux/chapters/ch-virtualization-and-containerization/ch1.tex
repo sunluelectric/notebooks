@@ -1,16 +1,16 @@
 \chapter{Virtualization and Containerization} \label{ch:vac}
 
-Virtualization and containerization are widely appreciated technologies for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization efficiency, while ensuring isolation between applications.
+Virtualization and containerization are widely appreciated technologies for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization efficiency while ensuring isolation between applications.
 
 \section{Introduction}
 
-One of the major differences between a server and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and storage, despite that the actual hardware is shared with others. This can be achieved through \textit{Virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
+One of the major differences between a server and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and storage, despite that the actual hardware is shared with others. This can be achieved through \textit{virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
 
-Deploying a new VM generally consumes a considerably large amount of time. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for all of them is resource-intensive, particularly when these applications could have shared the same OS kernel and operated within their own isolated workspace.
+Deploying a new VM generally consumes a considerably large amount of time and resources. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for each and every of them is resource-intensive, particularly when these applications could have shared the same OS kernel and operated within their own isolated workspace.
 
 A more efficient approach would be to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
 
-The technology used to deploy and manage containers is known as ``containerization''. Since a container contains all the configuration and requirement information of an application, running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
+The technology used to deploy and manage containers is known as \textit{containerization}. A container contains all the configuration and requirement information of an application. Running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
 
 \begin{figure}
 	\centering
@@ -18,7 +18,7 @@ The technology used to deploy and manage containers is known as ``containerizati
 	\caption{System architectures of PC, VM and container.} \label{ch:vac:fig:pcvmcontainersructure}
 \end{figure}
 
-As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware is corresponding with the physical resources in kitchen, such as the cooktop, gas, etc. The OS is corresponding with the person who manages the kitchen, say a cook. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries correspond with the skill sets or specific cookers for the dish. Finally, the APP is corresponding with the expected dish.
+As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware is corresponding with the physical resources in the kitchen, such as the cooktop and gas. The OS is corresponding with the person who manages the kitchen, say a cook. The OS needs associated drivers and libraries to run the APP correctly. The drivers and libraries correspond with the skill sets or specific cookers for the dish. Finally, the APP is corresponding with the expected dish.
 
 In the most simple configuration, a dedicated machine is used to run an APP. This is like constructing a dedicated kitchen and hiring a dedicated cook for each dish. The cook is trained to master all necessary skills required for that specific dish. This is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
 \begin{figure}[htbp]
@@ -27,13 +27,13 @@ In the most simple configuration, a dedicated machine is used to run an APP. Thi
 	\caption{PC implementation: a cook in a kitchen.} \label{ch:vac:fig:acookinakitchen}
 \end{figure}
 
-In a VM implementation, a larger and more capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the kitchen can be utilized more effectively.
+In a VM implementation, a larger and more capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the kitchen can be utilized more efficiently.
 \begin{figure}[htbp]
 	\centering \includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/manycooksinakitchen.png}
 	\caption{VM implementation: many cooks in a kitchen, each with a different cookbook.} \label{ch:vac:fig:manycooksinakitchen}
 \end{figure}
 
-While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided from where you can find all information required to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
+While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided that gives all information required to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is a more efficient implementation than Fig. \ref{ch:vac:fig:acookinakitchen}.
 
 \begin{figure}[htbp]
 	\centering
@@ -60,13 +60,13 @@ Depending on the items to be virtualized, virtualization can be divided into the
   \item Virtualization of software, mainly programming language and applications. An example is Java virtual machine (JVM) that allows Java to generate consistent result while running on different machines.
 \end{itemize}
 
-There are different virtualization architectures on the market. Widely seen components in a virtualization architecture include
+There are different virtualization architectures. Widely seen components in the virtualization architectures include
 \begin{itemize}
+	\item Host OS. The OS that hosts everything else.
 	\item Virtual Machine Monitor (VMM), also known as the Hypervisor. This is a software that runs on the host OS, managing all the guest OS, providing them interface to the host OS and the hardware.
-	\item Host OS. The host that runs VMM.
-	\item Virtual Machine (VM), a virtual system that runs in an virtualized isolated environment.
+	\item VM, a virtual system that runs in an virtualized isolated environment.
 \end{itemize}
-VMM, host OS and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
+Host OS, VMM and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
 
 Different virtualization techniques are used in different types of VMMs. They can be widely divided into 3 categories.
 \begin{itemize}
@@ -75,32 +75,30 @@ Different virtualization techniques are used in different types of VMMs. They ca
 	\item Hardware-assisted virtualization. The physical processors provide some specific services to handle some of the functionality of VMM. Some functions requested by the guest OS, after passing to VMM, is directly run on the hardware, thus enhancing system performance.
 \end{itemize}
 
-VMM is able to virtualize hardware resources such as CPU, memory and I/O. For virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU.
+VMM is able to virtualize hardware resources such as CPU, memory and I/O. For the virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU. This is challenging because guest OS usually does not possess the privilege due to the VM architecture. If the request of the guest OS contain privileged instructions, the CPU will deny the instructions. When that happens, an exception will be raised to the VMM which will take care of the privileged instructions sequentially. Since hypervisor runs in privileged mode, it can execute those instructions.
 
-Notice that unlike the host OS and the hypervisor that can run in privileged mode, guest OS does not run in privileged mode. If the request of the guest OS contain privileged instructions, the CPU will deny the instructions. When that happens, an exception will be raised to the VMM which will take care of the privileged instructions sequentially. Since hypervisor runs in privileged mode, it can execute those instructions.
+For the virtualization of memory, VMM uses shadow page table to assign memory pages to different VMs. The maximum memory allocated to a VM can change dynamically.
 
-For virtualization of memory, VMM uses shadow page table to assign memory pages to different VMs. The maximum memory allocated to a VM can change dynamically.
-
-For I/O virtualization, the development trend is that I/O operations will be less and less rely on software and OS, and more and more on hardware. The VMM works directly map the I/O hardware interface to the VMs.
+For the virtualization of I/O, the development trend is that I/O operations will be less and less rely on software and OS, and more and more on hardware. The VMM directly maps the I/O hardware interface to the VMs.
 
 \begin{shortbox}
 	\Boxhead{Hypervisor VS Host OS, Who is the Boss?}
 	Both the hypervisor and the host OS can run in privilege mode (also known as ``Ring 0'' in x86 architecture). However, notice that at one time there can be only one boss, i.e., there can be only one entity that runs in Ring 0 at the same time.
 	
-	Depending on the type of the hypervisor configuration, this entity can be either the hypervisor or the host OS. In a type 1 hypervisor configuration, the hypervisor itself duns in Ring 0 and manages all hardware resources directly. In a type 2 hypervisor configuration, the host OS runs in Ring 0, and the hypervisor runs in a lower privileged ring.
+	Depending on the type of the hypervisor configuration, this entity can be either the hypervisor or the host OS. In a type 1 hypervisor configuration, the hypervisor itself runs in Ring 0 and manages all hardware resources directly. In a type 2 hypervisor configuration, the host OS runs in Ring 0, and the hypervisor runs in a lower privileged ring.
 \end{shortbox}
 
 \subsection{Containerization}
 
-Containerization is an alternative virtualization approach to VM that can also virtualize an independent workspace for an application. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. By saying ``container'', we are referring to one or multiple of the following 3 components: container runtime, container engine, and container orchestration.
+Containerization is an alternative virtualization approach to VM that can also virtualize an independent workspace for an application. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. Depending on the context, the term ``container'' may refer to one or more of the following 3 components: container runtime, container engine, and container orchestration.
 
 Container runtime refers to the backend software that actually runs the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that smartly deploy, monitor, restart, and terminate the containers on servers. It is often able to balance API calls, automatically scale up and down the number of running containers, and restart containers upon failure. One of the most widely used container orchestrations is ``kubernetes''.
 
-Container runtime is definitely vital in every containerization implementation. Container engines and container orchestrations must have container runtime built-in. However, the users rarely directly talk to the container runtime. Container engine is the interface and management tool of the container runtime, from where the developer can monitor and control the containers manually. Container engines are widely used especially in small projects or in the development environment. For massive deployment of containers in enterprise-level applications, container orchestration can become handy. In such a case, the container orchestration calls the container engine via API (nowadays a container orchestration may also talk to container runtime directly), instructing it on how the containers should be deployed.
+Container runtime is definitely vital in every containerization implementation. Container engines and container orchestrations must have container runtime built-in. However, the users rarely directly talk to the container runtime. Container engine is the interface and management tool of the container runtime, from where the operator can monitor and control the containers manually. Container engines are widely used especially in small projects or in the development environment. For massive deployment of containers in enterprise-level applications, container orchestration can become handy. In such a case, the container orchestration calls the container engine via API (nowadays a container orchestration may also talk to the container runtime directly), instructing it on how the containers should be deployed.
 
 \section{Docker Container} \label{ch:vac:sec:dc}
 
-This section introduces docker Notice that although docker is famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine, many of which even used in its opponent container engines.
+This section introduces docker. Notice that although docker is famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine, many of which even used in its opponent container engines.
 
 This section focuses mostly on the introduction of docker engine.
 
@@ -110,15 +108,15 @@ Docker engine is the most popular container engines available on the market as o
 
 But does that mean docker engine is the absolutely best and perfect container engine solution?
 
-Docker has surely revolutionized how we use containerization technology in software development and deployment, and it has been one of the most popular and beloved container engine solutions. However, it is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier podman is an alternative to docker. It supports the same interface (as if podman is an alias) as docker, and claims to have better performance and security. As a matter of fact, RHEL already started the transitionary from docker to podman from RHEL 8. Nowadays, installing docker on the latest versions of RHEL is possible but tedious. On the other hand, install podman (it might be built-in to the OS installation) on RHEL can be done by simply using
+Docker has surely revolutionized how we use containerization technology in software development and deployment, and it has been one of the most popular and beloved container engine solutions. However, it is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier podman is an alternative to docker. It supports the same interface (as if podman is an alias) as docker in its CLI, and claims to have better performance and security. As a matter of fact, RHEL already started the transition from docker to podman from RHEL 8. Nowadays, installing docker on the latest versions of RHEL is possible but tedious. On the other hand, installation of podman (it might be built-in to the OS installation) on RHEL can be done simply by
 \begin{lstlisting}
 $ sudo yum install podman
 \end{lstlisting}
-Kubernetes, a famous container ochestration, is also dropping docker support, as they say ``docker support in the kubelet is now deprecated and will be removed in a future release''. Some may even argue that ``containers are alive, but the role that docker plays is shrinking''. Many open-source initiatives such as podman are gaining round.
+Kubernetes, a famous container orchestration, is also dropping docker support, as they say ``docker support in the kubelet is now deprecated and will be removed in a future release''. Some may even argue that ``containers are alive, but the role that docker plays is shrinking''. Many open-source initiatives such as podman are gaining popularity.
 
-Docker has some disadvantages indeed. For one thing, docker uses docker server (docker daemon), a single piece of software running in the backend of the system, to support all the services. This creates a single-point-failure of the system. Docker requires root privileges, and it starts a container on behalf of the root user. This means that the program running inside the container, or the users in the docker group can potentially bypass the OS access control and gain root access, which introduces security risk. These shortages are to some extent addressed by other container engines such as podman which is daemon-less and does not necessarily need to run on root user's behalf.
+Docker has some disadvantages indeed. For one thing, docker uses docker server (docker daemon), a single piece of software running in the backend of the system, to support all the services. This creates a single-point-of-failure of the system. Docker requires root privileges, and it starts a container on behalf of the root user. This means that the program running inside the container and the users in the docker group can potentially bypass the OS access control and gain root access, which introduces security risk. These shortages are to some extent addressed by other container engines such as podman which is daemon-less and does not necessarily need to run on root user's behalf.
 
-This is not to say that Docker is falling behind as a whole. Some key techniques that Docker introduced are widely used in all different types and brands of container runtimes and engines. It is just that people do not like some of the features and schematics implementation of Docker engine, and new tools are being developed to fix these problems, the latter of which starting drawing more and more attention. Docker still enjoys widespread usage and support due to its massive community, wealth of online resources, and extensive compatibility with numerous tools and platforms. Nevertheless, for demonstration purpose, for the remaining sections docker is used throughout this notebook. Since podman provides the same interface, it is probable that podman can be used likewise to replicate all the results.
+This is not to say that Docker is falling behind as a whole. Some key techniques that Docker introduced are widely used in all different types and brands of container runtimes and engines. It is just that people do not like some of the features of Docker engine, and alternative tools are being developed to fix these problems, the latter of which starting drawing more and more attention. Docker still enjoys widespread usage and support due to its massive community, wealth of online resources, and extensive compatibility with numerous tools and platforms. Nevertheless, for demonstration purpose, for the remaining sections docker is used throughout this notebook. Since podman provides the same interface, it is probable that podman can be used likewise to replicate all the results.
 
 As of 2023, Docker is still the dominating container market engine, with a market share of over $80\%$.
 
@@ -212,10 +210,10 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 	\begin{tabularx}{\textwidth}{llX}
 		\hline
 		Command & Flag & Description \\ \hline
-		\verb|docker run| & --- & Launch a container of the image followed by the command. If the image cannot be found locally, it downloads the image from the remote repository automatically. Assign a random name to the container. Exit the container after execution. \\ \hdashline
+		\verb|docker run| & --- & Launch a container of the image. If the image cannot be found locally, it downloads the image from the remote repository automatically. \\ \hdashline
         \verb|docker run| & \verb|-i| & Keep the standard input of the container open when launching the container. \\ \hdashline
         \verb|docker run| & \verb|-d| & Launch the container in the backend and keep it running. \\ \hdashline
-        \verb|docker run| & \verb|--rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used for testing and debugging. \\ \hdashline
+        \verb|docker run| & \verb|--rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used with temporary containers during debugging. \\ \hdashline
         \verb|docker run| & \verb|-t| & Allocate a pseudo-TTY. The flag usually comes with the flags \verb|-i| or \verb|-d|, to form \verb|-it| or \verb|-dt|. \\ \hdashline
         \verb|docker run| & \verb|--restart| & Enforce restart of the container upon exiting. This is usually used on containers running in the backend. Commonly used restart configurations include \verb|--restart no| (do not restart), \verb|--restart on-failure[:<max retries>]| (restart if exits with an error flag), \verb|--restart always| (always restart when exists). \\ \hdashline
         \verb|docker run| & \verb|--name| & Assign a name to the container. \\
@@ -261,7 +259,7 @@ $ docker stop <container>
 $ docker kill <container>
 $ docker restart <container>
 \end{lstlisting}
-respectively. The difference between \verb|docker stop| and \verb|docker kill| concerns with how the OS manages process. When \verb|docker stop| is used, a  \verb|SIGTERM| signal is sent to the main process that the container runs. The container still has a little bit of time (maximum $10$ seconds) to do terminating jobs and clean up. When \verb|docker kill| is used, \verb|SIGKILL| signal is sent to the process, and the process is terminated immediately. When a container is stopped, it enters exited status.
+respectively. The difference between \verb|docker stop| and \verb|docker kill| concerns with how the OS manages process. When \verb|docker stop| is used, a  \verb|SIGTERM| signal is sent to the main process that the container runs. The container still has a little bit of time (maximum $10$ seconds) to terminate the job and clean up. When \verb|docker kill| is used, \verb|SIGKILL| signal is sent to the process, and the process is terminated immediately. When a container is stopped, it enters exited status.
 
 To remove an exited container or all exited containers, use
 \begin{lstlisting}
@@ -346,7 +344,7 @@ where \verb|docker commit| command saves the container's file changes or setting
 
 A container can be configured accessible from not only the host machine but also other computers in LAN or the Internet. In a typical web service application, the host machine and the containers are often designed following the architecture similar with Fig. \ref{ch:vac:fig:containerwebserverarchitecture}. Notice that in practice, the load balancer and the containers may or may not run on the same physical machine.
 
-The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP instances such as \textit{apache} or \textit{nginx} shall run in the containers distributively.
+The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP instances shall run in the containers distributively.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ch-virtualization-and-containerization/figures/containerwebserverarchitecture.png}
@@ -431,11 +429,11 @@ $ docker volume prune
 \end{lstlisting}
 respectively.
 
-When starting a container from an image, volumes can be mapped with the internal storage inside the container by using
+When starting a container from an image, volumes can be mapped with the internal storage inside the container by using \verb|-v| flag as follows
 \begin{lstlisting}
 $ docker run -v <volume>:<container-internal-path>[:ro] <image>
 \end{lstlisting}
-which should synchronize \verb|<volumn name>| with \verb|<container internal path>|. The optional \verb|:ro| can be specified if it is a read-only volume. Instead of using a volume name, the path to a directory in the host machine can also be used, in which case the specified directories in the host machine and in the container should be synchronized.
+which should mount \verb|<volumn>| to \verb|<container internal path>|. The optional \verb|:ro| can be specified if it is a read-only volume. Instead of using a volume name, the path to a directory in the host machine can also be used, in which case the specified directories in the host machine and in the container should be synchronized.
 
 Docker volume guarantees data persistence in containerized applications. When a docker container is removed, any data written to the container's writable layer is lost. Docker volumes, however, are stored outside of the container's writable layer, allowing data to persist even after the container is removed. This persistence is particularly important for applications that require permanent storage, such as databases.
 
@@ -522,16 +520,14 @@ The keywords to be used in a Dockerfile to realize the above instructions, such 
 		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ \hdashline
 		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ \hdashline
 		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\ \hdashline
-		\verb|CMD ["<exe>", "p1", ...]| & As the last instruction of a Dockerfile, run the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. \\
+		\verb|CMD ["<exe>", "p1", ...]| & The user-script command. This is the last instruction in the docker file that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. This user-script can be overwritten by \texttt{docker run <image> <other commands>} when running the container. \\
 		\hline
 	\end{tabularx}
 \end{table}
 
 Besides Table \ref{ch:vac:tab:keywordsdockerfile}, there are other Dockerfile keywords that can significantly simplify the design and maintenance of the image. For example, \verb|ENV <key>=<value>| assign a value to an environmental variable; \verb|LABEL <key>="<value>"| assigns a tag to the image, which can be displayed when \verb|docker inspect <container>| is used.
 
-Examples of Dockerfiles are given below, one from \textit{docs.docker.com} and the other from Linux Academy.
-
-The docker image layer structure of the second example is given in Fig. \ref{ch:vac:fig:dockerlayerdemo} as a demonstration. Notice that in Fig. \ref{ch:vac:fig:dockerlayerdemo}, \verb|bootfs| refers to the ``boot file system'', including the bootloader and the Linux kernel. Upon run, a container layer will be added to the image, as shown by the blue dashed box in Fig. \ref{ch:vac:fig:dockerlayerdemo}. In the container, all the changes made is saved into the container layer.
+Examples of Dockerfiles are given below, one from \textit{docs.docker.com} and the other from Linux Academy. The docker image layer structure of the second example is given in Fig. \ref{ch:vac:fig:dockerlayerdemo} as a demonstration. Notice that in Fig. \ref{ch:vac:fig:dockerlayerdemo}, \verb|bootfs| refers to the ``boot file system'', including the bootloader and the Linux kernel. Upon run, a container layer will be added to the image, as shown by the blue dashed box in Fig. \ref{ch:vac:fig:dockerlayerdemo}. In the container, all the changes made is saved into the container layer.
 
 To generate a new image to include the changes made in the container, use \verb|docker commit|, which essentially commits the container layer as the latest image layer in the new image, as shown by the green dashed box in Fig. \ref{ch:vac:fig:dockerlayerdemo}.
 
@@ -610,9 +606,30 @@ Use the following command to inspect an image, and list down its metadata detail
 $ docker image inspect <image name>
 \end{lstlisting}
 
+\section{Docker Hub}
+
+Docker Hub is a commonly used server for storing and sharing docker images. It is also the default remote repository server of Docker engine. However, do notice that Docker Hub is not the only remote docker image server. Some alternatives are Amazon Elastic Container Registry, Red hat Quay, Azure Container Registry, Google Container Registry, etc.
+
+After registering an account on Docker Hub, use the following command to login to the docker hub from your local machine.
+\begin{lstlisting}
+	$ docker login --username=<user name>
+	Passowrd:
+\end{lstlisting}
+
+Assume that there is an image in the local machine, and an empty repository on Docker Hub. In order to push the local image to the Docker Hub, the first step is to add the remote repository and the ``\textit{RepoTags}'' in the local image as follows.
+\begin{lstlisting}
+	$ docker tag <image name> <user name>/<repository name>:<version>
+\end{lstlisting}
+where \verb|<version>| is a tag usually used to distinguish the different branches or versions of the images on Docker Hub. For the first image upload, it can simply be \verb|latest|.
+
+Use the following command to push the image to Docker Hub.
+\begin{lstlisting}
+	$ docker push <user name>/<repository name>
+\end{lstlisting}
+
 \section{Portainer}
 
-As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container management tools such as Protainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
+As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container orchestrators such as Protainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
 
 Portainer is an open-source container management tool. It has a web-based dashboard user interface. Notice that Portainer itself also runs in a container.
 
@@ -654,47 +671,5 @@ After creating the admin user and logging in, the status of images, containers a
 
 In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
 
-\section{Docker Hub}
-
-Docker Hub is a commonly used server for storing and sharing docker images. It is also the default remote repository server of Docker engine. However, do notice that Docker Hub is not the only remote docker image server. Some alternatives are Amazon Elastic Container Registry, Red hat Quay, Azure Container Registry, Google Container Registry, etc.
-
-\subsection{Basics}
-
-After registering an account on Docker Hub, use the following command to login to the docker hub from your local machine.
-\begin{lstlisting}
-$ docker login --username=<user name>
-Passowrd:
-\end{lstlisting}
-
-Assume that there is an image in the local machine, and an empty repository on Docker Hub. In order to push the local image to the Docker Hub, the first step is to add the remote repository and the ``\textit{RepoTags}'' in the local image as follows.
-\begin{lstlisting}
-$ docker tag <image name> <username>/<repository name>:<version>
-\end{lstlisting}
-where \verb|<version>| is a tag usually used to distinguish the different branches or versions of the images on Docker Hub. For the first image upload, it can simply be \verb|latest|.
-
-Use the following command to push the image to Docker Hub.
-\begin{lstlisting}
-$ docker push <user name>/<repository name>
-\end{lstlisting}
-
-\subsection{\textit{Alpine}}
-
-TBA
-
-\subsection{\textit{Redis}}
-
-TBA
-
-\subsection{\textit{Nginx}}
-
-TBA
-
-\subsection{\textit{PostgreSQL}}
-
-TBA
-
-\subsection{\textit{Node.js}}
-
-TBA
 
 

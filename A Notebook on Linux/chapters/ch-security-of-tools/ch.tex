@@ -1,12 +1,10 @@
-\chapter{Services and Applications Security Mechanisms}
+\chapter{Security of Services and Applications}
 
-The previous chapter introduced general OS security mechanisms. This chapter discusses security mechanisms of services and software running on the OS, including networking, database, etc.
-
-\section{Networking Security}
+The previous chapter introduced general OS security mechanisms. This chapter discusses security mechanisms of services and software running on the OS such as database. Notice that network and communication security is a stand alone topic not considered in this chapter. 
 
 \section{Database Security}
 
-Many Apps, both local and online, heavily rely on database to manage information. For example, online shopping App uses database to record transaction history. Online banking uses database to store and manage customer capitals. The data stored in a database is often critical and confidential, and the database service providers need to try their best to prevent data loss and leaking, and to ensure the integrity and availability of the database.
+Many Apps, both local and online, heavily rely on database to manage information. For example, online shopping APP uses database to record transaction history. Online banking uses database to store and manage customer capitals. The data stored in a database is often critical and confidential, and the database service providers need to try their best to prevent data loss and leaking, and to ensure the integrity and availability of the database.
 
 When a database is under attack, the worst scenario may go beyond data damage. Examples are given below.
 \begin{itemize}
@@ -21,11 +19,9 @@ It is possible that the attacker hides and disguises the attacking command into 
 
 \begin{shortbox}
 \Boxhead{Secure DBMS and Secure OS}
-It is worth introducing the relationship between a security-enhanced OS and security-enhanced DBMS. In short, they make a better each other, forming a ``security chain'' together. Sometimes it is possible to use SELinux with a normal DBMS to form a security system (this is what was used in the early days), and with a security-enhanced DBMS to form a very secure system. A poor OS, on the other hand, harms the DBMS security level because data is essentially stored on hard drive which can be penetrated if the OS is down.
+It is worth introducing the relationship between a security-enhanced OS and security-enhanced DBMS. In short, they make a better each other, forming a ``security chain'' together. A secure OS boosts the security of the database. A poor OS, on the other hand, harms the DBMS security level because data is essentially stored on hard drive which can be penetrated if the OS is down.
 
 There are two common ways of forming a security-enhanced DBMS from a normal DBMS. The first way is to upgrade the DBMS kernel codes for additional security features. This can be complicated and requires a high-level mathematics, databases and programming skills, but can provide a safe DBMS. Obviously, this applies to only open-source databases. The second way is to build a ``wrapper'' for the DBMS to interface with the users and API calls This usually requires less skill sets and can be applied to both open-source and proprietary databases, but can only provide mediocre security.
-
-Security-enhanced DBMS shall have many safety relevant features and regulations. Only a small part of them is introduced in this notebook.
 \end{shortbox}
 
 \subsection{Database Security Risks Categories}
@@ -43,18 +39,13 @@ Depending on the identity and the access level of the attacker, database securit
 		\hline
 	\end{tabular}
 \end{table}
-
-Different database security risks categories may tell completely different stories on how an attacker plans his attack. For example, a developer may leave a backdoor program in the program and if nobody else spotted the backdoor program, he can use it to access confidential data. A vendor may be able to bring the hard drive of the database outside the managed premises, after which he can use variety of tools to crack the database and obtain the data.
+Different database security risks categories may tell completely different stories on how an attacker plans his attack. For example, a developer may leave a backdoor in the program which he can use to access confidential data. A vendor may bring the hard drive of the database outside the managed premises, after which he can use variety of tools to crack the database and obtain the data.
 
 To tackle the challenges, different security methods need to be applied to prevent each and every risks category. A high-level summary is given in Table \ref{ch:securityaccessories:tab:dbsecurityriskscategories}. Details are given in later sections.
 
 \subsection{Database Access Control}
 
-There are different types of access control, some of which widely adopted to all different types of databases, while others may apply to only high-level secure databases. Some access control schemas apply to both database and OS.
-
-\vspace{0.1in}
-\noindent \textbf{Discretionary Access Control (DAC)}
-\vspace{0.1in}
+There are different types of access control, some of which widely adopted to all different types of databases, while others may apply to only high-level secure databases. Some access control schema apply to both database and OS, the most popular ones being DAC and MAC which have already been introduced in earlier sections when discussing OS security. They are re-addressed for database as follows.
 
 DAC restricts access to objects based on the identity of the subject, i.e. the user or the group of the user. The accessibility of an object is determined by the owner of the object. The same idea has been adopted by Linux in file management.
 
@@ -67,25 +58,19 @@ In practice, it is common that the database manager sets up different set of vie
 
 The problem of DAC is that it can ``lose control'' sometimes, making a user bypassing the restriction. For example, a user who has been revoked from access may still be able to access the data if he had created a procedure that reads the data, and his access to that procedure is not revoked. Many DBMS tries to provide some protection against this, for example, by integrating security labels into the SQL that the user injects. When a user execute an SQL command, in the backend the SQL command is ``reformulated'' to contain user authentication information. In a good implementation, this security mechanism should be made transparent to the user.
 
-Another challenge is that sometimes the user needs some aggregated information that can only be derived if he has access to data confidential to him. For example, consider a table that stores the scores of a class. A student wants to check his score as well as the average score of the class. If the access of the student is limited to his score alone, he will not be able to get the average score of the class.
-
-\vspace{0.1in}
-\noindent \textbf{Mandatory Access Control (MAC)}
-\vspace{0.1in}
+Another challenge is that sometimes the user legitimately asks for aggregated information which, however, can only be derived if he has access to data confidential to him. For example, consider a table that stores the scores of a class. A student wants to check his score as well as the average score of the class, which makes perfect since. However, the scores of all the students are required to derive the average score. If the access of the student is limited to his score alone, he will not be able to get the average score of the class.
 
 Different from DAC where the owner of an object choose his preference of who can access the data and the preference can change case by case, in MAC the rules are enforced by the system administrator consistently and globally. The user cannot overwrite security policy even on his own data. This reduces the chance of human error, hence providing a higher level of security. The cost is the flexibility in the user experience, and the complexity of setting up global rules especially on a large database. MAC is often used in government database where huge amount of confidential and sensitive data is managed with heavy responsibility.
 
-\subsection{Multi-level Security DBMS}
-
-In multi-level security DBMS (MLS), also know as multilayer DBMS, each piece of data in a database is associated with a security level that reads like ``unclassified'', ``confidential'', ``secret'', ``top secret'', etc. This security label is an compulsory attribute to the data, just like the primary key (but of course they serve different purposes). Users also have security labels that determines the level of accessibility. When querying the same database, different users will get different results based on the security level of each piece of data. For example, a general may get the number of solders in total, while the public can only get ``NULL'' in the return.
+In multi-level security DBMS (MLS), also know as multi-layer DBMS, each piece of data in a database is associated with a security label that reads like ``unclassified'', ``confidential'', ``secret'', ``top secret'', etc. This security label is a compulsory attribute to all the data. Users also have security labels that determines the level of accessibility. When querying the same database, different users will get different results based on the security level of each piece of data. The higher the security label of the user, the more information he is able to retrieve.
 
 MLS is often used as part of MAC which is introduced earlier in this section.
 
 In addition to query, the security labels also affect how \verb|INSERT| and other database manipulation commands work. Obviously, the user needs to have a higher layer (or at least equal) security label than the data, in order to insert, edit or remove it. 
 
-There might be an interesting case where a row with higher security layer already exists in the table, and a lower security layer who cannot detect that data wants to insert into the table a new row with the same primary key. In a normal database, this operation would have been rejected due to the duplication of primary key. However, in MLS, this action is granted. Otherwise, the user with lower security layer would sense the existence of the higher security layer data. This technology is known as polyinstantiation, a method used to avoid covert channels by allowing multiple rows with the same primary key but with different data, based on different security levels. Polyinstantiation occurs when multiple rows in table appear to have the same primary key when viewed at different security levels.
+There might be an interesting case where a row with higher security label already exists in the table, and a  user with a lower security label who cannot detect that data wants to insert into the table a new row with the same primary key. In a normal database, this operation would have been rejected due to the duplication of primary key. However, in MLS, this action is granted. Otherwise, the user with lower security label would sense the existence of the higher security label data. This technology is known as polyinstantiation, a method used to avoid covert channels by allowing multiple rows with the same primary key but with different data, based on different security levels. Polyinstantiation occurs when multiple rows in table appear to have the same primary key when viewed at different security levels.
 
-Covert channel refers to a ``disguised'' channel that transfer information between entities while violating the security policy. In many cases, the channel is built from a list of operations, all of which legitimate by itself alone. These operations, when combined together, creates this unexpected bug outbound designer's intension. An example of a convert channel is as follows.
+Covert channel refers to a ``disguised'' channel that transfer information between entities while violating the security policy. In many cases, the channel is built from a list of operations, all of which legitimate by itself alone. These operations, when combined together, creates this unexpected bug outbound designer's intention. An example of a convert channel is as follows.
 \begin{enumerate}
   \item Entity A, with higher privileges, encodes secret information in binary format.
   \item Periodically, entity A change the permission of a file that can be sensed by entity B. The encoded binary format is used to setup the permissions.

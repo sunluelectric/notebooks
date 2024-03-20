@@ -4,11 +4,11 @@ Ontology is the philosophical study of the nature of being, existence, or realit
 
 Ontology inspires people in computer science about how we can store and exchange information efficiently using the internet. The solution is called the semantic web, an internet-based knowledge base schema. The internet powered by semantic web (together with other technologies) defines Web 3.0, a new-generation internet framework.
 
-Notice that there are subtle differences between ``internet'' and ``Internet''. The lower case ``internet'' is a technology that bridges machines to form a network of any size, and the upper case ``Internet'' refers to the specific internet that links the entire world together. In this part of the notebook, however, they are used interchangeably.  
+Notice that there are subtle differences between ``internet'' and ``Internet''. The lower case ``internet'' refers to the technology that bridges machines to form a network of any size, and the upper case ``Internet'' refers to the specific internet that links the entire world together. In this part of the notebook, however, they are used interchangeably.
 
 \section{Web of Data}
 
-The internet is a technology that enables information exchange among machines and humans. With the power of the internet, a user can obtain the information he needs from remote servers, databases, or knowledge bases.
+The internet is a technology that enables information exchange among machines. With the power of the internet, a user can obtain the information he needs from remote servers, databases, or knowledge bases.
 
 In the early days, the use of internet required professional skills. Nowadays, everyone can access the internet using a graphical-interface browser that he can easily find on a computer or a mobile device. Public knowledge bases such as Wikipedia has made obtaining information much easier.
 
@@ -24,7 +24,7 @@ One of the biggest challenges that we encounter with Web 2.0 is how to quickly l
 
 The problem here, however, is not caused by the searching engines alone.  It is rather that the information stored on the internet does not come with its corresponding semantics in the first place. Today most of the information on the internet is stored in HTML format. HTML tells only the contents but not the meaning behind them. It is difficult for a machine to understand the meaning of the information from HTML corpus. This potentially makes it difficult for a machine to retrieve data efficiently. Even with the recent breakthrough in LLM enabling the machine to summarize articles, it is still unpractical for it to go through all the returned contents of a searching engine which sometimes contains hundreds of pages of information.
 
-Model determines its functions. To solve the problem once for all, new data model to store and share the information need to be introduced.
+Structure determines functions. To solve the problem once for all, new data storage and sharing model needs to be introduced.
 
 \subsection{Web 3.0}
 
@@ -43,24 +43,24 @@ In practice, it is most recommended to use both LLM-based AI and semantic web si
 		\item Time and computational load wise expensive to expand the knowledge base;
 		\item Lack the ability of reasoning;
 		\item A chance to produce misleading information;
-		\item Cannot be merged and migrated easily because it is human or machine readable;
+		\item Cannot be merged and migrated easily because the ``knowledge'' in the form of regression coefficients is not human or machine readable;
 	\end{itemize}
 	\item Semantic web
 	\begin{itemize}
-		\item Steep learning curve to use its interface;
+		\item Steep learning curve to use;
 		\item Not good at summarizing and formatting the response in a human-friendly manner.
 	\end{itemize}
 \end{itemize}
 
-Web 3.0 schema focuses on semantic web, which is essentially a database with specific data model that can build semantics into its framework. The ``semantics'' in this context specifically refers to the relations of objects and properties that can be used for machine-driven descriptive reasoning. See later sections for details. Semantic web is so important that it is often considered synonymous with Web 3.0, although the broader vision of Web 3.0 includes other features as well.
+Web 3.0 schema focuses on semantic web. The word ``semantics'' in this context specifically refers to the relations of objects and properties that can be used for machine-driven descriptive reasoning. See later sections for details. Semantic web is so important that it is often considered synonymous with Web 3.0, although the broader vision of Web 3.0 includes other features as well.
 
-Another feature of Web 3.0 is distributed storage of information. Distributed storage has both advantages and disadvantages. On one hand, it provides higher resilience against data loss. On the other hand, it adds challenges to the searching and collecting of information for data stored in both semantic web structure or other database structure. Technologies like InterPlanetary File System (IPFS), blockchain, and distributed databases are used to address these challenges.
+Another feature of Web 3.0 is distributed storage of information. Distributed storage has both advantages and disadvantages. On one hand, it provides higher resilience against data loss. On the other hand, it adds challenges to the searching and collecting of information during the querying. Technologies like InterPlanetary File System (IPFS), blockchain, and distributed databases are used to address these challenges.
 
-This notebook discusses the technologies used in semantic web such as resource description framework (RDF) model, RDF schema (RDFS) and web ontology language (OWL). We will see how we can use semantic web to collect and organize information, and create a knowledge base for both humans and AI.
+This notebook discusses the technologies used in semantic web such as resource description framework (RDF) model, RDF schema (RDFS) and web ontology language (OWL). We will see how we can use semantic web to collect and organize information, and create a knowledge base for both humans, machines, and AI.
 
 \subsection{Semantic Web Vision}
 
-Semantic web database is ``semantic'' due to its data model. Semantic web data model not only stores objects and their properties, but also the relationships among objects and properties. The relationships, often represented by graphs, can be used for descriptive logic reasoning. The logic reasoning allows new information to be derived based on existing facts. In addition, semantic web is more scalable, reusable and reader-friendly for both humans and machines comparing with AI-based methods.
+Semantic web database is ``semantic'' due to its data model. Semantic web data model not only stores objects and their properties, but also the relationships among objects and properties. The relationships, often represented by graphs, can be used for descriptive logic reasoning. The logic reasoning allows new information to be derived based on existing facts. In addition, semantic web is more scalable, reusable and reader-friendly for both humans and machines comparing with AI methods.
 
 Many research institutes and organizations have tried building semantic webs of different scales. An example is DBPedia \textit{dbpedia.org}. The goal of DBPedia is to create something like Wikipedia, but using semantic web.
 
@@ -214,7 +214,7 @@ WHERE {
 
 \end{mdframed}
 
-There is a learning curve for SPARQL. Commercialized semantic web applications such as WolframAlpha (\textit{wolframalpha.com}) often provide a ``search bar'' with some natural language processing capability which triggers SPARQL query according to the user's input. It is possible to use a more powerful LLM-based chatbot to assist SPARQL query as well.
+There is a learning curve for SPARQL. Commercialized semantic web applications such as WolframAlpha (\textit{wolframalpha.com}) often provide a ``search bar'' with some natural language processing capability which triggers SPARQL query according to the user's input. It is possible to use a powerful LLM-based chatbot to assist SPARQL query as well.
 
 \subsection{Semantic Web Limitations and Challenges}
 
@@ -252,19 +252,19 @@ In practice, RDF/RDFS and OWL can be used to express the ontology. The following
 \begin{itemize}
   \item Class. A class is an abstraction of objects sharing some similarities.
   \item Properties. A property defines a feature of a class. Triples are often used to describe a property. A triple follows the form of ``subject $+$ property $+$ object''.
-  \item Relations. A relation describes how classes relates to each other. A relation is often described using the triple where both subject and object are classes.
+  \item Relations. A relation describes class-to-class and property-to-property connections. Relations can be expressed by triples where both subject and object are classes, or by class and property hierarchies.
   \item Constraints. A constraint describes the rules enforced on a property.
   \item Instance. An instance is a realization of a class.
 \end{itemize}
 
 \subsection{Ontology Types and Categories}
 
-There are different layers of ontology. The higher the layer, the more general the knowledge. The lower the layer, the more specific the knowledge within a particular domain, application or task. An example is given in Fig. \ref{fig:ontologylevel}. In practice, there might not be a clear boundary between two adjacent layers.
+Ideally in the vision of W3C, all ontology models should be linked together using URIs and form a global model just like the global Internet. In this single model, ontology is divided into layers. The higher the layer, the more general the knowledge. The lower the layer, the more specific the knowledge within a particular domain, application or task. An example is given in Fig. \ref{fig:ontologylevel}. In practice, there might not be a clear boundary between two adjacent layers.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./chapters/ch-semanticwebbasics/figures/ontologylevel.png}
-	\caption{A demonstration of ontology level.}
+	\caption{A demonstrative example of ontology level using control engineering.}
 	\label{fig:ontologylevel}
 \end{figure}
 
@@ -272,15 +272,13 @@ Lower-layer ontology can inherit and modify knowledge from the upper-layer ontol
 
 \section{Logic} \label{sec:logic}
 
-Logic and logical expression form a research area by themselves and it is not possible to include all the details in the scope of this notebook. Only a brief scratch is given.
-
 Humans are good at deriving new knowledge from existing knowledge. The systematic way of doing so is logic. The term ``formal logic'' rigorously defines logic reasoning methods and procedures to automate logic inference by machines.
 
-\subsection{Syntax and Semantics}
+Notice that logic and logical expression form a research area by themselves and it is not possible to include all the details in the scope of this notebook. Only a brief scratch is given.
 
-The meaning behind a sentence is hidden in the sequence of words it uses. As an analogy, the semantics is the water, and the sentence is the cup that holds the water. Likewise, in logic, the syntax that express the logic holds the semantics of the logic. Depending on who or what tool is used to process the syntax, different levels of semantics can be interpreted.
+\subsection{Different Semantics from the Same Syntax}
 
-Consider the following example. This is a piece of code written in Python syntax.
+Given the same information, different people and/or machines can draw different semantics. Consider the following example. This is a piece of code written in Python syntax.
 \begin{lstlisting}
 ax = []
 for i in range(20):
@@ -289,23 +287,15 @@ for i in range(20):
 	else:
 		ax.append(ax[i-1]+ax[i-2])
 \end{lstlisting}
-Three interpreters are studied, the Python interpreter, the AI model, and the human cognition. Different interpreters draw different semantics from the same syntax.
+Three interpreters are studied, the Python interpreter, the AI model, and the human cognition. Different interpreters draw different semantics from the same code above.
 
-The Python interpreter is essentially purely syntax-driven. When it executes a script, it follows the provided instructions without any broader comprehension or anticipation of the syntax or the results. In the context of this example, the interpreter does not recognize that it is generating the famous Fibonacci sequence. It simply follows the rules of the script, calculating and outputting each number in the series as instructed.
+The Python interpreter is purely syntax-driven. When it executes a script, it follows the provided instructions without any broader comprehension or anticipation of what the code is doing. In the context of this example, the interpreter does not recognize that it is generating the famous Fibonacci sequence. It simply follows the rules of the script, calculating and outputting each number in the series as instructed.
 
-On the other hand, an AI model like GPT-3 does possess a level of semantic understanding, but it is quite different from that of a human. Through training on a diverse range of data corpus, it has learned to associate the Python script for generating a Fibonacci series with the mathematical concept of the Fibonacci sequence. This understanding is not innate but rather a result of recognizing patterns in the data it was trained on. When asked about the script, it can provide a summary or explanation based on its learned associations, including the name of the series, and the purpose of each line of the code. It follows the corpus it has been trained on.
+On the other hand, an AI model like GPT-3 does possess a level of semantic understanding, but it is quite different from that of a human. Through training on massive data corpus especially codes, it can associate the above Python script with Fibonacci series. This understanding is not innate but rather a result of statistical inference and pattern matching from the training data. In other words, in the training data there are similar codes which is referred as ``tho code to generate Fibonacci series''. When asked about the script, it can provide a summary or explanation based on its learned associations, including the name of the series and the purpose of each line of the code. It can even suggest improvement or fix bugs, so long as in the training data a similar but more efficient realization of the code is provided.
 
-Finally, there's the human level of semantics, which is by far the most advanced and intuitive. Not only can a human understand the Python script and the concept of the Fibonacci series, they can also infer its broader mathematical properties, such as its relation to the golden ratio, and its general behavior. Humans can understand that the series will converge to the golden ratio not only when starting with 0 and 1, but with any two initial positive integers. This level of understanding is a combination of learned knowledge, pattern recognition, and the ability to extrapolate or generalize from existing information.
+Finally, there's the human level of semantics, which is by far most advanced and intuitive. Not only can a human understand the Python script and the concept of the Fibonacci series, they can also infer its broader mathematical properties, such as its relation to the golden ratio, and its general behavior. One good at mathematics can intuitively understand that the series will converge to the golden ratio not only when starting with 0 and 1 but with any two initial positive integers, even if he is not specifically taught that knowledge. This level of understanding is a combination of learned knowledge, pattern recognition, and the ability to extrapolate or generalize from existing information.
 
-One of the goals of semantic web is to enable a machine to understand the semantics as much as possible. The following are some commonly seen terminologies regarding semantics:
-\begin{itemize}
-  \item Intentional Semantics: the semantics that the information producer intends to share.
-  \item Formal Semantics: the semantics contained in the formally defined language.
-  \item Procedural Semantics: the semantics in programming script.
-  \item Model-theoretic Semantics: the semantics understood from natural language by a formally defined model.
-\end{itemize}
-In the context of logic, model-theoretic semantics are the main interest of study.
-
+One of the goals of semantic web is to enable a machine to understand the semantics as much as possible, hopefully to gain the capability of logic reasoning just like a human. 
 
 \subsection{Logic Framework} \label{subsec:knowledgeandlogic}
 
@@ -331,7 +321,7 @@ where $\textup{CLASS}(x)$ is equivalent of a proposition ``$x$ belongs to CLASS'
 \noindent \textbf{Description Logic}
 \vspace{0.1in}
 
-Description logic (DL) is a subset of the first-order logic. Deriving DL from FOL is not under the scope of this notebook. Some key features of DL are:
+Description logic (DL) is a subset of the first-order logic. Derivation of DL from FOL is not under the scope of this notebook. Some key features of DL are summarized as follows.
 \begin{itemize}
 	\item Define classes and subclasses
 	\item Define properties (roles) and associated domains and ranges
@@ -344,11 +334,9 @@ Semantic web uses OWL to implement DL on computers. More details are given in Se
 	
 \Boxhead{Undecidability in FOL}
 
-We would surely want to introduce highly expressive and complex formalisms to the existing RDF/RDFS model. This motivates OWL, which enables DL in semantic web. More details of OWL is introduced later in Section \ref{sec:owl}. Notice that DL instead of FOL is widely used in semantic web due to its undecidability. DL is a subset of FOL and it is simpler.
+We would surely want to introduce highly expressive and complex formalisms to the existing RDF/RDFS model. This motivates OWL, which enables DL in semantic web. More details of OWL is introduced later in Section \ref{sec:owl}. Notice that DL instead of FOL is widely used in semantic web due to the fact that FOL is undecidable.
 
-A logic is decidable if there is an algorithm that can determine whether any given statement in the logic is true or false (valid or invalid).  If no such algorithm exists for a logic, it is undecidable.
-
-It is undecidable whether a FOL formula is provable (or true under all possible interpretations). An FOL reasoning algorithm may not terminate in finite time. The proof of this theorem can be found elsewhere and is not given in this notebook.
+A logic is decidable if there is an algorithm that can determine whether any given statement in the logic is true or false (valid or invalid). If no such algorithm exists for a logic, it is undecidable. G$\ddot{o}$del's Incompleteness Theorems indicates that in any sufficiently powerful logical system such as FOL, there are statements that are true but cannot be proven within the system. FOL formula can be undecidable. An FOL reasoning algorithm may not terminate in finite time. The proof of this theorem can be found elsewhere and is not given in this notebook.
 
 While FOL inference is not decidable, DL inference, on the other hand, is decidable. That is one of the reasons DL is preferred over FOL in semantic web.
 	
@@ -356,22 +344,23 @@ While FOL inference is not decidable, DL inference, on the other hand, is decida
 
 Attributive language with complement (ALC) is one of the ways to describe a simple DL, and it forms an important subset of OWL. Understanding ALC is helpful with learning OWL in later sections. A brief introduction of ALC is given below.
 
-``Concept'' (corresponding with class in RDF/RDFS) and ``role'' (corresponding with property in RDF/RDFS) are introduced in ALC. Top concept (root class) and bottom concepts (leaf classes) are defined. Each property is associated with a range, which is a basically a set of values that the property can take.
+``Concept'' (corresponding with class in RDF/RDFS) and ``role'' (corresponding with property in RDF/RDFS) are introduced in ALC. Top concept (root class) and bottom concepts (leaf classes) are defined. Each property is associated with a range, which is basically a set of values that the property can take.
 
-Constructors are used to describe the concept, role and range used in ALC. Conjunction, disjunction, negation, existential and universal quantifiers are supported. For example, $\forall R.C$ means that all roles ``$R$'' (a concept can have multiple roles of the same name) must have value taken from concept ``$C$''. Similarly, $\exists R.C$ means that there is at least one role ``$R$'' whose value is taken from concept ``$C$''. Concept relations are defined. Commonly used concept relation constructors are inclusion (to describe sub class), equality (to assign class), union, intersection, complement, etc.
+Constructors are used to describe the concepts, roles and ranges used in ALC. Conjunction, disjunction, negation, existential and universal quantifiers are supported. For example, let $R$ be a role and $C$ be a concept, and $\forall R.C$ means that all roles ``$R$'' must take values from concept ``$C$''. Likewise, $\exists R.C$ means that there is at least one role ``$R$'' whose value is taken from concept ``$C$''. Concept relations are defined. Commonly used concept relation constructors are inclusion (to describe subclass), equality (to assign class), union, intersection, complement, etc.
 
-ALC uses terminological knowledge and assertional logic statements to define classes. Examples are given below. Using terminological knowledge we can define a teacher as
+ALC uses terminological knowledge statements (define concepts and roles schema) and assertional logic (insert instances) statements to record knowledge. Examples are given below. Using terminological knowledge we can define a teacher as
 \begin{lstlisting}[mathescape=true]
-	Teacher $\equiv$ Person $\land$ $\exists$ HasStudent.Student $\land$ $\exists$ Teaches.Class
+	Teacher $\equiv$ Person $\land$ $\exists$ HasStudent.Student $\land$ $\exists$ Teaches.Lecture
 \end{lstlisting}
-which translates to ``a Teacher is a Person, and it has at least one role HasStudent whose value is from Student, and has at lease one role Teaches whose value is Class'', where ``Person'', ``Student'', ``Class'' are concepts and ``HasStudent'', ``Teaches'' are roles. There are also teachers who teach only tutorials but not classes. To include them into the Teacher class, consider using
+which translates to ``a Teacher is a Person, and it has at least one role HasStudent whose value is from Student, and has at lease one role Teaches whose value is from Lecture'', where ``Person'', ``Student'', ``Lecture'' are concepts and ``HasStudent'', ``Teaches'' are roles. There are also teachers who teach only tutorials but not classes. To include them into the Teacher class, consider using
 \begin{lstlisting}[mathescape=true]
-Teacher $\equiv$ Person $\land$ $\exists$ HasStudent.Student $\land$ ($\exists$ Teaches.Class $\lor$ $\exists$ Teaches.Tutorial)
+Teacher $\equiv$ Person $\land$ $\exists$ HasStudent.Student $\land$ ($\exists$ Teaches.Lecture $\lor$ $\exists$ Teaches.Tutorial)
 \end{lstlisting}
 With terminological knowledge, ALC can enforce restrictions on concepts and rules flexibly. Using assertional knowledge, on the other hand, allows defining instances and subclasses as follows.
 \begin{lstlisting}
 Teacher(Peter)
-Teaches(Peter, LinearAlgebra)
+Lecture(Calculus)
+Teaches(Peter, Calculus)
 \end{lstlisting}
 
 All the above ALC can be translated into OWL then implemented in the semantic web. More details are given in later sections.
@@ -382,7 +371,7 @@ A logic is defined by
 \begin{eqnarray}
 	L&:=& (S, \models) \nonumber
 \end{eqnarray}
-where $S$ is the set that contains all the statements of of our interests, and $\models$ the entailment relation
+where $S$ is the set that contains all the statements of our interests, and $\models$ the entailment relation
 \begin{eqnarray}
 	\models &=& \models^1 \bigcup \models^2 \nonumber
 \end{eqnarray}
@@ -410,7 +399,7 @@ Multiple formulas can be grouped into a theory ($T$), which can be used intercha
 
 \subsection{Logical Equivalence}
 
-Logical equivalence has already been introduced in earlier section. Recall \eqref{eq:compoundlogicentailment} where we say if $\Phi \models \Psi$ and $\Psi \models \Phi$, $\Phi$ and $\Psi$ are logically equivalent denoted by $\Phi \equiv \Psi$. Here $\Phi$ and $\Psi$ are sets of statements.
+Logical equivalence has already been introduced in an earlier section. Recall \eqref{eq:compoundlogicentailment} where we say if $\Phi \models \Psi$ and $\Psi \models \Phi$, $\Phi$ and $\Psi$ are logically equivalent denoted by $\Phi \equiv \Psi$. Here $\Phi$ and $\Psi$ are sets of statements.
 
 Consider a simplified case where $\Phi$ and $\Psi$ each contains only one statement. Let the formula of the statements of $\Phi$ and $\Psi$ be $F$ and $G$ respectively. The notations applied to $\Phi$ and $\Psi$ applies to $F$ and $G$ similarly. For example, $F\models G$ means that under the same interpretation if $F$ is true, $G$ must also be true. If $F \models G$ and $G \models F$, $F$ and $G$ are logically equivalent denoted by $F\equiv G$.
 
@@ -422,17 +411,17 @@ There is a huge table of logical equivalence formulas. The proof of the formulas
 		Statement & Equivalent & Comment \\
 		\hline
 		$\neg \neg p$ & $p$ & Double negation law \\
-		$(p \land q)$ & $(q \land p)$ & Commutative laws \\
-		$(p \lor q)$ & $(q \lor p)$ & Commutative laws \\
-		$(p \land (q \land r))$ & $((p \land q) \land r)$ & Association laws \\
-		$(p \lor (q \lor r))$ & $((p \lor q) \lor r)$ & Association laws \\
-		$(p \land (q \lor r))$ & $((p \land q) \lor (p \land r))$ & Distributive laws \\
-		$(p \lor (q \land r))$ & $((p \lor q) \land (p \lor r))$ & Distributive laws \\
+		$(p \land q)$ & $(q \land p)$ & Commutative law \\
+		$(p \lor q)$ & $(q \lor p)$ & Commutative law \\
+		$(p \land (q \land r))$ & $((p \land q) \land r)$ & Association law \\
+		$(p \lor (q \lor r))$ & $((p \lor q) \lor r)$ & Association law \\
+		$(p \land (q \lor r))$ & $((p \land q) \lor (p \land r))$ & Distributive law \\
+		$(p \lor (q \land r))$ & $((p \lor q) \land (p \lor r))$ & Distributive law \\
 		$(p \rightarrow q)$ & $(\neg p \lor q)$ & Conditional statements \\
-		$(p \rightarrow q)$ & $(\neg q \rightarrow \neg p)$ & Conditional Statements \\
-		$(p \leftrightarrow q)$ & $((p \rightarrow q) \land (q \rightarrow p))$ & Conditional Statement \\
-		$(\neg (p \land q))$ & $(\neg p \lor \neg q)$ & De Morgan's laws \\
-		$(\neg (p \lor q))$ & $(\neg p \land \neg q)$ & De Morgan's laws \\
+		$(p \rightarrow q)$ & $(\neg q \rightarrow \neg p)$ & Conditional statement \\
+		$(p \leftrightarrow q)$ & $((p \rightarrow q) \land (q \rightarrow p))$ & Conditional statement \\
+		$(\neg (p \land q))$ & $(\neg p \lor \neg q)$ & De Morgan's law \\
+		$(\neg (p \lor q))$ & $(\neg p \land \neg q)$ & De Morgan's law \\
 		\hline
 	\end{tabularx}
 \end{table}
@@ -443,15 +432,13 @@ Notice that when deriving certain canonical forms from the original logical expr
 
 \subsection{Logical Reasoning}
 
-Logical reasoning is about proving the true or false of a formula $F$ given a theory $T$. Notice that it is often not easy, and the proof may not be unique.
+Logical reasoning is about proving true or false of a formula $F$ given a theory $T$. The proof may not be unique, and sometimes it is difficult to find one.
 
 Before talking about how knowledge is retrieved from the knowledge base using DL inference and reasoning, we need to discuss what to return if knowledge is not found. When open world assumption (OWA) is made, the knowledge base considers itself as underdevelopment, and it is open-minded to unknowns. While when closed world assumption (CWA) is made, the knowledge base considers itself as developed, and unknown means nonexistence.
 
 Consider an example where it is asked ``are Alice's children all males?'', and in the database there are two children of Alice, both of which are male. Under OWA, the inference would return ``maybe'', as it does now know whether there are more children of Alice. While in CWA, the inference would return ``yes'', as it checks both children to be male, and it assumes they would be all the children Alice has. However, when Alice does have female child registered, both OWA and CWA inferences would return ``no'', because the female child contradicts the assertion regardless of the completeness of the database.
 
-Logic reasoning using the law of contradiction is one of the most commonly used approach. To use the law of contradiction to prove $T\models F$, in the high level just find contradictions in $\{\neg F, T\}$. The detailed procedure may differ depending on the logic framework being used.
-
-A commonly used way of looking for contradictions in $\{\neg F, T\}$ is to resolve the formula into something more structured, for example to one of its canonical forms. Commonly used canonical forms for contradiction check are clausal normal form and disjunctive normal form.
+The law of contradiction is widely used in logic reasoning. For example, to prove $T\models F$, just find contradictions in $\{\neg F, T\}$. A commonly used way of looking for contradictions in $\{\neg F, T\}$ is to resolve the formula into something more structured, for example to one of its canonical forms. Commonly used canonical forms for contradiction check are clausal normal form and disjunctive normal form.
 
 
 
