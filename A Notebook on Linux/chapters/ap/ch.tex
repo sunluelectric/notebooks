@@ -69,7 +69,7 @@ Some contents of this chapter come from \cite{honai2023cicd}.
 
 \section{Agile VS Waterfall}
 
-Agile and waterfall are both project management methodologies. Both of them are introduced starting with the more conventional waterfall model then Agile.
+Agile and waterfall are both project management methodologies. Both of them are introduced here, starting with the more conventional waterfall model then Agile.
 
 \subsection{Waterfall}
 
@@ -210,19 +210,20 @@ This CI/CD framework enables fast deployment of new packages. Large IT companies
 
 \textit{GitHub} has been an amazing platform for managing software projects, especially open-source collaborative projects.
 
-In the early days when CI/CD was not enabled in \textit{GitHub}, developers used third-party CI/CD tools such as Jenkins and Travis CI in conjunction with \textit{GitHub} for automatic integration and deployment. Lately, \textit{GitHub} introduced \textit{GitHub} Action (for short, Action), its own CI/CD solution, as a response to developers' requests.
+In the early days when CI/CD was not enabled in \textit{GitHub}, developers used third-party CI/CD tools such as Jenkins and Travis CI in conjunction with \textit{GitHub} for automatic integration and deployment. Lately, \textit{GitHub} introduced \textit{GitHub Actions} (for short, \textit{Actions}), its own CI/CD solution, as a response to developers' requests.
 
-Action is the practice of CI/CD on GitHub. In short, it allows the developers to create automatic workflows tied to \textit{GitHub} events. Action is widely used to automate the following tasks:
-\begin{itemize}
+\textit{Actions} is essentially a pipeline tool, and it is very useful as part of the practice of CI/CD on GitHub. In short, it allows the developers to create automatic workflows tied to \textit{GitHub} events. \textit{Actions} is widely used to automate the following tasks:
+\begin{enumerate}
   \item Compile the source code. The developer can define how the source code should be compiled.
   \item Virtualize the environment to run the compiled packages. The developer can define how to set up the environment.
   \item Test the packages on testing scenarios. The developer can define the testing scenarios.
-\end{itemize}
+  \item Raise an issue if anything occurs during the above procedures.
+\end{enumerate}
 Machine-readable instruction files are used to guide the automation. They are managed together with the source code in the repository.
 
-Notice that Action might be chargeable for private repositories depending on its computational cost. It is, however, often free of charge for community and public repository projects.
+Notice that \textit{Actions} might be chargeable for private repositories depending on its computational cost. It is, however, often free of charge for community and public repository projects.
 
-A commonly used scenarios of Action for community projects is that when someone submits a pull request, a series of checks are automatically done, and emails are sent to the project maintenance team to notify them the request. Sometimes a ``thank you'' email is sent to the contributor.
+A commonly used scenarios of \textit{Actions} for community projects is that when someone submits a pull request, a series of checks are automatically done, and emails are sent to the project maintenance team to notify them the request. Sometimes a ``thank you'' email is sent to the contributor.
 
 \begin{mdframed}
 	\centerline{\textbf{Pull Request}}
@@ -241,24 +242,24 @@ A commonly used scenarios of Action for community projects is that when someone 
 	With the above, the developer becomes an official contributor to the community project.
 \end{mdframed}
 
-Another use case for Action for individual projects is that when a new code is pushed to the repository, the code is automatically compiled and tested. If the test returns an error, create a \textit{GitHub} issue. Otherwise, put out a new release.
+Another use case for \textit{Actions} for individual projects is that when a new code is pushed to the repository, the code is automatically compiled and tested. If the test returns an error, create a \textit{GitHub} issue. Otherwise, put out a new release.
 
 \subsection{Framework}
 
-In Action, the developer needs to prepare CI/CD pipelines known as workflows, either by himself or from Actions Marketplace (a platform where commonly used workflows are shared). The backbone of a workflow is YAML files that describe the environment, the trigger, and the list of actions to execute. When an event such as a pull request happens, the associated workflow is triggered and executed. A demonstrative plot is given in Fig. \ref{ch:cicd:fig:actionframework}.
+In \textit{Actions}, the developer needs to prepare CI/CD pipelines known as workflows, either by himself or from \textit{Actions} Marketplace (a platform where commonly used workflows are shared). The backbone of a workflow is YAML files that describe the environment, the trigger, and the list of actions to execute. When an event such as a pull request happens, the associated workflow is triggered and executed. A demonstrative plot is given in Fig. \ref{ch:cicd:fig:actionframework}.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/action_framework.png}
-	\caption{Action framework.} \label{ch:cicd:fig:actionframework}
+	\caption{\textit{Actions} framework.} \label{ch:cicd:fig:actionframework}
 \end{figure}
 
 As illustrated in Fig. \ref{ch:cicd:fig:actionframework}, a workflow can contain multiple jobs that can run in parallel (by default) or sequence (by defining dependencies). Each job can contain multiple steps that run in sequence.
 
 For each job, a ``runner'' is assigned which serves as the environment to run the job. The developer needs to specify how the runner should be configured such as what software needs to be installed in order to run the associated job.
 
-\subsection{Action Triggers and Types}
+\subsection{\textit{Actions} Triggers and Types}
 
-It is worth mentioning that Action can be triggered not only by \textit{GitHub} events but also external events, schedules, etc. Commonly seen triggers include
+It is worth mentioning that \textit{Actions} can be triggered not only by \textit{GitHub} events but also external events, schedules, etc. Commonly seen triggers include
 \begin{itemize}
 	\item \textit{GitHub} Events, such as push, pull request, etc. This is the most common setup for CI/CD.
 	\item External events.
@@ -266,7 +267,7 @@ It is worth mentioning that Action can be triggered not only by \textit{GitHub} 
 	\item Manual.
 \end{itemize}
 
-Action provides workflow templates of different task types. There are at least the following workflow types as of this writing. They are not limited to CI/CD.
+\textit{Actions} provides workflow templates of different task types. There are at least the following workflow types as of this writing. They are not limited to CI/CD.
 \begin{itemize}
 	\item CI
 	\item Deployment
@@ -282,16 +283,16 @@ Action provides workflow templates of different task types. There are at least t
 \end{itemize}
 Some of them will be covered in later sections.
 
-\subsection{Action Marketplace}
+\subsection{\textit{Actions} Marketplace}
 
-Action marketplace provides commonly seen actions for free, and they can be easily integrated into a workflow. The developer can look for action items in Action marketplace before trying to prepare the entire workflow by himself from scratch.
+\textit{Actions} marketplace provides commonly seen actions for free, and they can be easily integrated into a workflow. The developer can look for action items in \textit{Actions} marketplace before trying to prepare the entire workflow by himself from scratch.
 
 \subsection{Costs}
 
-Action may generates additional costs. This is because executing workflows usually consumes \textit{GitHub} servers' storage and CPU. As of this writing, additional cost is generated only if all the following criteria are met:
+\textit{Actions} may generates additional costs. This is because executing workflows usually consumes \textit{GitHub} servers' storage and CPU. As of this writing, additional cost is generated only if all the following criteria are met:
 \begin{itemize}
 	\item Private repository. This is often not the case for community and individual projects, but often true for enterprise repositories.
-	\item The workflows are executed on \textit{GitHub} servers. Notice that it is possible to execute workflows using on-premises servers, in which case Action becomes a free service.
+	\item The workflows are executed on \textit{GitHub} servers. Notice that it is possible to execute workflows using on-premises servers, in which case \textit{Actions} becomes a free service.
 	\item Storage and/or computational cost goes beyond the free-tier threshold.
 \end{itemize}
 
@@ -299,9 +300,9 @@ When all the criteria is met, the developer pays \textit{GitHub} by the storage 
 
 The running environment also affects the cost. It is often more expensive if the workflow needs to run on Windows or MacOS than if it can run on Linux due to the licensing fee. As of this writing, Windows and MacOS introduce a computational cost multiplier of $2$ and $10$ respectively comparing with Linux.
 
-\section{\textit{GitHub} Action (Part II: Practice)}
+\section{\textit{GitHub Actions} (Part II: Practice)}
 
-As introduced in the previous section, the key to an Action includes defining the triggers and preparing the associated workflows for the triggers. Of course, the developer also needs to map the triggers with the workflows. More details are introduced in this section.
+As introduced in the previous section, the key to an \textit{Actions} includes defining the triggers and preparing the associated workflows for the triggers. Of course, the developer also needs to map the triggers with the workflows. More details are introduced in this section.
 
 The workflow files are used to define the triggers as well as the associated workflows. They are YAML format files following specific syntax that illustrates environment configurations requirements, jobs, and job steps. They are stored under \verb|.github/workflows| and are managed by the developers just like any other source code. Notice that there are certain events that would trigger only if their associated workflow files exist in the project repository default branch (usually \verb|main| or \verb|master| branch).
 
@@ -413,7 +414,7 @@ run: conda env update --file environment.yml --name base
 \end{lstlisting}
 executes a \verb|conda| command that updates the packages defined in \verb|environment.yml| in the base environment.
 
-In this example, it can be seen that many things besides the commands are configured in the workflow, such as the name of the jobs and steps, the OS, the Action reference, the software version, etc.
+In this example, it can be seen that many things besides the commands are configured in the workflow, such as the name of the jobs and steps, the OS, the \textit{Actions} reference, the software version, etc.
 
 Notice that \verb|uses: actions/checkout@v3| as the first step in the list of steps pulls in a predefined action defined at \textit{github.com/actions/checkout}. The domain name \textit{github.com/} can be neglected.
 
@@ -432,11 +433,11 @@ it can be specified which branch(es) to trigger the workflow when push a commit.
 
 The workflow file needs to be saved under \verb|.github/workflows/| in the repository, with an arbitrary name but it has to end with suffix \verb|.yml| or \verb|.yaml|.
 
-Push the repository with the workflow file to \textit{GitHub}. On \textit{GitHub} repository dashboard under ``Action'', select and enable the action so that the workflow would be triggered once the trigger event occurs.
+Push the repository with the workflow file to \textit{GitHub}. On \textit{GitHub} repository dashboard under ``Actions'', select and enable the action so that the workflow would be triggered once the trigger event occurs.
 
 \subsection{Very Complicated Actions}
 
-Some Action workflows can be as simple as a few lines of shell commands, for example, \verb|GitHub Action Demo| given on page \pageref{code:githubactionsdemo}. Others, however, can be extremely complicated that includes a large set of implementation code, test cases, building, checking for vulnerabilities, packaging, etc. An example of such complicated Action flow is \verb|actions/checkout@v3| which was used in the other example \verb|Python Package using Conda| given in page \pageref{code:pythonpackageusingconda}.
+Some \textit{Actions} workflows can be as simple as a few lines of shell commands, for example, \verb|GitHub Action Demo| given on page \pageref{code:githubactionsdemo}. Others, however, can be extremely complicated that includes a large set of implementation code, test cases, building, checking for vulnerabilities, packaging, etc. An example of such complicated \textit{Actions} flow is \verb|actions/checkout@v3| which was used in the other example \verb|Python Package using Conda| given in page \pageref{code:pythonpackageusingconda}.
 
 More details of the action can be found at \textit{github.com/actions/checkout}. As of this writing, the latest version of the code is \verb|v4.1.0|, and in its repository it has a long list of files in TypeScript (an enhanced superset of JavaScript), YAML, JSON, shell scripts and other languages, and it is still under development. A screenshot is given in Fig. \ref{ch:cicd:fig:actioncheckout}.
 \begin{figure}[htbp]
