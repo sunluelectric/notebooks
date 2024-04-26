@@ -1492,8 +1492,9 @@ Notice that
 \begin{lstlisting}
 db.collection_name.some_function()
 \end{lstlisting}
-is equivalent to
-\begin{lstlisting}	db.getCollection('collection_name').some_function()
+is equivalent with
+\begin{lstlisting}
+db.getCollection('<collection_name>').find({});
 \end{lstlisting}
 The first implementation is more convenient while the second more flexible as it supports dynamic naming, i.e., something like
 \begin{lstlisting}
