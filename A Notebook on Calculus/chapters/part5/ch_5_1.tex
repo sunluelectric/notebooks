@@ -1,22 +1,35 @@
 \chapter{Brief Introduction to Numerical Analysis}
 
-Numerical analysis goes beyond calculus. However, it still makes sense to include it as part of the calculus notebook. Many numerical analysis algorithms are inspired by calculus. In return, as one of the most important applications, numerical analysis is used to solve differential equations when their analytical solution is not obtainable using calculus. 
-
-There are numerical analysis textbooks such as the latest edition of \cite{burden1997numerical} (as of this writing it is in its $10$th edition) that list ``review of calculus'' as its first section.
+Numerical analysis extends beyond the scope of calculus, yet it remains pertinent to include it within a calculus-focused notebook. This is because many numerical analysis algorithms derive their principles from calculus. Textbooks on numerical analysis, such as \cite{burden1997numerical} (currently in its $10$th edition), often begin with a ``review of calculus'' as its first chapter, underscoring its foundational importance.
 
 \section{Motivation}
 
-Sometimes it is not possible to describe a variable or a model using analytical equations alone. For example, we may need to solve $f(x)=0$ for $x$, and there is no analytical expression of $x$ due to the complexity of $f(x)$. Or, we may need to describe the behavior of a model in the form of $f(x)$, but the true model is too difficult to calibrate precisely. In both examples, analytical solution finds its limitations.
+Analytical equations alone sometimes fail to adequately describe a variable or model. Consider cases where we must solve $f(x) = 0$ for $x$, but no analytical expression for $x$ exists due to the complexity of $f(x)$. Similarly, describing the behavior of a model through $f(x)$ accurately using analytical expression may be impractical if the true model is too complex to calibrate accurately. In these instances, analytical solutions reach their limits.
 
-Numerical solution serves as an alternative to the analytical solution. Though numerical solution is likely to be more computationally intensive and give less insights than the analytical solution, it finds its usefulness in many engineering problems where analytical solution is not reachable. 
+Numerical solutions provide a viable alternative to analytical methods. Although they are typically more computationally intensive and may offer less insight than their analytical counterparts, numerical solutions are indispensable in numerous engineering problems where analytical methods fall short.
 
-Numerical analysis studies the effectiveness and efficiency of numerical solutions for variety of problems.
+Numerical analysis focuses on the effectiveness and efficiency of these numerical solutions across a diverse array of problems.
 
-\section{Numerical Analysis Concerned Problems}
+\section{Challenges in Numerical Analysis}
 
-\subsection{Numerical Analysis Error}
+In contrast to analytical solutions which are often presented through equations, numerical solutions usually involve iterative or recurrent algorithms. These algorithms approximate the analytical solution, aiming to balance accuracy with computational feasibility. Numerical analysis addresses several critical aspects of these solutions:
 
-\subsection{Algorithm and Its Convergence}
+\vspace{0.1in}
+\noindent \textbf{Convergency and Robustness of the Algorithm}
+\vspace{0.1in}
 
-\section{Tools}
+Iterative algorithms are generally effective but may fail to converge under certain conditions. Understanding and defining the convergence criteria is essential for ensuring the reliability and robustness of numerical algorithms.
+
+\vspace{0.1in}
+\noindent \textbf{Approximation Error}
+\vspace{0.1in}
+
+Numerical solutions commonly employ approximations, leading to potential discrepancies between the numerical and true solutions. Numerical analysis aims to quantitatively assess and minimize these errors.
+
+\vspace{0.1in}
+\noindent \textbf{Computational Burden and Speed of Convergenc}
+\vspace{0.1in}
+
+Numerical computations can be time-consuming, and complex algorithms may require substantial computational resources, sometimes exceeding practical limits. This computational demand can significantly constrain the application of numerical solutions, particularly in real-time scenarios.
+
 
