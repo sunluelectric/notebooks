@@ -1,0 +1,223 @@
+\chapter{Multivariable Function}
+
+This chapter introduces functions with multiple inputs and/or outputs. Usually, these inputs and outputs are put into vectors for computation and presentation convenience. Section \ref{ch5sec:briefintrotovectormatrix} gives a very brief introduction to the basics of vector and matrix operations. Section \ref{ch5sec:multivarfunction} introduces the concept of multivariable functions, including the multiple input function and the vector function.
+
+From calculus perspective, this chapter clears the preliminary knowledge required for later Chapters \ref{ch6ch} and \ref{ch7ch}.
+
+\section{Brief Introduction to Vector and Matrix} \label{ch5sec:briefintrotovectormatrix}
+
+Detailed introduction to vector and matrix can be found in any \textit{linear algebra} textbook, where there are the geometric interpretation of vector, then linear equation represented by product of matrix and vector, then column and null space of matrix, then rank of matrix and determinant of square matrix, then inverse of matrix, then linear transformation of matrix, then eigenvalue of matrix, then norm of vector and matrix, then algebraic Riccati equation, and so on. This list can go almost eternally. To make things even more complicated, depending on the application, the vector and matrix may have different physical meanings. For example, the speed of motion and the bus voltage phasors of a microgrid can all be represented by vectors, but might be completely two different things.
+
+In the context of this notebook, however, most of the above are out of the scope. We will take vector and matrix as a way of organizing scalar data. Basically, a vector is a 1-D chain of scalar variables, and a matrix is a 2-D rectangular mesh of scalar variables. In many cases such as calculating matrix product, a vector can be taken as a special case of matrix, and a scalar is a special case of a vector. Of course, the very basics such as product of matrices are still required.
+
+The preliminary vector and matrix knowledge used in this notebook is summarized in the rest of this section as follows.
+
+\subsection{Basic Concepts}
+
+A vector $x$ (sometimes denoted as bold text $\textbf{x}$ in textbooks) is a finite sequence of scalar variables organized in a 1-D chain. The length of the vector, or the dimension of the vector, is the number of elements in the vector. For vector $x$ with $n$ elements, the elements are denoted by $x_1, x_2, \cdots, x_n$, and $x_i$ is called the $i$-th element of the vector.
+
+Most of the vectors in this notebook are by default \textit{column vectors}, which means that the $n$ elements are put into $n$-row-$1$-column, as follows. In this case, we say \textit{``$x$ is a $n$ dimensional column vector''} or \textit{``$x$ is a $n\times 1$ vector''}.
+\begin{eqnarray}
+    x &=& \left[\begin{array}{cc}
+         x_1  \\
+         x_2 \\
+         \vdots \\
+         x_n
+    \end{array}\right]. \label{ch5eq:columnvector}
+\end{eqnarray}
+
+A row vector, on the other hand, puts the $n$ elements into $1$-row-$n$ column. A row vector is like a column vector flipped diagonally, as shown below in \eqref{ch5eq:rowvector}. We call the flipping operation \textit{``transpose''}, denoted by $(\cdot)^T$ (used in this textbook) or $(\cdot)^\prime$.
+\begin{eqnarray}
+    x^T &=& \left[\begin{array}{cccc} x_1 & x_2 & \ldots & x_n
+    \end{array}\right], \label{ch5eq:rowvector}
+\end{eqnarray}
+where $x^T$ is a row vector and it is a transpose of the column vector $x$ previously given in \eqref{ch5eq:columnvector}. The transpose of a column vector is a row vector, and vise versa. The transpose of a scalar is itself.
+
+A matrix $A$ (sometimes denoted as bold $\textbf{A}$ in textbooks) is a finite number of scalar variables organized in 2-D mesh, with each scalar taking a particular position. The number of rows and columns are the dimension of the matrix. For example, if $A$ has $m$ rows and $n$ columns, we say \textit{``$A$ has a dimension of $m\times n$''} or \textit{``$A$ is a $m\times n$ matrix''}, shown as follows.
+\begin{eqnarray}
+    A &=& \left[\begin{array}{cccc}
+        a_{1,1} & a_{1,2} & \ldots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \ldots & a_{2,n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{m,1} & a_{m,2} & \ldots & a_{m,n}
+    \end{array}\right], \label{ch5eq:matrixa}
+\end{eqnarray}
+where $a_{i,j}$ is the $i$-th row, $j$-th column element of $A$.
+
+The transpose operation is also defined on matrix. By applying transpose on $A$ in \eqref{ch5eq:matrixa}, a $n\times m$ matrix $A^T$ can be obtained, where the $i$-th row, $j$-th column element in the transpose matrix $A^T$ is the $j$-th row, $i$-th column element in the original matrix $A$.
+
+The vectors or matrices with the same dimension can be added together by adding each associated pair of elements together.
+
+\subsection{Matrix Multiplication}
+
+The product of two matrices is defined as follows. 
+
+\begin{VF}
+\textbf{Matrix Multiplication}:
+\\
+\\
+Consider matrices $A$ and $B$. As a prerequisite of calculating $AB$, the number of column in the first matrix $A$ must equal to the number of row in the second matrix $B$. 
+
+Let $A$ and $B$ be $m\times p$ matrix and $p\times n$ matrix respectively. The matrix product $C=AB$ is a $m \times n$ matrix with each element calculated by
+
+\begin{eqnarray}
+    c_{i,j} &=& a_{i,1}b_{1,j} + a_{i,2}b_{2,j} + \ldots + a_{i,p}b_{p,j} \nonumber \\
+    &=& \sum_{k=1}^p a_{i,k}b_{k,j}, \nonumber
+\end{eqnarray}
+for $i = 1, \ldots, m$ and $j= 1, \ldots, n$.
+
+It is clearly from the definition that $AB$ does not equal to $BA$. In the example above, if $m\neq n$, $BA$ does not exist in the first place.
+\end{VF}
+
+It can be proved by definition that if $C=AB$, $C^T = (AB)^T = B^TA^T$.
+
+In terms of matrix multiplication, a vector is just a special case of matrix. Therefore, the product of a matrix with a vector $y=Ax$ where $A$ is a $m\times n$ matrix and $x$ a $n\times 1$ matrix, is a $m\times 1$ vector given by
+\begin{eqnarray}
+    y &=& Ax \nonumber \\
+    &=& \left[\begin{array}{cccc}
+        a_{1,1} & a_{1,2} & \ldots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \ldots & a_{2,n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{m,1} & a_{m,2} & \ldots & a_{m,n}
+    \end{array}\right] \left[\begin{array}{cc}
+         x_1  \\
+         x_2 \\
+         \vdots \\
+         x_n
+    \end{array}\right] \nonumber \\
+    &=& \left[\begin{array}{c}
+         \sum_{k=1}^n a_{1,k}x_k \\
+         \sum_{k=1}^n a_{2,k}x_k \\
+         \vdots \\
+         \sum_{k=1}^n a_{m,k}x_k
+    \end{array}\right]. \nonumber
+\end{eqnarray}
+
+The product of row vector $u^T$ and column $v$, both $n$ dimensional vectors, is
+\begin{eqnarray}
+    u^Tv &=& \left[\begin{array}{cccc} u_1 & u_2 & \ldots & u_n
+    \end{array}\right] \left[\begin{array}{cc}
+         v_1  \\
+         v_2 \\
+         \vdots \\
+         v_n
+    \end{array}\right] \nonumber \\
+    &=& \sum_{k=1}^n u_kv_k \nonumber
+\end{eqnarray}
+which is a scalar. As a special case, $x^Tx = \sum_{k=1}^n x_i^2$ for a $n$ dimensional vector $x$.
+
+\subsection{Block Matrix}
+
+For the convenience of calculation and interpretation, sometimes a large dimension matrix is split into a combination of smaller dimension sub matrices.
+
+For example, consider matrix $A$ with dimension $m \times p$ and matrix $B$ with dimension $p\times n$. Matrix $A$ can be split into two sub matrix $A_1$ and $A_2$, where $A_1$ consists of the first $m_1$ rows of $A$ thus $m_1 \times p$ dimension, and $A_2$ consists of the rest $m_2 = m - m_1$ rows of $A$ thus $m_2\times p$ dimension, i.e.
+\begin{eqnarray}
+    A &=& \left[\begin{array}{c}
+         A_1  \\
+         A_2 
+    \end{array}\right]. \nonumber
+\end{eqnarray}
+The calculation of $C=AB$ can be done as follows
+\begin{eqnarray}
+    C = AB = \left[\begin{array}{c}
+         A_1  \\
+         A_2 
+    \end{array}\right]B = \left[\begin{array}{c}
+         A_1B  \\
+         A_2B 
+    \end{array}\right]. \nonumber
+\end{eqnarray}
+
+Similarly, if split matrix $B$ into two sub matrices, with $B_1$ the first $n_1$ columns and $B_2$ the rest $n_2 = n - n_1$ columns of $B$, then
+\begin{eqnarray}
+    C = AB = A \left[\begin{array}{cc}
+        B_1 & B_2 
+    \end{array}\right] = \left[\begin{array}{cc}
+        AB_1 & AB_2 
+    \end{array}\right] \nonumber
+\end{eqnarray}
+
+Furthermore, splitting both $A$ and $B$ simultaneously gives
+\begin{eqnarray}
+    C = AB = \left[\begin{array}{c}
+         A_1  \\
+         A_2 
+    \end{array}\right] \left[\begin{array}{cc}
+        B_1 & B_2 
+    \end{array}\right] = \left[\begin{array}{cc}
+        A_1B_1 & A_1B_2 \\
+        A_2B_1 & A_2B_2
+    \end{array}\right] \label{ch5eq:blockmatrixproduct}
+\end{eqnarray}
+Equation \eqref{ch5eq:blockmatrixproduct} sometimes helps to speed up the matrix product as it allows to split the calculation into independent pieces. But more importantly, equation \eqref{ch5eq:blockmatrixproduct} gives a lot of insights into matrix operations and linear transformation. The details are not covered in this notebook.
+
+\subsection{Identity Matrix and Square Matrix Inverse}
+
+A matrix is called a \textit{square matrix} if it has the same number of rows and columns. For example, if matrix $A$ has a dimension of $n\times n$, then it is a square matrix of dimensional $n$. The elements with the same row and column index, i.e. $a_{i,i}, i=1, \ldots, n$, are called the diagonal elements.
+
+The \textit{identity matrix}, denoted by $I$, is a special type of square matrix as given in \eqref{ch5eq:identitymatrix}. Its diagonal elements are $1$, with the rest elements $0$. 
+\begin{eqnarray}
+    I &=& \left[\begin{array}{ccccc}
+        1 & 0 & 0 & \ldots & 0 \\
+        0 & 1 & 0 & \ldots & 0 \\
+        0 & 0 & 1 & \ldots & 0 \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & 0 & \ldots & 1
+    \end{array}\right] \label{ch5eq:identitymatrix}
+\end{eqnarray}
+
+A $n$ dimensional identity matrix is denoted by $I_n$. The multiplication of the identity matrix with any matrix from either left or right side does not change the matrix, i.e. for any matrix $A$ with dimension $m\times n$, $I_{m}A = AI_{n}=A$.
+
+A square matrix may have an associated inverse matrix. The definition of inverse matrix is given as follows.
+
+\begin{VF}
+\textbf{Definition of inverse of a matrix}:
+\\
+\\
+Consider a square matrix $A$ with dimension $n\times n$. Matrix $A$ is called \textit{invertible} if such matrix $A^{-1}$ with dimension $n\times n$ exists that
+\begin{eqnarray}
+    AA^{-1} = A^{-1}A = I_n, \nonumber
+\end{eqnarray}
+and $A^{-1}$ is called the \textit{inverse} of matrix $A$.
+
+\end{VF}
+
+Notice that matrix $A^{-1}$ may not exist for some $A$, depending on the determinant of $A$. Details can be found in linear algebra textbooks and are not given in this notebook.
+
+\section{Multivariable Function} \label{ch5sec:multivarfunction}
+
+In Chapters 2 and 3, we have been considering single-input-single-output functions only, i.e. for function $y=f(x)$, we have been discussing only the cases where $y$ and $x$ are scalars so far.
+
+In many other cases, however, a function may have multiple input and/or output variables. For example, consider the following function used to calculate the mechanical energy of an object
+\begin{eqnarray}
+    e = f(v, h) = \dfrac{1}{2}mv^2 + mgh. \nonumber
+\end{eqnarray}
+where $m$, $v$ and $h$ are the mass, motion speed and height (related to ground) of the object, and $g$ is the free-fall acceleration, $g=9.8m/s^2$ on the earth. This is a typical multivariable function, where the function $z=f(x, y)$ depends on multiple independent variables $x$ and $y$.
+
+When there are multiple outputs for a function, the outputs are often out into a column vector and the function is called a \textit{vector function}. Two examples of vector functions are given below.
+\begin{eqnarray}
+    f(x) &=& \left[\begin{array}{cc}
+        1 & 0 \\
+        0 & 1 \\
+        3 & -2
+    \end{array}\right]x, \label{ch5eq:vectorlinear} \\
+    g(x) &=& \left[\begin{array}{c}
+         g_1(x)  \\
+         g_2(x)
+    \end{array}\right] = \left[\begin{array}{c}
+         x_1^2 + x_2^2  \\
+         0.5x_1 + e^{x_2}
+    \end{array}\right], \label{ch5eq:vectornonlinear}
+\end{eqnarray}
+where $f(x)$ and $g(x)$ are both vectors with dimension $3\times 1$ and $2\times 1$ respectively. Equation \eqref{ch5eq:vectorlinear} is a linear function with $2$ inputs $x = \left[\begin{array}{cc}
+    x_1 & x_2
+\end{array}\right]^T$ and $3$ outputs $y = \left[\begin{array}{ccc}
+    y_1 & y_2 & y_3
+\end{array}\right]^T$, while \eqref{ch5eq:vectornonlinear} is a nonlinear function with $2$ inputs $x = \left[\begin{array}{cc}
+    x_1 & x_2
+\end{array}\right]^T$ and $2$ outputs $g = \left[\begin{array}{cc}
+    g_1 & g_2
+\end{array}\right]^T$.
+
+
+

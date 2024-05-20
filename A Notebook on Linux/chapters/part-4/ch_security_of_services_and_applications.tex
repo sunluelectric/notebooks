@@ -1,0 +1,197 @@
+\chapter{Security of Services and Applications}
+
+The previous chapter introduced general OS security mechanisms. This chapter discusses security mechanisms of services and software running on the OS such as database. Notice that network and communication security is a stand alone topic not considered in this chapter. 
+
+\section{Database Security}
+
+Many Apps, both local and online, heavily rely on database to manage information. For example, online shopping APP uses database to record transaction history. Online banking uses database to store and manage customer capitals. The data stored in a database is often critical and confidential, and the database service providers need to try their best to prevent data loss and leaking, and to ensure the integrity and availability of the database.
+
+When a database is under attack, the worst scenario may go beyond data damage. Examples are given below.
+\begin{itemize}
+	\item Paralyze database service.
+	\item Change and remove data illegally.
+	\item Steel data.
+	\item Attack and gain unauthorized access to the underlying OS, and damage or control the entire server.
+	\item Deploy Trojan horse program for other servers connected to the database server.
+\end{itemize}
+
+It is possible that the attacker hides and disguises the attacking command into SQL injection to open a back door or to retrieve unauthorized data such as confidential information.
+
+\begin{shortbox}
+\Boxhead{Secure DBMS and Secure OS}
+It is worth introducing the relationship between a security-enhanced OS and security-enhanced DBMS. In short, they make a better each other, forming a ``security chain'' together. A secure OS boosts the security of the database. A poor OS, on the other hand, harms the DBMS security level because data is essentially stored on hard drive which can be penetrated if the OS is down.
+
+There are two common ways of forming a security-enhanced DBMS from a normal DBMS. The first way is to upgrade the DBMS kernel codes for additional security features. This can be complicated and requires a high-level mathematics, databases and programming skills, but can provide a safe DBMS. Obviously, this applies to only open-source databases. The second way is to build a ``wrapper'' for the DBMS to interface with the users and API calls This usually requires less skill sets and can be applied to both open-source and proprietary databases, but can only provide mediocre security.
+\end{shortbox}
+
+\subsection{Database Security Risks Categories}
+
+Depending on the identity and the access level of the attacker, database security risks can be divided into the following categories as shown in Table \ref{ch:securityaccessories:tab:dbsecurityriskscategories}.
+\begin{table}
+	\centering \caption{DB security risks categories and associated security methods.} \label{ch:securityaccessories:tab:dbsecurityriskscategories}
+	\begin{tabular}{|c|c|c|}
+		\hline
+			& With Authentication & Without Authentication \\ \hline
+		\multirow{2}{*}{Internal} & Developer, manager, etc. & Irrelevant employee, etc. \\
+		& Access control and audit & Encoding \\ \hline
+		\multirow{2}{*}{External} & Customer, vendor, etc. & Hacker, visitor, etc. \\
+		& Outsourced DB security methods & SQL injection prevention \\
+		\hline
+	\end{tabular}
+\end{table}
+Different database security risks categories may tell completely different stories on how an attacker plans his attack. For example, a developer may leave a backdoor in the program which he can use to access confidential data. A vendor may bring the hard drive of the database outside the managed premises, after which he can use variety of tools to crack the database and obtain the data.
+
+To tackle the challenges, different security methods need to be applied to prevent each and every risks category. A high-level summary is given in Table \ref{ch:securityaccessories:tab:dbsecurityriskscategories}. Details are given in later sections.
+
+\subsection{Database Access Control}
+
+There are different types of access control, some of which widely adopted to all different types of databases, while others may apply to only high-level secure databases. Some access control schema apply to both database and OS, the most popular ones being DAC and MAC which have already been introduced in earlier sections when discussing OS security. They are re-addressed for database as follows.
+
+DAC restricts access to objects based on the identity of the subject, i.e. the user or the group of the user. The accessibility of an object is determined by the owner of the object. The same idea has been adopted by Linux in file management.
+
+As introduced earlier in database chapters, in DBMS, use syntax that looks like the following to grand and revoke access of an object from a subject.
+\begin{lstlisting}
+GRANT <privilege> ON <table/view> TO <subject>
+REVOKE <privilege> ON <table/view> FROM <subject>
+\end{lstlisting}
+In practice, it is common that the database manager sets up different set of views for different user groups, each set of views containing everything that the user group requires. Grant access to only the associated views to the user groups. This can hopefully prevent a user from accessing data confidential to him.
+
+The problem of DAC is that it can ``lose control'' sometimes, making a user bypassing the restriction. For example, a user who has been revoked from access may still be able to access the data if he had created a procedure that reads the data, and his access to that procedure is not revoked. Many DBMS tries to provide some protection against this, for example, by integrating security labels into the SQL that the user injects. When a user execute an SQL command, in the backend the SQL command is ``reformulated'' to contain user authentication information. In a good implementation, this security mechanism should be made transparent to the user.
+
+Another challenge is that sometimes the user legitimately asks for aggregated information which, however, can only be derived if he has access to data confidential to him. For example, consider a table that stores the scores of a class. A student wants to check his score as well as the average score of the class, which makes perfect since. However, the scores of all the students are required to derive the average score. If the access of the student is limited to his score alone, he will not be able to get the average score of the class.
+
+Different from DAC where the owner of an object choose his preference of who can access the data and the preference can change case by case, in MAC the rules are enforced by the system administrator consistently and globally. The user cannot overwrite security policy even on his own data. This reduces the chance of human error, hence providing a higher level of security. The cost is the flexibility in the user experience, and the complexity of setting up global rules especially on a large database. MAC is often used in government database where huge amount of confidential and sensitive data is managed with heavy responsibility.
+
+In multi-level security DBMS (MLS), also know as multi-layer DBMS, each piece of data in a database is associated with a security label that reads like ``unclassified'', ``confidential'', ``secret'', ``top secret'', etc. This security label is a compulsory attribute to all the data. Users also have security labels that determines the level of accessibility. When querying the same database, different users will get different results based on the security level of each piece of data. The higher the security label of the user, the more information he is able to retrieve.
+
+MLS is often used as part of MAC which is introduced earlier in this section.
+
+In addition to query, the security labels also affect how \verb|INSERT| and other database manipulation commands work. Obviously, the user needs to have a higher layer (or at least equal) security label than the data, in order to insert, edit or remove it. 
+
+There might be an interesting case where a row with higher security label already exists in the table, and a  user with a lower security label who cannot detect that data wants to insert into the table a new row with the same primary key. In a normal database, this operation would have been rejected due to the duplication of primary key. However, in MLS, this action is granted. Otherwise, the user with lower security label would sense the existence of the higher security label data. This technology is known as polyinstantiation, a method used to avoid covert channels by allowing multiple rows with the same primary key but with different data, based on different security levels. Polyinstantiation occurs when multiple rows in table appear to have the same primary key when viewed at different security levels.
+
+Covert channel refers to a ``disguised'' channel that transfer information between entities while violating the security policy. In many cases, the channel is built from a list of operations, all of which legitimate by itself alone. These operations, when combined together, creates this unexpected bug outbound designer's intention. An example of a convert channel is as follows.
+\begin{enumerate}
+  \item Entity A, with higher privileges, encodes secret information in binary format.
+  \item Periodically, entity A change the permission of a file that can be sensed by entity B. The encoded binary format is used to setup the permissions.
+  \item Entity B listens to the permission of that file to obtain the binary format data.
+  \item Entity B decodes the binary format to obtain the secret information.
+\end{enumerate}
+By doing the above, entity A is able to transfer a secret information to entity B who has a lower layer security label and should not touch the data. Notice that entity A may not be a human traitor, but a malware program.
+
+Covert channel uses unintended system mechanisms for communication, which is often low efficient. As a result, the bandwidth of the covert channel is often much lower than a regular communication channel. Besides, a fast covert channel is likely to be easier to detect, which is something that the hackers want to avoid.
+
+\subsection{Security-Enhanced DBMS Solutions in a Glance}
+
+To wrap up, different security-enhanced DBMS solutions are now available on the market as follows.
+
+\vspace{0.1in}
+\noindent \textbf{Normal DBMS on Security-Enhanced OS}
+\vspace{0.1in}
+
+In the early stage, no additional security features is added to the DBMS. It is just that the DBMS is running on a secure OS with MAC enabled. The database is often put into the group with highest sensitivity level. The problem of this implementation is that all users who legitimately access the database have to be in the same highest sensitivity group, which violates the principle of access control. The output of the database, whatever it might be, is considered generated from the highest sensitivity group, and needs to be audited each time before release. This severely adds human cost.
+
+\vspace{0.1in}
+\noindent \textbf{MLS}
+\vspace{0.1in}
+
+MLS, also known as ``trusted database'', adopts security-enhanced DBMS that uses security labels to mark all the data and users. It is secure and flexible, and the details have been introduced in the earlier section. The only obvious problem for MLS is that it is difficult to realize. For third-party MLS, the customer never know whether there is a backdoor, unless he check all the codes (millions of lines of codes) that realize the DBMS by himself, which is enormously tedious and sometimes impossible.
+
+\vspace{0.1in}
+\noindent \textbf{Security Wrapper}
+\vspace{0.1in}
+
+An alternative to MLS is use normal OS and DBMS, and add a ``filter'' between DBMS and the users. This filter serves as a wrapper to the DBMS, and it uses security stamps to manage data transmission. All the data stored in the database can be encoded, and only users with the correct keys can decode them. This forms an encoded database with security wrapper.
+
+\vspace{0.1in}
+\noindent \textbf{Distributed Database}
+\vspace{0.1in}
+
+Till this point, it can be seen that the key to database security is to prevent data leakage from high security tier databases to low security tier databases. MLS tries to label the data carefully to isolate high security tier data from low security tier data, while the secure OS and secure wrapper try to prevent low security tier user from accessing high security tier data. Distributed database is another approach trying to further isolate the data of different security tiers: use different database, or even run them on different machines, in the first place.
+
+Some system runs multiple DBMS kernels concurrently on a single server, each kernel managing a security layer of data. The compromise of one kernel does not necessarily mean that other layers are compromised. This may make the DBMS safer, but it will create high computational burden to the system. High security sometimes means low efficiency, and low efficiency can be bad for commercialized databases. It is also a challenge how to balance the trade-off between security, efficiency and cost.
+
+Other system runs multiple DBMS kernels on concurrently on multiple servers, each server in charge of a security tier. Low security tier databases are synchronized to high security tier servers (bot not wise versa). This architecture design is robust to covert channel, but the data consistency and availability becomes a challenge.
+
+\subsection{Outsourced Database Security}
+
+Some enterprise outsources the database management and maintenance to IT companies such as Microsoft, Oracle or other database service providers. Security challenges introduced by cloud/vendor-based database differ largely from on-premises databases mainly because the DBMS itself is not reliable.
+
+\vspace{0.1in}
+\noindent \textbf{User-Encrypted Data: Prevent Data Leakage}
+\vspace{0.1in}
+
+There is a risk that the third-party database service provider may leak the data intentionally or unintentionally.
+
+An intuitive solution of this problem is to encrypt the data in the user-end before saving into the database. A downside of this is that when we want to retrieve data from the database using an SQL query, the DBMS may have a difficult time interpreting and filtering the data. ``Searchable encryption'' is required in this case. It allows filtering of data without decrypting it first.
+
+The result from the outsourced database needs to be audited, mainly to check the authenticity, completeness and freshness of the returned information. Part of the reason is that searchable encryption may fail to return the correct and complete result. More importantly, the underlying assumption is that we cannot entirely trust the DBMS in the first place.
+
+\vspace{0.1in}
+\noindent \textbf{Watermark: Prevent Data Modification}
+\vspace{0.1in}
+
+Watermark can be used to identify the owner and authenticity of the data. It does not affect the normal usage of data, and it is hardly detectable by a third-party, but can be checked and audited conveniently by the party who assigned the watermark. Watermark shall be difficult to remove. The water mark is often added to the least significant bits of a numerical data.
+
+Problems of watermark include
+\begin{itemize}
+	\item It allows multiple entities to assign watermark to the same database. It is difficult to tell who the original owner of the database is.
+	\item If a user wants to remove the watermark, he can simply remove all the LSBs of the data.
+\end{itemize}
+
+\subsection{Big Data Security}
+
+As Industry 4.0 and IoT become more and more popular, we are collecting more data than ever in the history. Many activities such as building data driven models rely heavily on the big data. The major cloud service providers offer enterprise-tier databases optimized for big data management, both SQL and NoSQL such as Dynamo DB by Amazon and Cosmos DB by Azure, Microsoft.
+
+There are some unique challenges when comes to the security of big data. This is not surprising as big data is generated, distributed and utilized very differently from the conventional data.
+\begin{itemize}
+	\item Access control. 
+	\begin{itemize}
+		\item Data generated in big data comes from variety of sources by different types of users. It is difficult to track all the sources and all the users to determine the data accessibility and security tiers using traditional method.
+		\item AI model is used to assist categorizing sources and users, and assigning security tiers.
+	\end{itemize}
+	\item Control and maintenance of data when it is distributed.
+	\begin{itemize}
+		\item It is difficult to protect the privacy of the owner of the user when his data is published into a big data pool. It is possible to use AI model to find the owner of anonymously published data.
+		\item The key is to deny suspicious query and prevent a single entity from querying aggregated information.
+	\end{itemize}
+\end{itemize}
+
+\section{Virtualization Security}
+
+Virtualization has been introduced in Chapter \ref{ch:vac}. While having many beneficial features, the use of virtualization brings new challenges to system security.
+
+\subsection{Security Concerns}
+
+Some major security concerns of VMs are listed below.
+\begin{itemize}
+	\item Isolation between VMs.
+	\item Migration of VMs.
+	\item VM monitoring and supervisory.
+\end{itemize}
+
+VMs are naturally isolated due to the virtualization mechanism. Ideally, though running on the same physical server, a VM cannot bypass the monitored I/O to talk to another VM. When two VMs need to talk, VMM builds special communication channels for the VMs, usually a message queue or a piece of shared memory space. However, this does not guarantee the absolute isolation of information between two VMs. They may fail to wipe out all the data when handling over the hardware resources to another VM. There are potential covert channels where two VMs may communicate with each other, for example via the utilization rate of a hardware resource. 
+
+Migration happens frequently in VM applications due to its frequent scaling up and down. When migrating VMs from one server to the other, it is possible that the undercover malware is also migrated. In such cases, the malware can spread across servers and it will be difficult to trace back to its original source. 
+
+Conventionally, the MAC address of the hardware can be used as the unique identity of a machine. This does not apply to VMs. This makes some of the security measures difficult to implement.
+
+When running a VM, the user who deploys the VM usually have administrative access to the VM guest OS. As introduced earlier in Chapter \ref{ch:vac}, VMM may allow VM guest OS to run some instructions in privileged mode. If there is a flaw in the VMM, the software running in the VM may take advantage of that and use it to attack other VMs hosted on the same server.
+
+\subsection{VMM Security}
+
+The security of VMM is key to the security of VMs as VMM has full control of the hardware and it manages and interacts with all the VMs. If VMM is compromised, all the VMs running on the system is exposed to high risk. In this sense, VMM is the single-point-of-failure to the entire system, hence needs to be monitored at all time.
+
+A secure VMM architecture is helpful. Such architecture can be designed on top of an existing VMM. In practice, the secure VMM architecture may separate critical (``over-powered'') functions of VMM into different domains, and provide additional interface for security monitoring of the VMM. 
+
+
+
+
+
+
+
+
+
+
+
+
