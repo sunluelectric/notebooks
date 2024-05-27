@@ -4,32 +4,27 @@ Relational database has been introduced in the earlier chapter. This chapter dis
 
 \section{Brief Introduction to Non-Relational Database}
 
-Non-relational database (NoSQL database) emerged in $2000$s. In contrast to RDBMS, NoSQL databases do not store data in tables but in key-value pairs, graphs, documents, or other formats.
+Non-relational databases (NoSQL databases) started to popularize in the $2000$s. In contrast to RDB, NoSQL databases do not store data in tables the way RDB does, but in key-value pairs, graphs, documents, or other formats. NoSQL database can become more flexible, efficient and easier to use in some applications. Examples of NoSQL databases include \textit{Redis}, \textit{Azure CosmosDB}, \textit{Oracle NoSQL Database}, \textit{Amazon DynamoDB}, \textit{MongoDB}, \textit{AllegroGraph} and many more.
 
-Though it may not be as intuitive as RDB, NoSQL database can become more efficient and easier to use in some applications. For example, NoSQL databases can be very fast in query, and are becoming popular in handling big data in real-time web applications. However, many non-relational databases compromise consistency issue, and can only provide ``eventual consistency'' but not ``strong consistency''. This implies that the latest update in the database may not be reflected in an immediate query. Examples of NoSQL databases include \textit{Redis}, \textit{Azure Cosmos DB}, \textit{Oracle NoSQL Database}, \textit{Amazon DynamoDB} and \textit{AllegroGraph}.
+Unlike SQL which applies to almost all RDBMS, there is no universally adopted language for NoSQL DBMS. Each NoSQL database often has its unique query language tailored to its specific data model. We use ``NoSQL'' to refer to a collective set of languages used for NoSQL database management. For simple applications, different RDB may perform similarly, with some subtle differences in the performance. However, this is different for NoSQL databases, which may function completely differently.
 
-Unlike SQL which applies to almost all RDB, there is no universally adopted language for NoSQL databases. Each NoSQL database often has its unique query language tailored to its specific data model. We use ``NoSQL'' to refer to a collective set of languages used for NoSQL database management. For basic SQL applications, different RDB may perform similarly, with some subtle differences in the performance. However, this is not the sime with NoSQL databases. Different NoSQL databases may look and function completely differently even for the most simple applications.
+There are many types of non-relational databases including document-oriented databases, directed graph databases, etc., Each of them has some unique features over other databases, and may adopt its own database manipulation language. It is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}.
 
 Database services, both RDB and NoSQL, have become critical to our daily life and they are massively deployed on servers. In many applications they work together to deliver the service.
 
 \section{Non-RDB Example: MongoDB}
 
-Unlike relational databases where data is stored in relevant tables with pre-designed schematics such as column names, types, and references, non-relational database stores data in different structures such as directed graphs, dictionaries and documents.
+MongoDB is a source-available, cross-platform, general-purpose, document-oriented database program. Classified as a NoSQL database program, MongoDB uses BSON (an extension of JSON) documents with flexible schemas to represent and store data. This is not surprising, as MongoDB itself is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., are often used to create database-powered web applications.
 
-Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful. For example, some NoSQL databases are more effective when dealing with massive parallel requests, handling large data, and providing highly scalable and available services.
-
-There are many types of non-relational databases including document-oriented databases, directed graph databases, etc., Each of them has some unique features, pros and cons over other databases, and may adopt its own database manipulation language. It is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}.
-
-MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with flexible schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., can be used to create database-powered web applications.
-
-Comparing with conventional RDBs, MongoDB is more capable at
+Comparing with conventional RDBs, MongoDB is better at
 \begin{itemize}
 	\item Massive data storage (in the order of TBs and PBs);
-	\item Frequent and parallel operations such as insert and query;
+	\item Frequent and parallel operations when performing insert and query;
 	\item Flexible scalability and high availability.
 \end{itemize}
-Notice that MongoDB as well as many other NoSQL databases are not suitable to handle financial transactions due to the consistency issue that many NoSQL databases suffer. But things might change as new technologies emerge.
-Examples of scenarios that MongoDB can be used include
+Notice that MongoDB as well as many other NoSQL databases are not suitable to handle financial transactions due to the consistency issue that many NoSQL databases suffer. But things might change as new technologies become handy.
+
+Examples of MongoDB applications include
 \begin{itemize}
 	\item Posts and streaming management on social media websites or APPs;
 	\item Online gaming information storage;
@@ -37,14 +32,14 @@ Examples of scenarios that MongoDB can be used include
 	\item IoT data management.
 \end{itemize}
 
-As a document-oriented database, MongoDB stores data not in relational tables, but in separated collections (corresponding with tables) and documents (corresponding with rows). Each document in the same collection can adopt its own schema. When querying data, the user does not need to join collections and map documents. Figure \ref{ch:database:mongotree} is given as a demonstration of how MongoDB stores and organizes data.
+As a document-oriented database, MongoDB stores data in documents and collections instead of rows and tables. A document is the basic unit of the storage. A collection is a group of documents on the same/similar topic. Each document in the same collection can adopt its own schema, and it should be self-contained. When querying the data, the user does not join collections and map documents. Figure \ref{ch:database:mongotree} gives a demonstrative example of how MongoDB stores and organizes data.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=250pt]{chapters/part-3/figures/mongodb_tree.png}
-	\caption{A demonstration of MongoDB storing data as object-of-object.} \label{ch:database:mongotree}
+	\caption{A demonstrative example of how MongoDB stores data as (nested) object.} \label{ch:database:mongotree}
 \end{figure}
 
-In Fig. \ref{ch:database:mongotree}, a collection ``USER'' is defined. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language''. Different properties may have different data types. For example, a property can be string, numeric, or an object, or a list of the above. When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in required order.
+In Fig. \ref{ch:database:mongotree}, a collection ``USER'' is defined. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language''. Different properties may have different data types. For example, a property can be string, numeric, or a nested object, or an array of the above. When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in the required order.
 
 \subsection{Installation}
 
@@ -86,8 +81,7 @@ gives the version of the database server. More commands can be found using \verb
         \verb|db.createUser(<content>)| & Create a user. The username, password, roles, etc., needs to be included in the \verb|<content>| area. \\ \hdashline
         \verb|db.dropUser(<username>)| & Drop a user. \\ \hdashline
         \verb|db.dropDatabase()| & Drop current database. \\ \hdashline
-		\verb|db.status()| & Show the basic status of the currently selected database, such as its name, number of collections, storage size, etc.  \\ \hdashline
-        \verb|db.getUsers()| & Show users. \\
+		\verb|db.status()| & Show the basic status of the currently selected database, such as its name, number of collections, storage size, etc.  \\
 		 \hline
 	\end{tabularx}
 \end{table}
@@ -299,13 +293,15 @@ As of this writing, Atlas allows the user to choose from 3 different storage tie
   \item Serverless: the database is provided as a microservice, and it automatically scales up and down based on use; up to 1TB; the cost depends on the amount of stored data, the number of read and write operations, the computational cost of backups, etc.
 \end{itemize}
 
-\subsection{Create a Database}
+\subsection{MongoDB Atlas Dashboard}
 
-To use MongoDB Atlas, register an account with MongoDB Atlas. Create a database. Select the pricing tier for the database, create a user with admin role and assign him a password, and configure the database access gateway (i.e., a list of IP address that can access the database).
+To use MongoDB Atlas, register an account with MongoDB Atlas. T
 
-The created database is emply. For tutorial purpose, Altas provides a sample database. One can import the data in the sample database into the created empty database. MongoDB Atlas dashboard provides data explorer tool that allows the user to view and edit the database (in the form of JSON documents) directly, without using CLI or code. One can also filter documents from a collection by filtering the fields of the documents.
+Create a database cluster. Select the pricing tier for the database cluster, create a user with admin role and assign him a password, and configure the database cluster access gateway (i.e., a list of IP address that can access the database cluster). Upon creation of the database cluster, the user gains the access to MongoDB Atlas dashboard. The browser-based MongoDB Atlas dashboard can be used to view, add, edit and remove documents, collections and databases.
 
-The following screenshot in Fig. \ref{ch:database:atlasdashboard} gives MongoDB Atlas dashboard, after the sample data has been imported. The database, database access (user) and network access (gateway) can be accessed from the dashboard.
+The newly created database cluster is emply and has no databases, collections or documents. For tutorial purpose, Altas provides a sample database cluster. One can import the data in the sample database cluster into the created empty database cluster. MongoDB Atlas dashboard provides data explorer tool that allows the user to view and edit the database directly, without using CLI or code. One can also filter documents from a collection by filtering the fields of the documents.
+
+The following screenshot in Fig. \ref{ch:database:atlasdashboard} gives MongoDB Atlas dashboard. The database cluster, user and gateway can be viewed and configured from the dashboard.
 
 \begin{figure}[htbp]
 	\centering
@@ -320,6 +316,37 @@ Click ``Browse Collections'' of the cluster in Fig. \ref{ch:database:atlasdashbo
 	\includegraphics[width=\textwidth]{chapters/part-3/figures/atlas_dashboard_2.png}
 	\caption{A demonstration of MongoDB Atlas dashboard where the databases and collections under ``\texttt{Project 0}'', ``\texttt{Cluster0}'' are browsed. Database ``\texttt{sample\_analytics}'', collection ``\texttt{customers}'' is selected. There are $500$ documents under this collection.} \label{ch:database:atlasdashboard2}
 \end{figure}
+
+\subsection{Connection String}
+
+Database connection string allows a client to connect to a database server such as a MongoDB Atlas database cluster. MongoDB Atlas provides two connection string formats, namely the standard format and the DNS seed list format. The connection string of MongoDB Atlas can be retrieved from the dashboard by clicking ``Connect'' in Fig. \ref{ch:database:atlasdashboard}. It is possible to connect to MongoDB Atlas from:
+\begin{itemize}
+  \item MongoDB Shell (MongoDB's CLI)
+  \item MongoDB Compass (MongoDB's desktop client GUI)
+  \item User applications
+\end{itemize}
+
+A connection string may look like the following
+\begin{lstlisting}
+mongodb+srv://<username>:<password>@<server-dns>/?authSource=admin&replicaSet=myRepl
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
