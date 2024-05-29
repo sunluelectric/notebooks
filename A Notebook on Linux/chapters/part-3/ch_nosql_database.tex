@@ -305,27 +305,6 @@ To update documents that meet certain criteria all at once, use \verb|updateMany
 
 Use either \verb|deleteOne()| or \verb|deleteMany()| to remove documents, with the input the filter document.
 
-\vspace{0.1in}
-\noindent \textbf{Sharding and Indexing}
-\vspace{0.1in}
-
-Given that MongoDB is often used with big data such as web data or IoT data, efficient query from massive data pool becomes critical. MongoDB implements a few technologies to speed up the query such as sharding and indexing.
-
-Sharding is a method of distributing data across multiple servers or instances. In MongoDB, a shard consists of a subset of the total dataset, and each shard is responsible for managing a portion of the data. This distribution allows MongoDB to scale horizontally by adding more servers, thereby spreading the load and the data volume across a cluster. When a query is executed, it only needs to be processed by the shards that contain relevant data, rather than the entire dataset. This can significantly reduce query times in a large, distributed system. Sharding is particularly useful for very large datasets and high throughput operations, where a single server would not be sufficient to store the data or provide acceptable performance.
-
-Indexing is a technique used to speed up the retrieval of documents within a database. MongoDB uses indexes to quickly locate data without having to scan every document in a collection. Indexes are a critical component of database optimization, as they can drastically reduce the amount of data MongoDB needs to look through to find documents that match a query.
-
-MongoDB primarily uses B-Tree data structures for its indexes. A B-Tree is a self-balancing tree data structure that maintains sorted data in a way that allows searches, sequential access, insertions, and deletions in logarithmic time. The ``B'' in B-Tree stands for ``balanced'' and indicates that the tree is designed to keep the data balanced, ensuring that operations are efficient as the dataset grows. The B-Tree structure allows MongoDB to perform efficient query. Instead of scanning every document in a collection, MongoDB can use the B-Tree index to quickly navigate through a small subset of the data to find the documents that match the query criteria.
-
-There are many ways to define the index. For example, it is possible to use a single field to form a single field index, or to use multiple fields to form a compound index. Index by itself is also an argumented data structure and it consumes disk space. Each time there is a write operation, the index needs to be updated. Therefore, a very complicated index schema slows down data insertion. It is critical to design appropriate index to optimize the overall performance of the database.
-
-MongoDB provides commands to check, set and remove indexes. To check the indexes of a system, use
-\begin{lstlisting}
-db.collection_name.getIndexes()
-\end{lstlisting}
-
-Notice that the compulsory field \verb|_id| is used for indexing by default. Therefore, querying via \verb|_id| is usually faster than with other fields.
-
 \subsection{MongoDB Compass}
 
 MongoDB Compass is the desktop GUI developed by MongoDB. As a MongoDB client, it can connect to a MongoDB server, either local, remote or MongoDB Atlas, using the connection string. It provides an intuitive user interface that can be used to view and edit the data in the server. 
@@ -431,7 +410,7 @@ with \verb|<value>| be either $1$ or $0$, one can control which fields to be inc
 With some more advanced setups, \verb|<projection>| can also be used to specify what elements in an array to return, and more. For details, check the user manual of \verb|db.collection.find()| function.
 
 \vspace{0.1in}
-\noindent \textbf{Counting}
+\noindent \textbf{Counting the Number of Returns}
 \vspace{0.1in}
 
 Consider counting the number of documents fulfilling a particular filter document. Use
@@ -449,11 +428,17 @@ db.<collection>.aggregate( <pipeline>, <options> )
 \end{lstlisting}
 where \verb|<pipeline>| is usually an array that contains a sequence of aggregation operations including filter, sorting, grouping and transforming, that looks like the following
 \begin{lstlisting}
-[
-{$<stage>: {<expression>}},
-{$<stage>: {<expression>}},
-{$<stage>: {<expression>}}
-]
+db.<collection>.aggregate([
+	{
+		$<stage>: {<expression>}
+	},
+	{
+		$<stage>: {<expression>}
+	},
+	{
+		$<stage>: {<expression>}
+	}
+])
 \end{lstlisting}
 
 An example is given blow.
@@ -493,33 +478,239 @@ where both \verb|$match| and \verb|$group| are commonly used stages.
 And the return is a cursor with the following array of documents
 \begin{lstlisting}
 [
-{ _id: 'Cheese', totalQuantity: 50 },
-{ _id: 'Vegan', totalQuantity: 10 },
-{ _id: 'Pepperoni', totalQuantity: 20 }
+	{ _id: 'Cheese', totalQuantity: 50 },
+	{ _id: 'Vegan', totalQuantity: 10 },
+	{ _id: 'Pepperoni', totalQuantity: 20 }
 ]
 \end{lstlisting}
 
 Notice that the design of pipeline affects the performance of the query. More details about aggregation and its pipeline is introduced as follows.
 
+Commonly used stages are introduced below.
+
 \vspace{0.1in}
-\noindent \textbf{Counting}
+\noindent \textbf{Stage: \texttt{\$match}}
+\vspace{0.1in}
+
+The \verb|$match| stage
+\begin{lstlisting}
+{$match: <filter>}
+\end{lstlisting}
+filters the documents to pass only the documents that match the specified conditions to the next pipeline stage. The \verb|$match| stage should be used in early steps to make the pipeline more efficient.
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$group}}
+\vspace{0.1in}
+
+The \verb|$group| stage separates documents into groups according to a ``group key''. The output is one document for each unique group key. Grouping is essential to the calculation of aggregated information.
+
+A general syntax is given below.
+\begin{lstlisting}
+{
+	$group:
+	{
+		_id: <expression>, // Group key
+		<field1>: { <accumulator1> : <expression1> },
+		...
+	}
+}
+\end{lstlisting}
+where \verb|<accumulator>| indicates what to calculate on the grouped information to put into the \verb|field|. For example, the accumulator can be \verb|$count|.
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$sort}}
+\vspace{0.1in}
+
+The \verb|$sort| stage sorts the documents in either ascending order or descending order for further processing in the pipeline. The \verb|$sort| stage is sometimes used before \verb|$limit| stage.
+
+A general syntax is given below.
+\begin{lstlisting}
+{
+	$sort:
+	{
+		<field1>: 1 // or -1
+	}
+}
+\end{lstlisting}
+where ``$1$'' and ``$-1$'' indicate the ascending and descending order with respect to the field.
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$limit}}
+\vspace{0.1in}
+
+The \verb|$limit| stage selects and filters the first a few items from the pipeline. The input argument is simply a positive integer, as shown in the below example.
+\begin{lstlisting}
+{
+	$limit: 3
+}
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$set}}
+\vspace{0.1in}
+
+The \verb|$set| stage is used to modify or add fields in the pipeline, using the following syntax.
+\begin{lstlisting}
+{
+	$set:
+	{
+		<field1>: <new value>,
+		<field2>: {<expression>},
+		...
+	}
+}
+\end{lstlisting}
+The assignment can be either a value or an expression, such as rounding, multiplying by a gain, etc. A list of supported arithmetic aggregation functions is given in Table \ref{tab:mongodb_arithmetic_aggregation}.
+
+\begin{table}
+	\centering \caption{MongoDB arithmetic aggregation functions.}\label{tab:mongodb_arithmetic_aggregation}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Name & Description \\ \hline
+		\verb|$abs| &	Returns the absolute value of a number. \\
+		\verb|$add| &	Adds numbers to return the sum, or adds numbers and a date to return a new date. If adding numbers and a date, treats the numbers as milliseconds. Accepts any number of argument expressions, but at most, one expression can resolve to a date. \\
+		\verb|$ceil| &	Returns the smallest integer greater than or equal to the specified number. \\
+		\verb|$divide| &	Returns the result of dividing the first number by the second. Accepts two argument expressions. \\
+		\verb|$exp| &	Raises e to the specified exponent. \\
+		\verb|$floor| &	Returns the largest integer less than or equal to the specified number. \\
+		\verb|$ln| &	Calculates the natural log of a number. \\
+		\verb|$log| &	Calculates the log of a number in the specified base. \\
+		\verb|$log10| &	Calculates the log base 10 of a number. \\
+		\verb|$mod| &	Returns the remainder of the first number divided by the second. Accepts two argument expressions. \\
+		\verb|$multiply| &	Multiplies numbers to return the product. Accepts any number of argument expressions. \\
+		\verb|$pow| &	Raises a number to the specified exponent. \\
+		\verb|$sqrt| &	Calculates the square root. \\
+		\verb|$subtract| &	Returns the result of subtracting the second value from the first. If the two values are numbers, return the difference. If the two values are dates, return the difference in milliseconds. If the two values are a date and a number in milliseconds, return the resulting date. Accepts two argument expressions. If the two values are a date and a number, specify the date argument first as it is not meaningful to subtract a date from a number. \\
+		\verb|$trunc| &	Truncates a number to its integer. \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$count}}
+\vspace{0.1in}
+
+The \verb|&count| stage counts the number of the documents, and put the number into a field.
+\begin{lstlisting}
+{
+	$count: <field>
+}
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$project}}
+\vspace{0.1in}
+
+The \verb|$project| stage changes the shape of the data in the pipeline. It selects which fields to be displayed. In many occasions it is used near the end of the pipeline, right before the data comes out of the pipeline. 
+
+A general syntax looks like the following.
+\begin{lstlisting}
+{
+	$project:
+	{
+		<field1>: 1,
+		<field2>: 0,
+		<field3>: <new value>,
+		...
+	}
+}
+\end{lstlisting}
+where ``$1$'' and ``$-1$'' are used to either include or exclude a field. It can also create new fields or overwrite an existing field, in which case the value of the new fields needs to be specified.
+
+\vspace{0.1in}
+\noindent \textbf{Stage: \texttt{\$out}}
+\vspace{0.1in}
+
+The \verb|&out| stage creates a new collection or overwrite an existing collection using the aggregation pipeline result. If \verb|&out| is used, it should be the last stage.
+\begin{lstlisting}
+	{
+		$out:
+		{
+			db: "<database name>",
+			coll: "<collection name>"
+		}
+	}
+\end{lstlisting}
+or
+\begin{lstlisting}
+	{
+		$out: "<collection name>"
+	}
+\end{lstlisting}
+
+\subsection{Sharding}
+
+Given that MongoDB is often used with big data such as web data or IoT data, efficient query from massive data pool becomes critical. MongoDB implements a few technologies to speed up the query such as sharding and indexing.
+
+Sharding is a method of distributing data across multiple servers or instances. In MongoDB, a shard consists of a subset of the total dataset, and each shard is responsible for managing a portion of the data. This distribution allows MongoDB to scale horizontally by adding more servers, thereby spreading the load and the data volume across a cluster. When a query is executed, it only needs to be processed by the shards that contain relevant data, rather than the entire dataset. This can significantly reduce query times in a large, distributed system. Sharding is particularly useful for very large datasets and high throughput operations, where a single server would not be sufficient to store the data or provide acceptable performance.
+
+\subsection{Indexing}
+
+Indexing is a technique used to speed up the retrieval of documents within a database. MongoDB uses indexes to quickly locate data a document without having to scan every document in a collection. Indexes are a critical component of database optimization, as they can drastically reduce the amount of data MongoDB needs to look through to find documents that match a query. When a filter such as \verb|find()|, \verb|findOne()|, or in an aggregation pipeline, \verb|$match| are used, MongoDB automatically utilizes the available indexes to speed up the query, making it more efficient.
+
+\begin{shortbox}
+\Boxhead{MongoDB's B-Tree}
+
+MongoDB primarily uses B-Tree data structures for its indexes. A B-Tree is a self-balancing tree data structure that maintains sorted data in a way that allows searches, sequential access, insertions, and deletions in logarithmic time. The ``B'' in B-Tree stands for ``balanced'' and indicates that the tree is designed to keep the data balanced, ensuring that operations are efficient as the dataset grows. The B-Tree structure allows MongoDB to perform efficient query. Instead of scanning every document in a collection, MongoDB can use the B-Tree index to quickly navigate through a small subset of the data to find the documents that match the query criteria.
+\end{shortbox}
+
+However, index by itself is also an argument data structure and it consumes disk and memory space. Each time there is a write operation, the index needs to be updated. Therefore, a very complicated index schema slows down data insertion. It is critical to design appropriate index to optimize the overall performance of the database.
+
+The default index for a collection is ``\verb|_id|'', a compulsory and unique field required by MongoDB. The user can also define index of different types. User-defined index can be unique or non-unique. The index of a collection can be created when the collection is empty, or when there is already some documents.
+
+There are many options when creating the user-defined index. The following function 
+\begin{lstlisting}
+db.collection.createIndex(<keys>, <options>, <commitQuorum>)
+\end{lstlisting}
+creates a user-defined index. More details are given later.
+
+\vspace{0.1in}
+\noindent \textbf{Simple and Compound Index}
+\vspace{0.1in}
+
+A single or a compound of multiple fields in a collection can be used as the index using
+\begin{lstlisting}
+db.collection.createIndex(
+	{
+		<field1>: 1,
+		<field2>: -1,
+		...
+	}
+)
+\end{lstlisting}
+Those fields assigned with ``$1$'' or ``$-1$'' is listed as the ascending and descending index. The choice of order determines how the index sorts the indexed field's values, which can affect the performance of certain queries. 
+
+\vspace{0.1in}
+\noindent \textbf{Multi-key Index}
 \vspace{0.1in}
 
 
 
+\vspace{0.1in}
+\noindent \textbf{Check and Remove Index}
+\vspace{0.1in}
 
+MongoDB provides commands to check, set and remove indexes. To check the indexes of a system, use
+\begin{lstlisting}
+db.collection_name.getIndexes()
+\end{lstlisting}
+The index can also be viewed from the graphical UI.
 
+\vspace{0.1in}
+\noindent \textbf{Performance Evaluation with Index}
+\vspace{0.1in}
 
-
-
-
-
-
-
-
-
-
-
+Consider using \verb|explain()| function as follows when carrying out a find operation.
+\begin{lstlisting}
+db.<collection>.explain().find()
+\end{lstlisting}
+which will list down the down-to-the-ground stages to carry out the query. Apply the same query to two identical collections, one with index and the other without on different scenarios where:
+\begin{enumerate}
+	\item The filter document and the projection only contains indexed fields.
+	\item The filter document contains indexed fields, but the returns require more fields.
+	\item The filter document does not contain indexed fields.
+\end{enumerate}
+and compare the differences.
 
 \subsection{Third-Party Connection}
 

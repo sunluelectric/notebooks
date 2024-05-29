@@ -210,12 +210,12 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 	\begin{tabularx}{\textwidth}{llX}
 		\hline
 		Command & Flag & Description \\ \hline
-		\verb|docker run| & --- & Launch a container of the image. If the image cannot be found locally, it downloads the image from the remote repository automatically. \\ \hdashline
-        \verb|docker run| & \verb|-i| & Keep the standard input of the container open when launching the container. \\ \hdashline
-        \verb|docker run| & \verb|-d| & Launch the container in the backend and keep it running. \\ \hdashline
-        \verb|docker run| & \verb|--rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used with temporary containers during debugging. \\ \hdashline
-        \verb|docker run| & \verb|-t| & Allocate a pseudo-TTY. The flag usually comes with the flags \verb|-i| or \verb|-d|, to form \verb|-it| or \verb|-dt|. \\ \hdashline
-        \verb|docker run| & \verb|--restart| & Enforce restart of the container upon exiting. This is usually used on containers running in the backend. Commonly used restart configurations include \verb|--restart no| (do not restart), \verb|--restart on-failure[:<max retries>]| (restart if exits with an error flag), \verb|--restart always| (always restart when exists). \\ \hdashline
+		\verb|docker run| & --- & Launch a container of the image. If the image cannot be found locally, it downloads the image from the remote repository automatically. \\ 
+        \verb|docker run| & \verb|-i| & Keep the standard input of the container open when launching the container. \\ 
+        \verb|docker run| & \verb|-d| & Launch the container in the backend and keep it running. \\ 
+        \verb|docker run| & \verb|--rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used with temporary containers during debugging. \\ 
+        \verb|docker run| & \verb|-t| & Allocate a pseudo-TTY. The flag usually comes with the flags \verb|-i| or \verb|-d|, to form \verb|-it| or \verb|-dt|. \\ 
+        \verb|docker run| & \verb|--restart| & Enforce restart of the container upon exiting. This is usually used on containers running in the backend. Commonly used restart configurations include \verb|--restart no| (do not restart), \verb|--restart on-failure[:<max retries>]| (restart if exits with an error flag), \verb|--restart always| (always restart when exists). \\ 
         \verb|docker run| & \verb|--name| & Assign a name to the container. \\
 		\hline
 	\end{tabularx}
@@ -226,8 +226,8 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 	\begin{tabularx}{\textwidth}{llX}
 		\hline
 		Command & Flag & Description \\ \hline
-        \verb|docker image ls| & --- & List local images. \\ \hdashline
-        \verb|docker container ls| & --- & List running containers. \\ \hdashline
+        \verb|docker image ls| & --- & List local images. \\ 
+        \verb|docker container ls| & --- & List running containers. \\ 
         \verb|docker container ls| & \verb|-a| & List all containers. \\
 		\hline
 	\end{tabularx}
@@ -513,13 +513,13 @@ The keywords to be used in a Dockerfile to realize the above instructions, such 
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Syntax & Description \\ \hline
-		\verb|FROM <image>| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instructions, in which case the last \verb|FROM| statement is the final base image and the earlier \verb|FROM| instructions creates intermediate images that can be used in the final image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image is used. \\ \hdashline
-		\verb|RUN <command>| & Execute a shell command using \verb|/bin/sh -c|. \\ \hdashline
-		\verb|WORKDIR <path>| & Set the working directory from the point onward. This prepares the working directory for the upcoming \verb|RUN|, \verb|COPY|, etc., commands. \\ \hdashline
-		\verb|ADD <src> <dest>| & Add (Copy) \verb|<src>|, either a directory/file or URL, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. \\ \hdashline
-		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ \hdashline
-		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ \hdashline
-		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\ \hdashline
+		\verb|FROM <image>| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instructions, in which case the last \verb|FROM| statement is the final base image and the earlier \verb|FROM| instructions creates intermediate images that can be used in the final image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image is used. \\ 
+		\verb|RUN <command>| & Execute a shell command using \verb|/bin/sh -c|. \\ 
+		\verb|WORKDIR <path>| & Set the working directory from the point onward. This prepares the working directory for the upcoming \verb|RUN|, \verb|COPY|, etc., commands. \\ 
+		\verb|ADD <src> <dest>| & Add (Copy) \verb|<src>|, either a directory/file or URL, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. \\ 
+		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ 
+		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ 
+		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\ 
 		\verb|CMD ["<exe>", "p1", ...]| & The user-script command. This is the last instruction in the docker file that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. This user-script can be overwritten by \texttt{docker run <image> <other commands>} when running the container. \\
 		\hline
 	\end{tabularx}
