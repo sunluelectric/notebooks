@@ -123,15 +123,15 @@ SQL supports variety of data types, and different DBMS may cover slightly differ
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Data Type & Description \\ \hline
-		INT/INTEGER & Integer, with a range of -2147483648 to 2147483647. When marked ``UNSIGNED'', the range becomes 0 to 4294967295. Some relevant data types are TINYINT, SMALLINT, MEDIUMINT, and BIGINT, which have different ranges. \\ \hdashline
-		DEC/DECIMAL(size,d) & An exact fixed-point number. The total number of digits and the number of digits after decimal point are specified by ``size'' and ``d'', respectively. Some relevant data types are DOUBLE(size,d), which can also be used to specify a floating point. Notice that DEC/DECIMAL is usually preferable in most occasions. \\ \hdashline
-		CHAR(size) & A fixed length string with the specified length in characters. \\ \hdashline
-		VARCHAR(size) & A variable length string, with the specified maximum string length in characters. \\ \hdashline
-		BOOL/BOOLEAN & This is essentially a 1-digit integer, where 0 stands for ``false'' and otherwise ``true''. \\ \hdashline
-		BLOB & A binary large object with maximum 65535 bytes. \\ \hdashline
-		DATE & A date by format ``YYYY-MM-DD''. \\ \hdashline
-		TIME & A time by format ``hh:mm:ss''. \\ \hdashline
-		DATETIME & A combination of date and time by format ``YYYY-MM-DD hh:mm:ss''. \\ \hdashline
+		INT/INTEGER & Integer, with a range of -2147483648 to 2147483647. When marked ``UNSIGNED'', the range becomes 0 to 4294967295. Some relevant data types are TINYINT, SMALLINT, MEDIUMINT, and BIGINT, which have different ranges. \\ 
+		DEC/DECIMAL(size,d) & An exact fixed-point number. The total number of digits and the number of digits after decimal point are specified by ``size'' and ``d'', respectively. Some relevant data types are DOUBLE(size,d), which can also be used to specify a floating point. Notice that DEC/DECIMAL is usually preferable in most occasions. \\ 
+		CHAR(size) & A fixed length string with the specified length in characters. \\ 
+		VARCHAR(size) & A variable length string, with the specified maximum string length in characters. \\ 
+		BOOL/BOOLEAN & This is essentially a 1-digit integer, where 0 stands for ``false'' and otherwise ``true''. \\ 
+		BLOB & A binary large object with maximum 65535 bytes. \\ 
+		DATE & A date by format ``YYYY-MM-DD''. \\ 
+		TIME & A time by format ``hh:mm:ss''. \\ 
+		DATETIME & A combination of date and time by format ``YYYY-MM-DD hh:mm:ss''. \\ 
 		TIMESTAMP & A timestamp that measures the number of seconds since the Unix epoch. The format is ``YYYY-MM-DD hh:mm:ss''. Unlike DATETIME which is meaningful only if the timezone is known, TIMESTAMP does not rely on timezone. \\ \hline
 	\end{tabularx}
 \end{table}
@@ -143,14 +143,14 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Keyword & Description \\ \hline
-		CONSTRAINT & A constraint that limits the value of a column. \\ \hdashline
-		DATABASE & A database. \\ \hdashline
-		TABLE & A table. \\ \hdashline
-		COLUMN & A column (attribute, field) of a table. \\ \hdashline
-		VIEW & A view, which is a virtual table that does not store data by itself but only reflects the base tables data. \\ \hdashline
-		INDEX & An index, which is a pre-scan of specific column(s) of a table and can be used to speed up future queries related to the column(s). Notice that unlike a view, an index needs to be stored together with the table. \\ \hdashline
-		PRIMARY KEY & The primary key of a table. \\ \hdashline
-		FOREIGN KEY & A foreign key defined in a table that links to a (different) table. \\ \hdashline
+		CONSTRAINT & A constraint that limits the value of a column. \\ 
+		DATABASE & A database. \\ 
+		TABLE & A table. \\ 
+		COLUMN & A column (attribute, field) of a table. \\ 
+		VIEW & A view, which is a virtual table that does not store data by itself but only reflects the base tables data. \\ 
+		INDEX & An index, which is a pre-scan of specific column(s) of a table and can be used to speed up future queries related to the column(s). Notice that unlike a view, an index needs to be stored together with the table. \\ 
+		PRIMARY KEY & The primary key of a table. \\ 
+		FOREIGN KEY & A foreign key defined in a table that links to a (different) table. \\ 
 		PROCEDURE & A procedure that defines a list of database operations to be executed one after another \\ \hline
 	\end{tabularx}
 \end{table}
@@ -160,16 +160,16 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Keyword & Description \\ \hline
-		CREATE & Create a database (CREATE DATABASE), a table (CREATE TABLE), a view (CREATE VIEW), an index (CREATE INDEX) or a procedure (CREATE PROCEDURE). \\ \hdashline
-		ADD & Add a column in an existing table, or a constraint to an existing column. \\ \hdashline
-		ALTER & Modify columns in a table (ALTER TABLE), or a data type of a column (ALTER COLUMN). \\ \hdashline
-		SET & Specify the columns and values to be updated in a table. \\ \hdashline
-		DROP & Delete a column (DROP COLUMN), a constraint (DROP CONSTRAINT), a database (DROP DATABASE), an index (DROP INDEX), a table (DROP TABLE), or a view (DROP VIEW). \\ \hdashline
-		CHECK & Define a constraint that limits the value that can be placed in a column. \\ \hdashline
-		DEFAULT & Define a default value for a column. \\ \hdashline
-		INSERT INTO & Insert a new row into a table. \\ \hdashline
-		UPDATE & Update an existing row in a table. \\ \hdashline
-		DELETE & Delete a row from a table. \\ \hdashline
+		CREATE & Create a database (CREATE DATABASE), a table (CREATE TABLE), a view (CREATE VIEW), an index (CREATE INDEX) or a procedure (CREATE PROCEDURE). \\ 
+		ADD & Add a column in an existing table, or a constraint to an existing column. \\ 
+		ALTER & Modify columns in a table (ALTER TABLE), or a data type of a column (ALTER COLUMN). \\ 
+		SET & Specify the columns and values to be updated in a table. \\ 
+		DROP & Delete a column (DROP COLUMN), a constraint (DROP CONSTRAINT), a database (DROP DATABASE), an index (DROP INDEX), a table (DROP TABLE), or a view (DROP VIEW). \\ 
+		CHECK & Define a constraint that limits the value that can be placed in a column. \\ 
+		DEFAULT & Define a default value for a column. \\ 
+		INSERT INTO & Insert a new row into a table. \\ 
+		UPDATE & Update an existing row in a table. \\ 
+		DELETE & Delete a row from a table. \\ 
 		EXEC & Executes a stored procedure. \\ \hline
 	\end{tabularx}
 \end{table}
@@ -179,20 +179,20 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Keyword & Description \\ \hline
-		SELECT & Query data from a database. Relevant combinations are SELECT DISTINCT which returns only distinct values; SELECT INTO which copies data from one table into another; SELECT TOP which returns part of the results. \\ \hdashline
-		AS & Assign an alias to a column or table. \\ \hdashline
-		FROM & Specify the table where the query is run. \\ \hdashline
-		WHERE & Filter results that fulfill a specified condition. \\ \hdashline
-		IN & Specify multiple values in a WHERE clause. \\ \hdashline
-		AND & Select rows where both conditions are true. \\ \hdashline
-		OR & Select rows where either condition is true. \\ \hdashline
-		ALL & Return true if all followed sub-query values meet the condition. \\ \hdashline
-		ANY & Return true if any followed sub-query value meet the condition. \\ \hdashline
-		BETWEEN & Select values within a given range. \\ \hdashline
-		ORDER BY & Sort the results in ascending or descending order. \\ \hdashline
-		JOIN & Join tables for query. Relevant combinations are OUTER JOIN, INNER JOIN, LEFT JOIN and RIGHT JOIN. \\ \hdashline
-		EXISTS & Tests for the existence of any record in a sub-query. \\ \hdashline
-		GROUP BY & Groups the result set when using aggregate functions (COUNT, MAX, MIN, SUM, AVG). \\ \hdashline
+		SELECT & Query data from a database. Relevant combinations are SELECT DISTINCT which returns only distinct values; SELECT INTO which copies data from one table into another; SELECT TOP which returns part of the results. \\ 
+		AS & Assign an alias to a column or table. \\ 
+		FROM & Specify the table where the query is run. \\ 
+		WHERE & Filter results that fulfill a specified condition. \\ 
+		IN & Specify multiple values in a WHERE clause. \\ 
+		AND & Select rows where both conditions are true. \\ 
+		OR & Select rows where either condition is true. \\ 
+		ALL & Return true if all followed sub-query values meet the condition. \\ 
+		ANY & Return true if any followed sub-query value meet the condition. \\ 
+		BETWEEN & Select values within a given range. \\ 
+		ORDER BY & Sort the results in ascending or descending order. \\ 
+		JOIN & Join tables for query. Relevant combinations are OUTER JOIN, INNER JOIN, LEFT JOIN and RIGHT JOIN. \\ 
+		EXISTS & Tests for the existence of any record in a sub-query. \\ 
+		GROUP BY & Groups the result set when using aggregate functions (COUNT, MAX, MIN, SUM, AVG). \\ 
 		UNION & Combines the result sets of multiple select statements. \\
 		 \hline
 	\end{tabularx}
@@ -273,11 +273,11 @@ Commonly used such constraints are summarized into Table \ref{ch:db:tab:constrai
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Constraint & Description \\ \hline
-		\verb|NOT NULL| & Not allowed to be NULL. \\ \hdashline
-		\verb|UNIQUE| & Not allowed to have duplicated values. \\ \hdashline
-        \verb|PRIMARY KEY| & Set as primary key, thus, must be not NULL and must remain unique. \\ \hdashline
-        \verb|FOREIGH KEY| & Set as foreign key. \\ \hdashline
-        \verb|DEFAULT <value>| & Set a default value. \\ \hdashline
+		\verb|NOT NULL| & Not allowed to be NULL. \\ 
+		\verb|UNIQUE| & Not allowed to have duplicated values. \\ 
+        \verb|PRIMARY KEY| & Set as primary key, thus, must be not NULL and must remain unique. \\ 
+        \verb|FOREIGH KEY| & Set as foreign key. \\ 
+        \verb|DEFAULT <value>| & Set a default value. \\ 
         \verb|AUTO_INCREMENT = <value>| & Each time a new row is inserted and NULL or 0 is set for this column, instead of set the column to NULL or 0, automatically generate the next sequence number. The starting value is defined by \verb|<value>| which by default is 1. \\
 		 \hline
 	\end{tabularx}
@@ -1280,20 +1280,20 @@ Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcomman
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Command & Description \\ \hline
-		\verb|SELECT VERSION();| & Check PostgreSQL version. \\ \hdashline
-		\verb|\l| & List databases. \\ \hdashline
-		\verb|\c <database>| & Switch databases. \\ \hdashline
-		\verb|\d| & Describe items. By default, it lists the tables in the current database, and describe each of them. \\ \hdashline
-		\verb|\dt| & List tables. \\ \hdashline
-		\verb|\dv| & List views. \\ \hdashline
-		\verb|\dn| & List schema. \\ \hdashline
-		\verb|\df| & List functions. \\ \hdashline
-		\verb|\du| & List users. \\ \hdashline
-		\verb|\d <table>| & Describe a table. \\ \hdashline
-		\verb|\s| & Show command history. \\ \hdashline
-		\verb|\h| & Show help. \\ \hdashline
-		\verb|\?| & Show psql commands. \\ \hdashline
-		\verb|\!cls| & Clear screen. \\ \hdashline
+		\verb|SELECT VERSION();| & Check PostgreSQL version. \\ 
+		\verb|\l| & List databases. \\ 
+		\verb|\c <database>| & Switch databases. \\ 
+		\verb|\d| & Describe items. By default, it lists the tables in the current database, and describe each of them. \\ 
+		\verb|\dt| & List tables. \\ 
+		\verb|\dv| & List views. \\ 
+		\verb|\dn| & List schema. \\ 
+		\verb|\df| & List functions. \\ 
+		\verb|\du| & List users. \\ 
+		\verb|\d <table>| & Describe a table. \\ 
+		\verb|\s| & Show command history. \\ 
+		\verb|\h| & Show help. \\ 
+		\verb|\?| & Show psql commands. \\ 
+		\verb|\!cls| & Clear screen. \\ 
 		\verb|\q| & Quit DBMS shell. \\
 		\hline
 	\end{tabularx}

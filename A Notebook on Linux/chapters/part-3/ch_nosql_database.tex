@@ -196,7 +196,7 @@ The field \verb|_id| represents the object ID, and it is compulsory for each doc
 \noindent \textbf{Query}
 \vspace{0.1in}
 
-MongoDB uses \verb|find({...})|, \verb|findOne({...})| to find documents, where \verb|{...}| is a query argument (filtering criteria) in the form of JavaScript object. Details are given below.
+MongoDB uses \verb|find()|, \verb|findOne()| to find documents, where the input is a filter document in the form of a JSON-like string. Details are given below.
 
 To obtain all the document under a collection, use
 \begin{lstlisting}
@@ -204,15 +204,18 @@ db.getCollection('<collection_name>').find({});
 \end{lstlisting}
 where an empty query simply matches all documents in the collection. Of course, when \verb|findOne()| is used, it will return only one document.
 
+\begin{shortbox}
+\Boxhead{Two Ways to Refer to a Collection}
 Notice that
 \begin{lstlisting}
-db.<collection_name>.<function>()
+	db.<collection_name>.<function>()
 \end{lstlisting}
 is equivalent with
 \begin{lstlisting}
-db.getCollection('<collection_name>').<function>();
+	db.getCollection('<collection_name>').<function>();
 \end{lstlisting}
 The first implementation is more convenient while the second more flexible as it supports dynamic naming.
+\end{shortbox}
 
 More examples are given below. Assume that there is a collection \verb|posts|, inside which are documents recording the posts by a blogger. Each post may have some comments. The number of comments are recorded in the field \verb|comments| of the documents. To find documents that has a certain field with certain values, use the following
 \begin{lstlisting}
@@ -300,7 +303,7 @@ To update documents that meet certain criteria all at once, use \verb|updateMany
 \noindent \textbf{Remove Document}
 \vspace{0.1in}
 
-Use either \verb|deleteOne({<query>})| or \verb|deleteMany({<query>})| to remove documents.
+Use either \verb|deleteOne()| or \verb|deleteMany()| to remove documents, with the input the filter document.
 
 \vspace{0.1in}
 \noindent \textbf{Sharding and Indexing}
@@ -328,6 +331,195 @@ Notice that the compulsory field \verb|_id| is used for indexing by default. The
 MongoDB Compass is the desktop GUI developed by MongoDB. As a MongoDB client, it can connect to a MongoDB server, either local, remote or MongoDB Atlas, using the connection string. It provides an intuitive user interface that can be used to view and edit the data in the server. 
 
 MongoDB Compass comes with analytical tools and data visualization tools that help the user understand the insight of the data as well as the database structure. It allows the user to define and compose aggregation pipelines that automatically abstract useful aggregated information from the data.
+
+\subsection{Advanced Query}
+
+It been introduced in the earlier section how \verb|find()| \verb|findOne()| can be used to retrieve documents. The input argument to the above functions is the filter document in JSON-like format, and the documents in the collection that match with the filter document will be returned.
+
+More about query is introduced in this section, such as sorting and limiting the results, returning only selected fields, returning aggregated information, etc.
+
+\vspace{0.1in}
+\noindent \textbf{More about \texttt{find()}}
+\vspace{0.1in}
+
+It is worth mentioning that \verb|find()| returns a cursor, but not the documents themselves. One can iterate through the cursor to get all the documents matching the query. This is different from \verb|findOne()| which directly returns a document.
+
+When viewing the data in MongoDB Compass or Atlas, this does not pose an issue. One can simply take \verb|find()| as a function that returns multiple documents. However, in the programming interface, it is important to note the differences between a cursor and a document.
+
+The below are two demonstrative examples how a Python program should treat the returns from \verb|find()| and \verb|findOne()| differently. The same spirit applies to other programming languages as well.
+
+\begin{lstlisting}
+from pymongo import MongoClient
+
+def find_users():
+	client = MongoClient('mongodb://localhost:27017/')
+	db = client.mydatabase
+	collection = db.users
+
+	cursor = collection.find({ 'age': { '$gte': 18 } })
+
+	# Iterate over the cursor
+	for doc in cursor:
+	print(doc)
+	
+	# Alternatively, convert to a list
+	results = list(cursor)
+	print(results)
+
+	client.close()
+\end{lstlisting}
+
+\begin{lstlisting}
+from pymongo import MongoClient
+
+def find_one_user():
+	client = MongoClient('mongodb://localhost:27017/')
+	db = client.mydatabase
+	collection = db.users
+
+	# Find one document
+	user = collection.find_one({ 'name': "John Doe" })
+	print(user)
+
+	client.close()
+\end{lstlisting}
+
+Since a cursor, instead of the documents themselves, is returned, we can perform further actions on the return such as sorting the result, etc.
+
+\vspace{0.1in}
+\noindent \textbf{Sorting}
+\vspace{0.1in}
+
+Use the following syntax to retrieve and sort the return.
+\begin{lstlisting}
+cursor.sort({<field>:<value>})
+\end{lstlisting}
+which sorts the result according to \verb|<field>|. The value ``$1$'' or ``$-1$'' represents the sorting order, either ascending or descending, respectively.
+
+\vspace{0.1in}
+\noindent \textbf{Limiting the Number of Returns}
+\vspace{0.1in}
+
+When it is unnecessary to return all the details of all the documents fulfilling the query criteria, it is possible to limit the field number of returned documents which is often helpful with improving the data processing efficiency.
+
+It is possible to limit the number of documents in the returns to improve the query efficiency. This is often used with the \verb|sort()| method. The syntax is as follows.
+\begin{lstlisting}
+	cursor.sort({<field>:<value>}).limit(<number>)
+\end{lstlisting}
+where \verb|<number>| specifies the number of returns.
+
+\vspace{0.1in}
+\noindent \textbf{Limiting the Fields of Returns}
+\vspace{0.1in}
+
+Notice that the full syntax of \verb|find| is
+\begin{lstlisting}
+db.collection.find( <query>, <projection>, <options> )
+\end{lstlisting}
+The second argument, \verb|<projection>|, is used to indicate which fields of the documents should be returned. If left blank as by the default, all the fields of the documents will be returned. Notice that the same applies to \verb|findOne()| method.
+
+For example,
+\begin{lstlisting}
+cursor = collection.find({'age': {'$gte': 18}}, {name:1, age: 1})
+\end{lstlisting}
+will return the names and ages of all the users whose age is greater than or equal to $18$. By using
+\begin{lstlisting}
+{ <field1>: <value>, <field2>: <value> ... }
+\end{lstlisting}
+with \verb|<value>| be either $1$ or $0$, one can control which fields to be included or excluded respectively. The value $0$ is often used with the \verb|_id| field which is always returned unless specifically required not to. Notice that the \verb|<field>| in the syntax can also contain sub fields, in which case quotation marks \verb|"<field>.<subfield>"| must be used.
+
+With some more advanced setups, \verb|<projection>| can also be used to specify what elements in an array to return, and more. For details, check the user manual of \verb|db.collection.find()| function.
+
+\vspace{0.1in}
+\noindent \textbf{Counting}
+\vspace{0.1in}
+
+Consider counting the number of documents fulfilling a particular filter document. Use
+\begin{lstlisting}
+db.<collection>.countDocuments( <query>, <options> )
+\end{lstlisting}
+
+\subsection{Query with Aggregation Framework}
+
+Aggregation is the analysis and summary of data. MongoDB provides powerful tools to perform other aggregation functions such as to calculate the sum or average of a particular field.
+
+To apply different aggregation functions, use \verb|aggregate()| as follows.
+\begin{lstlisting}
+db.<collection>.aggregate( <pipeline>, <options> )
+\end{lstlisting}
+where \verb|<pipeline>| is usually an array that contains a sequence of aggregation operations including filter, sorting, grouping and transforming, that looks like the following
+\begin{lstlisting}
+[
+{$<stage>: {<expression>}},
+{$<stage>: {<expression>}},
+{$<stage>: {<expression>}}
+]
+\end{lstlisting}
+
+An example is given blow.
+\begin{lstlisting}
+db.orders.insertMany( [
+{ _id: 0, name: "Pepperoni", size: "small", price: 19,
+	quantity: 10, date: ISODate( "2021-03-13T08:14:30Z" ) },
+{ _id: 1, name: "Pepperoni", size: "medium", price: 20,
+	quantity: 20, date : ISODate( "2021-03-13T09:13:24Z" ) },
+{ _id: 2, name: "Pepperoni", size: "large", price: 21,
+	quantity: 30, date : ISODate( "2021-03-17T09:22:12Z" ) },
+{ _id: 3, name: "Cheese", size: "small", price: 12,
+	quantity: 15, date : ISODate( "2021-03-13T11:21:39.736Z" ) },
+{ _id: 4, name: "Cheese", size: "medium", price: 13,
+	quantity:50, date : ISODate( "2022-01-12T21:23:13.331Z" ) },
+{ _id: 5, name: "Cheese", size: "large", price: 14,
+	quantity: 10, date : ISODate( "2022-01-12T05:08:13Z" ) },
+{ _id: 6, name: "Vegan", size: "small", price: 17,
+	quantity: 10, date : ISODate( "2021-01-13T05:08:13Z" ) },
+{ _id: 7, name: "Vegan", size: "medium", price: 18,
+	quantity: 10, date : ISODate( "2021-01-13T05:10:13Z" ) }
+] )
+
+db.orders.aggregate( [
+// Stage 1: Filter pizza order documents by pizza size
+{
+	$match: { size: "medium" }
+},
+// Stage 2: Group remaining documents by pizza name and calculate total quantity
+{
+	$group: { _id: "$name", totalQuantity: { $sum: "$quantity" } }
+}
+] )
+\end{lstlisting}
+where both \verb|$match| and \verb|$group| are commonly used stages.
+
+And the return is a cursor with the following array of documents
+\begin{lstlisting}
+[
+{ _id: 'Cheese', totalQuantity: 50 },
+{ _id: 'Vegan', totalQuantity: 10 },
+{ _id: 'Pepperoni', totalQuantity: 20 }
+]
+\end{lstlisting}
+
+Notice that the design of pipeline affects the performance of the query. More details about aggregation and its pipeline is introduced as follows.
+
+\vspace{0.1in}
+\noindent \textbf{Counting}
+\vspace{0.1in}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Third-Party Connection}
 

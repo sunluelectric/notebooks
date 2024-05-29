@@ -33,9 +33,9 @@ The following Table \ref{ch:tfe:tab:vimmodes} summarizes the commonly used modes
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Mode & Description \\ \hline
-    Normal & Default mode. It is used to navigate the cursor in the text, search and replace text pieces, and run basic text operations such as undo, redo, cut (delete), copy and paste. \\ \hdashline
-    Insert & It is used to insert keyboard inputs into the text, just like commonly used text editors today. \\ \hdashline
-    Visual & It is similar to normal mode but areas of text can be highlighted. Normal mode commands can be used on the highlighted text. \\ \hdashline
+    Normal & Default mode. It is used to navigate the cursor in the text, search and replace text pieces, and run basic text operations such as undo, redo, cut (delete), copy and paste. \\ 
+    Insert & It is used to insert keyboard inputs into the text, just like commonly used text editors today. \\ 
+    Visual & It is similar to normal mode but areas of text can be highlighted. Normal mode commands can be used on the highlighted text. \\ 
     Cmdline & It takes in a single line command input and perform actions accordingly, such as save and quit. \\
     \hline
   \end{tabularx}
@@ -70,11 +70,11 @@ There are other shortcuts to switch from normal mode to insert mode. Some of the
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Operator & Description \\ \hline
-    \verb|i| & Insert before the character at the cursor. \\ \hdashline
-    \verb|I| & Insert at the beginning of the row at the cursor. \\ \hdashline
-    \verb|a| & Insert after the character at the cursor. \\ \hdashline
-    \verb|A| & Insert at the end of the row at the cursor. \\ \hdashline
-    \verb|o| & Create a new row below the cursor and switch to insert mode. \\ \hdashline
+    \verb|i| & Insert before the character at the cursor. \\ 
+    \verb|I| & Insert at the beginning of the row at the cursor. \\ 
+    \verb|a| & Insert after the character at the cursor. \\ 
+    \verb|A| & Insert at the end of the row at the cursor. \\ 
+    \verb|o| & Create a new row below the cursor and switch to insert mode. \\ 
     \verb|O| & Create a new row above the cursor and switch to insert mode. \\
     \hline
   \end{tabularx}
@@ -227,14 +227,14 @@ The operators and motions introduced so far are summarized in Tables \ref{ch:tfe
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Operator & Description \\ \hline
-    \verb|x| & Delete/Cut the character at cursor. \\ \hdashline
-    \verb|X| & Delete/Cut the character before cursor. \\ \hdashline
-    \verb|dd| & Delete/Cut the entire row. \\ \hdashline
-    \verb|d| & Delete/Cut selected text according to the motion command. \\ \hdashline
-    \verb|cc| & Change the entire row. \\ \hdashline
-    \verb|c| & Change selected text according to the motion command. \\ \hdashline
-    \verb|yy| & Copy the entire row. \\ \hdashline
-    \verb|y| & Copy selected text according to the motion command. \\ \hdashline
+    \verb|x| & Delete/Cut the character at cursor. \\ 
+    \verb|X| & Delete/Cut the character before cursor. \\ 
+    \verb|dd| & Delete/Cut the entire row. \\ 
+    \verb|d| & Delete/Cut selected text according to the motion command. \\ 
+    \verb|cc| & Change the entire row. \\ 
+    \verb|c| & Change selected text according to the motion command. \\ 
+    \verb|yy| & Copy the entire row. \\ 
+    \verb|y| & Copy selected text according to the motion command. \\ 
     \verb|p| & Paste clipboard to the cursor. \\
     \hline
   \end{tabularx}
@@ -245,20 +245,20 @@ The operators and motions introduced so far are summarized in Tables \ref{ch:tfe
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Motion & Description \\ \hline
-    \verb|h|, \verb|l| & One character to the left or right. \\ \hdashline
-    \verb|j|, \verb|k| & One row to the up or down. \\ \hdashline
-    \verb|b| & First character of the current word, or fist character of the previous word. \\ \hdashline
-    \verb|e| & Last character of the current word. \\ \hdashline
-    \verb|w| & First character of the next word. \\ \hdashline
-    \verb|(|, \verb|)| & One sentence to the previous or next. \\ \hdashline
-    \lstinline{\{}, \lstinline{\}} & One paragraph to the previous or next. \\ \hdashline
-    \verb|iw|, \verb|is|, \verb|ip| & Inner-word, inner-sentence, inner-paragraph. \\ \hdashline
-    \verb|aw|, \verb|as|, \verb|ap| & A word, a sentence, a paragraph (including the end blank). \\ \hdashline
-    \verb|i'|, \verb|i"|, \verb|i`| & Inner-quotation for different types of quotations. \\ \hdashline
-    \verb|i(|, \verb|i<|, \verb|i[|, \lstinline{\}} & inner-block for different types of brackets. \\ \hdashline
-    \verb|0| & Beginning of the row. \\ \hdashline
-    \verb|$| & Ending of the row. \\ \hdashline
-    \verb|gg| & Beginning of the text. \\ \hdashline
+    \verb|h|, \verb|l| & One character to the left or right. \\ 
+    \verb|j|, \verb|k| & One row to the up or down. \\ 
+    \verb|b| & First character of the current word, or fist character of the previous word. \\ 
+    \verb|e| & Last character of the current word. \\ 
+    \verb|w| & First character of the next word. \\ 
+    \verb|(|, \verb|)| & One sentence to the previous or next. \\ 
+    \lstinline{\{}, \lstinline{\}} & One paragraph to the previous or next. \\ 
+    \verb|iw|, \verb|is|, \verb|ip| & Inner-word, inner-sentence, inner-paragraph. \\ 
+    \verb|aw|, \verb|as|, \verb|ap| & A word, a sentence, a paragraph (including the end blank). \\ 
+    \verb|i'|, \verb|i"|, \verb|i`| & Inner-quotation for different types of quotations. \\ 
+    \verb|i(|, \verb|i<|, \verb|i[|, \lstinline{\}} & inner-block for different types of brackets. \\ 
+    \verb|0| & Beginning of the row. \\ 
+    \verb|$| & Ending of the row. \\ 
+    \verb|gg| & Beginning of the text. \\ 
     \verb|G| & Beginning of the last row of the text. \\
     \hline
   \end{tabularx}

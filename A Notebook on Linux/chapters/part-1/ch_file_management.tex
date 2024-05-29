@@ -38,24 +38,24 @@ A brief introduction to the directories are summarized in Table \ref{ch:fm:tab:h
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
-    \verb|/bin|, \verb|/sbin| & Executables used by the OS, the administrator, and the regular users. \\ \hdashline
-    \verb|/lib| & Libraries to support \verb|/bin| and \verb|/sbin|. \\ \hdashline
-    \verb|/usr/bin|, \verb|/usr/sbin| & Executables used by the administrator and the regular users. \\ \hdashline
-    \verb|/usr/lib| & Libraries to support \verb|/usr/bin| and \verb|/usr/sbin|. \\ \hdashline
-    \verb|/opt| & Application software installed by OS and administrator for all users. \\ \hdashline
-    \verb|/var| & Directories of data used by applications. \\ \hdashline
-    \verb|/usr/local| & Application software installed by administrator for all users. \\ \hdashline
-    \verb|/usr/share| & Architecture-independent sharable text files for applications. \\ \hdashline
-    \verb|/usr/src| & Source files or packages managed by software manager. \\ \hdashline
-    \verb|/dev| & Files representation of devices, such as CPU, RAM, hard disks. \\ \hdashline
-    \verb|/media| & System mounts of removable media. \\ \hdashline
-    \verb|/mnt| & Manual mounts of devices. \\ \hdashline
-    \verb|/etc| & Configuration files for OS, users, and applications. \\ \hdashline
-    \verb|/boot| & Linux bootable kernel and initial setups. \\ \hdashline
-    \verb|/proc| & System resources information. \\ \hdashline
-    \verb|/sys| & Linux kernel information, including a mirror of the kernel data structure. \\ \hdashline
-    \verb|/tmp|, \verb|usr/tmp| & Temporary files. \\ \hdashline
-    \verb|/root| & Root user's home directory. \\ \hdashline
+    \verb|/bin|, \verb|/sbin| & Executables used by the OS, the administrator, and the regular users. \\ 
+    \verb|/lib| & Libraries to support \verb|/bin| and \verb|/sbin|. \\ 
+    \verb|/usr/bin|, \verb|/usr/sbin| & Executables used by the administrator and the regular users. \\ 
+    \verb|/usr/lib| & Libraries to support \verb|/usr/bin| and \verb|/usr/sbin|. \\ 
+    \verb|/opt| & Application software installed by OS and administrator for all users. \\ 
+    \verb|/var| & Directories of data used by applications. \\ 
+    \verb|/usr/local| & Application software installed by administrator for all users. \\ 
+    \verb|/usr/share| & Architecture-independent sharable text files for applications. \\ 
+    \verb|/usr/src| & Source files or packages managed by software manager. \\ 
+    \verb|/dev| & Files representation of devices, such as CPU, RAM, hard disks. \\ 
+    \verb|/media| & System mounts of removable media. \\ 
+    \verb|/mnt| & Manual mounts of devices. \\ 
+    \verb|/etc| & Configuration files for OS, users, and applications. \\ 
+    \verb|/boot| & Linux bootable kernel and initial setups. \\ 
+    \verb|/proc| & System resources information. \\ 
+    \verb|/sys| & Linux kernel information, including a mirror of the kernel data structure. \\ 
+    \verb|/tmp|, \verb|usr/tmp| & Temporary files. \\ 
+    \verb|/root| & Root user's home directory. \\ 
     \verb|/home/<user name>| & A regular user's home directory, containing executables, configurations and files specifically belong to this user. \\
     \hline
   \end{tabularx}
@@ -74,14 +74,14 @@ Some of the most widely used file management commands are summarized in Table \r
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Command & Description \\ \hline
-    \verb|pwd| & Print working directory. \\ \hdashline
-    \verb|ls| & List the subdirectories and files (and their detail information) in a given directory. \\ \hdashline
-    \verb|touch| & Create an empty file. \\ \hdashline
-    \verb|mkdir| & Create an empty subdirectory. \\ \hdashline
-    \verb|mv| & Move (cut-and-paste) a directory or a file; change name of a directory or a file. \\ \hdashline
-    \verb|cp| & Copy-and-paste a directory or a file. \\ \hdashline
-    \verb|rm|, \verb|rmdir| & Remove a directory or a file (not to Trash, but just gone). \\ \hdashline
-    \verb|chmod| & Change permission. \\ \hdashline
+    \verb|pwd| & Print working directory. \\ 
+    \verb|ls| & List the subdirectories and files (and their detail information) in a given directory. \\ 
+    \verb|touch| & Create an empty file. \\ 
+    \verb|mkdir| & Create an empty subdirectory. \\ 
+    \verb|mv| & Move (cut-and-paste) a directory or a file; change name of a directory or a file. \\ 
+    \verb|cp| & Copy-and-paste a directory or a file. \\ 
+    \verb|rm|, \verb|rmdir| & Remove a directory or a file (not to Trash, but just gone). \\ 
+    \verb|chmod| & Change permission. \\ 
     \verb|chown| & Change ownership. \\
     \hline
   \end{tabularx}
@@ -117,12 +117,12 @@ More information can be found by reading the \verb|ls| command manual, which is 
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
-    \verb|-a|, \verb|--all| & Include hidden files and subdirectories in the display, including current directory ``\verb|.|'' and parent directory ``\verb|..|'' in the list. \\ \hdashline
-    \verb|-A|, \verb|--almost-all| & Include hidden files and subdirectories in the display, excluding ``\verb|.|'' and ``\verb|..|''. \\ \hdashline
-    \verb|-C|, \verb|--color[=WHEN]| & Colorize the output. \\ \hdashline
-    \verb|-l| & Use a long listing format. \\ \hdashline
-    \verb|-s|, \verb|--size| & Print the allocated size of each file, in blocks. \\ \hdashline
-    \verb|-S| & Sort the displayed content. \\ \hdashline
+    \verb|-a|, \verb|--all| & Include hidden files and subdirectories in the display, including current directory ``\verb|.|'' and parent directory ``\verb|..|'' in the list. \\ 
+    \verb|-A|, \verb|--almost-all| & Include hidden files and subdirectories in the display, excluding ``\verb|.|'' and ``\verb|..|''. \\ 
+    \verb|-C|, \verb|--color[=WHEN]| & Colorize the output. \\ 
+    \verb|-l| & Use a long listing format. \\ 
+    \verb|-s|, \verb|--size| & Print the allocated size of each file, in blocks. \\ 
+    \verb|-S| & Sort the displayed content. \\ 
     \verb|-t| & Sort by modification time. \\
     \hline
   \end{tabularx}
@@ -180,9 +180,9 @@ Some commonly used arguments of \verb|mv| is summarized in Table \ref{ch:fm:tab:
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
-    \verb|-b| & Make a backup before overwrite. \\ \hdashline
-    \verb|-u| & Overwrite only when source target item is newer than the target path item. \\ \hdashline
-    \verb|-i| & Prompt before overwrite. \\ \hdashline
+    \verb|-b| & Make a backup before overwrite. \\ 
+    \verb|-u| & Overwrite only when source target item is newer than the target path item. \\ 
+    \verb|-i| & Prompt before overwrite. \\ 
     \verb|-f| & Do not prompt before overwrite. \\
     \hline
   \end{tabularx}
@@ -204,9 +204,9 @@ For safety, usualy when using \verb|rm|, the OS will keep prompting messages ask
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
-    \verb|-f| & Ignore nonexistent files and arguments and do not prompt. \\ \hdashline
-    \verb|-r| & Remove directories and their contents recursively. \\ \hdashline
-    \verb|-i| & Prompt before every removal. \\ \hdashline
+    \verb|-f| & Ignore nonexistent files and arguments and do not prompt. \\ 
+    \verb|-r| & Remove directories and their contents recursively. \\ 
+    \verb|-i| & Prompt before every removal. \\ 
     \verb|-d| & Remove empty directories. \\
     \hline
   \end{tabularx}
@@ -226,8 +226,8 @@ When performing moving, copying, removing or otherwise acting on files, wildcard
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
-    \verb|*| & Matches any number of characters. \\ \hdashline
-    \verb|?| & Matches one character. \\ \hdashline
+    \verb|*| & Matches any number of characters. \\ 
+    \verb|?| & Matches one character. \\ 
     \verb|[...]| & Matches characters given in the square bracket, which can include a hyphen-separated range of characters. \\
     \hline
   \end{tabularx}
@@ -246,8 +246,8 @@ Following by the item type indicator is the 9-bit permission that may look like 
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
-    \verb|r| & View what is in the file or directory. \\ \hdashline
-    \verb|w| & Change file contents; rename file; delete file. Add or remove files or subdirectories in a directory. \\ \hdashline
+    \verb|r| & View what is in the file or directory. \\ 
+    \verb|w| & Change file contents; rename file; delete file. Add or remove files or subdirectories in a directory. \\ 
     \verb|x| & Run a file as a program. Change to the directory as the current directory; search through the directory; access metadata (file size, etc.) of files in the directory. \\
     \hline
   \end{tabularx}
@@ -351,8 +351,8 @@ The \verb|tar|, \verb|gzip| and \verb|zip| commands can all be used in files arc
 		\hline
 		Directory & Description \\ \hline
 		\verb|tar| & Save many files together into a single tape or disk archive, and can
-		restore individual files from the archive. By default, it does not compress the files. However, \verb|-z| option can be used in combination of the command to add compression feature. \\ \hdashline
-		\verb|gzip| & Compress or restore files. \\ \hdashline
+		restore individual files from the archive. By default, it does not compress the files. However, \verb|-z| option can be used in combination of the command to add compression feature. \\ 
+		\verb|gzip| & Compress or restore files. \\ 
 		\verb|zip| & Compress multiple files one-by-one and integrate them together into a single file. \\
 		\hline
 	\end{tabularx}
