@@ -45,7 +45,7 @@ As a document-oriented database, MongoDB stores data in documents and collection
 
 In Fig. \ref{ch:database:mongotree}, a collection ``USER'' is defined. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language''. Different properties may have different data types. For example, a property can be string, numeric, or a nested object, or an array of the above. When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in the required order.
 
-\subsection{Data Format in MongoDB}
+\subsection{Data Model in MongoDB}
 
 MongoDB is a document-oriented database program. The data is stored in the format of ``binary JSON'' known as BSON. BSON is an extension of JSON that supports more data types.
 
@@ -59,6 +59,10 @@ MongoDB is a document-oriented database program. The data is stored in the forma
 \end{shortbox}
 
 MongoDB uses BSON to store and process data due to its enhanced capability, and uses JSON to display the data.
+
+It is strongly recommended to make the data (document and collection) self-contained. The design of MongoDB architecture should follow depend on how the data would be queried. Data that is accessed together should reside together. This is known as embedding, which adds redundancy to the data storage and make documents bigger, but will make query simpler. Notice that when using embedding, make sure the size of the document is bounded and would not go towards infinity. MongoDB has a maximum $16$MB size limitation for each document.
+
+MongoDB database, unlike relational DB, is by nature not designed for joining. However, MongoDB does support referencing documents and even performing joins (to some extent) through different mechanisms, such as \verb|$lookup| stage in the aggregation pipe.
 
 \subsection{Installation}
 
@@ -646,7 +650,11 @@ Sharding is a method of distributing data across multiple servers or instances. 
 
 \subsection{Indexing}
 
-Indexing is a technique used to speed up the retrieval of documents within a database. MongoDB uses indexes to quickly locate data a document without having to scan every document in a collection. Indexes are a critical component of database optimization, as they can drastically reduce the amount of data MongoDB needs to look through to find documents that match a query. When a filter such as \verb|find()|, \verb|findOne()|, or in an aggregation pipeline, \verb|$match| are used, MongoDB automatically utilizes the available indexes to speed up the query, making it more efficient.
+Indexing is a technique used to speed up the retrieval of documents within a database. MongoDB uses indexes to quickly locate data a document without having to scan every document in a collection. Indexes are a critical component of database optimization, as they can drastically reduce the amount of data MongoDB needs to look through to find documents that match a query. 
+
+When a filter such as \verb|find()|, \verb|findOne()|, or in an aggregation pipeline, \verb|$match| are used, MongoDB automatically utilizes the available indexes to speed up the query, making it more efficient.
+
+When projection is used to limit the fields to be returned, and if it happens that all the returned fields are part of the index, MongoDB would not need to look back into the documents. In this case, the query speed can be significantly faster.
 
 \begin{shortbox}
 \Boxhead{MongoDB's B-Tree}
@@ -658,17 +666,17 @@ However, index by itself is also an argument data structure and it consumes disk
 
 The default index for a collection is ``\verb|_id|'', a compulsory and unique field required by MongoDB. The user can also define index of different types. User-defined index can be unique or non-unique. The index of a collection can be created when the collection is empty, or when there is already some documents.
 
-There are many options when creating the user-defined index. The following function 
-\begin{lstlisting}
-db.collection.createIndex(<keys>, <options>, <commitQuorum>)
-\end{lstlisting}
-creates a user-defined index. More details are given later.
+A MongoDB collection can have multiple indexes, and when you perform a query, MongoDB will choose the most suitable index to use based on the query's criteria.
 
 \vspace{0.1in}
 \noindent \textbf{Simple and Compound Index}
 \vspace{0.1in}
 
-A single or a compound of multiple fields in a collection can be used as the index using
+There are many options when creating the user-defined index. The following function 
+\begin{lstlisting}
+db.collection.createIndex(<keys>, <options>, <commitQuorum>)
+\end{lstlisting}
+creates a user-defined index. A single or a compound of multiple fields in a collection can be used as the index using
 \begin{lstlisting}
 db.collection.createIndex(
 	{
@@ -678,27 +686,99 @@ db.collection.createIndex(
 	}
 )
 \end{lstlisting}
-Those fields assigned with ``$1$'' or ``$-1$'' is listed as the ascending and descending index. The choice of order determines how the index sorts the indexed field's values, which can affect the performance of certain queries. 
+Those fields assigned with ``$1$'' or ``$-1$'' is listed as the ascending and descending index. The choice of order determines how the index sorts the indexed field's values, which can affect the performance of certain queries.
+
+The data types of the selected field(s) can be scalar, string, or even a nested object. MongoDB has an internal mechanism that can convert different data types into a format that can be indexed and sorted efficiently.
+
+The order of fields in a compound index can significantly impact query performance in MongoDB. Following the principle of ``equality, sort, range'' when defining compound indexes is a good practice to optimize queries.
+
+\begin{itemize}
+	\item Equality. Fields that are used in equality conditions (\verb|=|) should come first in the index. These fields are used to narrow down the search space quickly.
+	\item Sort. Fields that are used for sorting the results should come next. Sorting fields in the index help MongoDB to efficiently retrieve documents in the desired order without additional sorting.
+	\item Range. Fields that are used in range queries (\verb|<|, \verb|<=|, \verb|>|, \verb|>=|, \verb|$in|, etc.) should be placed last. Range queries can benefit from being at the end of the index because they can take advantage of the already reduced search space provided by the equality and sort fields.
+\end{itemize}
+
+It is possible to use the \verb|<options>| argument to set additional constraints to the index, for example, to enforce its value to be unique.
 
 \vspace{0.1in}
 \noindent \textbf{Multi-key Index}
 \vspace{0.1in}
 
+When defining index on an array field, the index is known as multi-key index. Like the scalar fields, multi-key index can also be both single or compound. It is also possible to mix scalar keys with array keys.
 
-
-\vspace{0.1in}
-\noindent \textbf{Check and Remove Index}
-\vspace{0.1in}
-
-MongoDB provides commands to check, set and remove indexes. To check the indexes of a system, use
+Syntax wise, defining a multi-key index looks similar with defining a regular single or compound index as follows.
 \begin{lstlisting}
-db.collection_name.getIndexes()
+db.collection.createIndex(
+	{
+		<scalar field1>: 1,
+		<scalar field2>: 1,
+		<array field>: 1
+	}
+)
 \end{lstlisting}
-The index can also be viewed from the graphical UI.
+The only limitation is that there can be only one array key per index.
+
+Behind the screen, MongoDB treats each element in the array key as a separate index value. Likewise, each element in the array of the index can be scalar, string, or nested object.
+
+\vspace{0.1in}
+\noindent \textbf{Hide and Remove Index}
+\vspace{0.1in}
+
+It is not recommended to modify the index of a collection frequently, as deleting and recreating index take time and resources. Sometimes we do need to remove a redundant index if it is adding too much writing cost.
+
+It is possible to test the query performance if an index were to be removed before actually removing it. This can be done by temporarily hide the index. MongoDB would not use hidden index in the query, though it will still update the index when new data is written in.
+
+To hide an index, use
+\begin{lstlisting}
+db.<collection>.hideIndex(<index>)
+\end{lstlisting}
+where \verb|<index>| can be either a string or a document that indicates the status of the index. An example is given below.
+
+Consider a restaurant collection, with the following user-defined index:
+\begin{lstlisting}
+db.restaurants.createIndex( { borough: 1, ratings: 1 } );
+\end{lstlisting}
+Now the collection should have 2 indexes, the first the default index with \verb|_id| field, the second the compound index composed of \verb|borough| and \verb|ratings| fields.
+
+The user-defined compound index can be hidden by one of the two syntax below.
+\begin{lstlisting}
+db.restaurants.hideIndex( "borough_1_ratings_1" ); // option 1
+db.restaurants.hideIndex( { borough: 1, ratings: 1 } ); // option 2
+\end{lstlisting}
+
+After hiding the user-defined index, the index status becomes
+\begin{lstlisting}
+[
+	{
+		"v" : 2,
+		"key" : {
+			"_id" : 1
+		},
+		"name" : "_id_"
+	},
+	{
+		"v" : 2,
+		"key" : {
+			"borough" : 1,
+			"ratings" : 1
+		},
+		"name" : "borough_1_ratings_1",
+		"hidden" : true
+	}
+]
+\end{lstlisting}
+
+To remove an index instead of hiding it, use \verb|dropIndex()| instead of \verb|hideIndex()|. A similar-looking command \verb|dropIndexes()| allows removing multiple indexes at the same time.
 
 \vspace{0.1in}
 \noindent \textbf{Performance Evaluation with Index}
 \vspace{0.1in}
+
+To check the indexes of a system, use
+\begin{lstlisting}
+db.collection_name.getIndexes()
+\end{lstlisting}
+The index can also be viewed from the graphical UI.
 
 Consider using \verb|explain()| function as follows when carrying out a find operation.
 \begin{lstlisting}
@@ -764,17 +844,6 @@ A full instruction to execute the above example can be found at
 https://www.mongodb.com/docs/languages/python/pymongo-driver/current/get-started/
 \end{lstlisting}
 
-
-
-
-
-
-
-
-
-
-
-
 \section{Non-RDB Example: MongoDB Atlas}
 
 MongoDB Atlas is the MongoDB cloud-based serverless solution. It allows the user to deploy MongoDB on the cloud. The user has the freedom to choose the base cloud service provider including AWS, Azure and Google Cloud. Thanks to Altas, the user has the flexibility to seamlessly change cloud service providers and service tiers without downtime. 
@@ -833,6 +902,92 @@ A connection string may look like the following
 \begin{lstlisting}
 mongodb+srv://<username>:<password>@<server-dns>/?authSource=admin&replicaSet=myRepl
 \end{lstlisting}
+
+\subsection{Atlas Search}
+
+Altas search is a powerful full-text search feature provided by Atlas that can access the documents and search for information based on relevance.  It is built on top of Apache Lucene, a high-performance, full-featured text search engine library, and is designed to offer advanced search capabilities beyond the basic query. 
+
+Notice that Atlas search is NOT database query based on \verb|find()|, nor AI-encoder-decoder based semantic search. Unlike traditional MongoDB queries which are based on exact matches or range conditions, Atlas Search provides relevance-based search. This means that search results are ranked by how well they match the search criteria, similar to how web search engines work. From this point of view, Atlas search is more business-user friendly, while MongoDB database search is more for developers and applications.
+
+Atlas search, as well as Apache Lucene, uses search index to collect and parse the data to improve search efficiency. Do NOT confuse the search index with the MongoDB collection index introduced in earlier sections, as they are fundamentally different.
+
+The remaining of this section introduces the use of Atlas search. Notice that Atlas search is power and flexible. Only a scratch is covered here.
+
+\vspace{0.1in}
+\noindent \textbf{Create Search Index and Test Atlas Search}
+\vspace{0.1in}
+
+Don't confuse Atlas search index or Apache Lucene index with MongoDB collection index. They function fundamentally differently. The purpose of the search index is to provide advanced full-text search capabilities, as so required by Apache Lucene.
+
+MongoDB Atlas dashboard provides a GUI to create and manage search indexes for collections, as shown by the demonstration in Fig. \ref{ch:database:atlassearchdashboard}. All configurations such as index analyzer, search analyzer, etc., are left as default in this example. It will take some time when setting up the search index. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/part-3/figures/atlas_search_dashboard.png}
+	\caption{Atlas search set up search index using the dashboard.} \label{ch:database:atlassearchdashboard}
+\end{figure}
+
+With this setup, we can search the documents as if we were using a web searching engine. An example is given in Fig. \ref{ch:database:atlassearchtest}. The most relevant documents with the keyword ``big room'' is returned. Each returned document corresponds with a score.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{chapters/part-3/figures/atlas_search_test.png}
+	\caption{Atlas search test.} \label{ch:database:atlassearchtest}
+\end{figure}
+
+The default search index, as shown by the above example, uses dynamic mapping. It index all the fields in the collection. If we have priori knowledge about which field(s) to query, we can use static mapping which usually returns results faster. 
+
+To use static mapping, click the button ``refine your index'' during the search index creation, disable dynamic mapping, and add fields of interest following the instruction.
+
+\vspace{0.1in}
+\noindent \textbf{Use Atlas Search in the Aggregation Pipeline}
+\vspace{0.1in}
+
+With Atlas, we can add Atlas search as part in the aggregation pipeline. The associated stage is \verb|$search|. It must be used together with Atlas search. The syntax looks like the following.
+
+\begin{lstlisting}
+{
+	$search: {
+		"index": "<index-name>",
+		"<operator-name>"|"<collector-name>": {
+			<operator-spec>|<collector-spec>
+		},
+		"highlight": {
+			<highlight-options>
+		},
+		"concurrent": true | false,
+		"count": {
+			<count-options>
+		},
+		"searchAfter"|"searchBefore": "<encoded-token>",
+		"scoreDetails": true| false,
+		"sort": {
+			<fields-to-sort>: 1 | -1
+		},
+		"returnStoredSource": true | false,
+		"tracking": {
+			<tracking-option>
+		}
+	}
+}
+\end{lstlisting}
+which can be defined in the Atlas dashboard under ``Collections'', ``Aggregation''.
+
+\subsection{Schema Pattern}
+
+The schema pattern is the guidance of designing good MongoDB architecture. Schema anti-pattern, on the other hand, refers to the architecture design that causes sub optimal performance.
+
+Commonly seen schema anti-patterns include:
+\begin{itemize}
+	\item Massive arrays.
+	\item Massive number of collections.
+	\item Bloated documents.
+	\item Unnecessary indexes.
+	\item Queries without indexes.
+	\item Data that is accessed together but not stored together.
+\end{itemize}
+
+Atlas provides tools to help identify these schema anti-patterns. There are different ways to tackle each of these issues.
 
 
 \section{Non-RDB Example: Redis}
