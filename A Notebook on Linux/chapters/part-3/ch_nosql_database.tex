@@ -12,13 +12,13 @@ There are many types of non-relational databases including document-oriented dat
 
 Database services, both RDB and NoSQL, have become critical to our daily life and they are massively deployed on servers. In many applications they work together to deliver the service.
 
-\section{Non-RDB Example: MongoDB}
+\section{Non-RDB Example: MongoDB (Basics)}
 
 MongoDB is a source-available, cross-platform, general-purpose, document-oriented database program. Classified as a NoSQL database program, MongoDB uses BSON (an extension of JSON) documents with flexible schema to store data. This is not surprising, as MongoDB itself is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., is often used to create database-powered web applications.
 
 Data in MongoDB can be exported or imported from files, such as BSON and JSON files.
 
-\subsection{Features of MongoDB}
+\subsection{Features}
 
 Comparing with conventional RDBs, MongoDB is better at
 \begin{itemize}
@@ -45,7 +45,7 @@ As a document-oriented database, MongoDB stores data in documents and collection
 
 In Fig. \ref{ch:database:mongotree}, a collection ``USER'' is defined. The collection contains two documents. Each document has a few properties. Different document may share common properties such as ``name'' in this example. Each of them can also have unique properties of its own such as ``age'', ``address'' and ``language''. Different properties may have different data types. For example, a property can be string, numeric, or a nested object, or an array of the above. When querying MongoDB, the DBMS is able to return selected properties of documents that meet specific criteria, and sort them in the required order.
 
-\subsection{Data Model in MongoDB}
+\subsection{Data Model}
 
 MongoDB is a document-oriented database program. The data is stored in the format of ``binary JSON'' known as BSON. BSON is an extension of JSON that supports more data types.
 
@@ -422,226 +422,6 @@ Consider counting the number of documents fulfilling a particular filter documen
 db.<collection>.countDocuments( <query>, <options> )
 \end{lstlisting}
 
-\subsection{Query with Aggregation Framework}
-
-Aggregation is the analysis and summary of data. MongoDB provides powerful tools to perform other aggregation functions such as to calculate the sum or average of a particular field.
-
-To apply different aggregation functions, use \verb|aggregate()| as follows.
-\begin{lstlisting}
-db.<collection>.aggregate( <pipeline>, <options> )
-\end{lstlisting}
-where \verb|<pipeline>| is usually an array that contains a sequence of aggregation operations including filter, sorting, grouping and transforming, that looks like the following
-\begin{lstlisting}
-db.<collection>.aggregate([
-	{
-		$<stage>: {<expression>}
-	},
-	{
-		$<stage>: {<expression>}
-	},
-	{
-		$<stage>: {<expression>}
-	}
-])
-\end{lstlisting}
-
-An example is given blow.
-\begin{lstlisting}
-db.orders.insertMany( [
-{ _id: 0, name: "Pepperoni", size: "small", price: 19,
-	quantity: 10, date: ISODate( "2021-03-13T08:14:30Z" ) },
-{ _id: 1, name: "Pepperoni", size: "medium", price: 20,
-	quantity: 20, date : ISODate( "2021-03-13T09:13:24Z" ) },
-{ _id: 2, name: "Pepperoni", size: "large", price: 21,
-	quantity: 30, date : ISODate( "2021-03-17T09:22:12Z" ) },
-{ _id: 3, name: "Cheese", size: "small", price: 12,
-	quantity: 15, date : ISODate( "2021-03-13T11:21:39.736Z" ) },
-{ _id: 4, name: "Cheese", size: "medium", price: 13,
-	quantity:50, date : ISODate( "2022-01-12T21:23:13.331Z" ) },
-{ _id: 5, name: "Cheese", size: "large", price: 14,
-	quantity: 10, date : ISODate( "2022-01-12T05:08:13Z" ) },
-{ _id: 6, name: "Vegan", size: "small", price: 17,
-	quantity: 10, date : ISODate( "2021-01-13T05:08:13Z" ) },
-{ _id: 7, name: "Vegan", size: "medium", price: 18,
-	quantity: 10, date : ISODate( "2021-01-13T05:10:13Z" ) }
-] )
-
-db.orders.aggregate( [
-// Stage 1: Filter pizza order documents by pizza size
-{
-	$match: { size: "medium" }
-},
-// Stage 2: Group remaining documents by pizza name and calculate total quantity
-{
-	$group: { _id: "$name", totalQuantity: { $sum: "$quantity" } }
-}
-] )
-\end{lstlisting}
-where both \verb|$match| and \verb|$group| are commonly used stages.
-
-And the return is a cursor with the following array of documents
-\begin{lstlisting}
-[
-	{ _id: 'Cheese', totalQuantity: 50 },
-	{ _id: 'Vegan', totalQuantity: 10 },
-	{ _id: 'Pepperoni', totalQuantity: 20 }
-]
-\end{lstlisting}
-
-Notice that the design of pipeline affects the performance of the query. More details about aggregation and its pipeline is introduced as follows.
-
-Commonly used stages are introduced below.
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$match}}
-\vspace{0.1in}
-
-The \verb|$match| stage
-\begin{lstlisting}
-{$match: <filter>}
-\end{lstlisting}
-filters the documents to pass only the documents that match the specified conditions to the next pipeline stage. The \verb|$match| stage should be used in early steps to make the pipeline more efficient.
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$group}}
-\vspace{0.1in}
-
-The \verb|$group| stage separates documents into groups according to a ``group key''. The output is one document for each unique group key. Grouping is essential to the calculation of aggregated information.
-
-A general syntax is given below.
-\begin{lstlisting}
-{
-	$group:
-	{
-		_id: <expression>, // Group key
-		<field1>: { <accumulator1> : <expression1> },
-		...
-	}
-}
-\end{lstlisting}
-where \verb|<accumulator>| indicates what to calculate on the grouped information to put into the \verb|field|. For example, the accumulator can be \verb|$count|.
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$sort}}
-\vspace{0.1in}
-
-The \verb|$sort| stage sorts the documents in either ascending order or descending order for further processing in the pipeline. The \verb|$sort| stage is sometimes used before \verb|$limit| stage.
-
-A general syntax is given below.
-\begin{lstlisting}
-{
-	$sort:
-	{
-		<field1>: 1 // or -1
-	}
-}
-\end{lstlisting}
-where ``$1$'' and ``$-1$'' indicate the ascending and descending order with respect to the field.
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$limit}}
-\vspace{0.1in}
-
-The \verb|$limit| stage selects and filters the first a few items from the pipeline. The input argument is simply a positive integer, as shown in the below example.
-\begin{lstlisting}
-{
-	$limit: 3
-}
-\end{lstlisting}
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$set}}
-\vspace{0.1in}
-
-The \verb|$set| stage is used to modify or add fields in the pipeline, using the following syntax.
-\begin{lstlisting}
-{
-	$set:
-	{
-		<field1>: <new value>,
-		<field2>: {<expression>},
-		...
-	}
-}
-\end{lstlisting}
-The assignment can be either a value or an expression, such as rounding, multiplying by a gain, etc. A list of supported arithmetic aggregation functions is given in Table \ref{tab:mongodb_arithmetic_aggregation}.
-
-\begin{table}
-	\centering \caption{MongoDB arithmetic aggregation functions.}\label{tab:mongodb_arithmetic_aggregation}
-	\begin{tabularx}{\textwidth}{lX}
-		\hline
-		Name & Description \\ \hline
-		\verb|$abs| &	Returns the absolute value of a number. \\
-		\verb|$add| &	Adds numbers to return the sum, or adds numbers and a date to return a new date. If adding numbers and a date, treats the numbers as milliseconds. Accepts any number of argument expressions, but at most, one expression can resolve to a date. \\
-		\verb|$ceil| &	Returns the smallest integer greater than or equal to the specified number. \\
-		\verb|$divide| &	Returns the result of dividing the first number by the second. Accepts two argument expressions. \\
-		\verb|$exp| &	Raises e to the specified exponent. \\
-		\verb|$floor| &	Returns the largest integer less than or equal to the specified number. \\
-		\verb|$ln| &	Calculates the natural log of a number. \\
-		\verb|$log| &	Calculates the log of a number in the specified base. \\
-		\verb|$log10| &	Calculates the log base 10 of a number. \\
-		\verb|$mod| &	Returns the remainder of the first number divided by the second. Accepts two argument expressions. \\
-		\verb|$multiply| &	Multiplies numbers to return the product. Accepts any number of argument expressions. \\
-		\verb|$pow| &	Raises a number to the specified exponent. \\
-		\verb|$sqrt| &	Calculates the square root. \\
-		\verb|$subtract| &	Returns the result of subtracting the second value from the first. If the two values are numbers, return the difference. If the two values are dates, return the difference in milliseconds. If the two values are a date and a number in milliseconds, return the resulting date. Accepts two argument expressions. If the two values are a date and a number, specify the date argument first as it is not meaningful to subtract a date from a number. \\
-		\verb|$trunc| &	Truncates a number to its integer. \\
-		\hline
-	\end{tabularx}
-\end{table}
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$count}}
-\vspace{0.1in}
-
-The \verb|&count| stage counts the number of the documents, and put the number into a field.
-\begin{lstlisting}
-{
-	$count: <field>
-}
-\end{lstlisting}
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$project}}
-\vspace{0.1in}
-
-The \verb|$project| stage changes the shape of the data in the pipeline. It selects which fields to be displayed. In many occasions it is used near the end of the pipeline, right before the data comes out of the pipeline. 
-
-A general syntax looks like the following.
-\begin{lstlisting}
-{
-	$project:
-	{
-		<field1>: 1,
-		<field2>: 0,
-		<field3>: <new value>,
-		...
-	}
-}
-\end{lstlisting}
-where ``$1$'' and ``$-1$'' are used to either include or exclude a field. It can also create new fields or overwrite an existing field, in which case the value of the new fields needs to be specified.
-
-\vspace{0.1in}
-\noindent \textbf{Stage: \texttt{\$out}}
-\vspace{0.1in}
-
-The \verb|&out| stage creates a new collection or overwrite an existing collection using the aggregation pipeline result. If \verb|&out| is used, it should be the last stage.
-\begin{lstlisting}
-	{
-		$out:
-		{
-			db: "<database name>",
-			coll: "<collection name>"
-		}
-	}
-\end{lstlisting}
-or
-\begin{lstlisting}
-	{
-		$out: "<collection name>"
-	}
-\end{lstlisting}
-
 \subsection{Sharding}
 
 Given that MongoDB is often used with big data such as web data or IoT data, efficient query from massive data pool becomes critical. MongoDB implements a few technologies to speed up the query such as sharding and indexing.
@@ -819,32 +599,312 @@ https://www.mongodb.com/docs/drivers/
 
 Here is a quick example to connect to MongoDB using Python library \verb|PyMongo|. The installation of the library is not given.
 \begin{lstlisting}
+import pymongo
 from pymongo import MongoClient
 
-uri = "<connection string URI>"
-client = MongoClient(uri)
+def initialize_mongodb_collection(connection_string, database_name, collection_name, index_field):
+	client = MongoClient(connection_string)
+	db = client[database_name]
+	collection = db[collection_name]
+	collection.create_index(index_field)
 
-try:
-database = client.get_database("sample_mflix")
-movies = database.get_collection("movies")
+def push_to_mongodb(connection_string, database_name, collection_name, data):
+	client = MongoClient(connection_string)
+	try:
+		db = client[database_name]
+		collection = db[collection_name]
+		if isinstance(data, dict):
+			result = collection.insert_one(data)
+			print(result.acknowledged)
+			elif isinstance(data, list):
+			result = collection.insert_many(data)
+			print(result.acknowledged)
+		else:
+			raise Exception("Data should be a dictionary or a list of dictionaries")
+		client.close()
+	except Exception as e:
+		raise Exception("Unable to insert the document: ", e)
 
-# Query for a movie that has the title 'Back to the Future'
-query = { "title": "Back to the Future" }
-movie = movies.find_one(query)
+def pull_from_mongodb(connection_string, database_name, collection_name, query_dict):
+	results = None
+	client = MongoClient(connection_string)
+	try:
+		db = client[database_name]
+		collection = db[collection_name]
+		results = collection.find(query_dict) # return iterative object
+		client.close()
+	except Exception as e:
+		raise Exception("Unable to insert the document: ", e)
+	return results
 
-print(movie)
-
-client.close()
-
-except Exception as e:
-raise Exception("Unable to find the document: ", e)
 \end{lstlisting}
 A full instruction to execute the above example can be found at
 \begin{lstlisting}
 https://www.mongodb.com/docs/languages/python/pymongo-driver/current/get-started/
 \end{lstlisting}
 
-\section{Non-RDB Example: MongoDB Atlas}
+\section{Non-RDB Example: MongoDB (Aggregation Framework)}
+
+Aggregation is the analysis and summary of data. MongoDB, like many other databases, provides powerful tools to perform aggregation functions such as counting the number of documents, calculating the sum / average of a particular field of filtered documents, etc. Beyond that, MongoDB allows the user to define a pipeline composed of a sequence of data processing procedures for aggregation. This enables autonomous data processing and analysis, and it is useful especially for big data applications. This feature, known as the data aggregation framework or data aggregation pipeline, is one of the most powerful and useful features that MongoDB offers.
+
+\subsection{Aggregation Pipeline Syntax}
+
+To apply different aggregation functions, use \verb|aggregate()| as follows.
+\begin{lstlisting}
+	db.<collection>.aggregate( <pipeline>, <options> )
+\end{lstlisting}
+where \verb|<pipeline>| is usually an array that contains a sequence of aggregation operations including filter, sorting, grouping and transforming, which may look like the following
+\begin{lstlisting}
+db.<collection>.aggregate([
+	{
+		$<stage>: {<expression>}
+	},
+	{
+		$<stage>: {<expression>}
+	},
+	{
+		$<stage>: {<expression>}
+	}
+])
+\end{lstlisting}
+
+An example is given blow.
+\begin{lstlisting}
+db.orders.insertMany( [
+	{ _id: 0, name: "Pepperoni", size: "small", price: 19,
+		quantity: 10, date: ISODate( "2021-03-13T08:14:30Z" ) },
+	{ _id: 1, name: "Pepperoni", size: "medium", price: 20,
+		quantity: 20, date : ISODate( "2021-03-13T09:13:24Z" ) },
+	{ _id: 2, name: "Pepperoni", size: "large", price: 21,
+		quantity: 30, date : ISODate( "2021-03-17T09:22:12Z" ) },
+	{ _id: 3, name: "Cheese", size: "small", price: 12,
+		quantity: 15, date : ISODate( "2021-03-13T11:21:39.736Z" ) },
+	{ _id: 4, name: "Cheese", size: "medium", price: 13,
+		quantity:50, date : ISODate( "2022-01-12T21:23:13.331Z" ) },
+	{ _id: 5, name: "Cheese", size: "large", price: 14,
+		quantity: 10, date : ISODate( "2022-01-12T05:08:13Z" ) },
+	{ _id: 6, name: "Vegan", size: "small", price: 17,
+		quantity: 10, date : ISODate( "2021-01-13T05:08:13Z" ) },
+	{ _id: 7, name: "Vegan", size: "medium", price: 18,
+		quantity: 10, date : ISODate( "2021-01-13T05:10:13Z" ) }
+] )
+	
+db.orders.aggregate( [
+	// Stage 1: Filter pizza order documents by pizza size
+	{
+		$match: { size: "medium" }
+	},
+	// Stage 2: Group remaining documents by pizza name and calculate total quantity
+	{
+		$group: { _id: "$name", totalQuantity: { $sum: "$quantity" } }
+	}
+] )
+\end{lstlisting}
+where both \verb|$match| and \verb|$group| are commonly used stages.
+
+And the return is a cursor with the following array of documents
+\begin{lstlisting}
+[
+	{ _id: 'Cheese', totalQuantity: 50 },
+	{ _id: 'Vegan', totalQuantity: 10 },
+	{ _id: 'Pepperoni', totalQuantity: 20 }
+]
+\end{lstlisting}
+
+Notice that the design of pipeline affects the performance of the query. More details about aggregation and its pipeline is introduced as follows.
+
+Commonly used stages are introduced below.
+
+\subsection{Stage: \texttt{\$match}}
+
+The \verb|$match| stage
+\begin{lstlisting}
+	{$match: <filter>}
+\end{lstlisting}
+filters the documents to pass only the documents that match the specified conditions to the next pipeline stage. The \verb|$match| stage should be used in early steps to make the pipeline more efficient.
+
+\subsection{Stage: \texttt{\$group}}
+
+The \verb|$group| stage separates documents into groups according to a ``group key''. The output is one document for each unique group key. Use \verb|null| as the group key to group all documents into a single group. Aggregations are then performed per group.
+
+A general syntax is given below.
+\begin{lstlisting}
+{
+	$group:
+	{
+		_id: <expression>, // Group key
+		<field1>: { <accumulator1> : <expression1> },
+		...
+	}
+}
+\end{lstlisting}
+where \verb|<accumulator>| indicates what to calculate on the grouped information to put into the \verb|field|. For example, the accumulator can be \verb|$count|.
+
+The following is an example. Let there be a collection ``commodity'', inside which each document represents a product, and has the following 3 fields: ``item'' (item name), ``price'' (unit price) and ``quantity'' (the sold number). The target is to calculate the sold total price for each product.
+\begin{lstlisting}
+{
+	$group :
+	{
+		_id : "$item",
+		totalSaleAmount: { $sum: { $multiply: [ "$price", "$quantity" ] } }
+	}
+}
+\end{lstlisting}
+Do notice that to refer to the field name in the documents, use \verb|"$<fieldname>"|.
+
+The return of the above may look like the following
+\begin{lstlisting}
+[
+	{ _id: "apple", totalSaleAmount: 50 },
+	{ _id: "banana", totalSaleAmount: 45 }
+]
+
+\end{lstlisting}
+
+If \verb|null| were used as the group key, the return would have been
+\begin{lstlisting}
+[
+	{ _id: null, totalSaleAmount: 95 }
+]
+\end{lstlisting}
+
+To count the number of documents in each group, consider using \verb|$sum| as follows.
+\begin{lstlisting}
+{
+	$group: {
+		_id: <expression>, // Group key
+		count: { $sum: 1 } // Accumulator to count documents
+	}
+}
+\end{lstlisting}
+
+\subsection{Stage: \texttt{\$sort}}
+
+The \verb|$sort| stage sorts the documents in either ascending order or descending order for further processing in the pipeline. The \verb|$sort| stage is sometimes used before \verb|$limit| stage.
+
+A general syntax is given below.
+\begin{lstlisting}
+{
+	$sort:
+	{
+		<field1>: 1 // or -1
+	}
+}
+\end{lstlisting}
+where ``$1$'' and ``$-1$'' indicate the ascending and descending order with respect to the field.
+
+\subsection{Stage: \texttt{\$limit}}
+
+The \verb|$limit| stage selects and filters the first a few items from the pipeline. The input argument is simply a positive integer, as shown in the below example.
+\begin{lstlisting}
+{
+	$limit: 3
+}
+\end{lstlisting}
+
+\subsection{Stage: \texttt{\$set}}
+
+The \verb|$set| stage is used to modify or add fields in the pipeline, using the following syntax.
+\begin{lstlisting}
+{
+	$set:
+	{
+		<field1>: <new value>,
+		<field2>: {<expression>},
+		...
+	}
+}
+\end{lstlisting}
+The assignment can be either a value or an expression, such as rounding, multiplying by a gain, etc. A list of supported arithmetic aggregation functions is given in Table \ref{tab:mongodb_arithmetic_aggregation}.
+
+\begin{table}
+	\centering \caption{MongoDB arithmetic aggregation functions.}\label{tab:mongodb_arithmetic_aggregation}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Name & Description \\ \hline
+		\verb|$abs| &	Returns the absolute value of a number. \\
+		\verb|$add| &	Adds numbers to return the sum, or adds numbers and a date to return a new date. If adding numbers and a date, treats the numbers as milliseconds. Accepts any number of argument expressions, but at most, one expression can resolve to a date. \\
+		\verb|$ceil| &	Returns the smallest integer greater than or equal to the specified number. \\
+		\verb|$divide| &	Returns the result of dividing the first number by the second. Accepts two argument expressions. \\
+		\verb|$exp| &	Raises e to the specified exponent. \\
+		\verb|$floor| &	Returns the largest integer less than or equal to the specified number. \\
+		\verb|$ln| &	Calculates the natural log of a number. \\
+		\verb|$log| &	Calculates the log of a number in the specified base. \\
+		\verb|$log10| &	Calculates the log base 10 of a number. \\
+		\verb|$mod| &	Returns the remainder of the first number divided by the second. Accepts two argument expressions. \\
+		\verb|$multiply| &	Multiplies numbers to return the product. Accepts any number of argument expressions. \\
+		\verb|$pow| &	Raises a number to the specified exponent. \\
+		\verb|$sqrt| &	Calculates the square root. \\
+		\verb|$subtract| &	Returns the result of subtracting the second value from the first. If the two values are numbers, return the difference. If the two values are dates, return the difference in milliseconds. If the two values are a date and a number in milliseconds, return the resulting date. Accepts two argument expressions. If the two values are a date and a number, specify the date argument first as it is not meaningful to subtract a date from a number. \\
+		\verb|$trunc| &	Truncates a number to its integer. \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\subsection{Stage: \texttt{\$count}}
+
+The \verb|&count| stage counts the number of the documents passing through the pipeline, and put the number into a field.
+\begin{lstlisting}
+{
+	$count: <field>
+}
+\end{lstlisting}
+
+An example is given below
+\begin{lstlisting}
+db.scores.aggregate([
+	{
+		$match: {
+			score: {
+				$gt: 80
+			}
+		}
+	},
+	{
+		$count: "passing_scores"
+	}
+])
+\end{lstlisting}
+which count the number of students whose score is greater than $80$. Notice that when using \verb|$group| stage, \verb|count: {$sum: 1}| can be used to count the number of elements in each group. Though both methods counts the number of documents, they are used in different contexts.
+
+\subsection{Stage: \texttt{\$project}}
+
+The \verb|$project| stage changes the shape of the data in the pipeline. It selects which fields to be displayed. In many occasions it is used near the end of the pipeline, right before the data comes out of the pipeline. 
+
+A general syntax looks like the following.
+\begin{lstlisting}
+{
+	$project:
+	{
+		<field1>: 1,
+		<field2>: 0,
+		<field3>: <new value>,
+		...
+	}
+}
+\end{lstlisting}
+where ``$1$'' and ``$-1$'' are used to either include or exclude a field. It can also create new fields or overwrite an existing field, in which case the value of the new fields needs to be specified.
+
+\subsection{Stage: \texttt{\$out}}
+
+The \verb|&out| stage creates a new collection or overwrite an existing collection using the aggregation pipeline result. If \verb|&out| is used, it should be the last stage.
+\begin{lstlisting}
+{
+	$out:
+	{
+		db: "<database name>",
+		coll: "<collection name>"
+	}
+}
+\end{lstlisting}
+or
+\begin{lstlisting}
+{
+	$out: "<collection name>"
+}
+\end{lstlisting}
+
+\section{Non-RDB Example: MongoDB (Atlas)}
 
 MongoDB Atlas is the MongoDB cloud-based serverless solution. It allows the user to deploy MongoDB on the cloud. The user has the freedom to choose the base cloud service provider including AWS, Azure and Google Cloud. Thanks to Altas, the user has the flexibility to seamlessly change cloud service providers and service tiers without downtime. 
 

@@ -61,15 +61,15 @@ noremap sc :set spell!<CR>
 
 This notebook is mainly about Linux. In this appendix chapter, the boundary of the notebook is slightly expanded to software development, which is quite often how Linux is used in practice.
 
-Continuous integration and delivery (CI/CD) is both a philosophical concept and a bunch of technology that speeds up the development, testing and deployment cycle of a software. It has become a common and beneficial practice that collaborative projects with rapid update implement the practice.
+Continuous integration and delivery (CI/CD) is both a philosophical concept and a bunch of technologies that speeds up the development, testing and deployment cycle of a software. It has become a common and beneficial practice for collaborative projects with rapid updates.
 
-This chapter introduces CI/CD as well as tools to carry out CI/CD. In particular, GitHub, a widely appreciated CI/CD integrated platform to manage and share collaborative projects, is briefly introduced. The introduction of GitHub focuses on GitHub Action, the tool GitHub uses for CI/CD.
+This chapter introduces CI/CD as well as tools to carry out CI/CD. In particular, GitHub, a widely appreciated CI/CD integrated platform to manage and share collaborative projects, is briefly introduced. The introduction of GitHub focuses on GitHub Actions, the tool GitHub uses for CI/CD.
 
 Some contents of this chapter come from \cite{honai2023cicd}.
 
 \section{Agile VS Waterfall}
 
-Agile and waterfall are both project management methodologies. Both of them are introduced here, starting with the more conventional waterfall model then Agile.
+Agile and waterfall are both project management methods. Both of them are introduced here, starting with the more conventional waterfall model then Agile.
 
 \subsection{Waterfall}
 
@@ -91,7 +91,7 @@ The philosophy behind waterfall, as its name indicates, is to ``follow the proce
 
 With waterfall, a project can be designed, developed and deployed in a relatively efficient manner. However, there is one limitation: everything done in earlier steps cannot be changed in later steps. This sets up a high bar on both the user and the developer. For example, in step 1 ``understand requirements from the user'', the user needs to illustrate all the requirements to the developer as they cannot be modified in later steps. Similarly, in step 2 ``design the architecture'', the developer needs to optimize the design to his best, as the architecture cannot be changed later.
 
-Regrettably, with the rapid change in the market and the aggressive advent in technology today, it is challenging even for the smartest user and developer to determine all the requirements and designs in the beginning stage of the project. More likely, the requirements of the user have to change align with the market trend, and so does the design of the solution.
+Regrettably, with the rapid change in the market and the aggressive advent in technology today, it is challenging even for the smartest user and developer to determine all the requirements and designs in the beginning stage of a big project. More often, the requirements of the user have to change to align with the market trend, and so does the design of the solution.
 
 For a new feature to be added into the existing system, it is possible to simply start a new project flow for the new feature, and integrate it into the existing system later. However, integrating the new feature into the existing system can also be challenging when the design is complicated and coupled. The integration often introduces a blackout period of the system. If the system is already deployed, the customer experience would be affected by the blackout.
 
@@ -137,7 +137,7 @@ For each sprint, sprint planning and sprint backlog are proposed that describes 
 
 \section{Continuous Integration Continuous Delivery}
 
-CI/CD is introduced in this section. As a start, pipeline is introduced. Pipeline is an important concept used in CI/CD.
+CI/CD is introduced in this section. As a start, pipeline is introduced. Pipeline is an important concept in CI/CD.
 
 \subsection{Pipeline}
 
@@ -148,65 +148,61 @@ Pipeline is a set of data processing elements in a queue, where the output of th
 	\caption{Pipeline.} \label{ch:cicd:fig:pipeline}
 \end{figure}
 
-Pipeline is widely used in OS for process and thread management (recall Fig. \ref{ch:pm:fig:processflow}). It is also used in CI/CD.
+Pipeline is widely used in OS for process and thread management (recall Fig. \ref{ch:pm:fig:processflow}). It is also used in CI/CD. In the context of CI/CD, think of different jobs as features developed in parallel, and different processes the phases during the development including programming, integration, testing and deployment. In the remaining of this chapter, for simplicity, we assume only one job in the pipeline, i.e., only one feature is being developed. However, always have it in mind that multiple features can be developed simultaneously.
 
 \subsection{Continuous Integration}
 
 In the development of a sprint, new codes are rapidly developed, and they are rapidly compiled, packaged and tested.
 
-Conventionally, the integration of a new feature requires involvement from multiple parties. An example is given in Fig. \ref{ch:cicd:fig:conventionalintegration}. It includes the developer who program the software following users (or business analysts) requests, the integration team who integrates the new feature with the existing system and compile the code into packages, and the operations team who upload the new system into the pre-prod environment for real data testing, and the testers who audit the output of the program running in the pre-prod environment.
+Conventionally, the integration of a new feature requires involvement from multiple parties. An example is given in Fig. \ref{ch:cicd:fig:conventionalintegration}. It includes the developer who program the software following users (or business analysts) requests, the integration team who integrates the new feature with the existing system and compiles the code into packages, and the operations team who uploads the new system into the pre-prod environment for real data testing, and the testers who audit the output of the program running in the pre-prod environment.
 
-Should there be any error along the way, the code is roll back the developer team for trouble shooting. When the new system with the updated code survives pre-prod environment, it is then pushed to the production environment.
+Should there be any error along the way, the code rolls back to the developer team for trouble shooting. When the new system with the updated code survives pre-prod environment, it is then pushed to the production environment.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/conventionalintegration.png}
-	\caption{CI of a new feature.} \label{ch:cicd:fig:conventionalintegration}
+	\caption{Integration and deployment of a new feature in a conventional manner.} \label{ch:cicd:fig:conventionalintegration}
 \end{figure}
 
 In practice, each cycle in Fig. \ref{ch:cicd:fig:conventionalintegration} can take a few days or even weeks as so many teams have to cooperate to make it happen. It takes time for the integration team to integrate different branches in the source code together, making sure that components from different branches function properly. When there is a defect, the flaws can be spotted only in the last stage of the iteration, i.e., testing. This practically disallows very frequent update of the system in response to the rapid changes in requirements.
 
-CI (together with CD which is introduced in later section) tries to solve the above problems. CI automates the ``development'' portion in Fig. \ref{ch:cicd:fig:conventionalintegration}, while CD automates the ``operation'' portion.
+CI (together with CD, which is introduced in a later section) addresses the challenges outlined previously. CI automates the ``development'' portion shown in Fig. \ref{ch:cicd:fig:conventionalintegration}, while CD automates the ``operation'' portion.
 
-To speed up the development of new features, CI mainly adopts the following methods.
+To expedite the development of new features, CI primarily employs the following strategies:
 \begin{itemize}
-	\item Use \textit{Git} to manage features. This simplifies the procedure of managing multiple under-development features and integrating them together. Integration is now managed by \textit{Git} following developers' intention.
-	\item Use a build server to automatically compile the code into ready-for-delivery packages. The scrum master and senior developers can access the server and monitor the progression. Should there be a compiling error, the developer is notified immediately.
-	\item The code, after compiling, is immediately tested in the build server using pre-defined test cases. If the code fails the test cases, the developer is immediately notified.
+	\item Utilize \textit{Git} for version control, managing code branches that reflect different features or development efforts. This streamlines the integration process, allowing developers to merge features.
+	\item Employ a build server to compile the code into delivery-ready packages. The scrum master and senior developers can access this server to monitor progress. If a compilation or test error occurs, the developer is immediately notified through preferred communication channels.
+	\item After compilation, the code is rigorously tested on the build server using predefined test cases. Failing these tests triggers immediate notifications to developers. This testing phase is distinct from the pre-production environment tests that are part of CD, which are generally more comprehensive and may include performance and security assessments.
 \end{itemize}
 
-CI effectively removed ``integration team'' from the picture. The integration related tasks are split into small pieces and processed by automation tools, feature integration by \textit{Git}, and compiling by build server. During CI, the developer not only generates the codes, but also supervises \textit{Git} and build server. Should there be any error, the developer is notified immediately by the automation tools.
-
-CI speeds up the developing cycle, from the receiver receiving requests from the user, to the point they have new system in the package ready for pre-prod testing.
+CI effectively removed ``integration team'' from the picture. The integration related tasks are split into small pieces and processed (almost) automatically with the help of \textit{Git} and the build server. During CI, the developers program the software, use \textit{Git} to manage branches and merge features and guide the build server to compile and test the code. Should there be any error, the developer is notified immediately.
 
 \subsection{Continuous Delivery}
 
-The package received from the development side contains the latest version of the system where a new feature is integrated. It is, however, not certain at this point whether the new feature works properly and how the system would behave as a whole with this new feature. The sophisticated testing and deployment of the software features are done by the operations team.
+The packages received from CI already passed the tests in the build server. These tests mainly focus on the code quality. At this point of time, it is not clear yet how the system with the new packages would perform in the realistic environment. The major task for the operation team, as illustrated by Fig. \ref{ch:cicd:fig:conventionalintegration}, is to deploy the system in the pre-production environment and have it tested with more complex and realistic scenarios, ensuring that the new packages work properly as part of the whole system.
 
-Conventionally, operations team and the testers receive the updated package together with an instruction from the developers team. The instruction describes how the package shall be installed, and what test cases to use for auditing. The operations team and the testers need to understand the instructions, and configure the pre-prod environment accordingly for the testing. The testers then uses varieties of scenarios to test the performance of the software. Bugs, if any, are reported to the developers team. If no bugs are spotted, the testers notify the operation team to release the package into production environment.
+Conventionally, operations team and the testers receive the updated package together with an instruction from the developers team. The instruction describes how the package shall be installed, and what test cases should be arranged in the pre-production environment. The operations team and the testers need to understand the instructions, and configure the pre-prod environment accordingly for the testing. The testers then uses varieties of scenarios to test the performance of the software. Bugs, if any, are reported to the developers team. If no bugs are spotted, the testers notify the operation team to release the package into the production environment.
 
 There are some obvious drawbacks to the conventional approach. The developers team needs to give detailed and precise instruction to the operations team, and the developers may make mistakes or missing something in the instruction, especially regarding environment configuration. Besides, there are too many human interactions, which slow down the process and generates human error. The entire procedure usually take about a whole day.
 
 CD is a software development practice that allows software to be released to production at any time. The idea behind CD is to deploy the code for testing automatically anytime CI provides a new package by adopting the following methods.
 \begin{itemize}
-  \item Use machine-readable instruction files for packages installation, and let the server virtualize the execution environment and install the packages automatically.
+  \item Use machine-readable instruction files for packages installation, and let the server virtualize the pre-production environment and install the packages automatically.
   \item Use machine-readable testing scripts, and let the server execute tests and analyze the results automatically.
   \item The aforementioned machine-readable instruction files and testing scripts are managed the same way as the source code by the developers.
 \end{itemize}
 
-Ideally, as soon as a version of packages is released by CI, CD can automatically have it deployed and tested, and return the testing results to CI without human interaction. This is shown by Fig. \ref{ch:cicd:fig:cd}. In this CI/CD implementation, the developer is playing a more comprehensive role than what is shown in Fig. \ref{ch:cicd:fig:conventionalintegration}.
+Ideally, as soon as a version of packages is released by CI, CD can automatically have it deployed and tested, and return the testing results to CI without human interaction. This is shown by Fig. \ref{ch:cicd:fig:cd}. In this CI/CD implementation, the developer is playing a more comprehensive role than that in Fig. \ref{ch:cicd:fig:conventionalintegration}.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/ap/figures/cd.png}
 	\caption{CI and CD.} \label{ch:cicd:fig:cd}
 \end{figure}
 
-Under the framework of CI/CD in Fig. \ref{ch:cicd:fig:cd}, the developer not only develops the new feature, but also integrates the features with the help of version control and branch management tool \textit{Git}, compiles the packages using build server, deploys the new packages in the testing environment by preparing machine-readable instruction files, and finally tests the new features using pre-configured test cases in the machine-readable testing scripts.
-
-Since the operation team joins the developers team, they are now called the DevOps team. The CI/CD framework shown in Fig. \ref{ch:cicd:fig:cd} is known as the CI/CD pipeline which represents an end-to-end software development lifecycle (SDLC) within its ecosystem.
+Under the framework of CI/CD in Fig. \ref{ch:cicd:fig:cd}, developers not only program the code to include new features but also integrate the features with the help of version control and branch management tools like Git. They compile the packages using the build server, deploy the new packages in the testing environment by preparing machine-readable instruction files, and finally test the new features using pre-configured test cases in machine-readable testing scripts. Developers now take on the roles of the original developers, the integration team, the operations team, and the testers. They are referred to as the DevOps team to reflect this change. The CI/CD framework shown in Fig. \ref{ch:cicd:fig:cd} is known as the CI/CD pipeline, which represents an end-to-end software development lifecycle (SDLC) within its ecosystem.
 
 This CI/CD framework enables fast deployment of new packages. Large IT companies can make up to dozens of new releases everyday.
 
-\section{\textit{GitHub} Action (Part I: Basics)}
+\section{\textit{GitHub Actions} (Part I: Basics)}
 
 \textit{GitHub} has been an amazing platform for managing software projects, especially open-source collaborative projects.
 
