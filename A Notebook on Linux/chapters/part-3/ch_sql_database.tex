@@ -1,8 +1,8 @@
-\chapter{Relational Database}
+\chapter{Database}
 
-Database and database manage systems (DBMS) are introduced in this chapter. Both relational and non-relational databases are covered. Relational database is introduced in this chapter, while non-relational database in the consequent chapter. Tools and languages to manipulate databases, such as structured query language (SQL) for relational databases, are introduced.
+Database and database manage systems (DBMS) are introduced in this and consecutive chapters. Both relational and non-relational databases are covered. Tools and languages to manipulate databases, such as structured query language (SQL) for relational databases, are introduced.
 
-\section{Brief Introduction to Relational Database}
+\section{Relational Database}
 
 Database, in a broad view, refers to an organized collection of data of any format. In this sense, any file format that hosts information in a meaningful and explainable way, such as \textit{CSV}, \textit{XML} and \textit{JSON}, is a database. These file formats often work fine when the data is stored in a centralized manner and its size small.
 
@@ -21,25 +21,19 @@ SQL, a domain-specific language, can be used in managing RDB and interfacing rel
 
 Examples of relational databases include \textit{Oracle}, \textit{MySQL}, \textit{Microsoft SQL Server}, \textit{MariaDB}, \textit{IBM Db2}, \textit{Amazon Redshift}, \textit{Amazon Aurora} and \textit{PostgreSQL}.
 
-\section{Structured Query Language}
-
-As of this writing, RDB is the most commonly used database, and SQL is its standard manipulating and querying language. They are introduced below.
-
-\subsection{Tables and Columns} \label{ch:db:subsec:tables}
-
 An example of a table used in RDB is given in Table \ref{ch:db:tab:relationaldbexample}. The table has a name \verb|user| and 4 attributes \verb|user_id|, \verb|user_email|, \verb|membership| and \verb|referee_id|. A table should have an attribute (or a set of attributes) defined as the primary key. In this example, \verb|user_id| is assigned to be the primary key as denoted by the asterisk. The primary key is used to uniquely identify a row in the table. A primary key can consist a single column or multiple columns. When a primary key is composed of multiple columns, it is called a composite key. A table should have one and only one primary key.
 
-Depending on the meaning behind the primary key, it can be divided into two types, namely surrogate key and natural key. A surrogate key is like a serial number or an incremental ID, which serves only for recording and distinguishing rows, and does not have a physical meaning. In contrast, a natural key such as a timestamp, email, citizenship IC number, reflects some meaningful information in the real world.
+Depending on the meaning behind the primary key, it can be divided into two types, namely surrogate key and natural key. A surrogate key is like a serial number or an incremental ID which serves only for recording and distinguishing rows and does not have a physical meaning. In contrast, a natural key such as a timestamp, email, citizenship IC number, reflects some meaningful information in the real world.
 
 \begin{table}
 	\centering \caption{An example of a relational database table.} \label{ch:db:tab:relationaldbexample}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-        \multicolumn{4}{|c|}{user} \\ \hline
+		\multicolumn{4}{|c|}{user} \\ \hline
 		\verb|user_id|$^*$ & \verb|user_email| & \verb|membership| & \verb|referee-id| \\ \hline
-        sunlu & sunlu@xxx.com & premium & NULL \\ \hline
-        xingzhe & xingzhe@yyy.com & basic & sunlu \\ \hline
-        \ldots & \ldots & \ldots & \ldots \\ \hline
+		sunlu & sunlu@xxx.com & premium & NULL \\ \hline
+		xingzhe & xingzhe@yyy.com & basic & sunlu \\ \hline
+		\ldots & \ldots & \ldots & \ldots \\ \hline
 	\end{tabular}
 \end{table}
 
@@ -49,11 +43,11 @@ A foreign key is the attribute(s) that link a table to another table. It is ofte
 	\centering \caption{A second database table in the example.} \label{ch:db:tab:relationaldbexampleanother}
 	\begin{tabular}{|c|c|c|}
 		\hline
-        \multicolumn{3}{|c|}{membership} \\ \hline
+		\multicolumn{3}{|c|}{membership} \\ \hline
 		\verb|membership_type| & \verb|monthly_price| & \verb|annual_price| \\ \hline
-        none & 0 & 0 \\ \hline
-        basic & 5 & 50 \\ \hline
-        premium & 10 & 80 \\ \hline
+		none & 0 & 0 \\ \hline
+		basic & 5 & 50 \\ \hline
+		premium & 10 & 80 \\ \hline
 	\end{tabular}
 \end{table}
 
@@ -61,7 +55,19 @@ The introducing of foreign key helps to maintain the consistency and integrity o
 
 Notice that a table can have multiple foreign keys. The foreign key can not only relate a table to another, but also relate a table to itself. For example, the ``referee-id'' attribute in Table \ref{ch:db:tab:relationaldbexample} could be the foreign key that links to ``user-id'' of the same table.
 
-\subsection{RDB Naming Conventions}
+\section{Non-Relational Database}
+
+Non-relational databases (NoSQL databases) gained their popularity in the $2000$s. In contrast to RDBs, NoSQL databases do not store data in tables like an RDB, but in key-value pairs, graphs, documents, or other formats. They are more flexible, efficient and easier to use in some applications than an RDB. Examples of NoSQL databases include \textit{Redis}, \textit{Azure CosmosDB}, \textit{Oracle NoSQL Database}, \textit{Amazon DynamoDB}, \textit{MongoDB}, \textit{AllegroGraph} and many more.
+
+Unlike SQL which applies to almost all RDBMS, there is no universally adopted language for NoSQL DBMS. Each NoSQL DBMS often has its unique query language tailored to its specific data model. We use ``NoSQL'' to refer to a collective set of (very different and not interchangeable) languages used for NoSQL databases management. It is impossible to cover all the different types of NoSQL databases and their corresponding DBMS manipulation languages in this notebook. Only brief introductions to some example databases are given in later chapters.
+
+Database services, both RDB and NoSQL, have become critical to our daily life and they are massively deployed on servers. In many applications they work together to deliver the service.
+
+\section{Structured Query Language}
+
+As of this writing, RDB is the most commonly used database, and SQL is its standard manipulating and querying language. They are introduced below.
+
+\subsection{RDB Naming Conventions} \label{ch:db:subsec:tables}
 
 It is recommended that the following naming conventions be applied to databases, tables and columns.
 \begin{itemize}
@@ -251,7 +257,7 @@ DROP DATABASE <database-name>;
 
 \subsection{Table Manipulation}
 
-Tables are the fundamental components in an RDB. Some features of a table have been introduced in Section \ref{ch:db:subsec:tables}. An example of creating a table using SQL is given below
+Tables are the fundamental components in an RDB. An example of creating a table using SQL is given below
 \begin{lstlisting}
 CREATE TABLE <table_name> (
     PRIMARY KEY (<column_name>),
@@ -927,7 +933,130 @@ ADD FOREIGN KEY (payment_method_id)
 REFERENCES payment_method(payment_method_id);
 \end{lstlisting}
 
-\section{RDB Example: MySQL and MariaDB} \label{ch:db:sec:mariadb}
+\section{Database API}
+
+This section discusses the tools or program interfaces used along with the DBMS. Many software programs provide interface or toolkit to connect to a database. For example, MATLAB uses database toolbox to connect to SQLite or Microsoft SQL server. Python, as a ``glue'' language, also provide variety of packages to connect to different databases. IDEs such as VSCode can connect to databases using extensions.
+
+Some of these tools and packages are introduced in this section.
+
+\subsection{RDB Interface with Python}
+
+Python provides variety of libraries to access RDS, many of which use embedded SQL codes to interact with the DBMS. Depending on the DBMS, different libraries and commands can be used, some of which more general and the other more specific to a particular DBMS.
+
+In this section, both \verb|pandas| and \verb|mariadb| libraries are introduced. The \verb|pandas| library provides data manipulation and analysis tools, and it provides \verb|pandas.io.sql| that allows connecting to a DBMS and embedding SQL commands into the python code. The \verb|mariadb| library, on the other hand, is dedicated for MariaDB connection. Like \verb|pandas.io.sql|, it also allows embedding SQL commands to interface the DMBS.
+
+As pre-requisitions, make sure that the following has been done.
+\begin{itemize}
+	\item The DBMS has been configured to allow remote access.
+	\item Make sure that an account has been registered in DBMS that has the privilege of operation from a remote machine.
+	\item Make sure that the firewall configuration is correct.
+\end{itemize}
+
+For DBMS configuration, in the case of MariaDB, use the following code in the shell to check the location of the configuration files.
+\begin{lstlisting}
+	$ mysqld --help --verbose
+\end{lstlisting}
+Typical locations of the configuration files are \verb|/etc/my.cnf| and \verb|/etc/mysql/my.cnf|. In the configuration file, use the following to disable binding address.
+\begin{lstlisting}
+	[mysqld]
+	skip-networking=0
+	skip-bind-address
+\end{lstlisting}
+
+For account setup, in the DBMS console, use something like
+\begin{lstlisting}
+	> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'<ip-address>' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
+\end{lstlisting}
+where \verb|'<ip-address>'| is the remote machine that runs the Python program. If the Python codes are running locally, simply use \verb|'localhost'|.
+
+It might be necessary to install MariaDB database development files in the DMBS host machine for the Python libraries to be introduced to function properly. Install the development as follows.
+\begin{lstlisting}
+	$ sudo apt install libmariadb-dev
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{PANDAS Library}
+\vspace{0.1in}
+
+Python library \verb|pandas| is one of the essential libraries for data analysis. It provides flexible interfaces and tools for data reading and processing and works very well with different data formats and engines including CSV, EXCEL and DBMS. This section focuses mainly on the interaction of \verb|pandas| with DBMS. Therefore, the detailed use of \verb|pandas| for data analysis, etc., are not covered in this section.
+
+A class \verb|pandas.DataFrame| is defined in \verb|pandas| as the backbone to store and process data. The data attribute of \verb|pandas.DataFrame| is a \verb|numpy| array. Many functions are provided to read different data formats into \verb|pandas| data frame, which makes reading data easy and convenient. An example of reading a CSV file is given below.
+\begin{lstlisting}
+	import pandas as pd
+	df = pd.read_csv(<file-name>)
+	print(df)
+	print(df.head(<number>))
+	print(df.tail(<number>))
+	print(df.info())
+\end{lstlisting}
+where \verb|head()|, \verb|tail()| gives the first and last rows of the data frame, and \verb|info()| checks the data frame basic information including shape and data types of the columns. Check \verb|df.columns| for all the columns of the data frame. Details specific to a column can be accessed via \verb|df.[<column-name>]|. Many functions are provided to further abstract the details, such as grouping and counting. Use \verb|df.loc(<row-index-list>, <column-name-list>)| to check the content of specified rows and columns.
+
+With \verb|pandas| and other relavent libraries, Python can connect to a database and execute a query. An example of using \verb|pandas| to connect to an Microsoft SQL server and implement a query is given below. Notice that different DBMS may require different database connectivity driver standards, and there are mainly two of them, namely open database connectivity (ODBC) and Java database connectivity (JDBC). Microsoft adopts ODBC, and a separate package is required in the Python program to connect to the Microsoft SQL server.
+\begin{lstlisting}
+	import pyodbc
+	import pandas.io.sql as psql
+	
+	server = "<server-url>,<port>"
+	database = "<database>"
+	uid = "<uid>"
+	pwd = "<pwd>"
+	driver = "<driver>" # such as "{ODBC Driver 17 for SQL Server}"
+	
+	# connect to database
+	conn = pyodbc.connect(
+	server = server,
+	database = database,
+	uid = uid,
+	pwd = pwd,
+	driver = driver
+	)
+	
+	# get cursor
+	cursor = conn.cursor()
+	
+	# execute sql command
+	query = """<query>"""
+	runs = psql.read_sql_query(query, conn)
+\end{lstlisting}
+The above codes returns a data frame corresponding to the result set of the query string, which is saved in \verb|runs|.
+
+\vspace{0.1in}
+\noindent \textbf{MARIADB Library}
+\vspace{0.1in}
+
+Use the following code to test connectivity from Python to the database.
+\begin{lstlisting}
+	import mariadb
+	import sys
+	
+	user = "<user>"
+	password = "<password>"
+	host = "<server-url>"
+	port = "<port>" # MariaDB default: 3306
+	database = "<database>"
+	
+	# connect to database
+	try:
+	conn = mariadb.connect(
+	user = user,
+	password = password,
+	host = host,
+	port = port,
+	database = database
+	)
+	except mariadb.Error as e:
+	print(f"Error connecting to MariaDB Platform: {e}")
+	sys.exit(1)
+	
+	# get cursor
+	cur = conn.cursor()
+	
+	# execute sql command
+	cur.execute("<sql-command>")
+\end{lstlisting}
+Notice that for query, the result is stored in the cursor object. Use a for loop to view the results.
+
+\chapter{RDB Example: MySQL and MariaDB} \label{ch:db:sec:mariadb}
 
 Commonly seen DBMS examples include Oracle Database, MySQL, Microsoft SQL Server, PostgreSQL, SQLite, MariaDB, and many more. Some of them are briefly introduced in this section. Here are some examples.
 
@@ -966,7 +1095,7 @@ Different databases may propose different minimum system requirements. There is 
 
 In the remaining of this section, MariaDB is used for demonstration.
 
-\subsection{MariaDB Installation}
+\section{Installation}
 
 To install MariaDB, follow the instruction on the official website. Different OS, such as RHEL and Ubuntu, may require different ways of installation. For example, on RHEL
 \begin{lstlisting}
@@ -989,7 +1118,7 @@ and to check its status, use
 $ sudo systemctl status mariadb
 \end{lstlisting}
 
-\subsection{MariaDB Basic Configuration}
+\section{MariaDB Basic Configuration}
 
 After installation of and starting MariaDB, use
 \begin{lstlisting}
@@ -1008,7 +1137,7 @@ Enter Password:
 \end{lstlisting}
 Depending on the setup, remote login to the database from other machine, especially using root account, might be forbidden.
 
-\subsection{MariaDB Console}
+\section{DBMS Console}
 
 After login to MariaDB console, a prompt that looks like the following would show up.
 \begin{lstlisting}
@@ -1034,7 +1163,7 @@ MariaDB [(none)]> exit
 \end{lstlisting}
 to quite MariaDB console.
 
-\subsection{Execute SQL File}
+\section{Run SQL File}
 
 In many occasions, instead of executing SQL commands line by line, an SQL file is prepared in advance and the DBMS is asked to execute the SQL file as a whole. In the Linux shell, execute the following command and MariaDB shall be able to execute an SQL file on the specified host, on behalf of the user, on the selected database.
 \begin{lstlisting}
@@ -1045,7 +1174,7 @@ If the user already logs into the MariaDB console, use the following command ins
 MariaDB [(none)]> source file.sql
 \end{lstlisting}
 
-\section{RDB Example: PostgreSQL}
+\chapter{RDB Example: PostgreSQL}
 
 PostgreSQL (or Postgres) is claimed to be the world's most advanced open-source RDB, and it has some great features. It is a object-relational database where the user can define customized data types in the form of objects. The database functions are modularized, meaning that it has a small base installation (only 40MB) as given in Table \ref{ch:db:tab:rdbrequirements}, and the user can expand its capability by installing additional modules per required. It complies very well with the latest SQL standard, with additional powerful add-ons.
 
@@ -1064,7 +1193,7 @@ Some of the main features of PostgreSQL are summarized as follows.
 	\item Steep learning curve.
 \end{itemize}
 
-\subsection{Installation}
+\section{Installation}
 
 PostgreSQL supports a large range of operating systems including Linux, MacOS, Windows, and more. The source code and very detailed documentations of PostgreSQL are available on its websites and can be downloaded to a local machine freely. Due to the lite weight of the base installation, PostgreSQL can be used conveniently in containers. The associated images can be found on Docker Hub.
 
@@ -1114,8 +1243,7 @@ COPY ./google_stock_price.csv /var/lib/postgresql/user-data
 CMD ["/bin/sh", "/var/lib/postgresql/user-scripts/start.sh"]
 \end{lstlisting}
 
-
-\subsection{PostgreSQL-Specific New Data Types}
+\section{PostgreSQL-Specific New Data Types}
 
 PostgreSQL supports a large range of data types, more than other databases such as MySQL and MariaDB. In addition to the commonly seen numeric types, character types, date and time types and boolean type, the following data types are supported.
 \begin{itemize}
@@ -1127,7 +1255,7 @@ PostgreSQL supports a large range of data types, more than other databases such 
 	\item Many more.
 \end{itemize}
 
-\subsection{PostgreSQL User-Defined Data Types}
+\section{PostgreSQL User-Defined Data Types}
 
 User-defined data types can be used to demonstrate the object-relational database aspect of PostgreSQL. It essentially means that the attribute of an element can be an object, and can have some complex and comprehensive features.
 
@@ -1181,8 +1309,7 @@ enum ('M', 'F');
 \end{lstlisting}
 which creates a new data type called \verb|sex_type|, and it can take enumerated value of either \verb|M| or \verb|F|.
 
-\subsection{PostgreSQL Stored Procedural and Functions}
-
+\section{PostgreSQL Stored Procedural and Functions}
 
 Many databases including Oracle SQL, Microsoft SQL Server, MySQL, MariaDB and PostgreSQL, support stored procedures and user defined functions. This feature has been there for a very long time, but it is often not introduced in a typical introductory course. Though useful, they may introduce performance and portability issues, hence need to be handled with caution. Besides, nowadays it is often regarded as a better practice to implement the logics in the application layer, not in DBMS. Nevertheless, they are briefly introduced as follows.
 
@@ -1254,7 +1381,7 @@ $$ LANGUAGE plpgsql;
 
 With the above been said, though convenient and powerful it might be in some use cases, it is often a good practice to keep complex logic in application layer, for logic consistency and database portability.
 
-\subsection{Manipulation and Query}
+\section{Manipulation and Query}
 
 PostgreSQL adopts SQL for database manipulation and query. SQL has been introduced in earlier sections, hence it is not repeated here. Only selected unique features to PostgreSQL are introduced.
 
@@ -1300,126 +1427,3 @@ Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcomman
 \end{table}
 
 SQL commands, such as creating a database, have been introduced earlier, hence is not repeated here.
-
-\section{Database API}
-
-This section discusses the tools or program interfaces used along with the DBMS. Many software programs provide interface or toolkit to connect to a database. For example, MATLAB uses database toolbox to connect to SQLite or Microsoft SQL server. Python, as a ``glue'' language, also provide variety of packages to connect to different databases. IDEs such as VSCode can connect to databases using extensions.
-
-Some of these tools and packages are introduced in this section.
-
-\subsection{RDB Interface with Python}
-
-Python provides variety of libraries to access RDS, many of which use embedded SQL codes to interact with the DBMS. Depending on the DBMS, different libraries and commands can be used, some of which more general and the other more specific to a particular DBMS.
-
-In this section, both \verb|pandas| and \verb|mariadb| libraries are introduced. The \verb|pandas| library provides data manipulation and analysis tools, and it provides \verb|pandas.io.sql| that allows connecting to a DBMS and embedding SQL commands into the python code. The \verb|mariadb| library, on the other hand, is dedicated for MariaDB connection. Like \verb|pandas.io.sql|, it also allows embedding SQL commands to interface the DMBS.
-
-As pre-requisitions, make sure that the following has been done.
-\begin{itemize}
-	\item The DBMS has been configured to allow remote access.
-	\item Make sure that an account has been registered in DBMS that has the privilege of operation from a remote machine.
-	\item Make sure that the firewall configuration is correct.
-\end{itemize}
-
-For DBMS configuration, in the case of MariaDB, use the following code in the shell to check the location of the configuration files.
-\begin{lstlisting}
-$ mysqld --help --verbose
-\end{lstlisting}
-Typical locations of the configuration files are \verb|/etc/my.cnf| and \verb|/etc/mysql/my.cnf|. In the configuration file, use the following to disable binding address.
-\begin{lstlisting}
-[mysqld]
-skip-networking=0
-skip-bind-address
-\end{lstlisting}
-
-For account setup, in the DBMS console, use something like
-\begin{lstlisting}
-> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'<ip-address>' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
-\end{lstlisting}
-where \verb|'<ip-address>'| is the remote machine that runs the Python program. If the Python codes are running locally, simply use \verb|'localhost'|.
-
-It might be necessary to install MariaDB database development files in the DMBS host machine for the Python libraries to be introduced to function properly. Install the development as follows.
-\begin{lstlisting}
-$ sudo apt install libmariadb-dev
-\end{lstlisting}
-
-\vspace{0.1in}
-\noindent \textbf{PANDAS Library}
-\vspace{0.1in}
-
-Python library \verb|pandas| is one of the essential libraries for data analysis. It provides flexible interfaces and tools for data reading and processing and works very well with different data formats and engines including CSV, EXCEL and DBMS. This section focuses mainly on the interaction of \verb|pandas| with DBMS. Therefore, the detailed use of \verb|pandas| for data analysis, etc., are not covered in this section.
-
-A class \verb|pandas.DataFrame| is defined in \verb|pandas| as the backbone to store and process data. The data attribute of \verb|pandas.DataFrame| is a \verb|numpy| array. Many functions are provided to read different data formats into \verb|pandas| data frame, which makes reading data easy and convenient. An example of reading a CSV file is given below.
-\begin{lstlisting}
-import pandas as pd
-df = pd.read_csv(<file-name>)
-print(df)
-print(df.head(<number>))
-print(df.tail(<number>))
-print(df.info())
-\end{lstlisting}
-where \verb|head()|, \verb|tail()| gives the first and last rows of the data frame, and \verb|info()| checks the data frame basic information including shape and data types of the columns. Check \verb|df.columns| for all the columns of the data frame. Details specific to a column can be accessed via \verb|df.[<column-name>]|. Many functions are provided to further abstract the details, such as grouping and counting. Use \verb|df.loc(<row-index-list>, <column-name-list>)| to check the content of specified rows and columns.
-
-With \verb|pandas| and other relavent libraries, Python can connect to a database and execute a query. An example of using \verb|pandas| to connect to an Microsoft SQL server and implement a query is given below. Notice that different DBMS may require different database connectivity driver standards, and there are mainly two of them, namely open database connectivity (ODBC) and Java database connectivity (JDBC). Microsoft adopts ODBC, and a separate package is required in the Python program to connect to the Microsoft SQL server.
-\begin{lstlisting}
-import pyodbc
-import pandas.io.sql as psql
-
-server = "<server-url>,<port>"
-database = "<database>"
-uid = "<uid>"
-pwd = "<pwd>"
-driver = "<driver>" # such as "{ODBC Driver 17 for SQL Server}"
-
-# connect to database
-conn = pyodbc.connect(
-	server = server,
-	database = database,
-	uid = uid,
-	pwd = pwd,
-	driver = driver
-)
-
-# get cursor
-cursor = conn.cursor()
-
-# execute sql command
-query = """<query>"""
-runs = psql.read_sql_query(query, conn)
-\end{lstlisting}
-The above codes returns a data frame corresponding to the result set of the query string, which is saved in \verb|runs|.
-
-\vspace{0.1in}
-\noindent \textbf{MARIADB Library}
-\vspace{0.1in}
-
-Use the following code to test connectivity from Python to the database.
-\begin{lstlisting}
-import mariadb
-import sys
-
-user = "<user>"
-password = "<password>"
-host = "<server-url>"
-port = "<port>" # MariaDB default: 3306
-database = "<database>"
-
-# connect to database
-try:
-	conn = mariadb.connect(
-		user = user,
-		password = password,
-		host = host,
-		port = port,
-		database = database
-	)
-except mariadb.Error as e:
-	print(f"Error connecting to MariaDB Platform: {e}")
-	sys.exit(1)
-
-# get cursor
-cur = conn.cursor()
-
-# execute sql command
-cur.execute("<sql-command>")
-\end{lstlisting}
-Notice that for query, the result is stored in the cursor object. Use a for loop to view the results.
