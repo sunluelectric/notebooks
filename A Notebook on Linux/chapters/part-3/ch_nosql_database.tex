@@ -340,7 +340,7 @@ It is worth mentioning that \verb|find()| returns a cursor, but not the document
 
 When viewing the data in MongoDB Compass or Atlas, this does not pose an issue. One can simply take \verb|find()| as a function that returns multiple documents. However, in the programming interface, it is important to note the differences between a cursor and a document.
 
-The below are two demonstrative examples how a Python program should treat the returns from \verb|find()| and \verb|findOne()| differently. The same spirit applies to other programming languages as well.
+The below are two demonstrative examples how a Python program should treat the returns from \verb|find()| and \verb|findOne()| differently. The same idea applies to other programming languages as well.
 
 \begin{lstlisting}
 from pymongo import MongoClient
@@ -354,7 +354,7 @@ def find_users():
 
 	# Iterate over the cursor
 	for doc in cursor:
-	print(doc)
+		print(doc)
 	
 	# Alternatively, convert to a list
 	results = list(cursor)
@@ -449,7 +449,7 @@ MongoDB primarily uses B-Tree data structures for its indexes. A B-Tree is a sel
 
 However, index by itself is also an argument data structure and it consumes disk and memory space. Each time there is a write operation, the index needs to be updated. Therefore, a very complicated index schema slows down data insertion. It is critical to design appropriate index to optimize the overall performance of the database.
 
-The default index for a collection is ``\verb|_id|'', a compulsory and unique field required by MongoDB. The user can also define index of different types. User-defined index can be unique or non-unique. The index of a collection can be created when the collection is empty, or when there is already some documents.
+The default index for a collection is ``\verb|_id|'', a compulsory and unique field required by MongoDB. The user can also define index of different types. User-defined index can be unique or non-unique. The index of a collection can be created when the collection is empty, or when there are already some documents.
 
 A MongoDB collection can have multiple indexes, and when you perform a query, MongoDB will choose the most suitable index to use based on the query's criteria.
 

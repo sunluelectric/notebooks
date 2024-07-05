@@ -2,7 +2,7 @@
 %\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{File Management} \label{ch:fm}
 
-File management is a big portion of OS functionality. In Linux, each device (such as a printer) is treated and managed as a file, and Linux uses a tree hierarchy to manage devices and files. This chapter introduces the filesystem hierarchy and commonly used file management commands.
+File management is a big portion of OS. In Linux, each device (such as a printer) is treated and managed as a file, and Linux uses a tree hierarchy to manage devices and files. This chapter introduces the filesystem hierarchy and commonly used file management commands.
 
 \section{Filesystem Hierarchy Standard} \label{ch:fm:sec:hierarchy}
 
@@ -13,7 +13,7 @@ The root directory is denoted by a single forward slash ``\verb|/|''. All sub di
 \end{lstlisting}
 where the first \verb|/| in each row represents the root directory, and sequential \verb|/| represents entering a subdirectory.
 
-Upon Linux installation, a file hierarchy is by default created under the root directory. A user can create new files under this hierarchy framework, but should not change the framework itself. The hierarchy is given in Fig. \ref{ch:fm:fig:hierarchy}. Notice that different Linux distributions may differ slightly on how the architecture looks like. The ``\verb|/|'' in the figure, as introduced, stands for the root directory, and ``\verb|root|'' in the figure is a subdirectory under \verb|/| whose directory name is ``root'' and it is used store root user related documents. They are two different directories.
+Upon Linux installation, a file hierarchy is created. A user can create new files under this hierarchy framework, but should not change the framework itself. The hierarchy is given in Fig. \ref{ch:fm:fig:hierarchy}. Notice that different Linux distributions may differ slightly on how the architecture looks like. The ``\verb|/|'' in the figure, as introduced, stands for the root directory, and ``\verb|root|'' in the figure is a subdirectory under \verb|/| whose directory name is ``root'' and it is used store root user related documents. They are two different directories.
 
 \begin{figure}[htbp]
 	\centering
@@ -21,9 +21,9 @@ Upon Linux installation, a file hierarchy is by default created under the root d
 	\caption{An example of Linux file system hierarchy.} \label{ch:fm:fig:hierarchy}
 \end{figure}
 
-A (regular) user's home directory is often located at \verb|/home/<user name>|. When logging in as a regular user, his home directory is shorten by the tilde \verb|~| for convenience. Hence, for example \verb|ls ~| will list down the files and directories under his home directory.
+A regular user's home directory is often located at \verb|/home/<user name>|. When logging in as a regular user, his home directory is stored in the HOME environment and can be retrieved by \verb|$HOME|. A shortcut to \verb|$HOME| is given by the tilde \verb|~| for convenience. Hence, for example \verb|ls ~| lists down the files and directories under his home directory.
 
-As can be seen from Fig. \ref{ch:fm:fig:hierarchy}, the hierarchy contains quite a few pre-determined subdirectories, each has some unique purpose. For convenience of illustration, these subdirectories are categorized by functionalities and depressibilities given in Fig. \ref{ch:fm:fig:directorycate}. Notice that this categorization is rough and may not reflect the truth for all applications. For example, the commonly used command \verb|ls| may appear under \verb|/bin| or \verb|/usr/bin| depending on the Linux distributions.
+As can be seen from Fig. \ref{ch:fm:fig:hierarchy}, the hierarchy contains quite a few pre-determined subdirectories, each serving a different purpose. For the ease of illustration, these subdirectories are roughly categorized by functionalities and accessibility shown in Fig. \ref{ch:fm:fig:directorycate}.
 
 \begin{figure}[htbp]
 	\centering
@@ -61,13 +61,13 @@ A brief introduction to the directories are summarized in Table \ref{ch:fm:tab:h
   \end{tabularx}
 \end{table}
 
-Linux file hierarchy standard differs from MS-DOS and Windows in several ways. Firstly, Linux stores all files (regardless of their physical location) under root directory, while Windows uses drive letters such as \verb|C:\|, \verb|D:\| to distinguish different hard drives. Secondly, Linux uses slash (\verb|/|) to separate directory names, e.g. \verb|/home/username| while Windows uses back slash (\verb|\|), e.g. \verb|C:\Users\username|. Lastly, Linux uses ``magic numbers'' to tell file types and permissions and ownership to tell whether a file is executable, while Windows (almost always) uses suffixes to tell file types and distinguish executables. Distinguishing file types using magic numbers can be more reliable than using suffixes, though a bit less intuitive.
+Linux file hierarchy standard differs from MS-DOS and Windows in several ways. Firstly, Linux stores all files (regardless of their physical location) under the root directory, while Windows uses drive letters such as \verb|C:\|, \verb|D:\| to distinguish different hard drives. Secondly, Linux uses slash (\verb|/|) to separate directory names, e.g. \verb|/home/username| while Windows uses back slash (\verb|\|), e.g. \verb|C:\Users\username|. Lastly, Linux uses ``magic numbers'' to indicate file types, while Windows often uses suffixes to tell file types. 
 
-Magic numbers of a file refer to the first few bytes of a file that are unique to a particular file type, for example, PNG file is hex \verb|89 50 4e 47|. Linux compare the magic numbers of a file with an internal database to decide the file types and features.
+Magic numbers of a file refer to the first few bytes of a file that are unique to a particular file type, for example, PNG file is hex \verb|89 50 4e 47|. Linux compare the magic numbers of a file with an internal database to decide the file types and features. Distinguishing file types using magic numbers can be more reliable than using suffixes, though a bit less intuitive.
 
-\section{Commonly Used File Management Commands} \label{ch:fm:sec:filemanagement}
+\section{Commonly Used File Exploring Commands} \label{ch:fm:sec:filemanagement}
 
-Some of the most widely used file management commands are summarized in Table \ref{ch:fm:tab:commonfilecommands}. Notice that \verb|chmod| and \verb|chown| are administration related commands that change the accessibility of a directory or a file, and will be introduced in a later sections together with the Linux permission system. The rest commands are categorized and introduced in the following subsections.
+Some of the most widely used file exploring and managing commands are summarized in Table \ref{ch:fm:tab:commonfilecommands}. Notice that \verb|chmod| and \verb|chown| are administration related commands that change the accessibility of a directory or a file, and will be introduced in a later sections together with the Linux permission system. The rest commands are categorized and introduced in the following subsections.
 
 \begin{table}
   \centering \caption{Commonly used commands to navigate in the Linux file system.}\label{ch:fm:tab:commonfilecommands}
@@ -89,20 +89,19 @@ Some of the most widely used file management commands are summarized in Table \r
 
 \subsection{Print Working Directory}
 
-As introduced earlier in Chapter \ref{ch:sb} Table \ref{ch:sb:tab:shellenvironmentvars}, \verb|HOME|, \verb|PWD| and \verb|OLDPWD| are three default environmental variables used to store the home directory, the current directory and the previous directory of the shell, respectively. Therefore, to print the current working directory in the console, use command \verb|echo $PWD|. Alternatively, just use \verb|pwd| which has the safe effect, as follows.
-
+As given in Table \ref{ch:sb:tab:shellenvironmentvars}, \verb|$PWD| is the environmental variables to store the current working directory of the shell. Therefore, to print the current working directory in the console, use command \verb|echo $PWD|. Alternatively, use \verb|pwd| as follows which has the same effect.
 \begin{lstlisting}
 $ pwd
 \end{lstlisting}
 
-\subsection{List Information about the Files}
+\subsection{List Information about Files and Directories}
 
-As one of the most frequently used commands, \verb|ls| lists down information about the files in the current directory (or any other directory if specified), and by default sort the entries alphabetically. Features can be specified for the items to be listed, to make the result more selective. The user is able to decide what information to be displayed, such as file name, file access control list, etc., as follows.
+As one of the most frequently used commands, \verb|ls| lists down information about the files and subdirectories in the selected directory, and by default sort the entries alphabetically. The syntax is given below.
 \begin{lstlisting}
 $ ls [<option>] [<path>]
 \end{lstlisting}
 
-An example is given in Fig. \ref{ch:fm:fig:lscommandexample} below. By default, command \verb|ls| alone shows only the name of files and subdirectories (excluding hidden files and subdirectories). With the additional arguments (option, as given in the syntax above), more information can be displayed. For example in Fig. \ref{ch:fm:fig:lscommandexample}, the \verb|-l| argument displays the information in long listing mode, which includes the owner and access control list information. More details about files and directories access control list are given in later part of this section.
+An example is given in Fig. \ref{ch:fm:fig:lscommandexample}. As shown in the example, command \verb|ls| alone shows only the name of files and subdirectories excluding hidden items and details of each item. With the additional arguments in the option field, the returns can be customized with more details displayed. For example in Fig. \ref{ch:fm:fig:lscommandexample}, the \verb|-l| argument displays the information in long listing form, which includes the owner and access control list information. More details about files and directories access control list are given in later part of this section.
 
 \begin{figure}[htbp]
 	\centering
@@ -110,9 +109,9 @@ An example is given in Fig. \ref{ch:fm:fig:lscommandexample} below. By default, 
 	\caption{List down information of files and subdirectories in the current working directory.} \label{ch:fm:fig:lscommandexample}
 \end{figure}
 
-More information can be found by reading the \verb|ls| command manual, which is accessible via \verb|ls --help|. Some commonly used \verb|ls| arguments are summarized in Table \ref{ch:fm:tab:lscommandargument}. It is also possible to use a combination of arguments in a single line of command. For example, \verb|ls -al| aggregates the effects of using \verb|ls -a| and \verb|ls -l|.
+More information can be found in the \verb|ls| command manual which is accessible via \verb|ls --help|. Some commonly used \verb|ls| arguments are summarized in Table \ref{ch:fm:tab:lscommandargument}. It is also possible to combine the options. For example, \verb|ls -al| aggregates the effects of using \verb|ls -a| and \verb|ls -l|.
 
-\begin{table}
+\begin{table}[htbp]
   \centering \caption{Commonly used arguments and their effects for \textit{ls} command.}\label{ch:fm:tab:lscommandargument}
   \begin{tabularx}{\textwidth}{lX}
     \hline
@@ -130,9 +129,9 @@ More information can be found by reading the \verb|ls| command manual, which is 
 
 Notice that some Linux distributions may come by default an alias about \verb|ls|, which usually helps to displays the information in a clearer manner. For example, when \verb|ls='ls --color-auto'| is used, the displayed content will be colored based on the type of the files and subdirectories.
 
-\subsection{Create an Empty or a Simple Text File}
+\subsection{Create Files and Directories}
 
-To create an empty file in the current working directory, simply use \verb|touch| followed by the path of the file (including file name) as follows.
+The \verb|touch| command is used to update timestamps of a file. If the file does not exist, \verb|touch| will create that file with empty content. Hence, it is often used to create empty files. To do so, simply use \verb|touch| followed by the full path to the file as follows.
 \begin{lstlisting}
 $ touch [<option>] <path>
 \end{lstlisting}
@@ -140,11 +139,15 @@ For example,
 \begin{lstlisting}
 $ touch ~/test
 \end{lstlisting}
-will create an empty file ``\textit{test}'' under the user's home directory. If only the name of the file is given, it will by default create the file under the current working directory. Notice that if a file or subdirectory name starts with ``\verb|.|'', it will be treated as a hidden file or subdirectory automatically.
+will create an empty file ``\texttt{test}'' under the user's home directory. If only the name of the file is given, it will by default create the file under the current working directory. Notice that if a file name starts with ``\verb|.|'', it will be treated as a hidden file or automatically.
 
-Multiple empty files will be created if multiple paths are given in the command separated by spaces.
+\verb|touch| can also be used to create multiple files in a single-line command. For example,
+\begin{lstlisting}
+$ touch test1 test2
+\end{lstlisting}
+creates both \texttt{test1} and \texttt{test2} in the current working directory.
 
-To create a simple text file, such as a text file with a single line of contents inside, consider using \verb|echo| command with \verb|>| as follows. It is more convenient than using \textit{Vim} for the same task, although also possible.
+To create a file containing a single line of string, consider using \verb|echo| command with \verb|>| as follows. It is more convenient than using \textit{Vim} for the same task, although also possible.
 \begin{lstlisting}
 $ echo '<content>' > <path>
 \end{lstlisting}
@@ -154,16 +157,15 @@ $ echo '<html><body><h1>Hello world!</h1></body></html>' > ~/test.html
 \end{lstlisting}
 creates a simple static HTML web page that says ``Hello world!'' in the home directory.
 
-\subsection{Create an Empty Directory}
-
 Similar with \verb|touch|, use \verb|mkdir| followed by the path of the directory (including directory name) to create a directory as follows.
 \begin{lstlisting}
 $ mkdir [OPTION] <path>
 \end{lstlisting}
+Specifically, \verb|-p| option of \verb|mkdir| allows it to create nested directories along the given path if the directories do not exist.
 
 \subsection{Move, Copy-and-Paste, and Remove Files and Directories}
 
-To move a file or a directory from an existing PATH to a new PATH, simply use \verb|mv| command as follows.
+To move a file or a directory from an existing directory to another, simply use \verb|mv| command as follows.
 \begin{lstlisting}
 $ mv [<option>] <source> <target>
 \end{lstlisting}
@@ -171,12 +173,12 @@ Different from the conventional cut-and-paste, while moving the item, it is poss
 \begin{lstlisting}
 $ mv ~/dog.png ~/Pictures/puppy.png
 \end{lstlisting}
-will not only move the file \verb|dog.png| in the home directory to the subdirectory \verb|Pictures|, but also chance the file name to \verb|puppy.png|. For this reason, \verb|mv| can also be used to rename an item rather than moving the item, just by ``move'' it to the same directory but with a differen name.
+will not only move the file \verb|dog.png| in the home directory to the subdirectory \verb|Pictures|, but also chance the file name to \verb|puppy.png|. For this reason, \verb|mv| can also be used to rename an item rather than moving the item, just by ``move'' it to the same directory but with a different name.
 
 Some commonly used arguments of \verb|mv| is summarized in Table \ref{ch:fm:tab:mvcpcommandargument}, many of which concerns about the case where there is already an existing item with the identical name in the target path.
 
 \begin{table}
-  \centering \caption{Commonly used arguments and their effects for \textit{mv} and \textit{cp} command.}\label{ch:fm:tab:mvcpcommandargument}
+  \centering \caption{Commonly used arguments and their effects for \texttt{mv} and \texttt{cp} commands.}\label{ch:fm:tab:mvcpcommandargument}
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
@@ -197,10 +199,10 @@ To permanently delete an item, use \verb|rm| command as follows.
 \begin{lstlisting}
 $ rm [<option>] <path>
 \end{lstlisting}
-For safety, usualy when using \verb|rm|, the OS will keep prompting messages asking user to confirm whether to permenantly delete an item or not. In some OS setups, it is by default forbidden to delete a directory, unless all files and subdirectories in that file have been priorily removed. The following arguments in Table \ref{ch:fm:tab:rmcommandargument} can be used to change the setup.
+For safety, when using \verb|rm| the OS will keep prompting messages asking user to confirm whether to permanently delete an item or not. In some OS setups, it is by default forbidden to delete a directory unless it is empty. The following arguments in Table \ref{ch:fm:tab:rmcommandargument} can be used to change the setup.
 
 \begin{table}
-  \centering \caption{Commonly used arguments and their effects for \textit{rm} command.}\label{ch:fm:tab:rmcommandargument}
+  \centering \caption{Commonly used arguments and their effects for \texttt{rm} command.}\label{ch:fm:tab:rmcommandargument}
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Directory & Description \\ \hline
@@ -212,14 +214,14 @@ For safety, usualy when using \verb|rm|, the OS will keep prompting messages ask
   \end{tabularx}
 \end{table}
 
-It is possible though, that removed items using \verb|rm| be recovered by expertise. For greater assurance that the deleted contents are truly unrecoverable, consider using \verb|shred| which can physically overwrite the portion of hardware drive where the item is located. More details of \verb|shred| can be found by using
+It is possible though, that removed items using \verb|rm| be recovered by expertise. For greater assurance that the deleted contents are truly unrecoverable, consider using \verb|shred| which can physically overwrite the portion of hardware drive where the item is located. More details of \verb|shred| can be found by
 \begin{lstlisting}
 $ shred --help
 \end{lstlisting}
 
 \subsection{Use of Wildcard Characters}
 
-When performing moving, copying, removing or otherwise acting on files, wildcard characters can be used to make the work more efficient sometimes. For example, \verb|ls a*| will list all items in the current directory that starts with letter ``a''. Commonly used metacharacters are summarized in Table \ref{ch:fm:tab:metacharacters}.
+When performing actions such as listing, moving, copying, removing, wildcard characters can be used in the path. For example, \verb|ls a*| lists all items in the current directory that starts with letter ``a''. Commonly used meta-characters are summarized in Table \ref{ch:fm:tab:metacharacters}.
 
 \begin{table}
   \centering \caption{Commonly used wildcard characters.}\label{ch:fm:tab:metacharacters}
@@ -235,11 +237,11 @@ When performing moving, copying, removing or otherwise acting on files, wildcard
 
 \section{Access Control List} \label{ch:fm:sec:accesscontrollist}
 
-Each file or directory in the Linux OS is assigned with an owner and a permission list known as the Access Control List (ACL). The permission list prevents unauthorized persons to access the item. The permission list of a file can be checked by using \verb|ls -l|. An example is given in Fig. \ref{ch:fm:fig:lscommandexample}.
+Each file or directory in the Linux OS is assigned with an owner and a permission list known as the Access Control List (ACL). ACL prevents unauthorized entities to access an item. The ACL of a file can be viewed using \verb|ls -l|. An example has been given in Fig. \ref{ch:fm:fig:lscommandexample} in the earlier section.
 
 The first column of the output in Fig. \ref{ch:fm:fig:lscommandexample} gives the type and permission of the item. The leading \verb|d| and \verb|-| indicate subdirectory and regular file respectively. Other commonly seen indicators are \verb|l| for a symbolic link, \verb|b| for a block device, \verb|c| for a character device, \verb|s| for a socket and \verb|p| for a named pipe.
 
-Following by the item type indicator is the 9-bit permission that may look like \verb|rwxrwxrwx|. The characters \verb|r|, \verb|w| and \verb|x| stand for three types of permissions ``read'', ``write'' and ``execute'' respectively. An explanation to these permissions is summarized in Table \ref{ch:fm:tab:threepermissions} and more details can be found in the \verb|ls| command manual available using \verb|ls --help|. The 9-bit permission of an item indicates the permissions of 3 types of users to the item, the first 3 bits the file owner, the middle 3 bits the file group, and the last 3 bits other users. If any bit in the 9-bit permission is overwritten by a dash \verb|-|, it means that the associated permission for the associated users is banned.
+Following the item type indicator is the ACL of the item in the form of 9-bit permission that looks like \verb|rwxrwxrwx|. The characters \verb|r|, \verb|w| and \verb|x| stand for three types of permissions ``read'', ``write'' and ``execute'' respectively. An explanation to these permissions is summarized in Table \ref{ch:fm:tab:threepermissions} and more details can be found in the \verb|ls| command manual accessible using \verb|ls --help|. The 9-bit permission of an item indicates the permissions of 3 types of users to the item, the first 3 bits the file owner, the middle 3 bits the file group, and the last 3 bits other users. If any bit in the 9-bit permission is overwritten by a dash \verb|-|, it means that the associated permission for the associated users is banned.
 
 \begin{table}
   \centering \caption{Three types of permissions.}\label{ch:fm:tab:threepermissions}
@@ -253,7 +255,7 @@ Following by the item type indicator is the 9-bit permission that may look like 
   \end{tabularx}
 \end{table}
 
-Commands \verb|chown| and \verb|chmod| can be used to change the ownership and 9-bit permission of an item respectively. Details are given in following subsections.
+Commands \verb|chown| and \verb|chmod| can be used to change the ownership and ACL of an item respectively. Details are given in the following subsections.
 
 \subsection{Change Ownership and Group of a File or Directory}
 
@@ -265,7 +267,7 @@ For example, in Fig. \ref{ch:fm:fig:chownexp},
 \begin{lstlisting}
 $ sudo chown root:root calculate_fib.sh
 \end{lstlisting}
-is used to change the ownership and group of file \verb|calculate_fib.sh| from \verb|sunlu| to \verb|root|. Use \verb|ls| with longlist to check the ownership of a file. Notice that elevated privilage is required to change its ownership, otherwise the request will be rejected as shown in Fig. \ref{ch:fm:fig:chownexp}.
+is used to change the ownership and group of file \verb|calculate_fib.sh| from \verb|sunlu| to \verb|root|. Notice that elevated privilege is required to change its ownership, otherwise the request will be rejected as shown in Fig. \ref{ch:fm:fig:chownexp}.
 
 \begin{figure}[htbp]
 	\centering
@@ -275,7 +277,7 @@ is used to change the ownership and group of file \verb|calculate_fib.sh| from \
 
 \subsection{Change Permissions of a File or Directory}
 
-Both the owner of a file or directory and the users with administrative privilege can change the 9-bit permission of the file using \verb|chmod| as follows. The 9-bit permission, in this context, is called the mode of the file.
+Both the owner and the users with administrative privilege can change the ACL of a file or directory using \verb|chmod| as follows. The ACL, in this context, is called the mode of the item.
 \begin{lstlisting}
 $ chmod [<option>] <new_mode> <path>
 \end{lstlisting}
@@ -285,20 +287,20 @@ For example, in Fig. \ref{ch:fm:fig:chmodexp}, \verb|g-w| is used to subtract ``
 	\includegraphics[width=350pt]{chapters/part-1/figures/chmodexp.png}
 	\caption{Change 9-bit permission (mode) of a file.} \label{ch:fm:fig:chmodexp}
 \end{figure}
-Alternatively, 3-digit numbers such as \verb|664| as shown in Fig. \ref{ch:fm:fig:chmodexp} can also represent a permission. The first digit is associated with the permission given to the ``user'', where in this example \verb|6| represents \verb|rw-|. Notice that each permission is assigned a number: \verb|r| is 4, \verb|w| is 2, and \verb|x| is 1. From the sum of the numbers, the OS understands which permission(s) are assigned. For example, $6=4+2$, hense \verb|r| and \verb|w| permissions. Likewise as another two quick examples, a \verb|7| would mean \verb|rwx| and \verb|5|, \verb|r-x|, respectively. The second and third digits are associated with the permission given to ``group'' and ``other'' respectively. Hense, \verb|664| would assign \verb|rw-rw-r--| to the file.
+Alternatively, 3-digit numbers such as \verb|664| as shown in Fig. \ref{ch:fm:fig:chmodexp} can also represent a permission. The first digit is associated with the permission given to the ``user'', where in this example \verb|6| (\verb|110B|) represents \verb|rw-|. Each ``1'' in the binary number is associated with a permission. The second and third digits are associated with the permission given to ``group'' and ``other'' respectively. Hence, \verb|664| would assign \verb|rw-rw-r--| to the file.
 
 \section{Search through the System}
 
-There are roughly 3 types of searching commands that a user would use frequently:
+The most frequently used 3 searching actions are as follows.
 \begin{itemize}
   \item Look for the location of a command using its name
   \item Look for the location of a file using its name (and other metadata such as size, permission, etc.)
   \item Look for the location of a file using a portion its content
 \end{itemize}
 
-There can be multiple ways to reach each of the above goals. Details are as follows.
+Many approaches can be used to achieve the goals, some of which are introduced as follows.
 
-\subsection{Looking for a Command}
+\subsection{Look for a Command}
 
 Use \verb|type| to look for a command as follows.
 \begin{lstlisting}
@@ -315,31 +317,128 @@ $ type ls
 ls is aliased to `ls --color=auto'
 \end{lstlisting}
 
-\subsection{Looking for a File by Metadata}
+\subsection{Looking for Files by Metadata}
 
 Many Linux distributions come with built-in command \verb|locate| that can be used to quickly locate a file by (a fraction of) its path as follows. Notice that as long as a file or directory's full path contains the searched content, there is a chance that it will appear in the result. As a result, if the name of a directory is used for searching, all the items in that directory will likely to appear in the result (as their full paths contain the name of the directory).
 \begin{lstlisting}
-$ locate <file-name>
+$ locate <file or path fraction>
 \end{lstlisting}
 
-The mechanism behind \verb|locate| is that behind the users' eyes, the OS runs \verb|updatedb| in the background usually once a day to update an internal database that gathers the names of files, and \verb|locate| searches the database for a file. Notice that \verb|locate| may fail to find recently added files if it has not been added to the database by \verb|updatedb|. Besides, not all files are covered by \verb|updatedb| by default, and a configuration file at \verb|/etc/updatedb.conf| determines which files to be covered by \verb|updatedb|. It is also worth mentioning that it will take some time to run \verb|updatedb| for the first time, as it has a lot of things to add to the database during its initial run.
+The mechanism of \verb|locate| is explained as follows. The OS runs \verb|updatedb| in the background usually once a day to update an internal database that gathers the names of files, and \verb|locate| searches that database for the file. Notice that \verb|locate| may fail to find recently added files if it has not been added to the database by \verb|updatedb|. Besides, not all files' name are stored in that database by default, and a configuration file at \verb|/etc/updatedb.conf| determines which files' name to be included. It is also worth mentioning that it will take some time to run \verb|updatedb| for the first time, as it has a lot of things to add to the database during its initial run.
 
-One may get confused by commands \verb|locate| and \verb|mlocate|. The concepts of the commands are very similar, and when both commands are available on a machine, \verb|mlocate| functions by default even the user types \verb|locate|.
+One may get confused by commands \verb|locate| and \verb|mlocate|. The two commands are very similar and they differ only beyond basic usage. Sometimes \verb|locate| is aliased to \verb|mlocate| when both functions are installed. In the scope of our discussion, we do not distinguish \verb|locate| and \verb|mlocate|.
 
-An example of using \verb|locate| is given in Fig. \ref{ch:fm:fig:locateexp}. It can be seen from this example that the searching is done globally and does not rely on the current working directory.
+An example of using \verb|locate|/\verb|mlocate| is given in Fig. \ref{ch:fm:fig:locateexp}. It can be seen from this example that the searching is done globally and does not rely on the current working directory.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-1/figures/locateexp.png}
 	\caption{Search for files and directories using \textit{locate}.} \label{ch:fm:fig:locateexp}
 \end{figure}
 
-It is worth mentioning that for safety and privacy reasons, \verb|locate| only shows the items that the user would be able to detect manually using \verb|cd| and \verb|ls| in the first place. Therefore, a regular user cannot locate any file under \verb|/root| our other users' home directory using this method.
+\subsection{Looking for Files by Variety of Properties}
+
+It is worth mentioning that for safety and privacy reasons, \verb|mlocate| only shows the items that the user would be able to detect manually using \verb|cd| and \verb|ls| in the first place. Therefore, a regular user cannot locate any file under \verb|/root| our other users' home directory using this method.
 
 A more common and widely accepted way of looking for a file by its variety of attributes is using \verb|find| as follows.
 \begin{lstlisting}
 $ find [<options>] [<path>] <expression>
 \end{lstlisting}
-where \verb|options| can be used to specify whether to follow a symbolic link in the result, and expression the filtering method, such as \verb|-f| for file, \verb|-size| for searching by size. It is possible to search by name, size, extension, type, size, and other metadata.
+
+The \verb|<options>| argument can be used to configure how the symbolic links should be handled. Symbolic links are like shortcut in Windows PC. It is a link that points to other directories of files. If \verb|-P| (default option) is used, the symbolic links are treated as the links themselves, but not the files they are linking to, whereas \verb|-L| does the opposite. Debugging modes and query optimization can also be enabled from \verb|<options>|. The \verb|<path>| argument specifies the directory from where the query is conducted. The \verb|<expression>| argument specifies the keyword and the query method.
+
+The following are examples of using \verb|find| in different scenarios. The examples are taken from RedHat at \cite{redhat2022find}.
+
+\vspace{0.1in}
+\noindent \textbf{List everything in a directory and its subdirectories}
+\vspace{0.1in}
+
+\begin{lstlisting}
+$ find ~/Documents -ls
+3554235 0 drwxr-xr-x [...] 05:36 /home/seth/Documents/
+3554224 0 -rw-rw-r-- [...] 05:36 /home/seth/Documents/Foo
+3766411 0 -rw-rw-r-- [...] 05:36 /home/seth/Documents/Foo/foo.txt
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Find files by name}
+\vspace{0.1in}
+
+\begin{lstlisting}
+$ find / -name "*Foo*txt" 2>/dev/null
+/home/seth/Documents/Foo.txt
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Find files by name (case insensitive)}
+\vspace{0.1in}
+
+\begin{lstlisting}
+$ find / -iname "*Foo*txt" 2>/dev/null
+/home/seth/Documents/Foo.txt
+/home/seth/Documents/foo.txt
+/home/seth/Documents/foobar.txt
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Find files by the content}
+\vspace{0.1in}
+
+\begin{lstlisting}
+$ find ~/Documents/ -name "*txt" -exec grep -Hi penguin {} \;
+/home/seth/Documents/Foo.txt:I like penguins.
+/home/seth/Documents/foo.txt:Penguins are fun.
+\end{lstlisting}
+where in this example, \verb|-exec| allows executing a command to the findings. Notice that \verb|grep| by itself can also be used to search files by contents.
+
+\vspace{0.1in}
+\noindent \textbf{Find files by type}
+\vspace{0.1in}
+
+To find all files,
+\begin{lstlisting}
+$ find ~ -type f
+/home/seth/.bash_logout
+/home/seth/.bash_profile
+/home/seth/.bashrc
+/home/seth/.emacs
+/home/seth/.local/share/keyrings/login.keyring
+/home/seth/.local/share/keyrings/user.keystore
+/home/seth/.local/share/gnome-shell/gnome-overrides-migrated
+\end{lstlisting}
+Specifically, to find empty files,
+\begin{lstlisting}
+$ find ~ -type f -empty
+random.idea.txt
+\end{lstlisting}
+
+To find all subdirectories,
+\begin{lstlisting}
+$ find ~/Public -type d
+find ~/Public/ -type d
+/home/seth/Public/
+/home/seth/Public/example.com
+/home/seth/Public/example.com/www
+/home/seth/Public/example.com/www/img
+/home/seth/Public/example.com/www/font
+/home/seth/Public/example.com/www/style
+\end{lstlisting}
+
+Use \verb|-maxdepth| to set the searching depth as follows.
+\begin{lstlisting}
+$ find ~/Public/ -maxdepth 1 -type d
+/home/seth/Public/
+/home/seth/Public/example.com
+\end{lstlisting}
+
+\vspace{0.1in}
+\noindent \textbf{Find files by the timestamp it was accessed / changed / metadata changed}
+\vspace{0.1in}
+
+To find files whose latest modified time is at least 30 days ago (30 days ago or earlier), use
+\begin{lstlisting}
+ find /var/log -mtime +30
+\end{lstlisting}
+where \verb|-atime|, \verb|-ctime| and \verb|-mtime| search based on the number of days since each file was accessed, changed or had its metadata changed respectively. The alternatives \verb|-amin|, \verb|-cmin| and \verb|-mmin| work similarly in minutes. The \verb|+| indicates ``at least'' whereas \verb|-| indicates ``not more than''.
 
 \section{File Archive}
 
@@ -358,7 +457,7 @@ The \verb|tar|, \verb|gzip| and \verb|zip| commands can all be used in files arc
 	\end{tabularx}
 \end{table}
 
-Only \verb|tar| command is introduced here, as it is the most commonly used and can satisfy most use cases. A common way of using \verb|tar| is as follows. Use
+Only \verb|tar| command is introduced here, as it is the most commonly used one among the three, and it can satisfy most use cases. A common way of using \verb|tar| is as follows. Use
 \begin{lstlisting}
 $ tar -cvzf <archive-file> <file1> <file2> <file3> ...
 \end{lstlisting}
@@ -369,19 +468,6 @@ $ tar -xvzf <archive-file>
 to restore files from the archive file. The commonly used archive file name, in this scenario, is \verb|<filename>.tgz|.
 
 The detailed explanation to all available options for \verb|tar| can be found using \verb|tar --help|. The most commonly used options are \verb|-c|, \verb|-x|, \verb|-z|, \verb|-f| and \verb|-v|, standing for creating compress tape, extracting (restoring) file, adding compressing feature, using file archive, and listing processed files in the console, respectively.
-
-\section{\textit{Ranger} for File Management}
-
-\textit{Ranger} is a \textit{Vim} based terminal file explorer tool that is highly flexible and customizable. Just like \textit{Vim}, Ranger does not rely on a mouse or a graphical interface, and can manipulate file system in an intuitive way.
-
-To install Ranger, use
-\begin{lstlisting}
-$ sudo apt install ranger
-\end{lstlisting}
-and to run ranger in the current working directory, simply type \verb|ranger|.
-
-An example to demonstrate ranger interface is given in Fig. XXX.
-
 
 
 
