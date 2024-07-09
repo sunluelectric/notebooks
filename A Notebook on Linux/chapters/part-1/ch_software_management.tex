@@ -1,33 +1,41 @@
-%\chapterauthor{Author Name}{Author Affiliation}
-%\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{Software Management}
 
-...
+Linux as an OS monitors and maintains the software installed on the system. Different Linux distributions may use different tools to assist managing the software.
 
-\section{Linux Kernel and Repository Management}
+\section{Linux Software Management Approaches}
 
-...
+When installing a software, the OS downloads and extracts relevant packages from upstream and install them according to the instructions that comes with the packages. The OS also traces the software it has installed, monitors their behaviors, performs updates or uninstalls per requested by the user. Different Linux distributions may use different package forms and package management tools, the most well-known ones include
+\begin{itemize}
+	\item Red Hat Package Manager (RPM); also recursively named by RPM Package Manager
+	\item Debian Package Manager (DEB)
+\end{itemize}
+Notice that the name of the package form and the package manager can be used interchangeably. Both package managers are introduced in this chapter.
 
-\section{Linux Package Management Utilities}
+Linux kernel is also a software and needs to be monitored and updated from time to time. Linux kernel management is also briefly introduced in this chapter. Notice that advanced kernel management such as kernel customization goes beyond the scope of this notebook, hence are not included in this chapter.
 
-...
+\section{RPM Package}
 
-\section{Software Management}
-...
+RPM refers to the package form and the tool using which RHEL and other Red-Hat-based Linux manage software. It is the recommended way of managing software by Red Hat.
 
-\subsection{Searching for Software}
-...
+\subsection{Brief Introduction to RPM Package}
 
-\subsection{Installation of Software}
+RPM package, together with its corresponding management tool, is designed to 
 
-...
-
-\subsection{Upgrading Software}
-...
-
-\subsection{Uninstallation of Software}
+\subsection{RPM Package Management}
 
 ...
+
+\section{DEB Package}
+...
+\subsection{Brief Introduction to DEB Package}
+...
+\subsection{DEB Package Management}
+...
+\section{Linux Kernel Management}
+
+Different Linux distributions, though essentially using the same OS kernel, may differ when comes to how they update and maintain the kernel. In the scope of this notebook, only RHEL is introduced in a very brief manner. A more detailed explanation to how RHEL manages kernel can be found at \cite{redhat2022kernel}, which is not only a handbook of how RHEL manages Linux kernel, but also a good learning material for OS kernels in general.
+
+Notice that RHEL kernel is a modified version of the upstream Linux kernel by Red Hat engineers. Therefore, it may differ from kernels used in other Linux distributions.
 
 
 

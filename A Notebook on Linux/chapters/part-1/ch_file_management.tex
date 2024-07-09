@@ -89,7 +89,11 @@ Some of the most widely used file exploring and managing commands are summarized
 
 \subsection{Print Working Directory}
 
-As given in Table \ref{ch:sb:tab:shellenvironmentvars}, \verb|$PWD| is the environmental variables to store the current working directory of the shell. Therefore, to print the current working directory in the console, use command \verb|echo $PWD|. Alternatively, use \verb|pwd| as follows which has the same effect.
+As given in Table \ref{ch:sb:tab:shellenvironmentvars}, \verb|$PWD| is the environmental variables to store the current working directory of the shell. Therefore, to print the current working directory in the console, use command 
+\begin{lstlisting}
+$ echo $PWD
+\end{lstlisting}
+Alternatively, use \verb|pwd| as follows which has the same effect.
 \begin{lstlisting}
 $ pwd
 \end{lstlisting}
@@ -289,6 +293,21 @@ For example, in Fig. \ref{ch:fm:fig:chmodexp}, \verb|g-w| is used to subtract ``
 \end{figure}
 Alternatively, 3-digit numbers such as \verb|664| as shown in Fig. \ref{ch:fm:fig:chmodexp} can also represent a permission. The first digit is associated with the permission given to the ``user'', where in this example \verb|6| (\verb|110B|) represents \verb|rw-|. Each ``1'' in the binary number is associated with a permission. The second and third digits are associated with the permission given to ``group'' and ``other'' respectively. Hence, \verb|664| would assign \verb|rw-rw-r--| to the file.
 
+\subsection{Change Default Permissions}
+
+The default ACL for a newly created file or directory is defined by \verb|umask|. Check its value by
+\begin{lstlisting}
+$ umask
+\end{lstlisting}
+And change its value temporarily in the opening shell by
+\begin{lstlisting}
+$ umask <new value>
+\end{lstlisting}
+
+The value of \verb|umask|, after converting to binary, represents the bits in the 9-bit permission system that is disabled. For example, a \verb|umask| value of \verb|002| represents \verb|rwxrwxr-x| in the 9-bit permission system, because the binary form of \verb|002|, \verb|000000010|, blocks the $8$-th bit in the permission.
+
+To permanently change the value of \verb|umask|, configure it in \verb|.bashrc| as introduced in Section \ref{ch:sb:subsec:customizeshell}.
+
 \section{Search through the System}
 
 The most frequently used 3 searching actions are as follows.
@@ -363,21 +382,21 @@ $ find ~/Documents -ls
 \noindent \textbf{Find files by name}
 \vspace{0.1in}
 
+Case sensitive: \verb|-name|
 \begin{lstlisting}
 $ find / -name "*Foo*txt" 2>/dev/null
 /home/seth/Documents/Foo.txt
 \end{lstlisting}
 
-\vspace{0.1in}
-\noindent \textbf{Find files by name (case insensitive)}
-\vspace{0.1in}
-
+Case insensitive: \verb|-iname|
 \begin{lstlisting}
 $ find / -iname "*Foo*txt" 2>/dev/null
 /home/seth/Documents/Foo.txt
 /home/seth/Documents/foo.txt
 /home/seth/Documents/foobar.txt
 \end{lstlisting}
+
+Wildcards such as \verb|*| can be used. Commonly used wildcards are given in Table \ref{ch:fm:tab:metacharacters}.
 
 \vspace{0.1in}
 \noindent \textbf{Find files by the content}

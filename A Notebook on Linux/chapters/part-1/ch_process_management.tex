@@ -2,7 +2,7 @@
 %\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{Process Management} \label{ch:pm}
 
-A process refers to an instance of a computer program that is running in the system. Managing processes is one of the essential tasks of an OS. In a Windows system, the user can use the task manager, which is a graphical tool to check and manage all the running processes. In a Linux system, the user can manage process in the prompt console using bash commands.
+A process refers to an instance of a computer program that is running in the system. Managing processes is one of the essential tasks of an OS. In a Windows system, the user can use the task manager, a graphical tool, to check and manage all the running processes. In a Linux system, the user can manage process in the prompt console using bash commands.
 
 \section{General Introduction to Process}
 
@@ -66,7 +66,7 @@ Notice that for many OS, including Linux, the kernel can provide thread level se
 
 \section{Process Management in Linux}
 
-Two commands, \verb|ps| and \verb|top|, are widely used in monitoring the running process in the OS. They can be used stand-alone, without additional arguments like follows.
+Two commands, \verb|ps| and \verb|top|, are widely used in monitoring the running process in the OS. They can be used stand-alone, without additional arguments as follows.
 \begin{lstlisting}
 $ ps
 \end{lstlisting}
@@ -75,7 +75,7 @@ or
 $ top
 \end{lstlisting}
 
-The major difference between these two commands is that \verb|ps| provides a screenshot (in a text format) of a list of processes including their names, process IDs (PID) and owners, etc., running at the instance, while \verb|top| provides a frequently-refreshing display of the running processes as well as their associated resources usage. Figs \ref{ch:pm:fig:pscommand} and \ref{ch:pm:fig:topcommand} give a quick demo of how the execution of the two commands look like.
+The major difference between these two commands is that \verb|ps| provides a screenshot (in a text format) of a list of processes including their names, process IDs (PID) and owners, etc., running at the instance, while \verb|top| provides a dynamic and frequently refreshing display of the running processes as well as their associated resources usage. Figs \ref{ch:pm:fig:pscommand} and \ref{ch:pm:fig:topcommand} give a quick demo of how the execution of the two commands look like.
 
 \begin{figure}[htbp]
 	\centering
