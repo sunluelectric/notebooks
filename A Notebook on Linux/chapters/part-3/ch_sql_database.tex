@@ -933,13 +933,9 @@ ADD FOREIGN KEY (payment_method_id)
 REFERENCES payment_method(payment_method_id);
 \end{lstlisting}
 
-\section{Database API}
+\section{General Ways to Connect to RDB}
 
 This section discusses the tools or program interfaces used along with the DBMS. Many software programs provide interface or toolkit to connect to a database. For example, MATLAB uses database toolbox to connect to SQLite or Microsoft SQL server. Python, as a ``glue'' language, also provide variety of packages to connect to different databases. IDEs such as VSCode can connect to databases using extensions.
-
-Some of these tools and packages are introduced in this section.
-
-\subsection{RDB Interface with Python}
 
 Python provides variety of libraries to access RDS, many of which use embedded SQL codes to interact with the DBMS. Depending on the DBMS, different libraries and commands can be used, some of which more general and the other more specific to a particular DBMS.
 
@@ -954,18 +950,18 @@ As pre-requisitions, make sure that the following has been done.
 
 For DBMS configuration, in the case of MariaDB, use the following code in the shell to check the location of the configuration files.
 \begin{lstlisting}
-	$ mysqld --help --verbose
+$ mysqld --help --verbose
 \end{lstlisting}
 Typical locations of the configuration files are \verb|/etc/my.cnf| and \verb|/etc/mysql/my.cnf|. In the configuration file, use the following to disable binding address.
 \begin{lstlisting}
-	[mysqld]
-	skip-networking=0
-	skip-bind-address
+[mysqld]
+skip-networking=0
+skip-bind-address
 \end{lstlisting}
 
 For account setup, in the DBMS console, use something like
 \begin{lstlisting}
-	> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'<ip-address>' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
+> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'<ip-address>' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
 \end{lstlisting}
 where \verb|'<ip-address>'| is the remote machine that runs the Python program. If the Python codes are running locally, simply use \verb|'localhost'|.
 
@@ -982,41 +978,41 @@ Python library \verb|pandas| is one of the essential libraries for data analysis
 
 A class \verb|pandas.DataFrame| is defined in \verb|pandas| as the backbone to store and process data. The data attribute of \verb|pandas.DataFrame| is a \verb|numpy| array. Many functions are provided to read different data formats into \verb|pandas| data frame, which makes reading data easy and convenient. An example of reading a CSV file is given below.
 \begin{lstlisting}
-	import pandas as pd
-	df = pd.read_csv(<file-name>)
-	print(df)
-	print(df.head(<number>))
-	print(df.tail(<number>))
-	print(df.info())
+import pandas as pd
+df = pd.read_csv(<file-name>)
+print(df)
+print(df.head(<number>))
+print(df.tail(<number>))
+print(df.info())
 \end{lstlisting}
 where \verb|head()|, \verb|tail()| gives the first and last rows of the data frame, and \verb|info()| checks the data frame basic information including shape and data types of the columns. Check \verb|df.columns| for all the columns of the data frame. Details specific to a column can be accessed via \verb|df.[<column-name>]|. Many functions are provided to further abstract the details, such as grouping and counting. Use \verb|df.loc(<row-index-list>, <column-name-list>)| to check the content of specified rows and columns.
 
 With \verb|pandas| and other relavent libraries, Python can connect to a database and execute a query. An example of using \verb|pandas| to connect to an Microsoft SQL server and implement a query is given below. Notice that different DBMS may require different database connectivity driver standards, and there are mainly two of them, namely open database connectivity (ODBC) and Java database connectivity (JDBC). Microsoft adopts ODBC, and a separate package is required in the Python program to connect to the Microsoft SQL server.
 \begin{lstlisting}
-	import pyodbc
-	import pandas.io.sql as psql
-	
-	server = "<server-url>,<port>"
-	database = "<database>"
-	uid = "<uid>"
-	pwd = "<pwd>"
-	driver = "<driver>" # such as "{ODBC Driver 17 for SQL Server}"
-	
-	# connect to database
-	conn = pyodbc.connect(
-	server = server,
-	database = database,
-	uid = uid,
-	pwd = pwd,
-	driver = driver
-	)
-	
-	# get cursor
-	cursor = conn.cursor()
-	
-	# execute sql command
-	query = """<query>"""
-	runs = psql.read_sql_query(query, conn)
+import pyodbc
+import pandas.io.sql as psql
+
+server = "<server-url>,<port>"
+database = "<database>"
+uid = "<uid>"
+pwd = "<pwd>"
+driver = "<driver>" # such as "{ODBC Driver 17 for SQL Server}"
+
+# connect to database
+conn = pyodbc.connect(
+server = server,
+database = database,
+uid = uid,
+pwd = pwd,
+driver = driver
+)
+
+# get cursor
+cursor = conn.cursor()
+
+# execute sql command
+query = """<query>"""
+runs = psql.read_sql_query(query, conn)
 \end{lstlisting}
 The above codes returns a data frame corresponding to the result set of the query string, which is saved in \verb|runs|.
 
@@ -1026,33 +1022,33 @@ The above codes returns a data frame corresponding to the result set of the quer
 
 Use the following code to test connectivity from Python to the database.
 \begin{lstlisting}
-	import mariadb
-	import sys
-	
-	user = "<user>"
-	password = "<password>"
-	host = "<server-url>"
-	port = "<port>" # MariaDB default: 3306
-	database = "<database>"
-	
-	# connect to database
-	try:
-	conn = mariadb.connect(
-	user = user,
-	password = password,
-	host = host,
-	port = port,
-	database = database
-	)
-	except mariadb.Error as e:
-	print(f"Error connecting to MariaDB Platform: {e}")
-	sys.exit(1)
-	
-	# get cursor
-	cur = conn.cursor()
-	
-	# execute sql command
-	cur.execute("<sql-command>")
+import mariadb
+import sys
+
+user = "<user>"
+password = "<password>"
+host = "<server-url>"
+port = "<port>" # MariaDB default: 3306
+database = "<database>"
+
+# connect to database
+try:
+conn = mariadb.connect(
+user = user,
+password = password,
+host = host,
+port = port,
+database = database
+)
+except mariadb.Error as e:
+print(f"Error connecting to MariaDB Platform: {e}")
+sys.exit(1)
+
+# get cursor
+cur = conn.cursor()
+
+# execute sql command
+cur.execute("<sql-command>")
 \end{lstlisting}
 Notice that for query, the result is stored in the cursor object. Use a for loop to view the results.
 
