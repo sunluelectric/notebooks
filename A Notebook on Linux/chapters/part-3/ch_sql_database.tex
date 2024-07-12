@@ -1122,20 +1122,20 @@ $ sudo mysql_secure_installation
 \end{lstlisting}
 to run a quick security-related configuration such as creating password for the root user, and deleting test database.
 
-Login to MariaDB console using
+Log in to MariaDB console using
 \begin{lstlisting}
 $ sudo mariadb
 \end{lstlisting}
-Notice that when \textit{sudo} privilege is used, the user should be brought to the root account of the DBMS. Without sudo privilege, a user name and a password is required to login to the DBMS as follows.
+Notice that when \textit{sudo} privilege is used, the user should be brought to the root account of the DBMS. Without sudo privilege, a user name and a password is required to log in to the DBMS as follows.
 \begin{lstlisting}
 $ mariadb -u <user-name> -p
 Enter Password:
 \end{lstlisting}
-Depending on the setup, remote login to the database from other machine, especially using root account, might be forbidden.
+Depending on the setup, remote log in to the database from other machine, especially using root account, might be forbidden.
 
 \section{DBMS Console}
 
-After login to MariaDB console, a prompt that looks like the following would show up.
+After logging in to MariaDB console, a prompt that looks like the following would show up.
 \begin{lstlisting}
 MariaDB [(none)]>
 \end{lstlisting}
@@ -1172,7 +1172,11 @@ MariaDB [(none)]> source file.sql
 
 \chapter{RDB Example: PostgreSQL}
 
-PostgreSQL (or Postgres) is claimed to be the world's most advanced open-source RDB, and it has some great features. It is a object-relational database where the user can define customized data types in the form of objects. The database functions are modularized, meaning that it has a small base installation (only 40MB) as given in Table \ref{ch:db:tab:rdbrequirements}, and the user can expand its capability by installing additional modules per required. It complies very well with the latest SQL standard, with additional powerful add-ons.
+PostgreSQL (or Postgres) is a powerful open-source relational database project. It is gaining a lot of popularity recently.
+
+\section{Brief Introduction}
+
+PostgreSQL is claimed to be the world's most advanced open-source RDB, and it has some great features. It is a object-relational database where the user can define customized data types in the form of objects. The database functions are modularized, meaning that it has a small base installation (only 40MB) as given in Table \ref{ch:db:tab:rdbrequirements}, and the user can expand its capability by installing additional modules per required. It complies very well with the latest SQL standard, with additional powerful add-ons.
 
 Though powerful and efficient, PostgreSQL has not grown as popular as some other databases such as Oracle, Microsoft SQL server, and MySQL. One of the reasons for this is the lack of enterprise tier support. Being under PostgreSQL license (an open-source license similar to BSD and MIT), the available support is mostly from the community. With that being said, PostgreSQL is mature and has been adopted in some large enterprises. Of course the IT department of these companies need to work hard to maintain the database. In addition, great flexibility often means a steeper learning curve, making mastering PostgreSQL generally more difficult than other aforementioned databases.
 
@@ -1189,28 +1193,73 @@ Some of the main features of PostgreSQL are summarized as follows.
 	\item Steep learning curve.
 \end{itemize}
 
-\section{Installation}
+\section{Installation and Authentication}
+
+The installation of PostgreSQL depends on the OS. As of this writing, the latest version of RHEL 9.4 is used as an example. Both installation and authentication to the database are introduced.
+
+\subsection{Installation}
 
 PostgreSQL supports a large range of operating systems including Linux, MacOS, Windows, and more. The source code and very detailed documentations of PostgreSQL are available on its websites and can be downloaded to a local machine freely. Due to the lite weight of the base installation, PostgreSQL can be used conveniently in containers. The associated images can be found on Docker Hub.
 
-To install PostgreSQL directly on a host machine, simply follow the instructions on the official website, where command line tools are provided for Linux users, and installer for windows users. For example, to install PostgreSQL version 15 on RHEL version 9 running on \verb|x86_64| and setup initial configurations, simply use
+To install PostgreSQL directly on a host machine, simply follow the instructions on the official website, where command line tools are provided for Linux users, and installer for windows users. For example, to install and enable PostgreSQL 16 on RHEL 9.4 running on \verb|x86_64|, use
 \begin{lstlisting}
-# Install the repository RPM:
-$ sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-
-# Disable the built-in PostgreSQL module:
-$ sudo dnf -qy module disable postgresql
-
-# Install PostgreSQL:
-$ sudo dnf install -y postgresql15-server
-
-# Optionally initialize the database and enable automatic start:
-$ sudo /usr/pgsql-15/bin/postgresql-15-setup initdb
-$ sudo systemctl enable postgresql-15
-$ sudo systemctl start postgresql-15
+$ sudo dnf module install postgresql:16/server
+$ sudo postgresql-setup --initdb
+$ sudo systemctl start postgresql.service
+$ sudo systemctl enable postgresql.service
 \end{lstlisting}
 
-After installation, use command \verb|pg_ctl| to control the server, and \verb|psql| to login to the server. Notice that PostgreSQL installation may come with PgAdmin, the GUI for the DBMS, which can also be used to interact with the databases.
+After installation, use command \verb|pg_ctl| to control the server, and \verb|psql| to log in to the server. Notice that PostgreSQL installation may come with PgAdmin, the GUI for the DBMS, which can also be used to interact with the databases.
+
+\subsection{Regular Authentication}
+
+The default ``root'' user of a PostgreSQL database is ``\verb|postgres|''. A database of the same name ``\verb|postgres|'' is also created automatically. A sudoer can log in to this account as follows.
+\begin{lstlisting}
+$ sudo -u postgres psql postgres
+postgres=#
+\end{lstlisting}
+where \verb|postgres=#| is the prompt of the DBMS console.
+
+After logging in to the database as user \verb|postgres|, the user can create users and databases using
+\begin{lstlisting}
+postgres=# CREATE ROLE <username> LOGIN PASSWORD '<password>';
+postgres=# CREATE DATABASE <database name> WITH OWNER = <username>;
+\end{lstlisting}
+and log in to the database as the user by
+\begin{lstlisting}
+$ psql -h localhost -d <database name> -U <username> -p <port>
+\end{lstlisting}
+where \verb|<port>| is defined in the configuration file and it is \verb|5432| by default.
+
+\subsection{Peer Authentication}
+
+Given that the user already logged in to the OS with his username in the OS, it is possible to use peer authentication if the login is from the local host and the PostgreSQL username is the same with the OS username.
+
+Quickly create a user in PostgreSQL with the same username as OS using
+\begin{lstlisting}
+$ sudo -u postgres createuser -s $USER
+\end{lstlisting}
+which essentially logs in as PostgreSQL and creates a user of \verb|$USER|. With the user created, create a database for the user using
+\begin{lstlisting}
+$ createdb <database name>
+\end{lstlisting}
+Then log in to PostgreSQL using peer authentication as follows
+\begin{lstlisting}
+$ psql -d <database name>
+<username>=>
+\end{lstlisting}
+where \verb|<username>=>| is the prompt to a regular user
+
+If the database name happens to be the same with \verb|$USER|, simply use
+\begin{lstlisting}
+$ psql
+<username>=>
+\end{lstlisting}
+to login to the database.
+
+After logging in to the database, use \verb|\du| and \verb|\l| to check the users and the databases in PostgreSQL, and use \verb|SHOW port;| to check the port that PostgreSQL is running on which by default should be \verb|5432|.
+
+\subsection{Run PostgreSQL in Containers}
 
 To use PostgreSQL in containers, either download and run PostgreSQL images from Docker Hub, or create a Dockerfile like the following that installs and configures PostgreSQL on top of an Alpine base image. An example of such Dockerfiles is given below.
 \begin{lstlisting}

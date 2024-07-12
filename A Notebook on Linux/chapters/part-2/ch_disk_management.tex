@@ -2,21 +2,32 @@
 %\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{Storage Management}
 
-Upon installation of the system, the OS shall scan the machine and automatically mount (the majority part of) the hard disks under the root directory \verb|/|. All software, data files, devices, etc., shall be registered somewhere in the filesystem hierarchy in Fig. \ref{ch:fm:fig:hierarchy} introduced in Section \ref{ch:fm:sec:hierarchy}.
+Upon installation of the system, the OS shall scan the machine, look for hard drives, and either automatically or manually partition it into partitions and mount the partitions to different locations in the OS such as \verb|/| (root directory), \verb|/home/|, swap space, etc.
 
-Although it is often not necessary for the user to manage the storage and the filesystem by himself, Linux provides flexible tools to monitor and manage the storage of the machine, including manipulating partition table, format partition, and managing its mounting point.
+It is often not necessary for a casual user to manage the partitions and mountings by himself as there is the option to let Linux installation handle them automatically. However, when comes to Linux servers where hardware and storage is scaled up and down frequently, it is recommended that the administrator shall understand how hard drive can be managed. Linux provides flexible tools to monitor and manage the storage of the machine, including manipulating partition table, format partition, and managing its mounting point.
 
-\section{Monitor Storage Status}
+\section{Partitions and Filesystems}
 
-A secondary storage, such as a hard disk, needs to be ``registered'' in the OS before it can be displayed correctly to the user. The registration procedure includes creating disk partitions, and specify mount point and filesystem type for each partition, which looks like Fig.
+A partition is a logical slice of the hard drive managed by the OS via partition table which is introduced in more details in a later stage. A filesystem, on the other hand, reflects how OS formats data in the partition and where it is mounted in the OS filesystem hierarchy. This is demonstrated by Fig. \ref{ch:dm:fig:partition}.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=300pt]{chapters/part-2/figures/partition.png}
-	\caption{A demonstration of how a hard disk is ``registered'' in the OS.} \label{ch:dm:fig:partition}
+	\caption{A demonstration of how a hard drive is used in the OS.} \label{ch:dm:fig:partition}
 \end{figure}
 
-Use \verb|df| to monitor the status of the mounted storages, including the filesystem name, size, and used percentage. Command \verb|df -h| gives a nice snapshot of the storage usage in a human-readable format. An example is given below.
+Usually, each filesystem is associated with a partition. The partition focuses more on the logical separation of the hard drive, while the filesystem focuses more on how the operating system manages the data within that partition. Ideally they are consistent and there should be a clear correspondence. However, it is possible that when the filesystem is not sized correctly, the filesystem is smaller than its associated partition, and a part of the storage becomes unused. A filesystem is only meaningful on a partition because it describes how that partition is formatted and managed. Therefore, a filesystem cannot exist without a partition. However, a partition can exist without a filesystem. It will be an unused storage space that is not useful to the operating system until it is formatted with a filesystem.
+
+A demonstration of partitions versus filesystems is given in Fig. \ref{ch:dm:fig:partitionvsfilesystem}.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=300pt]{chapters/part-2/figures/partitionvsfilesystem.png}
+	\caption{A demonstration of how partitions and filesystems relate to each other.} \label{ch:dm:fig:partitionvsfilesystem}
+\end{figure}
+
+
+Use \verb|df| to monitor the status of the mounted storage, including the filesystem name, size, and used percentage. Command \verb|df -h| gives a nice snapshot of the storage usage in a human-readable format. An example is given below.
 \begin{lstlisting}
 $ df -h
 Filesystem      Size  Used Avail Use% Mounted on
