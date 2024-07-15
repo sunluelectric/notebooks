@@ -2,7 +2,7 @@
 
 Kubernetes is one of the most widely used container orchestration tools. Many cloud platforms provide Kubernetes support. Many opponent container orchestration tools are built on top of Kubernetes.
 
-\section{Basic Kubernetes}
+\section{Kubernetes Basics}
 
 \textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications. While Kubernetes is more flexible than Portainer, it's also more complex and has a steeper learning curve.
 
@@ -10,7 +10,7 @@ Notice that running Kubernetes on a local server differs significantly from runn
 
 The majority part of this chapter focuses on introducing running Kubernetes on a local server, in which case \textit{kubectl} is used as the user interface to Kubernetes and \textit{minikube} the software to manage the host machine. Minikube is an open-source software developed by the Kubernetes community to run a single-node Kubernetes cluster on a local machine, which is suitable for developers to learn and test different things in development environment.
 
-Notice that in the past days, docker is the default container engine built-in to Kubernetes, and Kubernetes uses a special program ``dockershim'' that talks to the docker engine. As of now, docker support is deprecated in Kubernetes and dockershim is removed from the installation.
+Notice that in the past days, docker is the default container engine built-in to Kubernetes, and Kubernetes uses a special program ``dockershim'' to talk to the docker engine. As of now, docker support is deprecated in Kubernetes and dockershim is removed from the installation.
 
 \subsection{Infrastructure}
 
@@ -179,7 +179,7 @@ $ kubectl delete -f <configuration file>
 \end{lstlisting}
 Kubernetes treats the above delete command as a specific type of update to the cluster, and will action accordingly.
 
-\section{Advanced Kubernetes}
+\section{Kubernetes Advanced}
 
 This section introduces advanced commonly used Kubernetes objects, tools and techniques.
 
