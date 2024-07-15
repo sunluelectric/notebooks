@@ -22,51 +22,52 @@ The following information is required to calculate the optimal control sequence:
 \end{itemize}
 In practice, the model of the plant is usually calibrated by parameter estimation and the current state by state estimation. The constraints can be obtained from the equipment handbook. The cost function, usually in the form of a functional, is defined by the user.
 
-\subsection{Models and Constraints}
+\subsection{Model and Constraint}
 
-The model plays an absolutely critical role in MPC. A model can be either linear or nonlinear, either continuous or discrete, either in state-space or input-output realizations, either centralized or discrete (not spatially uniform), either deterministic or stochastic. Different problem formulations and mathematical tools are used to describe the different types of the models and solve the different types of optimization problems.
+The model plays an absolutely critical role in MPC. A model can be either linear or nonlinear, continuous or discrete, in state-space or input-output realizations, centralized or discrete (not spatially uniform), deterministic or stochastic. Different problem formulations and mathematical tools are used to describe the different types of the models and solve the different types of optimization problems.
 
-MPC has a good adaption to different types of constraints. The constraints can be largely divided into two categories, namely physical constraints and performance constraints. Input signal $u(k)$ related constraints are often physical constraints. It describes physical limits of the system. If the controller does not respect these constraints, the physics enforce them. An example of a physical constraint is the maximum input power to a motor.
+MPC has a good adaption to different types of constraints. The constraints can be largely divided into two categories, namely physical constraints and performance constraints. Input signal $u(k)$ related constraints are often physical constraints reflecting the physical limits of the system. State vector $x(k)$ and output $y(k)$ related constraints, on the other hand, are often performance constraints. The performance constraints describes the lowest performance goals that the user expects from the system.
 
-State vector $x(k)$ and output $y(k)$ related constraints, on the other hand, are often performance constraints. They describe the desirable performance of the system, and they may or may not be achievable in practice. MPC is able to find out whether the performance constraints are achievable or not. Should the performance constraints not be achievable, they need to be modified and downgraded.
-
-Input signal related constraints are often given in the following format.
+Input signal $u(k)$ related constraints are often given in the following form.
 \begin{eqnarray}
 	\left[\begin{array}{c}
 		-I \\ I
 	\end{array}\right]u(k) &\leq& \left[\begin{array}{c}
 	-u_{\textup{min}} \\ u_{\textup{max}}
-\end{array}\right] \nonumber
+\end{array}\right] \label{eq:mpcconstraintu}
 \end{eqnarray}
 
-State vector related constraints are often given in the following format.
+State vector $x(k)$ related constraints are often given in the following form.
 \begin{eqnarray}
-	Fx(k) &\leq& f \nonumber
+	Fx(k) &\leq& f \label{eq:mpcconstraintx}
 \end{eqnarray}
 
-When augmented state vector is used, it is possible to combine the input and the state vector together to form constraints with more flexibility. For example, let
+It is possible to use augmented state vector that combines states with inputs. Let
 \begin{eqnarray}
 	\tilde{x}(k) &=& \left[\begin{array}{c}
-		x(k) \\ u(k-1)
-	\end{array}\right] \nonumber
+	x(k) \\ u(k-1)
+\end{array}\right] \nonumber
 \end{eqnarray}
-Then the following constraint
+and both constraints in \eqref{eq:mpcconstraintu} and \eqref{eq:mpcconstraintx} can be expressed by the form
+\begin{eqnarray}
+	F\tilde{x}(k) + Eu(k) &\leq& e \label{eq:mpcconstraintux}
+\end{eqnarray}
+Equation \eqref{eq:mpcconstraintux} can also be used to limit the difference signal of the control signal. Consider
 \begin{eqnarray}
 	\left[\begin{array}{cc}
 		0 & -I \\ 0 & I
 	\end{array}\right]\tilde{x}(k) + \left[\begin{array}{c}
-	I \\ -I
-\end{array}\right]u(k) &\leq& \left[\begin{array}{c}
-\Delta_{\textup{max}} \\ -\Delta_{\textup{min}}
-\end{array}\right] \nonumber
+		I \\ -I
+	\end{array}\right]u(k) &\leq& \left[\begin{array}{c}
+		\Delta_{\textup{max}} \\ -\Delta_{\textup{min}}
+	\end{array}\right] \nonumber
 \end{eqnarray}
-essentially translates to
+in \eqref{eq:mpcconstraintux}, which essentially translates to
 \begin{eqnarray}
 	\Delta_{\textup{min}} \leq u(k) - u(k-1) \leq \Delta_{\textup{max}} \nonumber
 \end{eqnarray}
-which can become handy sometimes.
 
-It is also possible to limit the state vector and/or the input to be integers or discrete values, which is not commonly seen in other optimal controllers.
+Other constraints include limiting the state vector and/or the control signal to be discrete values such as integers. These types of constraints are not as commonly seen as the aforementioned ones.
 
 \subsection{Parameter Estimation and State Estimation}
 
