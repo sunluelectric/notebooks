@@ -377,7 +377,7 @@ The developer can specify the place for Kubernetes PVs. This is usually the hard
 \end{lstlisting}
 and
 \begin{lstlisting}
-	$ kubectl describe storageclass
+$ kubectl describe storageclass
 \end{lstlisting}
 When deploying Kubernetes on the Cloud, the developer needs to do additional configurations as there would be many storage options. Usually, each Cloud provider will have its own default storage space for Kubernetes, such as AWS Elastic Block Store for AWS.
 
@@ -387,7 +387,7 @@ Kubernetes Secrets object is used store confidential information, such as the da
 
 Secrets are not created from configuration files, which is the recommended way of creating other Kubernetes objects. Instead, it is created from one-time imperative command, inside which the confidential information needs to be told to Kubernetes. Use the following command to create a Secret object.
 \begin{lstlisting}
-	$ kubectl create secret <type-of-secret> <secret-name> --from-literal <key>=<value>
+$ kubectl create secret <type-of-secret> <secret-name> --from-literal <key>=<value>
 \end{lstlisting}
 There are 3 types of Secrets: \verb|generic|, \verb|docker-registry| and \verb|tls|.
 
@@ -474,13 +474,13 @@ It is particularly worth mention that in \verb|deploy.sh|, when building and app
 
 The walk around introduced in Section \ref{ch:vac:subsec:deployment} was to use version number in the configuration file and/or as an imperial command as follows.
 \begin{lstlisting}
-	$ kubectl set image deployment/<Deployment name> <container name>=<image name>:<version>
+$ kubectl set image deployment/<Deployment name> <container name>=<image name>:<version>
 \end{lstlisting}
 so what when the version name changes, Kubernetes would notice the differences and apply the new image. When working with CI/CD using \textit{Git}, this can be further automated. Just use the \verb|$GIT_SHA| as part of the tag as follows.
 \begin{lstlisting}
-	docker build -t <docker-id>/<image-name>:latest -t <docker-id>/<image-name>:$GIT_SHA -f <dockerfile> <save-directory>
-	docker push <docker-id>/<image-name>:latest
-	docker push <docker-id>/<image-name>:$GIT_SHA
+$ docker build -t <docker-id>/<image-name>:latest -t <docker-id>/<image-name>:$GIT_SHA -f <dockerfile> <save-directory>
+$ docker push <docker-id>/<image-name>:latest
+$ docker push <docker-id>/<image-name>:$GIT_SHA
 \end{lstlisting}
 Notice that in addition to \verb|:latest|, \verb|:$GIT_SHA| is used as a secondary tag. When pushing the built image to Docker hub, both \verb|:latest| and \verb|:$GIT_SHA| are pushed (although they have identical content). When setting image, the \verb|$GIT_SHA| is used to identify the image just like the version number.
 
@@ -488,9 +488,9 @@ It is recommended not to remove \verb|:latest| in the building command. This is 
 
 Notice that \verb|$GIT_SHA| is not a built-in environment variable. The developer needs to set that environmental variable manually in the configuration YAML file as follows. It is possible to replace \verb|$GIT_SHA| with a different name.
 \begin{lstlisting}
-	env:
-	global:
-	- GIT_SHA=$(git rev-parse HEAD)
+env:
+global:
+- GIT_SHA=$(git rev-parse HEAD)
 \end{lstlisting}
 With the above setup, \verb|$GIT_SHA| can be used in \verb|deploy.sh| as an environmental variable.
 
