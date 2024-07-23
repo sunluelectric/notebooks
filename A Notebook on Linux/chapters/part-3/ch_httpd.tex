@@ -1,18 +1,18 @@
 \chapter{HTTP Server}
 
-A commonly seen Linux application is to host a web service. "LAMP", an acronym that stands for Linux, Apache, MySQL, and PHP/Perl/Python, is a classic architecture for that application. In this structure, Linux serves as the host OS for the server, Apache as the web service provider, MySQL as the backend database, and finally PHP/Perl/Python as the programming languages for web development.
+A commonly seen Linux application is to host a web service. ``LAMP'', an acronym that stands for Linux, Apache, MySQL, and PHP, is a classic architecture for that application. In this structure, Linux serves as the host OS for the server or for the container orchestration, Apache the web service provider, MySQL (or its alternatives) the backend database, and finally PHP the programming language for web development.
 
-Database services, both RDB such as MySQL, MariaDB, PostgreSQL and NoSQL such as MongoDB, Redis have introduced in earlier chapters. Apache HTTP server is introduced in this chapter. Programming languages such as PHP and Python are not covered in this notebook.
+Database services, both RDB and NoSQL, have been introduced in earlier chapters. Apache HTTP server is introduced in this chapter. Programming languages for web application such as PHP, Java, \verb|.NET| framework, \verb|c#|, JavaScript and CSS are not covered in this notebook.
 
-Notice that Apache is not the only web service provider in the market. Alternative choices include Nginx, Node.js and many other options.
+Notice that Apache is not the only web service provider in the market. Alternative choices include Nginx, Node.js and many more. They are briefly introduced in the end of the chapter.
 
 \section{Brief Introduction to Apache HTTP Server}
 
-Web server is a network services that serves content to a client over the internet. The client can be a web browser or any other software that supports the pre-agreed communication protocol, one of the most widely used ones of which is the hypertext transport protocol (HTTP). Details about HTTP protocol is not introduced in this notebook.
+Web server is a network service that serves contents to a client over the internet. The client can be a web browser or any software that supports the pre-agreed communication protocol, one of the most popular ones being the hypertext transport protocol (HTTP). Details about HTTP protocol is not introduced in this notebook.
 
-\textit{Apache HTTP server}, also known as \textit{httpd} in RHEL, is one of the web service providers in the market. It is an open-source web server project developed by the Apache Software Foundation. A full list of projects managed by the Apache Software Foundation can be found at \cite{apache2024projects}. Famous apache projects include Apache Spark, and many more.
+\textit{Apache HTTP server}, also known as \textit{httpd} in RHEL, is one of the web service providers in the market. It is an open-source web server project developed by the Apache Software Foundation. A full list of projects managed by the Apache Software Foundation can be found at \cite{apache2024projects}. Some of the widely appreciated applications in the list include Apache Spark, Apache Iceberg, and many more.
 
-This chapter introduces the basic configuration and usage of Apache HTTP server. For more details, visit the Apache HTTP Server website at \textit{https://httpd.apache.org/}. 
+This chapter introduces the basic configuration and usage of Apache HTTP server on RHEL. For more details or Apache HTTP server on other platforms, visit the Apache HTTP Server website at \textit{https://httpd.apache.org/}. 
 
 \section{Installation of Apache HTTP Server}
 
@@ -48,7 +48,7 @@ Firewall configurations will be introduced in more details in later part of the 
 	\caption{Apache HTTP server test page on RHEL.} \label{ch:vac:fig:httpdtestpage}
 \end{figure}
 
-\subsection{Apache HTTP Server in Container}
+\subsection{Apache HTTP Server Execution in Container}
 
 Apache HTTP server also has a Docker image, and it can run in a container. More information can be found at \cite{docker2024httpd}. In short, one can build the image using the following Dockerfile 
 \begin{lstlisting}
