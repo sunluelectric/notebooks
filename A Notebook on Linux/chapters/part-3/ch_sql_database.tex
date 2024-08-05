@@ -477,7 +477,7 @@ Consider the following example, where two tables are given as follows.
 
 There are different types of joins, namely ``inner join'' (or ``join''), ``left join'', ``right join'' and ``cross join''. They are introduced as follows.
 
-The most intuitive join is the cross join. It returns everything in the two tables like a Cartesian product (that explains whey cross join is also called Cartesian join), where the total number of columns are the sum of two tables, the number of rows the product of two tables, as shown below.
+The most intuitive join is the cross join. It returns everything in the two tables like a Cartesian product (that explains why cross join is also called Cartesian join), where the total number of columns are the sum of two tables, the number of rows the product of two tables, as shown below.
 \begin{lstlisting}
 > SELECT * FROM test CROSS JOIN test_join;
 +---------+---------+---------+--------------+---------+---------+---------+
@@ -539,7 +539,6 @@ and this is equivalent to inner join (or simply, join)
 where \verb|ON (<table1.column-name> = <table2.column_name>)| is used to indicate the association. The number of columns remain unchanged compared with cross join, but the number of rows is reduced.
 
 From table \verb|test| perspective, its rows regarding \verb|value_1| equals to ``a'' and ``b'' are fully included in the inner join results. However, the two rows regarding \verb|value_1=c| is omitted. This is because there is no corresponding row in the other table \verb|test_join| with \verb|test_join_id=c|.
-
 
 It is possible to ``prevent'' information loss from table \verb|test| by adding these two rows back, with all the columns from table \verb|test_join| filled with NULL. This can be done by left join as follows.
 \begin{lstlisting}
