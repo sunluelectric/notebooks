@@ -1,0 +1,53 @@
+\chapter{Service Control}
+...
+\section{Service Control} \label{ch:sa:sec:sc}
+
+There are many services running in the background of the OS, some of which started by the OS while the other by the user. For example, \textit{Apache service} might be used when the system is hosting a webpage. Other commonly used services include keyboard related services, bluetooth services, etc.
+
+To quickly have a glance of the running services, use
+\begin{lstlisting}
+	$ systemctl --type=service
+\end{lstlisting}
+
+These services can be managed using service managing utilities such as \verb|systemctl| and \verb|service|. Some commonly used terminologies are concluded in Table \ref{ch:sa:tab:servicecontroltools} with explanations about their differences.
+
+\begin{table}
+	\centering \caption{Commonly seen terminologies regarding service control.}\label{ch:sa:tab:servicecontroltools}
+	\begin{tabularx}{\textwidth}{lX}
+		\hline
+		Term / Tool name & Description \\ \hline
+		\verb|systemd| & The \verb|systemd|, i.e., \textit{system daemon}, is a suite of basic building blocks for a Linux system that provides a system and service manager that runs as PID 1 and starts the rest of the system.  \\ \hdashline
+		\verb|systemctl| & The \verb|systemctl| command interacts with the \verb|systemd| service manager to manage the services. Contrary to \verb|service| command, it manages the services by interacting with the \verb|Systemd| process instead of running the init script.  \\ \hdashline
+		\verb|service| & The \verb|service| command runs a pre-defined wrapper script that allows system administrators to start, stop, and check the status of services. It is a wrapper for \verb|/etc/init.d| scripts, Upstart's \verb|initctl| command, and also \verb|systemctl|. \\ \hline
+	\end{tabularx}
+\end{table}
+
+In short, \verb|systemd| is the back-end service of Linux that manages the services. Both \verb|systemctl| and \verb|service| are tools to interact with \verb|systemd| (and other back-end services) to manage the services. Generally speaking, \verb|systemctl| is more straightforward, powerful and more complicated to use, while \verb|service| is usually simpler and user-friendly.
+
+Use the following commands to check the status of a service, and start, stop or reboot the service.
+\begin{lstlisting}
+	$ sudo systemctl status <service name>
+	$ sudo systemctl start <service name>
+	$ sudo systemctl stop <service name>
+	$ sudo systemctl restart <service name>
+\end{lstlisting}
+
+Use the following commands to enable and disable a service. An enabled service automatically starts during the system boot, and a disabled service does not.
+\begin{lstlisting}
+	$ sudo systemctl enable <service name>
+	$ sudo systemctl disable <service name>
+\end{lstlisting}
+
+Use the following command to mask and unmask a service. A masked service cannot be started even using \verb|systemctl start|.
+\begin{lstlisting}
+	$ sudo systemctl mask <service name>
+	$ sudo systemctl unmask <service name>
+\end{lstlisting}
+
+The \verb|service| command can be used in a similar manner as follows.
+\begin{lstlisting}
+	$ sudo service <service name> status
+	$ sudo service <service name> start
+	$ sudo service <service name> stop
+	$ sudo service <service name> restart
+\end{lstlisting}

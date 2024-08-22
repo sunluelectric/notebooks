@@ -1,0 +1,123 @@
+\chapter{Functional}
+
+Functional refers to a mapping of functions or curves (belonging to a certain set) to a definite number. Details are introduced in this chapter.
+
+\section{A Motivating Example}
+
+One of the most famous problems solved by functional and calculus of variation is the brachistochrone problem, which is described in the box below.
+
+\begin{shortbox}
+\Boxhead{Brachistochrone Problem}
+
+Let A and B be two fixed points in a vertical plane, where A is higher than B (from gravity perspective) and A, B are not aligned vertically. Draw a curve that joins A and B. A particle is released from A and it slides along the curve traveling from A to B driven by gravity. The velocity of the particle, at any given position, is decided by the position of the particle relevant to $A$ (speed) and the tangent of the curve at the particle position (direction). A demonstration is given by Fig. \ref{ch12fig:brachistochrone_description}.
+
+The brachistochrone problem tries to find the curve that minimizes the time it takes for the particle to travel from A to B. The objective is to find the analytical solution $y=f(x)$ that describes such curve.
+
+\end{shortbox}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=200pt]{chapters/part-4/figures/brachistochrone_description.png}
+	\caption{Brachistochrone problem description.} \label{ch12fig:brachistochrone_description}
+\end{figure}
+
+\section{Functional}
+
+Definition of functional as well as its relationship with the associated finite differences approximation is explained as follows.
+
+\subsection{Definition}
+
+Functional can be regarded as an extension to function, where the input is not a variable or a set of variables, but a function. Functional has many practical applications in data analysis, mechanics, geometry, control systems, etc. Many optimization problems are also defined using functional.
+
+Let $y(x)$ be a function of $x$. Let $J[y]$ be a functional of $x$, $y$ and values derived from them. For example, $J[y]$ may look like
+\begin{eqnarray}
+	J = \int_{a}^{b} \sqrt{1+y\prime^2} dx \nonumber
+\end{eqnarray}
+which is the length of curve $y(x)$ from $x=a$ to $x=b$. The study of $J[y]$ with different choice of $y(x)$ is called ``calculus of functional''. 
+
+Calculus of functional is often difficult to solve. Calculus of variation is a special case of calculus of functional that only studies the choice of $y$ that maximizes or minimizes $J$. Even with that been said, calculus of variation is still difficult to solve in general, and the analytical solution of $y(x)$ exists for only certain forms of $J$. This notebook only considers a small subset of the problem where $J$ follows the following form
+\begin{eqnarray}
+	y &=& y(x) \nonumber \\
+	J &=& \int_{a}^{b}F\left(x, y, y\prime \right)dx \label{eq:covbasiceq}
+\end{eqnarray}
+Notice that the above functional \eqref{eq:covbasiceq} has a ``localization property'', where if the curve $y(x)$ is split into segments whose functional calculated separately, the sum of the values of the functional would be equal to the functional of the whole curve. This does not generally apply if $J$ is defined arbitrarily with a different form as given by \eqref{eq:covbasiceq}. For example, consider
+\begin{eqnarray}
+	J &=& \frac{\int_{a}^{b}x\sqrt{1+y\prime^2}dx}{\int_{a}^{b}\sqrt{1+y\prime^2}dx} \nonumber
+\end{eqnarray}
+which does not follow \eqref{eq:covbasiceq} and it is a non-local functional.
+
+\subsection{Finite Differences Approximation}
+
+With the localization property, an intuitive way of solving the calculus of variation is to use the following finite differences to approximate functional \eqref{eq:covbasiceq} as follows.
+\begin{eqnarray}
+	J[y] &\approx& J(y_1, \ldots y_n) \nonumber \\
+	&=& \sum_{i=1}^{n+1} F\left(x_i, y_i, \frac{y_i-y_{i-1}}{h}\right) \label{eq:covapprox} \\
+	\textup{s.t.} && \left\{\begin{array}{ccc}
+		y_i &=& y(x_i) \\
+		h &=& x_i - x_{i-1} \\
+		a &=& x_0 \\
+		b &=& x_{n+1}
+	\end{array}\right. \nonumber
+\end{eqnarray}
+and when $n\rightarrow\infty$, \eqref{eq:covapprox} converges to \eqref{eq:covbasiceq}. The above converts the calculus of variation problem into a finite differences problem. Instead of looking for a continuous curve $y(x)$, the problem is now looking for a vector $[y_1, y_2, \ldots, y_n]$ that maximizes or minimizes $ J(y_1, \ldots y_n)$. Of course, $y_i$ cannot be any manually selected value. Restrictions apply, specifically $y_i = y(x_i)$, which limits the value of $y_i$ by physical laws.
+
+\section{Function Space}
+
+A function $y(x)$ has a domain that defines the set of possible input variables of $x$. Similarly, a functional $J[y]$ has a function space that defines the set of possible choice of curves of $y$. Each probably choice of $y$ is represented as a ``dot'' in the function space.
+
+\subsection{Function Space of a Functional}
+
+The function space is a functional is determined by both the physical law behind the problem as well as the formulation of the functional. For example, consider functional
+\begin{eqnarray}
+	J = \int_{a}^{b} F\left(x, y, y\prime\right)dx \nonumber
+\end{eqnarray}
+It is rather natural to assume the function space to be at least a continuous function defined in $[a,b]$ that is first-order derivable.
+
+\subsection{Normed Linear Space and Norm of Function}
+
+It is critical to define the ``closeness'', i.e., the distance of two functions in a function space. For example, in Fig. \ref{ch12fig:brachistochrone_description}, it is natural to think that the red curve is closer to the black curve than the green curve. 
+
+The distance of two points in Euclidean space can be easily defined. Using that analogy, the most convenient way to define the distance of two functions in the function space is to use the norm. To better understand norm, the concept of a normed linear space is introduced as follows.
+
+Consider a set (space) $A$, and elements in that space $x, y, z, ... \in A$. If $A$ is a linear space, that means there are addition, multiplication, special elements $0\in A$ and $1\in A$ that satisfy the following
+\begin{eqnarray}
+	x + y &=& y + x \nonumber \\
+	(x + y) + z &=& x + (y + z) \nonumber \\
+	x + 0 &=& x \nonumber \\
+	\forall x \Rightarrow \exists (-x), (-x) + x &=& 0 \nonumber \\
+	1 \cdot x &=& x \nonumber \\
+	\alpha(\beta x) &=& (\alpha\beta)x \nonumber \\
+	(\alpha + \beta)x &=& \alpha x + \beta x \nonumber \\
+	\alpha(x+y) &=& \alpha x + \alpha y \nonumber
+\end{eqnarray}
+where $\alpha, \beta \in \mathbb{R}$.
+
+Further more, $A$ is normed if for $\forall x \in A$, there is a non-negative number denoted by $\norm{x}$ so that
+\begin{eqnarray}
+	\norm{x} = 0 &\Leftrightarrow& x = 0 \nonumber \\
+	\norm{\alpha x} &=& |\alpha| \norm{x} \nonumber \\
+	\norm{x + y} &\leq& \norm{x} + \norm{y} \nonumber
+\end{eqnarray}
+
+In a normed linear space, the distance between two elements $x$, $y$ is defined as $\norm{x-y}$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

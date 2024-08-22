@@ -1,0 +1,204 @@
+\chapter{Software Management}
+
+Linux as an OS monitors and maintains the software installed on the system. Different Linux distributions may use different tools to manage the software.
+
+\section{Tasks and Approaches}
+
+The OS should support at least the following tasks.
+\begin{itemize}
+	\item Install software.
+		\begin{itemize}
+			\item Install software from the installation package.
+			\item If possible, automatically find and download the installation package.
+			\item If possible, automatically find, download and install all the dependencies.
+		\end{itemize}
+	\item Query software.
+		\begin{itemize}
+			\item Query the software already installed on the system.
+			\item If possible, query software online.
+		\end{itemize}
+	\item Remove software.
+	\item Update software.
+\end{itemize}
+
+In Linux, software information (dependencies, version, instruction to installation, etc.) are stored in special data structures known as packages. When installing a software, the OS locates the packages and install them according to the instructions that comes with the packages. The OS also traces the software it has installed, monitors their behaviors, performs updates or uninstalls per requested by the user. Different Linux distributions may use different package formats and package management tools. The most well-known ones include:
+\begin{itemize}
+	\item Red Hat Package Manager (RPM), also recursively named as RPM Package Manager
+	\item Debian Package Manager (DEB)
+\end{itemize}
+Note that RPM and DEB can refer to both the package formats and the package managing tools. There are proponents on both sides of RPM versus DEB, and both of them are very popular tools in different Linux distributions.
+
+Linux kernel is also a software and needs to be monitored and updated from time to time. Linux kernel management is also briefly introduced in this chapter. Notice that advanced kernel management such as kernel customization goes beyond the scope of this notebook, hence are not included in this chapter.
+
+\section{RPM Package}
+
+RPM (\verb|.rpm|) is the preferred package format for Red-Hat-based distributions such as RHEL, Fedora, CentOS and Oracle Linux. It uses \verb|rpm| command to mange RPMs. In a later stage, other tools such as \verb|yum| and \verb|dnf| have been added to the library for better user experience and enhanced RPM facility. 
+
+\subsection{Brief Introduction}
+
+RPM contains rich information, including not only the payload of the software such as commands, configuration files, libraries and documentation, but also metadata such as the source of the package, dependencies, etc.
+
+The name of an RPM should follow the protocol and by itself contains important information about the software. An example is given below. Use \verb|rpm -q| followed by the software name \verb|python3| to query the package as follows. If the package is installed, its full name should be returned.
+\begin{lstlisting}
+$ rpm -q python3
+python3-3.9.18-3.el9_4.1.x86_64
+\end{lstlisting}
+where in this example the name of the software is \verb|python3|, the version \verb|3.39.18|, the release (build) \verb|4.el9_4.1| with release number \verb|4|, distribution \verb|el9_4| and patch number \verb|1|, and finally architecture \verb|x86_64|. When the package is stored on the machine, it should also come with the suffix \verb|.rpm|. 
+
+To retrieve more details, use \verb|rpm -qi| instead and
+\begin{lstlisting}
+$ rpm -qi python3
+Name        : python3
+Version     : 3.9.18
+Release     : 3.el9_4.1
+Architecture: x86_64
+Install Date: Tue 09 Jul 2024 12:48:28 PM +08
+Group       : Unspecified
+Size        : 33021
+License     : Python
+Signature   : RSA/SHA256, Tue 21 May 2024 06:30:22 AM +08, Key ID 199e2f91fd431d51
+Source RPM  : python3.9-3.9.18-3.el9_4.1.src.rpm
+Build Date  : Fri 17 May 2024 10:49:06 PM +08
+Build Host  : x86-64-03.build.eng.rdu2.redhat.com
+Packager    : Red Hat, Inc. <http://bugzilla.redhat.com/bugzilla>
+Vendor      : Red Hat, Inc.
+URL         : https://www.python.org/
+Summary     : Python 3.9 interpreter
+Description :
+Python 3.9 is an accessible, high-level, dynamically typed, interpreted
+programming language, designed with an emphasis on code readability.
+It includes an extensive standard library, and has a vast ecosystem of
+third-party libraries.
+...
+\end{lstlisting}
+can be retrieved.
+
+\subsection{Package Management Using \texttt{rpm}}
+
+An RPM package is required to install the software. An RPM package comes from the upstream software provider, who collects source codes, binary files, and other data, builds the software, and signs the package.
+
+The command \verb|rpm| can be used to install the software from an RPM package. Note that installing software using \verb|rpm| requires the precise location of the RPM package and all dependencies to be installed in advance, which can be inconvenient. The \verb|rpm| command can also be used to validate, query, update, and remove software.
+
+When a package is installed on the machine, its information is saved in the RPM database managed by the OS.
+
+\subsection{Package Management Using \texttt{yum} and \texttt{dnf}}
+
+Due to the drawbacks of \verb|rpm| mentioned earlier, other tools have been developed to handle package upstream repositories and dependencies more conveniently. These tools are Yellowdog Updater Modified (YUM) and its next generation, Dandified YUM (DNF), with their corresponding commands \verb|yum| and \verb|dnf| respectively.
+
+YUM and DNF introduce the concept of repositories, allowing RPM packages to be part of a larger software ``package tree''. It becomes the publisher's responsibility to ensure that all the dependencies of the RPM can be traced from the repositories. If a dependency is not present, YUM and DNF can search the repositories to find the dependencies and install them together. When the user wants to install an RPM that has not been downloaded onto the machine, YUM and DNF can search the repositories for the RPM, download, and install it automatically. As a result, the user does not need to manually install all the dependencies or find and download the RPM themselves. In this sense, YUM and DNF can be taken as a wrapper of \verb|rpm| that come with additional features such as repository resolution and package retrieval. They run \verb|rpm| internally once the packages have been downloaded to the machine.
+
+DNF is a further improvement of YUM with better dependency resolution and less memory usage. In many occasions, command \verb|yum| can be replaced by \verb|dnf| seamlessly. In some Linux distributions such as RHEL 9, \verb|yum| is used as an alias for \verb|dnf|. In the remaining part of the section, only DNF is discussed.
+
+The basic syntax of DNF is
+\begin{lstlisting}
+$ dnf <operation> <package>
+\end{lstlisting}
+where \verb|<operation>| include
+\begin{itemize}
+	\item \verb|install|: install a package
+	\item \verb|remove|: remove a package
+	\item \verb|search|: search the repositories for a package
+	\item \verb|autoremove|: remove dependencies packages irrelevant to currently installed program
+	\item \verb|check-update|: check updates of packages from the repositories without downloading or installing the updates
+	\item \verb|downgrade|: revert to a previous version
+	\item \verb|info|: provide the basic information of a package
+	\item \verb|reinstall|: reinstall a package
+	\item \verb|upgrade|: upgrade packages
+	\item \verb|exclude|: exclude a package from transaction
+\end{itemize}
+
+Each time when \verb|dnf| starts, it checks its configuration file which is located at \verb|/etc/dnf/dnf.conf|. Users can edit the configuration file to change the behavior of DNF, for example, to enable / disable GNU Privacy Guard (GPG) key check, the maximum number of different versions of the same software the system can keep, whether to delete dependencies when removing software, where to keep cache and log files, etc.
+
+DNF keeps a list of repositories at \verb|/etc/yum.repos.d| directory as its upstream software provider. The stored repositories are essentially text files named with suffix \verb|.repo|, inside which are the name of the repository, the URL, the GPG key, etc. To install software whose repository is not stored by default in this folder (this could happen when the software provider is a third-party and its software is not registered in the default repositories), users may need to add the repository and GPG key manually. By adding the repository configuration file and importing the GPG key, the user enables DNF to use the new repository to install and update software packages.
+
+Other commonly used commands include
+\begin{itemize}
+	\item \verb|dnf list --installed [<package>, ...]|: list installed packages
+	\item \verb|dnf list --available [<package>, ...]|: list available packages
+	\item \verb|dnf list --upgrades [<package>, ...]|: list upgrades available for the installed packages
+	\item \verb|dnf list --autoremove|: list dependencies not used by any software
+	\item \verb|dnf -q|: query repository for information; this is a powerful and rich command whose details are too many to be covered here
+	\item \verb|dnf deplist <package>|: query dependencies of a package
+	\item \verb|dnf history|: check historical transactions
+	\item \verb|dnf clean all|: clean all the files from cache
+\end{itemize}
+
+A full list of \verb|dnf| commands and their explanations can be found elsewhere at \cite{redhat2024dnf}.
+
+\section{DEB Package}
+
+DEB (\verb|.deb|) package is developed by Debian GNU/Linux project, and it is used by Debian and other Debian-based distributions such as Ubuntu and Linux Mint. The basic tool to install, remove and query DEB is \verb|dpkg|, but the end users often use \verb|apt*| commands to perform package management, rather than using \verb|dpkg| directly.
+
+Like RPM, DEB contains both the metadata of the software known as the control files as well as the payload of the software. A control file may look like the following (example from \cite{debian2024debianpackagemanagement})
+\begin{lstlisting}
+Package: hello
+Version: 2.9-2+deb8u1
+Architecture: amd64
+Maintainer: Santiago Vila <sanvila@debian.org>
+Installed-Size: 145
+Depends: libc6 (>= 2.14)
+Conflicts: hello-traditional
+Breaks: hello-debhelper (<< 2.9)
+Replaces: hello-debhelper (<< 2.9), hello-traditional
+Section: devel
+Priority: optional
+Homepage: https://www.gnu.org/software/hello/
+Description: example package based on GNU hello
+The GNU hello program produces a familiar, friendly greeting.  It
+allows non-programmers to use a classic computer science tool which
+would otherwise be unavailable to them.
+.
+Seriously, though: this is an example of how to do a Debian package.
+It is the Debian version of the GNU Project's `hello world' program
+(which is itself an example for the GNU Project).
+\end{lstlisting}
+which is very similar to RPM package information.
+
+More details about DEB as well as the use of \verb|apt*| can be found at \cite{debian2024debianpackagemanagement}.
+
+\section{Linux Kernel Management}
+
+Different Linux distributions, though essentially using the same OS kernel, may differ when comes to how they update and maintain the kernel. In the scope of this notebook, only RHEL is introduced in a very brief manner. A more detailed explanation to how RHEL manages kernel can be found at \cite{redhat2022kernel}, which is not only a handbook of how RHEL manages Linux kernel, but also a good learning material for OS kernels in general.
+
+Notice that RHEL kernel is a modified version of the upstream Linux kernel by Red Hat engineers. Therefore, it may differ from kernels used in other Linux distributions.
+
+Package \verb|kernel*| such as \verb|kernel-core| are the main package of Linux kernel. Just like other packages, \verb|dnf| can be used to query and update that package. It is also possible to install multiple kernels with different versions on the same physical machine, in which case there will be a boot entry for each kernel and the user can select which kernel to boot upon restarting the system.
+
+To query, install and update the kernel, use
+\begin{lstlisting}
+$ sudo dnf -q kernel-core
+$ sudo dnf install kernel-<version>
+$ sudo dnf update kernel
+\end{lstlisting}
+respectively.
+
+Kernel modules are scripts used to extend OS functionality. The user can develop and deploy their own modules to customize the OS.
+
+To list existing modules and to query information of these modules, with \verb|kmod| installed, use
+\begin{lstlisting}
+$ lsmod
+$ modinfo <module name>
+\end{lstlisting}
+respectively.
+
+With \verb|kernel-devel|, \verb|gcc| and \verb|elfutils-libelf-devel| installed, the user can develop, test and deploy customized modules.
+
+Linux kernel parameters are tunable values relevant to OS behavior. They can be changed in run-time or when system reboots. It is possible to address the kernel parameters via the following approach.
+\begin{itemize}
+	\item Use \verb|sysctl| command
+	\item Edit \verb|/proc/sys/| to change kernel parameters temporarily
+	\item Edit configuration files in \verb|/etc/sysctl.d/|
+\end{itemize}
+For example,
+\begin{lstlisting}
+$ sysctl -a
+\end{lstlisting}
+displays all kernel parameters values.
+
+
+
+
+
+
+
+

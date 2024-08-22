@@ -1,0 +1,75 @@
+%\chapterauthor{Author Name}{Author Affiliation}
+%\chapterauthor{Second Author}{Second Author Affiliation}
+\chapter{Administration} \label{ch:administration}
+...
+
+\section{Introduction to Linux Administration}
+...
+
+
+\section{Root Account Management}
+
+Managing and protecting the \textit{root} user account is a key portion in Linux administration. It is worth mentioning that the root user is different from a ``\textit{sudoer}'', i.e., a user that can use \verb|sudo| command, although they both have elevated privileges when comes to system administration. A more detailed explanation is given below.
+
+The root user refers to the user that is created by the system upon first installation of the OS. Its username is by default ``root'', with a UID of 0, and a GID of 0. Its home directory is by default \verb|/root| instead of \verb|/home/<user name>|. The default prompt for the root user is often \verb|#| instead of \verb|$| for other users. The root user has administrative privileges and can do almost anything without being denied or questioned by the system. As a commonly used safety practice, the password for the root user is usually disabled, thus nobody can login to the system as the root user using username and password authentication.
+
+Notice that in theory the root user does not necessarily need to use the username ``root'', although it is a default convention. The administrative  comes with the UID of 0, not the username. Thus, it is possible to assign the administrative account a different username. It is also possible to create multiple accounts with administrative privileges by assigning UID of 0 to multiple accounts, although it is not recommended to share the same UID among different users.
+
+Although the administrative privilege of root user does not come with its username, in some systems, the username ``root'' is given elevated privilege anyway. More details about this is introduced later.
+
+Check the root user information as follows.
+\begin{lstlisting}
+$ cat /etc/passwd | grep ^root
+root:x:0:0:root:/root:/bin/bash
+\end{lstlisting}
+where the third and fourth column of above give the UID and GID of the root user, respectively.
+
+For comparison, a regular user would have far different UID and GID as shown below.
+\begin{lstlisting}
+$ cat /etc/passwd | grep ^sunlu
+sunlu:x:1000:1000:Sun Lu,,,:/home/sunlu:/bin/bash
+\end{lstlisting}
+
+A sudoer refers to the regular users who can temporarily elevate its privileges and execute administration commands using \verb|sudo <privileged-command>|. A sudoer can also switch to root user prompt using \verb|sudo su| (and quit root user prompt using \verb|exit|). Their sudo privilege comes from the fact that they are included in the ``sudo group''.
+
+Use \verb|groups| to check existing defined groups in the system, and \verb|groups <user name>| the groups a user is engaged. An example is given below.
+\begin{lstlisting}
+$ groups
+sunlu adm cdrom sudo dip plugdev lpadmin lxd sambashare docker
+$ groups sunlu
+sunlu : sunlu adm cdrom sudo dip plugdev lpadmin lxd sambashare docker
+\end{lstlisting}
+
+The elevated privilege of the sudoer group is defined in \verb|/etc/sudoers|. A section of the file is given below, where \verb|%| appeared in front of \verb|admin| and \verb|sudo| is used to indicate group name.
+\begin{lstlisting}
+# User privilege specification
+root	ALL=(ALL:ALL) ALL
+
+# Members of the admin group may gain root privileges
+%admin ALL=(ALL) ALL
+
+# Allow members of group sudo to execute any command
+%sudo	ALL=(ALL:ALL) ALL
+\end{lstlisting}
+
+It is possible to give the root account a password, thus enabling root authentication. This approach is sometimes used for troubleshooting and recovering purposes, but it is not a good practice in routine operations.
+
+\section{User Management}
+
+xxx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
