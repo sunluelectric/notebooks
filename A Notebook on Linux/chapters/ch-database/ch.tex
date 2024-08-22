@@ -212,7 +212,7 @@ SQL defines reserved keywords for database manipulation. The keywords have speci
 
 \subsection{General Syntax}
 
-Notice that different DBMS may use slightly different syntax for the same or similar function. In the rest of the chapter, unless otherwise mentioned, MySQL/MariaDB syntax is used. 
+Notice that different DBMS may use slightly different syntax for the same or similar function. In the rest of the chapter, unless otherwise mentioned, MySQL/MariaDB syntax is used.
 
 All SQL commands shall end with a semicolon ``\verb|;|''.
 
@@ -1319,7 +1319,7 @@ Unlike relational databases where data is stored in relevant tables with pre-des
 
 Though relational databases are intuitive and came early in time, non-relational databases are also spreading, as in some occasions they can be easier to use and can be more flexible and powerful. For example, some NoSQL databases are more effective when dealing with massive parallel requests, handling large data, and providing highly scalable and available services.
 
-There are many types of non-relational databases including document-oriented databases, directed graph databases, etc., Each of them has some unique features, pros and cons over other databases, and may adopt its own database manipulation language. It is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science}.
+There are many types of non-relational databases including document-oriented databases, directed graph databases, etc., Each of them has some unique features, pros and cons over other databases, and may adopt its own database manipulation languages. It is impossible to cover everything in this notebook. Only brief introductions of selected databases examples are given here. More details might be found on other relevant notebooks, for example graphical database in \textit{A Notebook on Probability, Statistics and Data Science} as part of the semantic web.
 
 MongoDB is a source-available cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with flexible schemas. This is not surprising, as MongoDB has a close connection with JavaScript. It is powered by a JavaScript engine. MongoDB, together with other JavaScript-relevant software such as \textit{Express.js}, \textit{React.js}, \textit{Node.js}, etc., can be used to create database-powered web applications.
 
@@ -1575,7 +1575,7 @@ db.collection_name.getIndexes()
 
 MongoDB uses aggregation framework provides way to perform complex data transformations in a ``pipeline''. The data is processed step-by-step.
 
-When a document is added to a collection, a default field \verb|_id| is added. Querying via \verb|_id| is usually faster than with other criteria because otherwise MongoDB has to search for the entire collection to find relevant documents. 
+When a document is added to a collection, a default field \verb|_id| is added. Querying via \verb|_id| is usually faster than with other criteria because otherwise MongoDB has to search for the entire collection to find relevant documents.
 
 Data in MongoDB can be exported or imported from files, such as BSON and JSON files.
 
