@@ -6,7 +6,7 @@ This chapter discusses these numerical methods as well as their convergence and 
 
 It is worth mentioning that many methods introduced in this chapter, such as Newton's method, can be easily expanded to solve vector functions with vector independent variables. Nevertheless, for the convenience of the illustration, only scalar function with scalar input is considered in this chapter.
 
-\section{Problem Formulation}
+\section{General Problem Formulation}
 
 Let $f(x)=0$ be a scalar function, where $f(x)$ is continuous. There is at least one solution to $f(x)=0$, namely $p$, and $p\in \left[a, b\right]$. The target is to find $p$. A demonstrative plot is given in Fig. \ref{fig:part-5:onevarproblemformulation}. In the example, function $f(x)=0$ has two solutions within $\left[0, 10\right]$. The target is to find any one of them.
 
@@ -133,6 +133,8 @@ Indeed, with the same number of iterations, Newton's method usually gets to the 
 
 The only drawback of Newton's method, comparing with the other methods introduced so far, is that it requires the calculation of $f\textprime(x)$ in the iteration. This may not be a big issue if $f\textprime(x)$ can be calculated easily (for example, when its analytical form is available), but it may pose a problem if this is not the case.
 
+\subsection{Secant Method}
+
 The secant method might be used as an alternative to the Newton's method. Instead of \eqref{eq:newtonmethod_series}, the secant method uses the following series
 \begin{eqnarray}
   p_{i+1} &=& p_i - \frac{f(p_i)(p_i-p_{i-1})}{f(p_i)-f(p_{i-1})} \nonumber
@@ -141,9 +143,17 @@ with two closed initial guesses $p_1$ and $p_2$ in the interval. The idea behind
 
 The secant method is a little bit slower than the Newton's method in terms of convergence. Yet, it can be useful when $f(x)$ is significantly easier to calculate than $f\textprime(x)$.
 
-\section{Convergence and Error Analysis}
+\subsection{Muller's Method}
+
+Muller's method is an extension to the secant method. Recall in the secant method, two initial points $p_1$ and $p_2$ are selected as the initial samples. In the essence, it fits a first-order polynomial $P(x)=ax+b$ that passes through $p_1, f(p_1)$ and $(p_2, f(p_2))$. The value of $a, b$ can be calibrated and the solution to $P(x)=0$ can be calculated analytically, which gives $p_3$. If $f(p_3)=0$, it returns the solution. Otherwise, it iterate the process with $(p_2, f(p_2))$ and $(p_3, f(p_3))$ now becoming the new samples to form the first-order polynomial.
+
+Instead of using first-order polynomial $P(x)=ax + b$ to approximate the original function $f(x)$ near its solution, Muller's method uses second-order polynomial $P(x)=ax^2+bx+c$ for the same trick. To calibrate the parameters, three samples, $p_1$, $p_2$ and $p_3$ are required instead of two samples in the case of the secant method.
+
+\section{Convergence Speed and Error}
 
 The convergency of the methods introduced earlier have been briefly discussed in the previous section. This section digs deeper into the convergency criteria and speed of the methods, and performs error analysis to the methods. New algorithms will be proposed on top of the methods to improve them.
+
+\subsection{Order of Convergence}
 
 Let $\{p_n\}$ be a series that converges to $p$. To measure the speed of convergence of the series, define the order of convergence $\alpha$ and the asymptotic error constant $\lambda$ as follows.
 \begin{eqnarray}
@@ -155,33 +165,88 @@ Let $g$ be the recurrence relation of series $\{p_n\}$, i.e., $p_{i+1} = g(p_i)$
 \begin{itemize}
   \item If $g\textprime(p)\neq0$, then $\{p_n\}$ is linear convergence with asymptotic error constant $|g\textprime(p)|$.
   \item If $g\textprime(p)=0$, then there is a neighbourhood of $p$ where $\{p_n\}$ is at least quadratic convergence. Furthermore, let the upper bound $|g\textprime\textprime(p)| < M$, then
-\end{itemize} 
-\begin{eqnarray}
+  \begin{eqnarray}
   \lim_{i\rightarrow\infty} \frac{|p_{i+1}-p|}{|p_i-p|^2} &<& \frac{M}{2} \nonumber
 \end{eqnarray}
+\end{itemize} 
+
 
 From \eqref{eq:fixedpoint_p} and \eqref{eq:newtonmethod}, we know that while the conventional fixed point iteration is linear convergence, the Newton's method is at least quadratic convergence. This explains why Newton's method converges faster than the conventional fixed point iteration.
 
+\subsection{Multiple Root}
 
+When the original equation $f(x)=0$ has multiple roots at $x=p$, i.e.,
+\begin{eqnarray}
+  f(x) &=& (x-p)^mq(x) \nonumber
+\end{eqnarray}
+with $\lim_{x\rightarrow p} \neq 0$ and $m\geq 2$, the methods introduced so far may not work efficiently.
 
+The multiple roots at $x=p$ can be observed by checking the gradient $f\textprime(x)$ at $p$. We can prove that
+\begin{itemize}
+  \item For a continuous function $f(x)$ defined in $[a, b]$, $p\in(a,b)$ is its single root if and only if $f(p)=0$ and $f\textprime(p)\neq 0$.
+  \item For a continuous function $f(x)$ defined in $[a, b]$, $p\in(a,b)$ is its $m$ multiple roots if and only if $0=f(p)=f\textprime(p)=...=f^{(m-1)}(p)$ and $f^{(m)}(p)\neq 0$.
+\end{itemize}
 
+For Newton's method, on may notice from Fig. \ref{fig:part-5:newton} that if there are multiple roots and $f\textprime(p)=0$ at the solution, though Newton's method still converges, the convergence may slow down. The intuition is indeed correct. Newton's method is usually quadratic convergence when $f\textprime(p)\neq 0$. However, when $f\textprime(p)=0$, it may not be the case.
 
+If an equation $f(x)=(x-p)^mq(x)$ has $m$ multiple roots at $p$, one way to handle it is to define
+\begin{eqnarray}
+  \mu(x) &=& \frac{f(x)}{f\textprime (x)} \nonumber
+\end{eqnarray}
+where it can be proved that $\mu(x)$ has a single root at $x=p$. Then, apply Newton's method on $\mu(x)$ to get the solution $p$. 
 
+\subsection{Convergence Acceleration}
 
+Aitken $\Delta^2$ method is used to form a new series $\{\hat{p}_n\}$ based on a linear convergent series $\{p_n\}$, where both series converges to $p$ but $\{\hat{p}_n\}$ converges faster. 
 
+Aitken $\Delta^2$ method defines
+\begin{eqnarray}
+  \hat{p}_i &=& p_i - \frac{(p_{i+1}-p_i)^2}{p_{i+2}-2p_{i+1}+p_i} \nonumber
+\end{eqnarray}
+The idea is to calculate $p_i$ normally, and while doing that also calculate $\hat{p}_i$ using $p_i$, $p_{i+1}$ and $p_{i+2}$.
 
+Aitken $\Delta^2$ method can be used to accelerate fixed point iteration. The idea is as follows.
+\begin{enumerate}
+  \item Calculate $p_1$, $p_2=g(p_1)$ and $p_3=g(p_2)$ normally.
+  \item Calculate $\hat{p}_1$ using $p_1$, $p_2$ and $p_3$.
+  \item Overwrite $p_1$ with $\hat{p}_1$, and repeat from Step 1.
+\end{enumerate}
+and it is known as the Steffensen method.
 
+\section{Root for Polynomial}
 
+Polynomial is a special type of a function that looks like
+\begin{eqnarray}
+  f(x) &=& a_nx^n + a_{n-1}x^{n-1} + \ldots + a_1x + a_0 \nonumber
+\end{eqnarray}
+where $a_n \in \mathbb{R}$ and $a_n\neq 0$. Variable $n$ is known as the order of the polynomial. In this case, $f(x)$ is often denoted as $P(x)$. Notice that $P(x)=0$ by concept is also a polynomial with no order, but it is often not an interest of study. For the remaining, we will only look at polynomials with $n\geq 1$. 
 
+It can be proved (requiring theory from complex analysis) that:
+\begin{itemize}
+  \item Polynomial equation $P(x)=0$ with $n\geq 1$ has at least one root. The root can be real number or complex number.
+  \item Polynomial equation $P(x)=n$ with the order of $n$ can be uniquely decomposed into the following form:
+  \begin{eqnarray}
+  P(x) &=& a_n(x-x_1)^{m_1}(x-x_2)^{m_2}\ldots(x-x_k)^{m_k} \nonumber
+\end{eqnarray}
+where $\sum m_i = n$, and $x_i$ being its $m_i$ multiple root.
+  \item For two polynomials both less or equal to $n$th order, $P(x)$ and $Q(x)$, if there are distinct values $x_1, x_2, ..., x_k$ where $P(x_i)=Q(x_i)$, $i = 1,...,k$, and $k>n$, then $P(x)=Q(x)$ $\forall x$.
+\end{itemize}
 
+Finding the numerical solution for a general equation $f(x)=0$ using different methods, such as the Newton's method, has been introduced in earlier sections. When comes to polynomial equation $P(x)=0$, we can further improve the algorithms for better computation efficiency.
 
+Given a polynomial $P(x)$ and a specified variable $x_0$, $P(x)$ can be decomposed as follows
+\begin{eqnarray}
+P(x) &=& (x-x_0)Q(x) + b_0 \label{eq:hornermethod}
+\end{eqnarray}
+where
+\begin{eqnarray}
+  Q(x) &=& b_nx^{n-1} + b_{n-1}x^{n-2} + \ldots + b_2x + b_1 \nonumber \\
+  b_n &=& a_n \nonumber \\
+  b_k &=& a_k + b_{k+1}x_0, k=n-1, n-2, \ldots, 1, 0 \nonumber
+\end{eqnarray}
+The proof is brute-force and are neglected here.
 
-
-
-
-
-
-
+Obviously, from \eqref{eq:hornermethod} $b_0 = P(x_0)$. The decomposition provides an efficient way to calculate $P(x_0)$, which is usually faster than substituting $x_0$ into $P(x)$ directly and calculate $a_ix^i$ for all the terms. Furthermore, we know from \eqref{eq:hornermethod} that $P\textprime(x_0)=Q(x_0)$. This helps with speeding up the Newton's method to solve $P(x)=0$. This is known as the Horner method.
 
 
 
