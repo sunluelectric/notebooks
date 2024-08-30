@@ -278,3 +278,6 @@ TSWLatexianTemp*
 # data and db related
 **/*.db
 **/*.csv
+
+# macOS related
+**/*.DS_Store
