@@ -4,19 +4,19 @@ This chapter introduces the basic concepts, axioms and theorems in probability t
 
 \section{Randomness and Stochasticity}
 
-People use \textit{random} and \textit{stochastic} to describe a variable or a model whose corresponding measurement or outcome are not precisely predictable.
+People use \textit{random} and \textit{stochastic} to describe a variable or a model whose measurements or outcomes are not precisely predictable.
 
 By saying \textit{randomness}, we often refer to the case where a variable (as in ``random variable'') is not predictable. Its value is not known precisely until it is measured. The chance of it taking particular values may follow some patterns which can be described as the statistic property of the variable. For example, the result of tossing a coin is a random variable with the following statistic property. It is either head ($X=1$) or tail ($X=0$), each with a $50\%$ chance. The precise value remains unknown until the coin is tossed.
 
 By saying \textit{stochasticity}, we often refer to the case where the outcome of a process (as in ``stochastic process'') is not predictable. This is likely caused by the incomplete modeling or random disturbance of the system. As a result, the process becomes non-deterministic, i.e., the output of the system cannot be precisely determined by the model and the input. A stochastic process can still be described by a parametric model, but with some unknowns (usually in the form of random variables) in the equations.
 
-This notebook mainly studies random variables and its impact on data science. Stochastic process and control of stochastic systems are introduced elsewhere in control system related notebooks.
+This part of the notebook mainly studies random variables. Stochastic process and control of stochastic systems are introduced elsewhere in control system related notebooks.
 
 \subsection{Random Experiments}
 
 ``Experiment'' is one of the most important activities in science and engineering. Very often, experiments are used to verify a theory. In these cases, experiments are carefully designed so that its outcome is deterministic and predictable as long as the theory is correct. By observing the results of the experiments matching the prediction of the theory, we build confidence in the theory.
 
-However, there are other experiments where we do not have full control over their results due to the lack of information or incomplete modeling. Such experiments include tossing a coin, predicting the GDP of a country next year, etc. These experiments are known as \textit{random experiments}. The result of a random experiments can still be meaningful because it reflects some insights of the system. The challenge is to design the experiments so that useful information can be obtained from the result efficiently.
+However, there are other experiments where we do not have full control over their results due to the lack of information or incomplete modeling. Such experiments include tossing a coin, predicting the GDP of a country next year, etc. These experiments are known as \textit{random experiments}. The result of a random experiments can still be meaningful because it reflects some insights of the system. The challenge is to design the experiments so that useful information can be revealed from the result efficiently.
 
 \subsection{Sample Space}
 
@@ -25,7 +25,7 @@ A set $S$ that consists of all possible outcomes of a random experiment is calle
 If a sample space has a finite number of elements, it is called a \textit{finite sample space}. Otherwise, it is called an \textit{infinite sample space}. If the elements in an infinite sample space can be mapped to natural numbers, the sample space is also called a \textit{countably infinite sample space}. Otherwise, the sample space is called a \textit{noncountably infinite sample space}. Examples are given below.
 \begin{itemize}
 	\item Finite sample space. Randomly pick 5 balls out of a bag that contains 50 red balls and 50 green balls. The number of red balls in the picked 5 balls forms a finite sample space.
-	\item Countably infinite sample space. The number of products a new machine can manufacture before it is broken forms a countably infinite sample space.
+	\item Countably infinite sample space. The number of continuous ``heads'' when tossing a coin before the first ``tail'' forms a countably infinite sample space.
 	\item Noncountably infinite sample space. The precise time consumption it takes for a PC to start forms a noncountably infinite sample space.
 \end{itemize}
 
@@ -33,7 +33,7 @@ If a sample space has a finite number of elements, it is called a \textit{finite
 \Boxhead{Countable Infinity VS Uncontable Infinity}
 Though both infinity, the total number of natural numbers, i.e., the cardinality of $\mathbb{N}$, is less than the total number of real numbers, i.e., the cardinality of $\mathbb{R}$.
 
-The cardinality of $\mathbb{N}$ is known as $\aleph_0$. It is also the cardinality of all rational numbers. In computing, it is also the cardinality of all computable numbers (i.e., numbers that can be computed to any desired precision by a finite terminating algorithm) and computable functions (i.e., algorithms). The total number of real numbers is known as $\aleph_1$. It is also the cardinality of all irrational numbers and complex numbers, the number of points on an axis, on an axis interval, or in a high dimensional space $\mathbb{R}^n$ where $n$ is a finite integer.
+The cardinality of $\mathbb{N}$ is known as $\aleph_0$. It is also the cardinality of all rational numbers. In computing, it is also the cardinality of all computable numbers (i.e., numbers that can be computed to any desired precision by a finite terminating algorithm) and computable functions (i.e., algorithms). The total number of real numbers is known as $\aleph_1$. It is also the cardinality of all irrational numbers and complex numbers, the number of points on a line or in a high dimensional space $\mathbb{R}^n$ where $n$ is a finite integer.
 
 Larger infinity quantities such as $\aleph_2, \aleph_3, \ldots$ are also defined, though they may not have an intuitive explanation as $\aleph_0$ and $\aleph_1$.
 
@@ -42,10 +42,9 @@ Deeper discussion of this topic requires advanced set theory and is not given in
 
 Finite sample space and countably infinite sample space are also known as \textit{discrete sample space}, whereas noncountably infinite sample space, \textit{nondiscrete sample space}.
 
-
 \subsection{Events}
 
-An event is a subset $A$ of the sample space $S$, i.e., it is a portion of possible outcomes. An event may or may not occur depending on the outcome of an experiment. In the special case where $A$ has only one element, the event is also called an \textit{elementary event}, or a \textit{sample}. In the special case where $A=S$, the event is also called a certain event.
+An event is a subset $A \subseteq S$, i.e., it is a portion of all possible outcomes. An event may or may not occur depending on the outcome of the experiment. In the special case where $A$ has only one element, the event is also called an \textit{elementary event}, or a \textit{sample}. Notice that all elementary events are mutually exclusive as each of them contains an independent outcome of the experiment hence cannot occur all together. In the special case where $A=S$, the event is also called a certain event.
 
 \section{Probability}
 
@@ -53,14 +52,37 @@ Given an experiment and an event, it is unsure whether the event will occur, and
 
 \subsection{Classical and Empirical Probability}
 
-There are different ways to calculate or estimate the probability of an event. In the \textit{classical approach} where we know the total number of outcomes $n$, all of which have a equal chance of happening, and there are $h$ ways for the event to occur, then the probability of the event is $h/p$. Of course, this method applies to only some finite sample spaces.
+There are different ways to calculate or estimate the probability of an event. 
+
+In the \textit{classical approach}, it is assumed that all elementary events have the same chance of occurrence, and the total number of the elementary events is a finite and known number, $n$. Define an event. If the event contains $h$ elementary events, then the \textit{classical probability} of the event is given by $h/p$.
+
+Calculating the cardinality of event $A$ and sample space $S$ is the key to solving the classical probability. \textit{Permutation} and \textit{combination} are widely used for such calculations. Suppose that there are $n$ distinct objects, and we would like to select $r$ objects from them and put them into a sequence. The permutation
+\begin{eqnarray}
+  nPr &=& n(n-1)(n-2)\cdots (n-r+1) \label{eq:permutation}
+\end{eqnarray}
+gives the number of possible outcomes. In the special case $r=n$,
+\begin{eqnarray}
+  nPn &=& n(n-1)(n-2)\cdots \times 1 \nonumber
+\end{eqnarray}
+where $n(n-1)(n-2)\cdots \times 1$ is often denoted as $n!$. Therefore, \eqref{eq:permutation} becomes
+\begin{eqnarray}
+  nPr &=& \dfrac{n!}{(n-r)!} \nonumber
+\end{eqnarray}
+In permutation, the arrangement of the selected $r$ objects matters. When the order does not matter, combination
+\begin{eqnarray}
+  nCr &=& \dfrac{nPr}{r!} \nonumber \\
+  &=& \dfrac{n!}{r!(n-r)!} \nonumber
+\end{eqnarray}
+is used to calculate the total number of outcomes. Notice that $nCr$ is also denoted by $\left(\begin{array}{c}
+                                                                                           n \\
+                                                                                           r
+                                                                                         \end{array}\right)$.
 
 In the \textit{frequency approach}, we can repeat the experiment $n$ times where $n$ is a large number, and record the number of instants where the event happened as $h$. The \textit{empirical probability} of the event is obtained by calculating $h/p$ which should converge to the true probability as $n$ goes large.
 
 \subsection{Axioms}
 
-
-Both the classical approach and the frequency approach have some drawbacks. It is often difficult to define ``equal chance'' and ``large number'' in the two approaches respectively. Therefore, \textit{axiomatic approach} is introduced as follows.
+The \textit{axiomatic approach} puts things into mathematical prospective as follows. It is shown later that the classical probability can be illustrated clearly using axiomatic approach.
 
 Let the sample space be denoted by $S$, and events by $A_i$. For simplicity of illustration, assume that $S$ is discrete. Define $P(\cdot)$ as the \textit{probability function} and $P(A_i)$ the probability of the event $A_i$, subject to the following axioms:
 \begin{enumerate}
@@ -110,30 +132,3 @@ From the above,
 which is known as the Bayes' rule.
 
 In the special case where $P(B|A)=P(B)$, or equivalently $P(A\cap B) = P(A)P(B)$, the two events $A$ and $B$ are said to be \textit{independent events}.
-
-\section{Permutation and Combination}
-
-In classical probability, calculating the cardinality of event $A$ and sample space $S$ is the key to solving the problem. \textit{Permutation} and \textit{combination} are widely used for such calculations.
-
-Suppose that there are $n$ distinct objects, and we would like to select $r$ objects from them and put them into a sequence. The permutation
-\begin{eqnarray}
-  nPr &=& n(n-1)(n-2)\cdots (n-r+1) \label{eq:permutation}
-\end{eqnarray}
-gives the number of possible outcomes. In the special case $r=n$,
-\begin{eqnarray}
-  nPn &=& n(n-1)(n-2)\cdots \times 1 \nonumber
-\end{eqnarray}
-where $n(n-1)(n-2)\cdots \times 1$ is often denoted as $n!$. Therefore, \eqref{eq:permutation} becomes
-\begin{eqnarray}
-  nPr &=& \dfrac{n!}{(n-r)!} \nonumber
-\end{eqnarray}
-
-In permutation, the arrangement of the selected $r$ objects matters. When the order does not matter, combination
-\begin{eqnarray}
-  nCr &=& \dfrac{nPr}{r!} \nonumber \\
-  &=& \dfrac{n!}{r!(n-r)!} \nonumber
-\end{eqnarray}
-is used to calculate the total number of outcomes. Notice that $nCr$ is also denoted by $\left(\begin{array}{c}
-                                                                                           n \\
-                                                                                           r
-                                                                                         \end{array}\right)$.
