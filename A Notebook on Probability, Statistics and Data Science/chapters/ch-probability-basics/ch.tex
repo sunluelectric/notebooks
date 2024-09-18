@@ -80,6 +80,29 @@ is used to calculate the total number of outcomes. Notice that $nCr$ is also den
 
 In the \textit{frequency approach}, we can repeat the experiment $n$ times where $n$ is a large number, and record the number of instants where the event happened as $h$. The \textit{empirical probability} of the event is obtained by calculating $h/p$ which should converge to the true probability as $n$ goes large.
 
+\subsection{Geometric Probability}
+
+\text{Geometric probability} is an extension of the classical probability to continuous random variables. Similar with classical probability where it is prerequisite that all elementary events share the same probability, in geometric probability it is assumed that all random variables (usually 2 or 3 variables in total) are uniformly distributed. The probability of an event happening then can be obtained by measuring the area or volume associated with the event.
+
+An example is used to illustrate the use of geometric probability.
+
+\begin{shortbox}
+\Boxhead{Geometric Probability Example}
+Consider two people trying to meet up at the park, but they forgot to tell each other the time to meet. Both of them will arrive at the park at anytime between $8:00$ AM and $9:00$ AM with equal chance, and wait for the other for 15 minutes or until $9:00$ AM, whichever is earlier, and then will leave the park if the other does not show up.
+
+Calculate the chance of the two people successfully meeting up.
+
+Draw the sample space in a 2-D plot as shown in Fig. \ref{fig:geometricprobexp}, where the x-axis and y-axis are the arriving time of the two people, respectively. The shaded area represents the samples where the two would meet up successfully.
+
+Divide the shared area by the total sample space area to get $P=7/16=43.75\%$ which is the probability that the two would meet up successfully.
+\end{shortbox}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=250pt]{chapters/ch-random-variables/figures/geometricprobexp.png}
+	\caption{Sample space of two people arriving at part from 8:00 AM to 9:00 AM.} \label{fig:geometricprobexp}
+\end{figure}
+
 \subsection{Axioms}
 
 The \textit{axiomatic approach} puts things into mathematical prospective as follows. It is shown later that the classical probability can be illustrated clearly using axiomatic approach.
