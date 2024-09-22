@@ -1,6 +1,6 @@
 \chapter{Abstract Algebra Basics}
 
-What does ``abstract'' mean in the context of abstract algebra? How is abstract algebra different from classic algebra that has been introduced in earlier chapters? In short, classic algebra solves a particular problem using algebra algorithms, whereas abstract algebra studies these algorithms.
+What does ``abstract'' mean in the context of abstract algebra? How is abstract algebra different from classic algebra that has been introduced in earlier chapters? In short, classic algebra solves practical problems using algebra algorithms, whereas abstract algebra studies these algorithms.
 
 As an example, consider the following equation
 \begin{eqnarray}
@@ -29,11 +29,13 @@ In the $18$th and $19$th century, Euler, Lagrange and Gaussian tried to address 
 
 In the $19$th century, Abel was able to prove that there is no solution in radicals to general polynomial equations of fifth degree or higher with arbitrary coefficients (see Abel–Ruffini theorem). Furthermore, he discussed a set of special cases (with non-arbitrary coefficients in the polynomial equation) that can have analytical solutions. These special cases form a set of sufficient condition for a fifth order polynomial equation to have the analytical solution. 
 
-The necessary and sufficient condition for a fifth or higher order polynomial to have an analytical solution is finally fully discovered by the genius Galois at a remarkably young age. Galois was able to create his theorem (known Galois theorem) and use it to find the ultimate answer to this problem that people have been studied for centuries. His theorem goes far beyond that. Galois theorem will find its usefulness in many areas to come, and eventually it becomes an important building block of a subject known as abstract algebra today. 
+The necessary and sufficient condition for a fifth or higher order polynomial to have an analytical solution is finally fully discovered by the genius Galois at a remarkably young age. Galois was able to create his theorem (known as the Galois theorem) and use it to find the ultimate answer to this problem that people have been studied for centuries. His theorem goes far beyond that. Galois theorem will find its usefulness in many areas to come, and eventually it becomes an important building block of abstract algebra. 
 
 \section{General Algebraic System}
 
-An algebraic system is essentially a mathematical system consisting of a non-empty set known as the domain together with a series of operations defined on the domain. There are many algebraic systems, and abstract algebra studies the properties of different algebraic systems. As will be introduced in later parts of the notebook, depending on the properties of the algebraic system, we can categorize them as groups, rings, fields, vector spaces, etc.
+An algebraic system is a mathematical system consisting of a non-empty set, known as the ``domain'', and a series of ``operations'' defined on the domain. 
+
+Abstract algebra studies the properties of different algebraic systems. Depending on the properties of the algebraic systems, we can categorize them as ``groups'', ``rings'', ``fields'', ``vector spaces'', etc.
 
 \subsection{Set and Mapping}
 
@@ -42,9 +44,11 @@ Set is one of the most commonly used terms across different mathematical subject
   \item Object $x$ is a member of set $U$, denoted by $x \in U$;
   \item Object $x$ is not a member of set $U$, denoted by $x \notin U$.
 \end{itemize}
-However, notice that due to the Russell's paradox, it is challenging to give a rigorous mathematical definition to a set that fulfill the above features.
+However, notice that due to the Russell's paradox, it is challenging to give a rigorous mathematical definition to a set that fulfill the above statement. Therefore, we usually introduce set by its features, not its definition.
 
-Mapping, or function, is used to describe the association of elements in two sets. Mapping and function are used interchangeably in the this notebook. For example, let $A$ be a set, and $A_0 \subset A$ a subset of $A$. For any element $x\in A_0$, define mapping
+Mapping, or function, is used to describe the association of elements in two sets. The two terms are used interchangeably in the this notebook. 
+
+An example of mapping is given as follows. Let $A$ be a set, and $A_0 \subset A$ a subset of $A$. For any element $x\in A_0$, define mapping
 \begin{eqnarray}
   i &:& A_0 \rightarrow A \nonumber
 \end{eqnarray}
@@ -56,7 +60,7 @@ In this case, mapping $i$ is called the \textbf{embedding mapping} from $A_0$ to
 
 Let $A$, $B$ be two sets, and $A_0 \subset A$ as subset of $A$. Let $f: A\rightarrow B$, and $g: A_0\rightarrow B$. Let $x\in A_0$. If $f(x)=g(x)$, function $f$ is known as an \textbf{extension} of function $g$, and function $g$ a \textbf{restriction} of function $f$ (on $A_0$). This is denoted by $g=f|_{A_0}$.
 
-Mappings can be chained together. For example, consider two mappings
+Mappings can be chained together. For example, consider several mappings
 \begin{eqnarray}
 	f_1 &:& A_1 \rightarrow A_2 \nonumber \\
 	f_2 &:& A_2 \rightarrow A_3 \nonumber \\
