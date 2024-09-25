@@ -201,7 +201,7 @@ With the definition of equivalence class, a partition of a set $A$ can then deri
 \begin{eqnarray}
 	A/R &=& \left\{[a] | a \in A \right\} \textup{(remove duplication)} \label{eq:quotient_set}
 \end{eqnarray}
-where $A/R$ is the partition of set $A$ (this can be proved easily) derived from equivalence relation $R$. Notice that $[a]$ derived from different $a$ yet in the same equivalence class will duplicate. When putting duplicated $[a]$ into a set, duplication should be removed, hence the note ``remove duplication''. It is not compulsory to add that note because it is inherently addressed by the fundamental properties of a set. The partition of set obtained using the above method is known as the \textbf{quotient set}. There is a one-to-one correspondence between an equivalent relation a partition of the set which is also known as the quotient set of that corresponding equivalent relation.
+where $A/R$ is the partition of set $A$ (this can be proved easily) derived from equivalence relation $R$. Notice that $[a]$ derived from different $a$ yet in the same equivalence class will duplicate. When putting duplicated $[a]$ into a set, duplication should be removed, hence the note ``remove duplication''. It is not compulsory to add that note because it is inherently addressed by the fundamental properties of a set. The partition of set obtained using the above method is known as the \textbf{quotient set}. There is a one-to-one correspondence between an equivalent relation and its quotient set.
 
 Given an equivalence relation, the following mappings can be defined.
 \begin{eqnarray}
@@ -223,7 +223,7 @@ then we say that $R$ is congruent modulo $\oplus$. This is demonstrated by Fig. 
 	\includegraphics[width=350pt]{chapters/abstract-algebra-basics/figures/congruent_modulo_relation.png}
 	\caption{A relation is congruent modulo an operation.} \label{fig:congruent_modulo_relation}
 \end{figure}
-From Fig. \ref{fig:congruent_modulo_relation} the left plot, it can be intuitively interpreted that when two elements $a_1$, $b_1$ are equivalent, their equivalence relation persists even if operation $\oplus a_2$, $\oplus b_2$ are applied to them respectively, so long as $a_2$, $b_2$ are also equivalent.
+From Fig. \ref{fig:congruent_modulo_relation} the left plot, it can be intuitively interpreted that when two elements $a_1$, $a_2$ are equivalent, their equivalence relation persists even if operation $\oplus b_1$, $\oplus b_2$ are applied to them respectively, so long as $b_1$, $b_2$ are also equivalent.
 
 If $R$ is congruent modulo $\oplus$ indeed, we can define an operation on the quotient set $A/R$ as follows. Let $[\cdot]$ denote the equivalence class of an element in $A$. Define $\bar{\oplus}$ as an operation on $A/R$ as follows.
 \begin{eqnarray}
@@ -235,9 +235,9 @@ To conclude, in the algebraic system with non-empty set $A$ and an operation $\o
 
 \section{Semi-Group and Group}
 
-In the previous section, general algebraic system is introduced. A general algebraic system shall contain a set of interest as well as one or more operation defined on that set. The operations can be unary (involving one operand), binary (involving two operands), ternary (involving three operands), etc. Relations within these systems are defined as sets of tuples, with each element of the tuple coming from the set of interest. Likewise, relation can also be binary, ternary, etc.
+In the previous section, general algebraic system is introduced. A general algebraic system shall contain sets and one or more operations defined on these sets. The operations can be unary (involving one operand), binary (involving two operands), ternary (involving three operands), etc. Relations are defined as sets of tuples, with each element of the tuple coming from the set of interest. Likewise, relation can also be binary, ternary, etc.
 
-Special properties can apply to both operations and relations. Binary operations, for instance, can exhibit commutativity, associativity, and distributivity. Binary relations, on the other hand, can be reflexive, symmetric, and transitive.  If a relation is simultaneously reflexive, symmetric and transitive, it is called a equivalent relation. Each equivalent relation is corresponded with a quotient set which is a partition of the original set by equivalence classes of the relation.
+Special properties can apply to both operations and relations. Binary operations, for instance, can exhibit commutativity, associativity, and distributivity. Binary relations, on the other hand, can be reflexive, symmetric, and transitive.  If a relation is simultaneously reflexive, symmetric and transitive, it is called an equivalent relation. Each equivalent relation is corresponded with a quotient set which is a partition of the original set by equivalence classes of the relation.
 
 When a relation is congruent modulo an operation (recall \eqref{eq:relation_congruent_modulo_operation} and Fig. \ref{fig:congruent_modulo_relation}), we can establish a new algebraic system. This system comprises the quotient set and a well-defined induced operation on that set. The new system retains structural properties from the original set, reflecting the consistency and compatibility of the congruence relation with the operation.
 
@@ -247,7 +247,9 @@ Moving forward, our focus will shift to specialized algebraic systems characteri
 
 Let $S$ be a non-empty set, and $\oplus: S\times S \rightarrow S$ a closed binary operation defined on $S$. If $\oplus$ has associative property, i.e. $a\oplus(b\oplus c) = (a \oplus b) \oplus c$, then algebraic system $\{S; \oplus\}$ (for simplicity, $S$, when there is no ambiguity) is called a \textbf{semi-group}.
 
-Examples of semi-group include $\{\mathbb{N}; +\}$, $\{\mathbb{N}; \times\}$ where $\mathbb{N}$ refers to the (positive) natural numbers $1, 2, 3, \ldots$. Let $A$ be an non-empty set, and $\{\mathcal{M}(A); \circ\}$ is also a semi-group, where $\mathcal{M}(A)$ is the set of all the closed mappings defined on $A$, and $\circ$ the compound operation. Additionally, $\{\mathcal{P}(A); \bigcup\}$, $\{\mathcal{P}(A); \bigcap\}$ are also semi-groups, where $\mathcal{P}(A)$ represents the power set of $A$.
+Examples of semi-group include $\{\mathbb{N}; +\}$, $\{\mathbb{N}; \times\}$ where $\mathbb{N}$ refers to the (positive) natural numbers $1, 2, 3, \ldots$ 
+
+Another example is given as follows. Let $A$ be an non-empty set, $\mathcal{M}(A)$ the set of all the closed mappings defined on $A$, and $\circ$ the compound operation. Then $\{\mathcal{M}(A); \circ\}$ is also a semi-group. Additionally, $\{\mathcal{P}(A); \bigcup\}$, $\{\mathcal{P}(A); \bigcap\}$ are also semi-groups, where $\mathcal{P}(A)$ represents the power set of $A$.
 
 \begin{shortbox}
 \Boxhead{Is Zero Included in Natural Numbers?}
@@ -260,7 +262,7 @@ Consider semi-group $\{S; \oplus\}$. If $\exists e\in S$ so that
 \begin{eqnarray}
 	e\oplus a &=& a, ~\forall a \in S \nonumber
 \end{eqnarray}
-then $e_1$ is known as the \textbf{left identity}. Similarly, we can define \textbf{right identity}. Notice that a semi-group may have many distinct left and right identities.
+then $e$ is known as the \textbf{left identity}. Similarly, we can define \textbf{right identity}. Notice that a semi-group may have many distinct left and right identities.
 
 If an element $e$ is both left identity and right identity, it is called the \textbf{identity element}. If a semi-group has an identity element, the identity element must be unique. This can be easily illustrated using proof by contradiction as follows. Assume that $e_1$, $e_2$ are two distinct identity elements, thus
 \begin{eqnarray}
@@ -289,7 +291,7 @@ The relationship of general algebraic system, semi-group, monoid and group are d
 	\caption{General Algebraic System, Semi-Group, Monoid and Group.} \label{fig:group_definition}
 \end{figure}
 
-Notice that group does not pre-assume commutativity. If a group's operation is commutative, it is called an \textbf{abelian group} named after Niels Henrik Abel. Examples of abelian group include $\{\mathbb{Z}; +\}$, $\{\mathbb{R}; +\}$, $\{\mathbb{C}; +\}$ where $\mathbb{Z}$, $\mathbb{R}$ and $\mathbb{C}$ represent integer set, real number set and complex number set, respectively. Additionally, $\{\mathbb{R}^{*}; \times \}$, $\{\mathbb{R}^{*}; \times \}$ are also abelian groups, where $\mathbb{R}^*$,  $\mathbb{C}^*$ denotes the corresponding sets excluding zero.
+Notice that group does not pre-assume commutativity. If a group's operation is commutative, it is called an \textbf{abelian group} named after Niels Henrik Abel. Examples of abelian group include $\{\mathbb{Z}; +\}$, $\{\mathbb{R}; +\}$, $\{\mathbb{C}; +\}$ where $\mathbb{Z}$, $\mathbb{R}$ and $\mathbb{C}$ represent integer set, real number set and complex number set, respectively. Additionally, $\{\mathbb{R}^{*}; \times \}$, $\{\mathbb{C}^{*}; \times \}$ are also abelian groups, where $\mathbb{R}^*$,  $\mathbb{C}^*$ denotes the corresponding sets excluding zero.
 
 We know that $\{\mathcal{M}(A); \circ\}$ introduced earlier is not a group. This is because not all mappings defined on a set $A$ necessarily have an inverse. However, if define $\{\mathcal{S}(A); \circ\}$ where $\mathcal{S}(A)$ represents the set of all  bijections (invertible mappings) on $A$, $\{\mathcal{S}(A); \circ\}$ becomes a group. Notice that $\mathcal{S}(A)$ is not necessarily an abelian group.
 
@@ -307,7 +309,7 @@ Furthermore, if
 \end{itemize}
 the group is called an abelian group.
 
-It can be proved that if a semi-group has left identity and all its elements have left inverse, the left identity must also be its right identity and all its elements must also have left reverse, thus making the semi-group a group. The proof is given below. Let $e$ be the left identity of semi-group $\{S;\oplus \}$, while $b$ be the left inverse of any arbitrary element $a\in S$. Let $c$ be the left inverse of $b$.
+It can be proved that if a semi-group has left identity and all its elements have left inverse, the left identity must also be its right identity and all its elements must also have right reverse, thus making the semi-group a group. The proof is given below. Let $e$ be the left identity of semi-group $\{S;\oplus \}$, while $b$ be the left inverse of any arbitrary element $a\in S$. Let $c$ be the left inverse of $b$.
 \begin{eqnarray}
 a\oplus b &=& e\oplus a\oplus b \nonumber \\
    &=& c\oplus (b\oplus a)\oplus b ~\textup{(associativity)} \nonumber \\
@@ -327,17 +329,17 @@ Therefore, $e$ is also the right identity. All the above derivations also apply 
 
 Commonly used properties and notations of semi-group and group are introduced in this section.
 
-If $S$ is a semi-group and $a, b \in S$, then the following criteria can be used to further determine that $S$ is a group.
+If $\{S; \oplus\}$ is a semi-group and $a, b \in S$, then the following criteria can be used to further determine that $\{S; \oplus\}$ is a group.
 \begin{itemize}
-  \item For $\forall a, b \in S$, if both $ax = b$ and $xa = b$ have solution, then $S$ is a group.
-  \item If $|S|<\infty$ (cardinal number of $S$ is finite), and $\forall a, b, c \in S$, $ac = bc \Rightarrow a = b$, $ca = cb \Rightarrow a = b$, then $S$ is a group.
+  \item For $\forall a, b \in S$, if both $a\oplus x = b$ and $x\oplus a = b$ have solution, then $S$ is a group.
+  \item If $|S|<\infty$ (cardinal number of $S$ is finite), and $\forall a, b, c \in S$, $a\oplus c = b\oplus c \Rightarrow a = b$, $c\oplus a = c\oplus b \Rightarrow a = b$, then $S$ is a group.
 \end{itemize}
 
 If $G$ is a group and $a, b, c \in G$, then the following properties apply. 
 \begin{itemize}
-  \item $ac = bc \Rightarrow a = b$;
-  \item $ca = cb \Rightarrow a = b$;
-  \item $ax = b$ has the unique solution $x = a^{-1}b$; $xa = b$ has the unique solution $x = ba^{-1}$;
+  \item $a\oplus c = b\oplus c \Rightarrow a = b$;
+  \item $c\oplus a = c\oplus b \Rightarrow a = b$;
+  \item $a\oplus x = b$ has the unique solution $x = a^{-1}\oplus b$; $x\oplus a = b$ has the unique solution $x = b\oplus a^{-1}$;
 \end{itemize}
 
 Given group $\{G;\oplus\}$ and $a\in G$. The following notations apply.
@@ -380,19 +382,24 @@ If $a,b \in G$ has order $m$ and $n$ respectively, and $ab=ba$, then $ab$ and $b
 
 \section{Subgroup and Quotient Set}
 
-Subgroup and quotient set are both fundamental concepts in group theory. They not only form an important part of abstract algebra by themselves, but also help with better understanding group and its properties.
+Subgroup and quotient set are both fundamental concepts in group theory. They not only form an important part of abstract algebra by themselves, but also help with better understanding group and its properties. Notice that quotient set has been mentioned earlier during the introduction of the equivalence relation and equivalence class. More details are given here.
 
 \subsection{Subgroup}
 
-Let $\{G;\oplus\}$ be a group, and $H\subset G, H\neq\varnothing$ is a non-empty subset of the group. If $\{H;\oplus\}$ forms a group under the same operation $\oplus$, then $H$ is called a \textbf{subgroup} of $G$, denoted by $H\leq G$. Notice that if $H \neq G$, $H$ is called a \textbf{proper subgroup} of $G$ and can be denoted by $H<G$. That implies that
+Let $\{G;\oplus\}$ be a group, and $H\subseteq G, H\neq\varnothing$ is a non-empty subset of the group. If $\{H;\oplus\}$ forms a group under the same operation $\oplus$, then $H$ is called a \textbf{subgroup} of $G$, denoted by $H\leq G$. Notice that if $H \neq G$, $H$ is called a \textbf{proper subgroup} of $G$ and can be denoted by $H<G$. That implies that
 \begin{itemize}
-  \item The operation $\oplus$ which is close in $G$ is also close in $H$;
+  \item The operation $\oplus$ which is closed in $G$ is also closed in $H$;
   \item The identity element of $G$, denoted by $e$, is in $H$;
   \item For every element $a\in H$, its inverse $a^{-1}$ is also in $H$.
 \end{itemize}
+
 Here is an example of a subgroup. Consider group $\{\mathbb{R}^*; \cdot\}$ where $\mathbb{R}^*$ denotes real number set excluding zero, and $\cdot$ the multiplication operation. Then group $\{\mathbb{R}^+;\cdot\}$ where $\mathbb{R}^+$ denoting positive real number set is a subgroup of  $\{\mathbb{R}^*; \cdot\}$.
 
-The following criteria can be used to determine whether a subset is a subgroup under the operation. Let $\{G;\oplus\}$ be a group, and $H\subset G$ a non-empty subset. The following three statements are equivalent.
+Here is another example of a subgroup. The \textbf{general linear group} of degree $n$ consists of $n \times n$ invertible matrices with the operation of ordinary matrix multiplication. It is denoted by $GL_n(F)$ where $F$ is the field / ring of interest such as the complex numbers field, integer ring, etc. More about field and ring are introduced in later sections and chapters. Obviously, $GL_n(F)$ is a group. The \textbf{special linear group} of degree $n$, denoted by $SL_n(F)$ which consists of matrices with determinant of $1$, therefore, is a subgroup of $GL_n(F)$.
+
+In practice, an invertible matrix $A$ is equivalent with a linear transformation $x \mapsto Ax$. Therefore, $GL_n(F)$ can be taken as a group of linear transformation as well (hence the name), and from that perspective it is a subgroup of the \textbf{general affine group} $x \mapsto Ax + b$.
+
+The following criteria can be used to determine whether a subset is a subgroup under the operation. Let $\{G;\oplus\}$ be a group, and $H\subseteq G$ a non-empty subset. The following three statements are equivalent.
 \begin{enumerate}[label=(\roman*)]
   \item $H\leq G$;
   \item $\forall a, b\in H$, $a\oplus b \in H$, $a^{-1}\in H$;
