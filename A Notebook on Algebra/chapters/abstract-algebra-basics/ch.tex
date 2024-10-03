@@ -419,7 +419,7 @@ Subgroup has the following properties.
   \item If $H_1 < G$, $H_2 < G$, then $H_1 \bigcup H_2$ is not necessarily a subgroup of $G$.
 \end{itemize}
 
-\subsection{Coset}
+\subsection{Coset of a Subgroup}
 
 Let $\{G;\oplus\}$ be a group, $H < G$ a subgroup, and $a\in G$. Define \textbf{left coset} of $H$ about $a$, $aH$, as follows.
 \begin{eqnarray}
@@ -427,13 +427,17 @@ Let $\{G;\oplus\}$ be a group, $H < G$ a subgroup, and $a\in G$. Define \textbf{
 \end{eqnarray} 
 Similarly, the \textbf{right coset} $Ha$ can be defined.
 
-Let $\{G;\oplus\}$ be a group, $a,b \in G$ and $H<G$. Define the following relation 
+Let $\{G;\oplus\}$ be a group and $H<G$. Define the following relation for any two elements in $G$ as follows.
 \begin{eqnarray}
   aRb &=& \left\{(a,b) \middle| a^{-1}\oplus b\in H \right\}  \label{eq:subgroup_equivalence_relation}
 \end{eqnarray}
-It can be proved that the above relation is a equivalence relation and the equivalence class of $a$ is nothing but $aH$. This theorem associate a subgroup $H$ with a equivalence relation \eqref{eq:subgroup_equivalence_relation}.
+It can be proved that the above relation is an equivalence relation and the equivalence class of $a$, $[a]$, is nothing but $[a] = aH$. The proof is neglected here.
 
+This theorem associate a subgroup $H$ with an equivalence relation \eqref{eq:subgroup_equivalence_relation}.
 
+\subsection{Quotient Set of a Subgroup}
+
+Recall that in an algebraic system an equivalence relation is corresponding with a quotient set. Given a subgroup $H<G$, an equivalence relation \eqref{eq:subgroup_equivalence_relation} can be defined, hence the quotient set $G/R$. This quotient set is known as the left quotient set of subgroup $H$.
 
 
 
