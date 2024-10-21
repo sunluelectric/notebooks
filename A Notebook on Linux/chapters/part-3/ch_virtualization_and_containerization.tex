@@ -144,6 +144,8 @@ Install docker.
 $ sudo apt-get update
 $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 \end{lstlisting}
+where notice that \verb|docker-compose| is a toolkit to manage containers using CLI. It is a handy tool in the testing environment.
+
 To test whether docker is installed correctly, run
 \begin{lstlisting}
 $ sudo docker run hello-world
@@ -519,7 +521,11 @@ In general, a typical Dockerfile includes the following instructions to build an
   \item Run the application.
 \end{enumerate}
 
-The keywords to be used in a Dockerfile to realize the above instructions, such as \verb|FROM|, \verb|RUN|, and many more, are explained in Table \ref{ch:vac:tab:keywordsdockerfile}.
+The keywords to be used in a Dockerfile to realize the above instructions, such as \verb|FROM|, \verb|RUN|, and many more, are explained in Table \ref{ch:vac:tab:keywordsdockerfile}. 
+
+It is worth highlighting the distinction between \verb|RUN| and \verb|CMD|. The \verb|RUN| command is executed during the building of the image, which creates a virtual representation of the environment to run the service. Therefore, \verb|RUN| is used to prepare the environment, for example, to install necessary libraries. 
+
+On the other hand, command \verb|CMD| simply specifies the default command to run when the container starts. Its content is executed not during the build of the image, but reserved until the container is launched.The contents in \verb|CMD| can even be overwritten if the user wishes to do so.
 
 \begin{table}
 	\centering \caption{Critical keywords used in a Dockerfile.}\label{ch:vac:tab:keywordsdockerfile}
@@ -533,7 +539,7 @@ The keywords to be used in a Dockerfile to realize the above instructions, such 
 		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ 
 		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ 
 		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\ 
-		\verb|CMD ["<exe>", "p1", ...]| & The user-script command. This is the last instruction in the docker file that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. This user-script can be overwritten by \texttt{docker run <image> <other commands>} when running the container. \\
+		\verb|CMD ["<exe>", "p1", ...]| & The user-script command. This is the last instruction in the Dockerfile that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. This user-script can be overwritten by \texttt{docker run <image> <other commands>} when running the container. \\
 		\hline
 	\end{tabularx}
 \end{table}
