@@ -8,7 +8,7 @@ One of the major differences between a server and a PC is that the former is usu
 
 Deploying a new VM generally consumes a considerably large amount of time and resources. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for each and every of them is resource-intensive and can become an unnecessary waste of resource when these applications could have shared the same OS kernel and operated within their own isolated workspace.
 
-A more efficient approach would be to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
+In the above scenario, a more efficient approach is to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
 
 The technology used to deploy and manage containers is known as \textit{containerization}. A container contains all the configuration and requirement information of an application. Running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
 
@@ -18,7 +18,7 @@ The technology used to deploy and manage containers is known as \textit{containe
 	\caption{System architectures of PC, VM and container.} \label{ch:vac:fig:pcvmcontainersructure}
 \end{figure}
 
-As an analogy, think of running an APP as asking a kitchen to prepare a dish. The hardware corresponds with the physical resources in the kitchen such as the cooktop and gas. The OS corresponds with the person who manages the kitchen, say a cook. The OS requires drivers and libraries to run the APP correctly. The drivers and libraries correspond with the skill sets or specific cookers for the dish. Finally, the APP is corresponding with the expected dish.
+As an analogy, think of running an APP as cooking a dish. The hardware corresponds with the physical resources in the kitchen such as the cooktop and gas. The OS corresponds with the cook. The OS requires drivers and libraries to run the APP correctly. The drivers and libraries correspond with the specific skills or cookers for the dish. Finally, the APP is corresponding with the expected dish.
 
 In the most simple configuration, a dedicated machine is used to run an APP. This is like constructing a dedicated kitchen and hiring a dedicated cook for each dish. The cook is trained to master all necessary skills required for that specific dish. This is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
 \begin{figure}[htbp]
@@ -27,13 +27,13 @@ In the most simple configuration, a dedicated machine is used to run an APP. Thi
 	\caption{PC implementation: a cook in a kitchen.} \label{ch:vac:fig:acookinakitchen}
 \end{figure}
 
-In a VM implementation, a larger and more capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the kitchen can be utilized more efficiently.
+In a VM implementation, a large and capable kitchen is setup in advance as shown in Fig. \ref{ch:vac:fig:manycooksinakitchen}. For each dish, a cook is hired. Each cook is trained with the skills necessary for his assigned dish. All cooks share the same kitchen. This implementation is more efficient than Fig. \ref{ch:vac:fig:acookinakitchen}, as there is no need to scale up the kitchen for a new dish. By sharing the resources among the cooks, the kitchen can be utilized more efficiently.
 \begin{figure}[htbp]
 	\centering \includegraphics[width=350pt]{chapters/part-3/figures/manycooksinakitchen.png}
 	\caption{VM implementation: many cooks in a kitchen, each with a different cookbook.} \label{ch:vac:fig:manycooksinakitchen}
 \end{figure}
 
-While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its receipt is provided that gives all information required to prepare the dish consistently. As long as the cook is good at multi-tasking, Fig. \ref{ch:vac:fig:multitaskcook} is usually a more efficient implementation than Figs. \ref{ch:vac:fig:acookinakitchen} and \ref{ch:vac:fig:manycooksinakitchen}.
+While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in many restaurants, it is still too costly to hire a new cook for each dish. In a containerization implementation, a cook usually handles a category of dishes, as shown in Fig. \ref{ch:vac:fig:multitaskcook}. Of course, each dish will stay in its own fry-pan in an isolated way. For each dish, its recipe is provided that gives all information required to prepare the dish consistently. As long as the cook is good at multi-tasking and has the basic skill sets for general dishes, Fig. \ref{ch:vac:fig:multitaskcook} is usually a more efficient implementation than Figs. \ref{ch:vac:fig:acookinakitchen} and \ref{ch:vac:fig:manycooksinakitchen}.
 
 \begin{figure}[htbp]
 	\centering
@@ -41,7 +41,7 @@ While Fig. \ref{ch:vac:fig:manycooksinakitchen} might be a popular practice in m
 	\caption{Container implementation: one cook in a kitchen, handling multiple dishes, each has a cookbook and stays in its own pan.} \label{ch:vac:fig:multitaskcook}
 \end{figure}
 
-Just like a receipt guaranteeing the consistency of dishes, in containerization, an ``image'' guarantees the consistent performance of container instances. An image is basically a collection of prerequisites and configurations to run a container quickly, efficiently and consistently. Images can be shared among machines to replicate the containers even if the machines adopt different underlying infrastructures such as hardware and OS.
+Just like a recipe guaranteeing the consistency of dishes, in containerization, an ``image'' guarantees the consistent behavior of container instances. An image is basically a collection of prerequisites and configurations to start a container efficiently and consistently. Images can be shared among machines to replicate the containers even if the machines adopt different underlying infrastructures such as hardware and OS.
 
 \section{Virtualization and Containerization}
 
@@ -51,31 +51,31 @@ Virtualization and containerization have been studied for decades. This section 
 
 In a conventional data center, multiple physical servers are deployed, and each server has a single associated application. Servers may share the same LAN and network-attached storage (NAS) for data exchanging. A big issue of this implementation is the utilization efficiency of the servers and the unevenly distributed loads: some of the servers may not be utilized efficiently, while others may be overwhelmed. To deploy a new application, a new server must be purchased, which can take months of time. With more and more servers, the management and IT cost may grow exponentially.
 
-To solve this problem, we need a systematical and automated way of integrating the resources in a data center and re-distributed them to the applications in an efficient manner. Virtualization is one of the most important technology used in this framework. Virtualization is essentially about running a system on a ``virtualized machine'', where by saying ``virtualized'' we mean that the machine is not a physical machine, but a running environment (known as the virtual execution environment) that is emulated and managed by a special software running on the actual machine (known as the ``hypervisor''). The setup should be transparent to the applications in the sense that the applications the same way as if it were running on a dedicated physical machine.
+To solve this problem, we need a systematical and automated way of integrating the resources in a data center and re-distributed them to the applications in an efficient manner. Virtualization is one of the most important technology used in this framework. Virtualization is essentially about running a system on a ``virtualized machine'', where by saying ``virtualized'' we mean that the machine is not a physical machine, but a virtual execution environment that is emulated and managed by a special software running on the actual machine known as the ``hypervisor''. The setup should be transparent to the applications in the sense that the applications perform the same way as if it were running on a dedicated physical machine.
 
 Depending on the items to be virtualized, virtualization can be divided into the following categories.
 \begin{itemize}
-  \item Virtualization of equipment, mainly network resources and storage. This results in virtual local area network (VLAN), virtual private network (VPN), NAS and storage area network (SAN).
-  \item Virtualization of operating system. This results in the well-known VM and virtual desktop.
-  \item Virtualization of application running environment. An example is Java virtual machine (JVM) that allows Java to generate consistent result while running on different machines.
+  \item Virtualization of equipment, mainly network resources and storages. This results in virtual local area network (VLAN), virtual private network (VPN), NAS and storage area network (SAN).
+  \item Virtualization of operating systems. This results in the well-known VM and virtual desktop.
+  \item Virtualization of application running environments. An example is Java virtual machine (JVM) that allows Java to generate consistent result while running on different machines.
 \end{itemize}
 
-There are different virtualization architectures. Widely seen components in the virtualization architectures include
+There are different virtualization architectures. Commonly seen components shared by different architectures often include
 \begin{itemize}
 	\item Host OS. The OS that resides on the physical machine, on which virtualization tools run.
-	\item Virtual Machine Monitor (VMM), also known as the hypervisor. This is a software that runs on the host OS, managing all the guest OS, providing them interface to the host OS and the hardware.
-	\item VM, a virtual system that runs in an virtualized isolated environment.
+	\item Virtual Machine Monitor (VMM), also known as the hypervisor. This is a software that runs on the host OS, managing all the guest OSs, providing them interface to the host OS and the hardware.
+	\item VM, the system that runs in an virtualized isolated environment.
 \end{itemize}
 Host OS, VMM and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
 
 Different virtualization techniques are used in different types of VMMs. They can be widely divided into the following categories.
 \begin{itemize}
 	\item Full virtualization. The VMM virtualizes everything including the hardware. The guest OS can run on the VM without modification or adaptation, just like running on any other machine.
-	\item Paravirtualization. The VMM does not virtualize hardware. The guest OS is modified to certain extent to suit the VMM of this type.
-	\item Hardware-assisted virtualization. The physical processors provide some specific services to handle some of the functionality of VMM. Some functions requested by the guest OS, after passing to VMM, is directly run on the hardware, thus enhancing system performance.
+	\item Para-virtualization. The VMM does not virtualize hardware. The guest OS is modified to certain extent to suit the VMM of this type.
+	\item Hardware-assisted virtualization. The processor of the system is specifically designed to provide certain VM functions. These functions, after passing through VMM, are directed and executed on the hadrware, thus enhancing system performance.
 \end{itemize}
 
-VMM is able to virtualize hardware resources such as CPU, memory and I/O. For the virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU. This is challenging because guest OS usually does not possess the privilege due to the VM architecture. If the requests of the guest OS contain privileged instructions, the CPU will deny the instructions. When that happens, an exception will be raised to the VMM which will take care of the privileged instructions sequentially. Since hypervisor runs in privileged mode, it can execute those instructions.
+VMM is able to virtualize hardware resources such as CPU, memory and I/O. For the virtualization of CPU, the key is to virtualize privileged instructions (a set of instructions that can only be executed by software running in privileged mode, usually the OS) for the guest OS, so that the guest OS would think it is directly talking to a CPU. This is challenging because guest OS usually does not possess the privilege due to the VM architecture. If the requests of the guest OS contain privileged instructions, the CPU will deny the request. When that happens, an exception will be raised to the VMM which will take care of the privileged instructions sequentially. Since hypervisor runs in privileged mode, it can execute those instructions.
 
 For the virtualization of memory, VMM uses shadow page table to assign memory pages to different VMs. The maximum memory allocated to a VM can change dynamically.
 
@@ -90,21 +90,25 @@ For the virtualization of I/O, the development trend is that I/O operations will
 
 \subsection{Containerization}
 
-Containerization is an alternative virtualization approach to VM that can also virtualize an independent workspace for an application. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. Depending on the context, the term ``container'' may refer to one or more of the following 3 components: container runtime, container engine, and container orchestration.
+Containerization is an alternative virtualization approach to VM that can also virtualize independent workspaces for applications. Comparing with VM, containers are often lighter, hence more efficient for massive microservices deployment. Depending on the context, the term ``container'' may refer to one or more of the following 3 concepts: container runtime, container engine, and container orchestration.
 
-Container runtime refers to the backend software that actually runs the containers, and it is compulsory for all types of container implementation. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. It is often inconvenient for users to talk to container runtimes directly. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. Finally, container orchestration is the software that strategically deploy, monitor, restart, and terminate the containers on servers. It can scale up and down the number of containers based on the demanding, and balance the API calls each container receives. Container orchestration is very useful in production environment of a large service. One of the most widely used container orchestrations is ``kubernetes''.
+Container runtime refers to the backend software that actually executes the containers. Examples of widely used container runtimes are ``containerd'', ``runc'' and ``cri-o''. 
 
-Notice that container orchestration may or may not bypass the container engine and talk to the container runtime directly.
+It is often inconvenient for users to talk to container runtimes directly. Container engine is the interface for a user or software to manage images and containers. Examples of container engines include ``docker'' and ``podman''. 
+
+Finally, container orchestration is the software that strategically deploy, monitor, restart, and terminate the containers on servers. It can scale up and down the number of containers based on the demanding, and balance the API calls each container receives. Container orchestration is very useful in production environment of large-scale services. One of the most widely used container orchestrations is ``kubernetes''.
+
+Notice that though container runtime is always a must-have, container engine and container orchestration are not.
 
 \section{Docker Container} \label{ch:vac:sec:dc}
 
-This section introduces docker. Notice that although docker is famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine brand. Many tools and technologies of docker are used in container runtimes and container engines of other brands.
+This section introduces docker. Notice that though being famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine brand. Many tools and technologies of docker are used in container runtimes and container engines of other brands.
 
 This section focuses mostly on the introduction of docker container engine.
 
 \subsection{Docker Engine VS Alternatives}
 
-Docker engine is the most popular container engines available on the market as of 2023, and it is free of charge for open-source, personal and small business usage. More details of docker can be found at \textit{https://docs.docker.com/}.
+Docker engine is the most popular container engine available on the market as of 2023, and it is free of charge for open-source, personal and small business usage. More details of docker can be found at \textit{https://docs.docker.com/}.
 
 But does that mean docker engine is the absolutely best and perfect container engine solution?
 

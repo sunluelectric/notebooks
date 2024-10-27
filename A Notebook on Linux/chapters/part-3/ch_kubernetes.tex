@@ -275,7 +275,7 @@ LoadBalancer is a legacy way of getting network traffic into the pods. It is ess
 \noindent \textbf{Ingress}
 \vspace{0.1in}
 
-Ingress is a more commonly used Service type than LoadBalancer to get traffic into the Kubernetes containers. There are different types of Ingress, for example, Nginx Ingress by \textit{github.com/kubernetes/ingress-nginx}. An demonstrative example of ingress service realization is given in Fig. \ref{ch:vac:fig:ingress_service}. In this implementation framework, the configuration file (mainly a set of routing rules) of the object is used to define an ``Ingress Controller'' which manages the runtime that controls inbound traffic. In some applications such as \textit{kubernetes/ingress-nginx}, the ingress controller and the runtime are integrated together.
+Ingress is a more commonly used Service type than LoadBalancer to get traffic into the Kubernetes containers. There are different types of Ingress, for example, Nginx Ingress by \textit{github.com/kubernetes/ingress-nginx}. A demonstrative example of ingress service realization is given in Fig. \ref{ch:vac:fig:ingress_service}. In this implementation framework, the configuration file (mainly a set of routing rules) of the object is used to define an ``Ingress Controller'' which manages the runtime that controls inbound traffic. In some applications such as \textit{kubernetes/ingress-nginx}, the ingress controller and the runtime are integrated together.
 
 \begin{figure}[htbp]
 	\centering
