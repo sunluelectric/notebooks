@@ -126,9 +126,9 @@ As of 2023, docker is still the dominating container market engine, with a marke
 
 \subsection{Docker Installation}
 
-To install docker on a Linux machine, go to \textit{https://www.docker.com/} to look for the instruction. The installation steps differ depending on the host machine. As an example, consider installing docker engine on Ubuntu. Some of the key steps are summarized as follows.
+To install docker on a Linux machine, go to \textit{https://www.docker.com/} to look for the instruction. The installation steps differ depending on the host machine. As explained earlier, RHEL uses podman as its recommended container engine, and podman comes with RHEL installation. 
 
-Remove existing docker engine, if any.
+In this section, consider installing docker engine on Ubuntu. Some of the key steps are summarized as follows. Remove existing docker engine, if any.
 \begin{lstlisting}
 $ sudo apt-get remove docker docker-engine docker.io
 $ sudo apt-get remove containerd runc
@@ -161,62 +161,72 @@ Notice that to use docker commands, sudo privilege is required. To avoid typing 
 $ sudo usermod <user name> -aG docker
 \end{lstlisting}
 
-Docker installs at least two piece of software on the machine, namely docker CLI and docker server. The CLI is the interface to the user, and the server is the actual tool that manages images and containers. Docker runs natively on Linux OS. If docker is installed on non-Linux system such as Windows or macOS, ``docker desktop'' is used which includes a Linux VM to host the docker daemon and run Linux-based containers.
+Docker installs at least two piece of software on the machine, namely docker CLI and docker server. The CLI is the interface to the user, and the server the daemon. Docker runs natively on Linux OS. If docker is installed on non-Linux system such as Windows or macOS, ``docker desktop'' is used which includes a Linux VM to host the docker daemon and run Linux-based containers.
 
 \subsection{Docker Container Management}
 
 \vspace{0.1in}
-\noindent \textbf{Container Manipulation}
+\noindent \textbf{Launch}
 \vspace{0.1in}
 
 To create and run a container from an image, simply use
 \begin{lstlisting}
 $ docker run <configuration> <image>
 \end{lstlisting}
-which is a combination of \verb|docker create| and \verb|docker start|. Docker will search the local and remote repositories for the image, download the image if necessary, and start a container from that image. By default, after successful execution and completion of all the tasks, the container will enter ``Exited'' status. For example, consider running a container of \textit{alpine} as follows. A screen shot is given in Fig. \ref{ch:vac:fig:dockerrunexp}.
+Docker will search the local and remote repositories for the image, download the image if necessary, and start a container from that image. By default, \verb|docker run| starts a container in attached mode (frontend mode) unless flag \verb|-d| is used. After successful execution and completion of all the tasks, the container will enter ``Exited'' status. 
+
+For example, consider running a container of \textit{alpine} using the command below. A screen shot is given in Fig. \ref{ch:vac:fig:dockerrunexp}.
 \begin{lstlisting}
 $ docker run -it --name test-alpine alpine
 \end{lstlisting}
-where \verb|-i| stands for ``interactive'', which keeps the container's standard input (i.e., the console in this example) open so that the user can actively interact with the container. Option \verb|-t| allocates a pseudo-TTY to the container. TTY stands for ``TeleTYpewriter'', which enforces the I/O of the container to follow the typical terminal format and allows the user to interact with the container like a traditional terminal, hence making the interactive interface a bit more user-friendly. Finally, \verb|--name| assigns a name to the container. Without an assigned name, docker will assign a random name to the container.
-\begin{figure}[htbp]
+where \verb|-i| stands for ``interactive'', which keeps the container's standard input (i.e., the console in this example) open so that the user can actively interact with the container. Option \verb|-t| allocates a pseudo-TTY to the container. TTY stands for ``TeleTYpewriter'', which enforces the I/O of the container to follow the typical terminal format and allows the user to interact with the container like a traditional terminal, hence making the interactive interface a bit more user-friendly. Flags \verb|-it| are often used when running a container in attached mode. Finally, \verb|--name| assigns a name to the container. Without an assigned name, docker will assign a random name to the container.
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/dockerrunexp.png}
 	\caption{An example of running \textit{apline} container, with interactive TTY and name \textit{test-apline}.} \label{ch:vac:fig:dockerrunexp}
 \end{figure}
 
-It can be seen from Fig. \ref{ch:vac:fig:dockerrunexp} that once the container is started, the user can interact with the container via shell, and perform actions such as listing items in the current directory in the container. While keeping the container running, open another terminal and use \verb|docker container ls|. The container \verb|test-alpine| shall appear in the list, as shown in Fig. \ref{ch:vac:fig:dockerrunexppart2}.
-\begin{figure}[htbp]
+It can be seen from Fig. \ref{ch:vac:fig:dockerrunexp} that once the container is started, the user can interact with the container via shell and perform actions such as listing items in the current directory in the container. This is because the container is running in attached mode, and flags \verb|-it| map the the containers input and output with the console.
+
+While keeping the container running, open another terminal and use \verb|docker container ls| to check the status of the container. More about \verb|docker container ls| are introduced later. The container \verb|test-alpine| shall appear in the list, as shown in Fig. \ref{ch:vac:fig:dockerrunexppart2}.
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=250pt]{chapters/part-3/figures/dockerrunexppart2.png}
 	\caption{List the running container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart2}
 \end{figure}
 After exiting from Fig. \ref{ch:vac:fig:dockerrunexp} (by using \verb|exit| in \textit{alpine}), the container will transfer its status from ``running'' to ``exited'', as shown in Fig. \ref{ch:vac:fig:dockerrunexppart3}.
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=250pt]{chapters/part-3/figures/dockerrunexppart3.png}
 	\caption{List the exited container \textit{test-apline}.} \label{ch:vac:fig:dockerrunexppart3}
 \end{figure}
 
-As introduced earlier, \verb|docker run| contains two consecutive steps in the backend, namely \verb|docker create| and \verb|docker start|, where \verb|docker create| creates a container, with all its file system setup, and \verb|docker start| starts the container by executing the startup script defined in the image. These two commands can be used separately. For example, to start an exited container, use
+Functional wise, \verb|docker run| executes two commands behind the screen, namely \verb|docker create| and \verb|docker start|, where \verb|docker create| creates a container and \verb|docker start| starts the container by executing the startup script defined in the image. These two commands can be used separately. For example, to start an exited container, use
 \begin{lstlisting}
 $ docker start <container>
 \end{lstlisting}
-This command starts the container with the startup command, and keep it running in the backend. If \verb|-a| is used in front of the container id, the container's IO would be attached to the terminal. If the startup command has been overwritten during the creation of the container, the new startup command will be used. The container id and the revised startup command can be obtained using \verb|docker container ls -a|.
 
-It is also possible to launch a container and let it run in the backend using \verb|-d| flag which stands for ``detached mode''. An example is given below.
+\begin{shortbox}
+\Boxhead{Differences between \texttt{docker run} and \texttt{docker start}}
+
+Do note the fundamental differences between \verb|docker run| and \verb|docker start|. First of all, \verb|docker run| starts a container from an image and it always creates a new container, whereas \verb|docker start| starts an existing but exit container. Secondly, \verb|docker run| runs a container in attached mode by default unless \verb|-d| flag is used, while in contrast \verb|docker start| runs a container in detached (backend) mode by default unless \verb|-a| is used. 
+\end{shortbox}
+
+An example of using \verb|docker run| with \verb|-d| flag to start a container in detached mode is given below.
 \begin{lstlisting}
-$ docker run -dt --name test-background-alpine alpine
+$ docker run -d --name test-background-alpine alpine
 \end{lstlisting}
-By changing \verb|-i| to \verb|-d|, the container runs in the backend silently. The status of the container, after executing the above command, will stay running and can be displayed by \verb|docker container ls|.
+By changing \verb|-it| to \verb|-d|, the container runs in the backend silently. The status of the container, after executing the above command, will stay running and can be displayed by \verb|docker container ls|.
 
-Commonly used commands regarding launching a container are given in Tables \ref{ch:vac:tab:launchcontainer}, and \ref{ch:vac:tab:listcontainer}.
+Commonly used commands regarding launching a container are given in Table \ref{ch:vac:tab:launchcontainer}.
 
-\begin{table}
+\begin{table}[!htb]
 	\centering \caption{Commonly used docker commands to launch a container.}\label{ch:vac:tab:launchcontainer}
 	\begin{tabularx}{\textwidth}{llX}
 		\hline
 		Command & Flag & Description \\ \hline
-		\verb|docker run| & --- & Launch a container of the image. If the image cannot be found locally, it downloads the image from the remote repository automatically. \\ 
+		\verb|docker run| & --- & Launch a container from an image in attached mode by default. If the image cannot be found locally, it downloads the image from the remote repository automatically. \\
+        \verb|docker start| & --- & Start an existing but exit container in detached mode by default. \\
         \verb|docker run| & \verb|-i| & Keep the standard input of the container open when launching the container. \\ 
         \verb|docker run| & \verb|-d| & Launch the container in the backend and keep it running. \\ 
         \verb|docker run| & \verb|--rm| & Automatically remove the container when exiting. The removed container will not be listed in \verb|docker container ls -a|. This is usually used with temporary containers during debugging. \\ 
@@ -227,23 +237,15 @@ Commonly used commands regarding launching a container are given in Tables \ref{
 	\end{tabularx}
 \end{table}
 
-\begin{table}
-	\centering \caption{Commonly used docker commands to display local images and containers.}\label{ch:vac:tab:listcontainer}
-	\begin{tabularx}{\textwidth}{llX}
-		\hline
-		Command & Flag & Description \\ \hline
-        \verb|docker image ls| & --- & List local images. \\ 
-        \verb|docker container ls| & --- & List running containers. \\ 
-        \verb|docker container ls| & \verb|-a| & List all containers. \\
-		\hline
-	\end{tabularx}
-\end{table}
-
 It is worth mentioning that file system snapshot and startup commands are defined inside an image. See Section \ref{ch:vac:sec:di} for more details. When a container starts, the file system snapshot is pasted to the container file system, and the startup commands executed. It is possible to overwrite the startup commands when starting a container, simply by amending the revised startup commands to the image name as follows.
 \begin{lstlisting}
 $ docker run <image> <revised command>
 \end{lstlisting}
 where \verb|<revised command>| must be defined in the image, or otherwise an error will be raised.
+
+\vspace{0.1in}
+\noindent \textbf{Interaction}
+\vspace{0.1in}
 
 For a container running in the backend, use \verb|docker exec| to execute a shell command in that container as follows.
 \begin{lstlisting}
@@ -259,6 +261,10 @@ $ docker attach <container>
 \end{lstlisting}
 to attach local standard input, output, and error streams to a running container. Similar with the previously introduced \texttt{docker exec -it} command, \texttt{docker attach} also starts the shell of the application running in the container. Use \verb|Ctrl-C| to quite the shell.
 
+\vspace{0.1in}
+\noindent \textbf{Stop and Removal}
+\vspace{0.1in}
+
 To stop, kill or restart a container running in the backend, use
 \begin{lstlisting}
 $ docker stop <container>
@@ -267,19 +273,23 @@ $ docker restart <container>
 \end{lstlisting}
 respectively. The difference between \verb|docker stop| and \verb|docker kill| concerns with how the OS manages process. When \verb|docker stop| is used, a  \verb|SIGTERM| signal is sent to the main process that the container runs. The container still has a little bit of time (maximum $10$ seconds) to terminate the job and clean up. When \verb|docker kill| is used, \verb|SIGKILL| signal is sent to the process, and the process is terminated immediately. When a container is stopped, it enters exited status.
 
-To remove an exited container or all exited containers, use
+To remove an exited container, use
 \begin{lstlisting}
-$ docker container rm <container>
+$ docker (container) rm <container>
 \end{lstlisting}
-or
+where \verb|container| can be neglected. Alternatively, use
 \begin{lstlisting}
 $ docker container prune
 \end{lstlisting}
-respectively. Notice that there is a more powerful command
+to remove all exited containers. Notice that there is a more powerful command
 \begin{lstlisting}
 $ docker system prune
 \end{lstlisting}
-which removes not only stopped containers but also unused network configurations, dangling images and cache.
+which removes not only exited containers but also unused network configurations, dangling images and cache.
+
+\vspace{0.1in}
+\noindent \textbf{Rename}
+\vspace{0.1in}
 
 To rename a container (without changing its container ID or anything else), use
 \begin{lstlisting}
@@ -287,7 +297,7 @@ $ docker rename <container-old-name> <container-new-name>
 \end{lstlisting}
 
 \vspace{0.1in}
-\noindent \textbf{Container Monitoring}
+\noindent \textbf{Monitoring}
 \vspace{0.1in}
 
 Use
@@ -319,7 +329,7 @@ $ docker logs <container>
 \end{lstlisting}
 
 \vspace{0.1in}
-\noindent \textbf{File Exchange between Container and Host Machine}
+\noindent \textbf{File Exchange with Host Machine}
 \vspace{0.1in}
 
 There are multiple ways and protocols to access the files in a container, depending on the I/O setup of the container. For a container running locally, \verb|docker cp| can be used for file transfer between the container and the host machine as follows. From container to host machine:
@@ -333,7 +343,7 @@ $ docker cp <source> <container>:<destination>
 where \verb|<source>| and \verb|<destination>| refer to the path to the source and destination, respectively, located in the host machine or the container.
 
 \vspace{0.1in}
-\noindent \textbf{Commit Container to Image}
+\noindent \textbf{Commit}
 \vspace{0.1in}
 
 A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. Notice that this is generally not recommended. Images shall be created mostly from Dockerfile, as will be introduced in Section \ref{ch:vac:sec:di}.
@@ -349,7 +359,7 @@ $ docker commit -c 'CMD ["<startup command>"]' <container> <image>
 where \verb|docker commit| command saves the container's file changes or settings into a new image, which allows easier populating containers or debugging in a later stage. Notice that \verb|docker commit| does not save everything of the container into the image, and it is not the only way an image is created.
 
 \vspace{0.1in}
-\noindent \textbf{Publish Ports}
+\noindent \textbf{Ports Publishing}
 \vspace{0.1in}
 
 By default, containers do not expose any ports to the outside world. A container can be accessed only from its host machine using APIs provided by docker, such as \verb|docker cp| to transfer files and \verb|docker exec| to execute commands, but not network protocols. The user can allow public access from the internet by publishing the ports of the container using
@@ -357,17 +367,6 @@ By default, containers do not expose any ports to the outside world. A container
 $ docker run -p <host machine port>:<container port> <image>
 \end{lstlisting}
 when starting a container. To publish multiple ports, use multiple \verb|-p| flags in a command.
-
-In a typical web service application, the host machine and the containers are often designed following the architecture similar with Fig. \ref{ch:vac:fig:containerwebserverarchitecture}. Notice that in practice, the load balancer and the containers may or may not run on the same physical machine.
-
-The load balancer is a container orchestration that monitors the status of the containers, manages the data flow, and scales up and down the number of containers depending on the total load. In case where there are multiple physical servers, the load balancer is run on a ``master'' server, and the containers are distributed on multiple ``slave'' servers, each of which is called a ``worker node'', or ``node'' for simplicity. Container engines are installed on each and every node. The load balancer talks with the container engines on each node to deploy containers. The APP instances shall run in the containers distributively.
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=350pt]{chapters/part-3/figures/containerwebserverarchitecture.png}
-	\caption{A simplified architecture where containers are used to host the web service.} \label{ch:vac:fig:containerwebserverarchitecture}
-\end{figure}
-
-More about container orchestration is introduced in a later section.
 
 \subsection{An Example}
 
@@ -531,7 +530,7 @@ It is worth highlighting the distinction between \verb|RUN| and \verb|CMD|. The 
 
 On the other hand, command \verb|CMD| simply specifies the default command to run when the container starts. Its content is executed not during the build of the image, but reserved until the container is launched.The contents in \verb|CMD| can even be overwritten if the user wishes to do so.
 
-\begin{table}
+\begin{table}[!htbp]
 	\centering \caption{Critical keywords used in a Dockerfile.}\label{ch:vac:tab:keywordsdockerfile}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
@@ -583,7 +582,7 @@ EXPOSE 8080
 CMD ["node", "index.js"]
 \end{lstlisting}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/dockerlayerdemo.png}
 	\caption{A demonstration of docker image layer structure using the aforementioned example.} \label{ch:vac:fig:dockerlayerdemo}
@@ -594,6 +593,8 @@ With the Dockerfile ready, use \verb|docker build| to build an image. An example
 $ docker build <path/url> -t <image name>
 \end{lstlisting}
 where \verb|<path/url>| is the path or URL to the directory where the Dockerfile locates (does not need to contain ``\verb|/Dockerfile|'' in its end), and \verb|-t| gives a tag, in this case an image name, to the image to build.
+
+It is worth mentioning that \verb|docker build| builds the images by layers in the Dockerfile, and it will not re-build the same layer to which point no changes are made. This feature suggests that we should put the common and static layers in the early part of Dockerfile, and customized and user-defined layers in the late part, thus making the building (and also sharing, as will be introduced later) of the images more efficient. 
 
 \subsection{Docker Image Management}
 
