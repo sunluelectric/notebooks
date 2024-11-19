@@ -393,7 +393,7 @@ The \textit{html} file \textit{index.html} is given below.
 	</body>
 </html>
 \end{lstlisting}
-Use \verb|docker copy| to copy the two files to the designed locations in the container as follows.
+Use \verb|docker copy| to copy the two files to the designed locations in the container as follows. Notice that for read-only configuration files, instead of what we are doing now, a good practice is to build them into the read-only image layers. Keep in mind that this serves only as an demonstrative example. More about images are given in later sections.
 \begin{lstlisting}
 $ docker exec simple-web mkdir -p /var/www/html
 $ docker cp default.conf simple-web:/etc/nginx/conf.d/default.conf
@@ -430,7 +430,9 @@ where \verb|-p <host machine port>:<container port>| is used to map ports. Notic
 
 \section{Docker Volume} \label{ch:vac:subsec:dockervolume}
 
-As introduced earlier, \verb|docker cp| can be used to transfer data into and out of a container. An alternative way of accessing docker container data from the host machine is to use docker volume. Docker volume is used to mount host machine hard drive to container storage. Details are introduced below.
+As introduced earlier, when a container is running, the files in the container can be accessed bidirectionally using \verb|docker cp|. Notice that the container layer data will disappear once the container is removed. Therefore, the user needs to apply \verb|docker cp| on important data from container to the host machine before shutting it down.
+
+For permanent application data that should persist even if the container is removed, a better practice is to use docker volume. Docker volume is used to mount host machine hard drive to container storage. Details are introduced below.
 
 To create a docker volume, use
 \begin{lstlisting}
@@ -592,7 +594,11 @@ With the Dockerfile ready, use \verb|docker build| to build an image. An example
 \begin{lstlisting}
 $ docker build <path/url> -t <image name>
 \end{lstlisting}
-where \verb|<path/url>| is the path or URL to the directory where the Dockerfile locates (does not need to contain ``\verb|/Dockerfile|'' in its end), and \verb|-t| gives a tag, in this case an image name, to the image to build.
+or
+\begin{lstlisting}
+$ docker build <path/url> -t <user name>/<image name>:<tag>
+\end{lstlisting}
+where \verb|<path/url>| is the path or URL to the directory where the Dockerfile locates (does not need to contain ``\verb|/Dockerfile|'' in its end), and \verb|-t| gives a tag, in this case an image name, to the image to build. For the convenience of sharing, it is recommended that all images to be pushed to a public registry (such as Docker Hub) shall be tagged with user name and version. Notice that the tag can be changed later after the image is built.
 
 It is worth mentioning that \verb|docker build| builds the images by layers in the Dockerfile, and it will not re-build the same layer to which point no changes are made. This feature suggests that we should put the common and static layers in the early part of Dockerfile, and customized and user-defined layers in the late part, thus making the building (and also sharing, as will be introduced later) of the images more efficient. 
 
@@ -620,6 +626,7 @@ Use the following commands to list down or remove images.
 \begin{lstlisting}
 $ docker image ls
 $ docker image rm <image name>
+$ docker rmi <image name> # same as docker image rm
 $ docker image prune # remove all problematic images
 $ docker image prune -a # remove all unused images
 \end{lstlisting}
@@ -631,6 +638,13 @@ $ docker image inspect <image name>
 \end{lstlisting}
 
 \section{Docker Hub}
+
+There are two ways to share an image:
+\begin{itemize}
+	\item Share the Dockerfile and APP source code so that the receiver can build docker image from his end.
+	\item Share the image directly.
+\end{itemize}
+It is often more convenient to share the built image instead of the Dockerfile and the source code. However, a docker image is stored and managed by layers and cannot be shared simply by file transfer. 
 
 Docker hub is a commonly used server for storing and sharing docker images. It is also the default remote repository server of docker engine. However, do notice that docker hub is not the only remote docker image server. Some alternatives are Amazon Elastic Container Registry, Red hat Quay, Azure Container Registry, Google Container Registry, etc.
 
@@ -650,6 +664,8 @@ Use the following command to push the image to docker hub.
 \begin{lstlisting}
 $ docker push <user name>/<repository name>
 \end{lstlisting}
+
+Notice that when using \verb|docker run| on an image with out a specified version and the image is not stored locally, Docker will automatically search and pull the latest version of that image from the remote repository, usually Docker Hub by default. However, if the image already exists locally, Docker simply uses that image and will not automatically check the remote repository for the latest version. To update the local image, manually use \verb|docker pull| to pull the latest or specific version of the image from the remote repository.
 
 \section{Portainer}
 
