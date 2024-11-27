@@ -100,7 +100,7 @@ Finally, container orchestration is the software that strategically deploy, moni
 
 Notice that though container runtime is always a must-have, container engine and container orchestration are not.
 
-\section{Docker Container} \label{ch:vac:sec:dc}
+\section{Docker Container Basics} \label{ch:vac:sec:dc}
 
 This section introduces docker. Notice that though being famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine brand. Many tools and technologies of docker are used in container runtimes and container engines of other brands.
 
@@ -323,7 +323,7 @@ where the user can choose to list down all containers or a specified container. 
 \begin{lstlisting}
 $ docker inspect <container>
 \end{lstlisting}
-Finally, to check the logs of a container (e.g., its standard output to the console), use
+Finally, to check the logs of a container such as its standard output or error message, use
 \begin{lstlisting}
 $ docker logs <container>
 \end{lstlisting}
@@ -368,7 +368,9 @@ $ docker run -p <host machine port>:<container port> <image>
 \end{lstlisting}
 when starting a container. To publish multiple ports, use multiple \verb|-p| flags in a command.
 
-\subsection{An Example}
+More about containerized application connectivity to the internet, to the host machine and to other containerized applications are introduced in later sections.
+
+\subsection{An Example: Deploy a Containerized Application}
 
 An example of setting up a web server in containers from scratch is given in this section. For simplicity, everything happens on a single physical server. Only one container is used and the load balancer and the shared services are not included in the example.
 
@@ -393,7 +395,7 @@ The \textit{html} file \textit{index.html} is given below.
 	</body>
 </html>
 \end{lstlisting}
-Use \verb|docker copy| to copy the two files to the designed locations in the container as follows. Notice that for read-only configuration files, instead of what we are doing now, a good practice is to build them into the read-only image layers. Keep in mind that this serves only as an demonstrative example. More about images are given in later sections.
+Use \verb|docker copy| to copy the two files to the designed locations in the container as follows. Notice that for read-only configuration files, unlike what we are doing now, a good practice is to build them into the read-only image layers. Keep in mind that this serves only as an demonstrative example. More about images are given in later sections.
 \begin{lstlisting}
 $ docker exec simple-web mkdir -p /var/www/html
 $ docker cp default.conf simple-web:/etc/nginx/conf.d/default.conf
@@ -428,48 +430,144 @@ $ docker run -dt --name web01 -p 80:80 simple-web-image
 \end{lstlisting}
 where \verb|-p <host machine port>:<container port>| is used to map ports. Notice that different from the previous container ``\textit{simple-web}'', the new container ``\textit{web01}'' IP address port 80 is mapped with the port 80 of the host machine. Therefore, the web page hosted in ``\textit{web01}'' can be accessed not only by the host machine, but also by other machines in the same network with the host machine.
 
-\section{Docker Volume} \label{ch:vac:subsec:dockervolume}
+\section{Docker Volume and Bind Mount} \label{ch:vac:subsec:dockervolume}
 
-As introduced earlier, when a container is running, the files in the container can be accessed bidirectionally using \verb|docker cp|. Notice that the container layer data will disappear once the container is removed. Therefore, the user needs to apply \verb|docker cp| on important data from container to the host machine before shutting it down.
+When a container is running, files inside it can be accessed or copied bidirectionally using the \verb|docker cp| command. However, all data created or modified during the container's life cycle resides in the container's writable layer. More about the concept of layers are introduced in later section. If the container is removed, all data stored in its writable layer is also lost.
 
-For permanent application data that should persist even if the container is removed, a better practice is to use docker volume. Docker volume is used to mount host machine hard drive to container storage. Details are introduced below.
+To ensure data persistence, it is best practice to use Docker volumes or bind mounts. Both methods link storage on the host machine to the container, allowing data to persist even if the container is removed.
+\begin{itemize}
+  \item Docker volumes are fully managed by Docker. The user does not directly interact with the storage on the host machine. There are two types of docker volumes, the anonymous volume and the named volume.
+  \item Bind mounts, on the other hand, allow the user to specify and manage the storage location on the host machine, providing direct control over the data.
+\end{itemize}
+
+In addition to data persistence, named docker volumes and bind mount can also play as a hub to shared data among multiple containers, which facilitates data exchange and allows containers to work on the same dataset. 
+
+\subsection{Volume}
+
+In this section, we only consider named docker volume.
 
 To create a docker volume, use
 \begin{lstlisting}
 $ docker volume create <volume>
 \end{lstlisting}
+Notice that docker volume is fully managed by docker. The user cannot, and does not need to specify where the data should be stored in the host machine.
+
 To list down volumes and to inspect a volume, use
 \begin{lstlisting}
 $ docker volume ls
 $ docker volume inspect <volume>
 \end{lstlisting}
-respectively. Finally to remove a volume or all volumes, use
+respectively. Notice that when using \verb|docker volume inspect|, docker gives the mount point of the volume. However, the mount point is often a place in a virtual machine that docker creates, therefore, difficult to locate in the host machine. Like said earlier, the user should not access the data of a volume from the host machine directly.
+
+Finally to remove specific an unused volume(s) or all unused volumes, use
 \begin{lstlisting}
 $ docker volume rm <volume>
 $ docker volume prune
 \end{lstlisting}
-respectively.
+respectively. When a volume is removed, all the data is lost.
 
 When starting a container from an image, volumes can be mapped with the internal storage inside the container by using \verb|-v| flag as follows
 \begin{lstlisting}
-$ docker run -v <volume>:<container-internal-path>[:ro] <image>
+$ docker run -v <volume>:<container-path>[:ro] <image>
 \end{lstlisting}
-which should mount \verb|<volumn>| to \verb|<container internal path>|. The optional \verb|:ro| can be specified if it is a read-only volume. Instead of using a volume name, the path to a directory in the host machine can also be used, in which case the specified directories in the host machine and in the container should be synchronized.
+which should mount \verb|<volumn>| to \verb|<container internal path>|. If \verb|<volumn>| is not created before hand, docker will create a docker volumn with the name. The optional \verb|:ro| can be used if it is a read-only volume, i.e., the container can only read from the volume but not write back to the volume. This can become handy if the volume is shared by multiple containers and only one of them is allowed to writer to the volume while others being only the listener.
 
-Docker volume guarantees data persistence in containerized applications. When a docker container is removed, any data written to the container's writable layer is lost. Docker volumes, however, are stored outside of the container's writable layer, allowing data to persist even after the container is removed. This persistence is particularly important for applications that require permanent storage, such as databases.
+Notice that if not specifying the volume name when using flag \verb|-v|, i.e.,
+\begin{lstlisting}
+$ docker run -v :<container-path>[:ro] <image>
+\end{lstlisting}
+an anonymous volume will be created and used. Further more, if \verb|--rm| is used, when the container is stopped, the container together with the anonymous volume will be removed. A use case of anonymous volume is given in the later section.
 
-Moreover, docker volumes can be shared among multiple containers, which facilitates data exchange and allows containers to work on the same dataset. Therefore, docker volumes are not just a tool for data persistence, but also an effective mechanism for data sharing and collaboration among containers.
+\subsection{Bind Mount}
 
-The data persists in the docker host, and from the container's perspective, it is treated as a mounted volume. Hence, the data is not duplicated physically.
+Bind mount works similarly as docker volume, except that the user controls the location on the host machine where the data is persisted. Recall
+\begin{lstlisting}
+$ docker run -v <volume>:<container-path>[:ro] <image>
+\end{lstlisting}
+which associate a named docker volume to the path in the container. Instead of \verb|<volume>|, specify the path in the host machine as follows
+\begin{lstlisting}
+$ docker run -v <host-machine-path>:<container-path>[:ro] <image>
+\end{lstlisting}
+in which case docker will persist and synchronize the data on the paths inside and outside the container. Quotation marks can be used \verb|"<host-machine-path>"| if there are spaces or special characters in the host machine path. Notice that the specified host machine path should be accessible by docker. Likewise, the optional \verb|:ro| can be used to prevent the container from overwriting the host machine.
 
+Bind mount is often used in development stage where the developer wants to map application source code or data on his host machine into the container directly. When the application is ready for shipping, the consolidated source code and data should be built into the image. You cannot expect the end user to have a separate copy of the source code and data on his machine, and to use bind mount each time he starts the application. 
+
+\subsection{Multiple Volumes}
+
+It is possible to run a container with multiple \verb|-v| flags, each pointing to a different path in the container. Should there be any clashes, the rules with more specific path wins. For example, consider
+\begin{lstlisting}
+-v <volume or path 1>:/app -v <volume or path 2>:/app/data
+\end{lstlisting} 
+used together in a \verb|docker run| command. In this example, \verb|/app/data| will be mounted to \verb|<volume or path 2>| and everything else in \verb|/app| to \verb|<volume or path 1>|. 
+
+Consider
+\begin{lstlisting}
+-v <volume or path 1>:/app -v /app/data
+\end{lstlisting} 
+which mount an anonymous volume to \verb|/app/data| to protect it from being overwritten by any content in \verb|<volume or path 1>|. This is a good use case of anonymous volume.
+
+\section{Container Communication}
+
+In practice, a containerized application needs to communicate with applications running outside the container to request services such as API calls. Commonly seen use cases are as follows.
+\begin{itemize}
+	\item Containerized application requests services from the Internet.
+	\item Containerized application requests services from the host machine, for example, from a database deployed on the host machine.
+	\item Containerized application requests services from other containerized applications.
+\end{itemize}
+
+With proper port mapping using \verb|-p|, the communication with the Internet is automatically enabled. Therefore, the focus of this section is mainly on data exchange and API calls between the container and the host machine or other containers.
+
+\subsection{Communication with Host Machine}
+
+The containerized application may request services from the host machine. In this case, the application code needs to be modified to enable communications with the host machine. An example is given below.
+
+Consider a simple scenario where the containerized application needs to send a request to the host machine to trigger an API call of MongoDB. Notice that the MongoDB is installed on the host machine and not in the container.
+
+If the application were running on the host machine instead of in a container, it can communicate with the MongoDB server using a connecting string that looks like the following
+\begin{lstlisting}
+'mongodb://localhost:27017/<database name>'	
+\end{lstlisting}
+and it should be part of the application code. However, it would not work if the same code is used in the containerized application. The code needs to be modified as follows.
+\begin{lstlisting}
+'mongodb://host.docker.internal:27017/<database name>'	
+\end{lstlisting}
+where \verb|host.docker.internal| is a recognized domain by docker that refers to the host machine. Docker translates the domain to the IP address of the host machine.
+
+Notice that \verb|host.docker.internal| can be used to refer to the host machine not only with MongoDB requests, but also with other requests such as a general HTTP request.
+
+\subsection{Communication with Other Containers}
+
+As a basic solution, cross container communication can be done following the example given below. Notice that this is not a common practice in production environment as it is not robust and efficient.
+
+Consider a simple scenario where there are two containers, one running the application and the other hosting a MongoDB. 
+
+The container with MongoDB deployment is started as follows.
+\begin{lstlisting}
+$ docker run -d --name mongodb mongo 	
+\end{lstlisting}
+where \verb|mongo| is the official docker image for MongoDB on Docker Hub.
+
+The IP address of the MongoDB container can be found using
+\begin{lstlisting}
+$ docker container inspect mongodb	
+\end{lstlisting}
+where \verb|mongodb| is the name of the container specified in the earlier command. In the result of the inspection, look for \verb|IPAddress| under \verb|NetworkSettings|.
+
+Then in the application code, replace \verb|localhost| in the connecting string
+\begin{lstlisting}
+'mongodb://localhost:27017/<database name>'	
+\end{lstlisting}
+with the IP address of the container.
+
+Notice that each time a container is deployed, its network settings are done by docker and they differ from machine to machine. Therefore, this basic approach only works temporarily in development environment and should not be used in the production environment.
+
+Docker allows the user to configure the container networks. This is a more preferred approach and it makes things easier than the basic approach introduced earlier.
 
 \section{Docker Image} \label{ch:vac:sec:di}
 
-Container image related operations are introduced in this section.
-
-\subsection{Docker Image Creation from Dockerfile}
-
 Images are used to create containers. An image performs like a blueprint that encapsulates all the necessary information needed to spawn a container. It includes initial configurations, requisite libraries, and other pertinent metadata. Docker images are highly portable and can be shared across various machines and platforms. This section delves deeper into the construction and functionality of docker images.
+
+\subsection{Dockerfile Programming}
 
 An image shall contain everything needed to create and initialize a container. This includes but not limited to:
 \begin{itemize}
@@ -477,24 +575,22 @@ An image shall contain everything needed to create and initialize a container. T
   \item Files to support the application
   \item Libraries, tools and dependencies
 \end{itemize}
-In addition, an image shall be designed and organized in such a way that it is migratable, reusable and light, and can be used to easily populate large number of containers. For better inheritability, an image might be based on another existing image, which is called its parent image. An image with no parent, such as the official \textit{hello-world} image from docker bub, is called a base image.
+In addition, an image shall be designed and organized in such a way that it is portable, reusable and light, and can be used to easily populate large number of containers. For better inheritability, an image might be based on another existing image, which is called its parent image. An image with no parent, such as the official \textit{hello-world} image from docker bub, is called a base image.
 
-The Dockerfile is a text document that serves as the blueprint for constructing a docker image. Generally speaking, a Dockerfile follows the following flow:
+The most common and flexible way to create a docker image is to build from Dockerfile. The Dockerfile is a text document that serves as the blueprint for constructing a docker image. Generally speaking, a Dockerfile follows the following flow:
 \begin{enumerate}[(1)]
 	\item Specify base image
 	\item Add additional configurations
 	\begin{itemize}
 		\item Setup file system
 		\item Install dependencies and other programs
-		\item Setup working directory
-		\item Handle access control
 		\item ...
 	\end{itemize}
 	\item Specify startup command
 \end{enumerate}
 A more detailed step-by-step guidance example is given later. The relationship between Dockerfile, image and container is illustrated in Fig. \ref{ch:vac:fig:dockerfiletoimage}. Notably, the Dockerfile itself isn't included within the resulting image.
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/dockerfiletoimage.png}
 	\caption{A demonstration of how Dockerfile, image and container link to each other.} \label{ch:vac:fig:dockerfiletoimage}
@@ -502,7 +598,20 @@ A more detailed step-by-step guidance example is given later. The relationship b
 
 Since a docker image's primary role is to serve as a template for containers, many Dockerfile commands appear like a ``step-by-step'' recipe for container creation. Each instruction corresponds to an ``image layer''. An image is, in essence, an amalgamation of these layers. It is stored and distributed in this format. If images share layers (for instance, different versions of the same app), these shared layers are not saved or transferred redundantly, hence significantly reducing image sizes. More details can be found at \textit{https://docs.docker.com/storage/storagedriver/}.
 
-Docker containers employ a special file system known as the Union File System (UFS), which is well suited to the ``layer'' concept. UFS facilitates file sharing between the container and the host machine, along with combining read-only upper layers and writable lower layers, among other functions. A demonstration to illustrate this concept is given later in Fig. \ref{ch:vac:fig:dockerlayerdemo}.
+\begin{shortbox}
+\Boxhead{Docker Image Layers}
+
+Docker containers employ a special file system known as the Union File System (UFS), which is well suited to the ``layer'' concept. UFS facilitates file sharing between the container and the host machine, along with combining read-only upper layers and writable lower layers, among other functions. 
+
+A demonstration to illustrate this concept is given in Fig. \ref{ch:vac:fig:dockerlayerdemo}.
+
+\end{shortbox}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/dockerlayerdemo.png}
+	\caption{A demonstration of docker image layer structure.} \label{ch:vac:fig:dockerlayerdemo}
+\end{figure}
 
 Just as a quick example, the Dockerfile to build the official \textit{hello-world} image from docker hub looks like the following.
 \begin{lstlisting}
@@ -510,7 +619,7 @@ FROM scratch
 COPY hello /
 CMD ["/hello"]
 \end{lstlisting}
-Like other computer languages, Dockerfiles have reserved keywords, environment variables, and syntax rules. Only the basics of constructing a Dockerfile are introduced in this section. More details can be found in the Docker reference on the official website. In the example above, \verb|FROM scratch| signifies that this image is a base image without a parent. The \verb|COPY hello /| instruction copies the \textit{hello} binary script from the image to the root directory of the container. Lastly, \verb|CMD ["/hello"]| runs the \textit{hello} binary script.
+In the example above, \verb|FROM scratch| signifies that this image is a base image without a parent. The \verb|COPY hello /| instruction copies the \textit{hello} binary script from the image to the root directory of the container. Lastly, \verb|CMD ["/hello"]| runs the \textit{hello} binary script.
 
 In general, a typical Dockerfile includes the following instructions to build an image. These instructions allow the image to know how to create a container, automatically construct the file system directory structure, install necessary packages, and run the app:
 \begin{enumerate}[(1)]
@@ -520,38 +629,54 @@ In general, a typical Dockerfile includes the following instructions to build an
   \item Copy files.
   \item Configure registry.
   \item Install packages.
-  \item Copy more files after package installation.
+  \item Copy more files after package installation. (Create \verb|.dockerignore| file and specifies the files you would rather not to be copied to the container, to prevent any overwriting to the earlier installed packages.)
   \item Switch to the correct user.
   \item Expose port.
   \item Run the application.
 \end{enumerate}
 
-The keywords to be used in a Dockerfile to realize the above instructions, such as \verb|FROM|, \verb|RUN|, and many more, are explained in Table \ref{ch:vac:tab:keywordsdockerfile}. 
+The commonly used keywords to be used in a Dockerfile to realize the above instructions, such as \verb|FROM|, \verb|RUN|, are explained in Table \ref{ch:vac:tab:keywordsdockerfile}. 
 
-It is worth highlighting the distinction between \verb|RUN| and \verb|CMD|. The \verb|RUN| command is executed during the building of the image, which creates a virtual representation of the environment to run the service. Therefore, \verb|RUN| is used to prepare the environment, for example, to install necessary libraries. 
-
-On the other hand, command \verb|CMD| simply specifies the default command to run when the container starts. Its content is executed not during the build of the image, but reserved until the container is launched.The contents in \verb|CMD| can even be overwritten if the user wishes to do so.
+It is worth highlighting the distinction between \verb|RUN| and \verb|CMD|. The \verb|RUN| command is executed during the building of the image, which creates a virtual representation of the environment to run the service. Therefore, \verb|RUN| is used to prepare the environment, for example, to install necessary libraries. On the other hand, command \verb|CMD| simply specifies the default command to run when the container starts. It is in built together with the image, but not considered as a read-only image layer. Indeed, the contents in \verb|CMD| can even be overwritten if the user wishes to do so when \verb|docker run| executes.
 
 \begin{table}[!htbp]
 	\centering \caption{Critical keywords used in a Dockerfile.}\label{ch:vac:tab:keywordsdockerfile}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Syntax & Description \\ \hline
-		\verb|FROM <image>| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instructions, in which case the last \verb|FROM| statement is the final base image and the earlier \verb|FROM| instructions creates intermediate images that can be used in the final image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image is used. \\ 
+		\verb|FROM <image>[:<tag>]| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instructions for multi-stage build, in which case the last \verb|FROM| statement is the base image of the outcome image and the earlier \verb|FROM| instructions creates intermediate images that can be used by the outcome image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image is used. \\ 
 		\verb|RUN <command>| & Execute a shell command using \verb|/bin/sh -c|. \\ 
 		\verb|WORKDIR <path>| & Set the working directory from the point onward. This prepares the working directory for the upcoming \verb|RUN|, \verb|COPY|, etc., commands. \\ 
 		\verb|ADD <src> <dest>| & Add (Copy) \verb|<src>|, either a directory/file or URL, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. \\ 
 		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ 
 		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ 
-		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\ 
+		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\
+        \verb|VOLUME ["<path>"]| & Attaches an anonymous volume to the specified path inside the container. \\
 		\verb|CMD ["<exe>", "p1", ...]| & The user-script command. This is the last instruction in the Dockerfile that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. This user-script can be overwritten by \texttt{docker run <image> <other commands>} when running the container. \\
 		\hline
 	\end{tabularx}
 \end{table}
 
-Besides Table \ref{ch:vac:tab:keywordsdockerfile}, there are other Dockerfile keywords that can significantly simplify the design and maintenance of the image. For example, \verb|ENV <key>=<value>| assign a value to an environmental variable; \verb|LABEL <key>="<value>"| assigns a tag to the image, which can be displayed when \verb|docker inspect <container>| is used.
+Besides Table \ref{ch:vac:tab:keywordsdockerfile}, there are other Dockerfile keywords that can significantly simplify the design and maintenance of the image. For example, \verb|ENV <key>=<value>| assign a value to an environmental variable which can later be referred as \verb|$<key>| in the Dockerfile. An example is given below.
+\begin{lstlisting}
+ENV PORT=80
+EXPOSE $PORT # this is interpreted as EXPOSE 80
+\end{lstlisting}
+Notice that environmental variables are accessible by the application code. They can be overwritten during \verb|docker run|. This means that the user can potentially use environmental variable to dynamically change the behavior of the application in the container when using \verb|docker run|. There are several benefits of doing this, for example, to enhance security. For example, if there is a password that the user needs to key in during the start of the container, the developer may want to put it as environmental variable and let the user to fill in, instead of hardcode the password in Dockerfile.
 
-Examples of Dockerfiles are given below, one from \textit{docs.docker.com} and the other from Linux Academy. The docker image layer structure of the second example is given in Fig. \ref{ch:vac:fig:dockerlayerdemo} as a demonstration. Notice that in Fig. \ref{ch:vac:fig:dockerlayerdemo}, \verb|bootfs| refers to the ``boot file system'', including the bootloader and the Linux kernel. Upon run, a container layer will be added to the image, as shown by the blue dashed box in Fig. \ref{ch:vac:fig:dockerlayerdemo}. In the container, all the changes made is saved into the container layer.
+Another useful features of Dockerfile is the Dockerfile argument. It leaves a ``space'' in the Dockerfile that the developer can later fill in when he builds the image. An example is given below.
+\begin{lstlisting}
+ARG DEFAULT_PORT[=80]
+ENV $DEFAULT_PORT
+EXPOSE $PORT
+\end{lstlisting}
+The default value \verb|[=80]| is optional. When building the image, use \verb|--build-arg <variable-name>=<value>| to override the argument value. Notice that unlike environmental variables, Dockerfile arguments are not accessible by the application code or by the \verb|CMD| instruction.
+
+Additionally, \verb|LABEL <key>="<value>"| assigns a tag to the image, which can be displayed when \verb|docker inspect <container>| is used.
+
+Dockerfile programming can be very flexible and complicated at the same time. The advanced materials goes beyond the scope of this notebook.
+
+Examples of Dockerfiles are given below, one from \textit{docs.docker.com} and the other from Linux Academy. The docker image layer structure of the second example is given in Fig. \ref{ch:vac:fig:dockerlayerdemo} as a demonstration. Notice that in Fig. \ref{ch:vac:fig:dockerlayerdemo}, \verb|bootfs| refers to the ``boot file system'', including the bootloader and the Linux kernel. Upon creation of a container using \verb|docker run|, a container layer will be added to the image, as shown by the blue dashed box in Fig. \ref{ch:vac:fig:dockerlayerdemo}. In the container, all the changes made is saved into the container layer.
 
 To generate a new image to include the changes made in the container, use \verb|docker commit|, which essentially commits the container layer as the latest image layer in the new image, as shown by the green dashed box in Fig. \ref{ch:vac:fig:dockerlayerdemo}.
 
@@ -583,12 +708,6 @@ USER node
 EXPOSE 8080
 CMD ["node", "index.js"]
 \end{lstlisting}
-
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=350pt]{chapters/part-3/figures/dockerlayerdemo.png}
-	\caption{A demonstration of docker image layer structure using the aforementioned example.} \label{ch:vac:fig:dockerlayerdemo}
-\end{figure}
 
 With the Dockerfile ready, use \verb|docker build| to build an image. An example is given as follows.
 \begin{lstlisting}
@@ -637,7 +756,7 @@ Use the following command to inspect an image, and list down its metadata detail
 $ docker image inspect <image name>
 \end{lstlisting}
 
-\section{Docker Hub}
+\subsection{Docker Image Sharing with Docker Hub}
 
 There are two ways to share an image:
 \begin{itemize}
@@ -667,9 +786,11 @@ $ docker push <user name>/<repository name>
 
 Notice that when using \verb|docker run| on an image with out a specified version and the image is not stored locally, Docker will automatically search and pull the latest version of that image from the remote repository, usually Docker Hub by default. However, if the image already exists locally, Docker simply uses that image and will not automatically check the remote repository for the latest version. To update the local image, manually use \verb|docker pull| to pull the latest or specific version of the image from the remote repository.
 
-\section{Portainer}
+\section{Multi-Container Ochestration}
 
 As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container orchestrators such as Protainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
+
+\subsection{Protainer}
 
 Portainer is an open-source container management tool. It has a web-based dashboard user interface. Notice that Portainer itself also runs in a container.
 
@@ -710,6 +831,3 @@ After creating the admin user and logging in, the status of images, containers a
 \end{figure}
 
 In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
-
-
-
