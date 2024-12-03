@@ -468,15 +468,15 @@ respectively. When a volume is removed, all the data is lost.
 
 When starting a container from an image, volumes can be mapped with the internal storage inside the container by using \verb|-v| flag as follows
 \begin{lstlisting}
-$ docker run -v <volume>:<container-path>[:ro] <image>
+$ docker run -v <volume>:<container path>[:ro] <image>
 \end{lstlisting}
 which should mount \verb|<volumn>| to \verb|<container internal path>|. If \verb|<volumn>| is not created before hand, docker will create a docker volumn with the name. The optional \verb|:ro| can be used if it is a read-only volume, i.e., the container can only read from the volume but not write back to the volume. This can become handy if the volume is shared by multiple containers and only one of them is allowed to writer to the volume while others being only the listener.
 
 Notice that if not specifying the volume name when using flag \verb|-v|, i.e.,
 \begin{lstlisting}
-$ docker run -v :<container-path>[:ro] <image>
+$ docker run -v <container-path> <image>
 \end{lstlisting}
-an anonymous volume will be created and used. Further more, if \verb|--rm| is used, when the container is stopped, the container together with the anonymous volume will be removed. A use case of anonymous volume is given in the later section.
+an anonymous volume will be created and used. Further more, if \verb|--rm| is used, when the container is stopped, the container together with the anonymous volume will be removed. A use case of anonymous volume is given in the later section. Anonymous volumes can also be set up in the Dockerfile.
 
 \subsection{Bind Mount}
 
@@ -491,6 +491,8 @@ $ docker run -v <host-machine-path>:<container-path>[:ro] <image>
 in which case docker will persist and synchronize the data on the paths inside and outside the container. Quotation marks can be used \verb|"<host-machine-path>"| if there are spaces or special characters in the host machine path. Notice that the specified host machine path should be accessible by docker. Likewise, the optional \verb|:ro| can be used to prevent the container from overwriting the host machine.
 
 Bind mount is often used in development stage where the developer wants to map application source code or data on his host machine into the container directly. When the application is ready for shipping, the consolidated source code and data should be built into the image. You cannot expect the end user to have a separate copy of the source code and data on his machine, and to use bind mount each time he starts the application. 
+
+Following that spirit, a developer can create a ``utility container''. He can start a container in \verb|-it| mode, install everything he needs to develop an application in that container, and develop the application there. Using bind mount, all the code he writes will be mirrored to his host machine. With this approach, he does not need to install all the dependencies of the application in his host machine.
 
 \subsection{Multiple Volumes}
 
@@ -537,6 +539,8 @@ Notice that \verb|host.docker.internal| can be used to refer to the host machine
 
 \subsection{Communication with Other Containers}
 
+Two containers running on the same machine can always talk to each other via the host machine. However, this may become inefficient in some applications. Therefore, we need to investigate on direct container-to-container communication.
+
 As a basic solution, cross container communication can be done following the example given below. Notice that this is not a common practice in production environment as it is not robust and efficient.
 
 Consider a simple scenario where there are two containers, one running the application and the other hosting a MongoDB. 
@@ -561,7 +565,33 @@ with the IP address of the container.
 
 Notice that each time a container is deployed, its network settings are done by docker and they differ from machine to machine. Therefore, this basic approach only works temporarily in development environment and should not be used in the production environment.
 
-Docker allows the user to configure the container networks. This is a more preferred approach and it makes things easier than the basic approach introduced earlier.
+As a more established approach to realize cross container communication, docker allows the user to create container networks. All containers in a container network have reserved IP addresses assigned by docker and they can talk to each other.
+
+To create a container network, use
+\begin{lstlisting}
+$ docker network create <network name>
+\end{lstlisting}
+Then to associate an container with that container network, use \verb|--network| as follows
+\begin{lstlisting}
+& docker run --network <network name>	<image name>
+\end{lstlisting}
+If two containers are put under the same container network, they can talk to each other. 
+
+Consider the earlier example. We can create a container network using
+\begin{lstlisting}
+$ docker network create my-network
+\end{lstlisting}
+and launch MongoDB as a containerized application in the container network using
+\begin{lstlisting}
+$ docker run -d --network my-network --name mongodb mongo
+\end{lstlisting}
+In the application code, use
+\begin{lstlisting}
+'mongodb://mongodb:27017/<database name>'	
+\end{lstlisting}
+as the connecting string, and launch it in the same container network. Docker will automatically resolve \verb|mongodb| as the correct container with that container name when the application sends out the outbound request.
+
+Notice that when using container network for cross container communication, there is no need to do port match using \verb|-p|. Indeed, \verb|-p| is used only when the container needs to talk to the outside world through the host machine. Cross container communication as well as container to host machine communication happens inside the host machine, thus not requiring port mapping.
 
 \section{Docker Image} \label{ch:vac:sec:di}
 
@@ -629,7 +659,7 @@ In general, a typical Dockerfile includes the following instructions to build an
   \item Copy files.
   \item Configure registry.
   \item Install packages.
-  \item Copy more files after package installation. (Create \verb|.dockerignore| file and specifies the files you would rather not to be copied to the container, to prevent any overwriting to the earlier installed packages.)
+  \item Copy more files after package installation.
   \item Switch to the correct user.
   \item Expose port.
   \item Run the application.
@@ -719,7 +749,9 @@ $ docker build <path/url> -t <user name>/<image name>:<tag>
 \end{lstlisting}
 where \verb|<path/url>| is the path or URL to the directory where the Dockerfile locates (does not need to contain ``\verb|/Dockerfile|'' in its end), and \verb|-t| gives a tag, in this case an image name, to the image to build. For the convenience of sharing, it is recommended that all images to be pushed to a public registry (such as Docker Hub) shall be tagged with user name and version. Notice that the tag can be changed later after the image is built.
 
-It is worth mentioning that \verb|docker build| builds the images by layers in the Dockerfile, and it will not re-build the same layer to which point no changes are made. This feature suggests that we should put the common and static layers in the early part of Dockerfile, and customized and user-defined layers in the late part, thus making the building (and also sharing, as will be introduced later) of the images more efficient. 
+It is worth mentioning that \verb|docker build| builds the images by layers in the Dockerfile, and it will not re-build the same layer to which point no changes are made. This feature suggests that we should put the common and static layers in the early part of Dockerfile, and customized and user-defined layers in the late part, thus making the building (and also sharing, as will be introduced later) of the images more efficient.
+
+Use \verb|.dockerignore| to exclude any files that should not be built into the image. Such files may include caches, the Dockerfile itself, etc.
 
 \subsection{Docker Image Management}
 
@@ -786,11 +818,164 @@ $ docker push <user name>/<repository name>
 
 Notice that when using \verb|docker run| on an image with out a specified version and the image is not stored locally, Docker will automatically search and pull the latest version of that image from the remote repository, usually Docker Hub by default. However, if the image already exists locally, Docker simply uses that image and will not automatically check the remote repository for the latest version. To update the local image, manually use \verb|docker pull| to pull the latest or specific version of the image from the remote repository.
 
-\section{Multi-Container Ochestration}
+\section{Multi-Container Orchestration}
 
-As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container orchestrators such as Protainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
+As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container orchestrators such as Portainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
 
-\subsection{Protainer}
+Many applications nowadays are multi-service multi-container applications. This trend has made container orchestration very useful in practice.
+
+\subsection{Docker Compose}
+
+Consider building and launching a multi-container applications. Multiple \verb|docker build| and \verb|docker run| commands need to be executed in specific order, and each command coming with a long list of arguments. Doing this manually can be tedious and introduce a high chance of human error.
+
+A docker compose file is essentially a configuration file in YAML, usually named \verb|docker-compose.yml| (in later versions of docker compose, it can also be named \verb|compose.yml|). It plays as the user script or configuration file that automate the processes. Docker compose can process that configuration file, then build and launch containers accordingly. From that sense, docker compose can be seen as a container orchestration tool. 
+
+This section gives a brief introduction to the preparation of a docker compose file. Examples of docker compose files can be found elsewhere online, such as \texttt{github.com/docker/awesome-compose}. 
+
+A typical docker compose file looks like the following.
+
+\begin{lstlisting}
+version: "<compose file format version>"
+services:
+  <container name 1>:
+    image: "<image name>"
+    container_name: "<container name>"
+    volumes:
+      - <volume name 1>:<container path> # named volume
+      - <container path> # anonymous volume
+      - <host path>:<container path> # bind mount
+      - ...
+    environment:
+      - <variable name 1>=<value 1>
+      - <variable name 2>=<value 2>
+      - ...
+    env_files:
+      - <path to environmental variable file 1>
+      - <path to environmental variable file 2>
+      - ...
+    networks:
+      - <network name>
+    ports:
+      - "<host port>:<contianer post>"
+  <container name 2>:
+    build:
+      context: <path to Dockerfile directory>
+      dockerfile: <name of docker file>
+    volumes:
+      - <volume name 2>:<container path> # named volume
+      - <container path> # anonymous volume
+      - <host path>:<container path> # bind mount
+      - ...
+    environment:
+      - <variable name 1>=<value 1>
+      - <variable name 2>=<value 2>
+      - ...
+    env_files:
+      - <path to environmental variable file 1>
+      - <path to environmental variable file 2>
+      - ...
+    networks:
+      - <network name>
+    ports:
+      - "<host port>:<contianer post>"
+    depends_on:
+      - <container name>
+      - ...
+volumes:
+  <volume name 1>: # for named volumes only
+  <volume name 2>:
+  ...
+\end{lstlisting}
+Some highlights are as follows.
+\begin{itemize}
+	\item \verb|version| tells the the compose file format version. Docker compose will then parse the compose file accordingly. 
+	
+	Different compose file format version may support different fields. If the version field is omitted, the composed file is parsed according to the latest version.
+	
+	\item \verb|services| describes the container(s) to be deployed. Each container is corresponding with a subcomponent under services.
+	
+	For simple containers whose image is readily available without \verb|docker build|, the following fields are commonly used in the subcomponent.
+	
+	\begin{itemize}
+		\item \verb|image| specifies the image.
+		\item \verb|container_name| specifies the container name; if not specified, default names will be used which are still human-readable.
+		\item \verb|volumes| defines volumes and bind mounts.
+		\item \verb|environment| defines environmental variables. 
+		\item \verb|env_file| includes a file inside which are environmental variables.
+		\item \verb|networks| adds the service to a docker network. Notice that this is often not necessary as all the services will be automatically added to the same newly created default docker network by default, unless a network is specified.
+		\item \verb|ports| maps host ports to container ports.
+		\item \verb|depends_on| lists containers that need to be launched before the current container.
+	\end{itemize}
+	
+	In the case where a new image needs to be built before launching the container, docker compose file requires the following fields to build the image.
+	
+	\begin{itemize}
+		\item \verb|build| gives the paths to the docker file.
+		
+		\begin{itemize}
+			\item \verb|context| gives the directory of the docker file. Everything to be built into the image must be in this directory or its subdirectories.
+			\item \verb|dockerfile|: the name of the Dockerfile.
+		\end{itemize}
+		
+		Notice that one can simply use \texttt{build: <context>} if Dockerfile is named \verb|Dockerfile|.
+		
+	\end{itemize}
+	
+	\item \verb|volumes| lists all the named volumes used by the services.
+\end{itemize}
+
+A docker compose file example is given below. This example is taken from \texttt{awesome-compose} on GitHub. 
+\begin{lstlisting}
+version: "3.8"
+services:
+  web:
+    image: nginx
+    volumes:
+      - ./nginx/nginx.conf:/tmp/nginx.conf
+    environment: 
+      - FLASK_SERVER_ADDR=backend:9091  
+    command: /bin/bash -c "envsubst < /tmp/nginx.conf > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'" 
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: flask
+      target: builder
+    # flask requires SIGINT to stop gracefully
+    # (default stop signal from Compose is SIGTERM)
+    stop_signal: SIGINT
+    environment:
+      - FLASK_SERVER_PORT=9091
+    volumes:
+      - ./flask:/src
+    depends_on:
+      -  mongo  
+  mongo:
+    image: mongo
+\end{lstlisting}
+
+Finally, execute docker compose as follows.
+\begin{lstlisting}
+$ docker-compose up -d
+\end{lstlisting}
+if the docker compose file is named as the default name (usually \verb|docker-compose.yml|), or
+\begin{lstlisting}
+$ docker-compose -f <docker compose file name> up -d
+\end{lstlisting}
+if otherwise. Docker images shall be built and containers be launched accordingly. And to shutdown all the services, simply use
+\begin{lstlisting}
+$ docker-compose down
+\end{lstlisting}
+
+Docker compose would not re-build the images by default if it thinks that the images it will use have been built before. To enforce rebuild, consider using \verb|--build| flag. Alternatively, use 
+\begin{lstlisting}
+$ docker-compose build
+\end{lstlisting}
+to build the images in the docker compose file without launching any container.
+
+\subsection{Portainer}
 
 Portainer is an open-source container management tool. It has a web-based dashboard user interface. Notice that Portainer itself also runs in a container.
 
@@ -831,3 +1016,56 @@ After creating the admin user and logging in, the status of images, containers a
 \end{figure}
 
 In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
+
+\section{Container Deployment on the Cloud}
+
+So far we have been discussing container development and local testing. One of the most important selling points of containerization is that it is easy to ship applications. This is because the environment that supports an application is packaged together with the application in the image, which ensures that the application can run consistently whatever the host server is. 
+
+Nevertheless, notice that when the application is pushed to production environment, some adjustments need to be made. To name a few, below is a list of probable adjustments when shipping from development to production.
+
+\begin{itemize}
+	\item Bind mounts should not be used. Use \verb|COPY| to encapsulate all the resources needed, and use volume if data persistence is required.
+	\item Some container setups may need to be changed.
+	\item For multi-container applications, the containers may need to be deployed on multiple hosts.
+\end{itemize}
+
+This section discusses the deployment of containers on the cloud in production environment.
+
+\subsection{Docker-Supporting Hosting Providers}
+
+Assume that the application can run correctly on the host machine. To deploy it on the Internet and allow public access, the first step is to find a docker-supporting hosting provider. There are many such providers, the most popular of which include Amazon Web Services (AWS), Microsoft Azure and Google Cloud. They are not just docker hosting providers but more general cloud services providers.
+
+Details about the cloud services providers and cloud computing are beyond the scope of this notebook. Only the services relevant to container deployment are introduced here. AWS is considered.
+
+\subsection{Container Deployment on VM}
+
+The most intuitive way to deploy containers on AWS is to use EC2. To do that, the following steps are required.
+
+\begin{enumerate}
+	\item Start EC2, and enable SSH access to the EC2 from the local machine.
+	\item Install docker on the EC2 instance.
+	\item Upload the images which have been built in the local machine to the EC2 instance.
+	\item Start the containers on EC2.
+	\item Enable public access to the EC2 by publishing its IP address.
+\end{enumerate}
+
+Notice that this is not the best practice. However, for illustration purpose, we will start with this solution.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
