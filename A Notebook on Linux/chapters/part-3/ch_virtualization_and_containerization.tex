@@ -476,7 +476,8 @@ Notice that if not specifying the volume name when using flag \verb|-v|, i.e.,
 \begin{lstlisting}
 $ docker run -v <container-path> <image>
 \end{lstlisting}
-an anonymous volume will be created and used. Further more, if \verb|--rm| is used, when the container is stopped, the container together with the anonymous volume will be removed. A use case of anonymous volume is given in the later section. Anonymous volumes can also be set up in the Dockerfile.
+an anonymous volume will be created and used. Further more, if \verb|--rm| is used, when the container is stopped, the container together with the anonymous volume will be removed. A use case of anonymous volume is given in the later section.
+ Anonymous volumes can also be set up in the Dockerfile.
 
 \subsection{Bind Mount}
 
@@ -797,21 +798,21 @@ There are two ways to share an image:
 \end{itemize}
 It is often more convenient to share the built image instead of the Dockerfile and the source code. However, a docker image is stored and managed by layers and cannot be shared simply by file transfer. 
 
-Docker hub is a commonly used server for storing and sharing docker images. It is also the default remote repository server of docker engine. However, do notice that docker hub is not the only remote docker image server. Some alternatives are Amazon Elastic Container Registry, Red hat Quay, Azure Container Registry, Google Container Registry, etc.
+Docker Hub is a commonly used server for storing and sharing docker images. It is also the default remote repository server of docker engine. However, do notice that Docker Hub is not the only remote docker image server. Some alternatives are Amazon Elastic Container Registry, Red hat Quay, Azure Container Registry, Google Container Registry, etc.
 
-After registering an account on docker bub, use the following command to login to the docker hub from your local machine.
+After registering an account on docker bub, use the following command to login to the Docker Hub from your local machine.
 \begin{lstlisting}
 $ docker login --username=<user name>
 Passowrd:
 \end{lstlisting}
 
-Assume that there is an image in the local machine, and an empty repository on docker hub. In order to push the local image to the docker hub, the first step is to add the remote repository and the ``\textit{RepoTags}'' in the local image as follows.
+Assume that there is an image in the local machine, and an empty repository on Docker Hub. In order to push the local image to the Docker Hub, the first step is to add the remote repository and the ``\textit{RepoTags}'' in the local image as follows.
 \begin{lstlisting}
 $ docker tag <image name> <user name>/<repository name>:<version>
 \end{lstlisting}
-where \verb|<version>| is a tag usually used to distinguish the different branches or versions of the images on docker hub. For the first image upload, it can simply be \verb|latest|.
+where \verb|<version>| is a tag usually used to distinguish the different branches or versions of the images on Docker Hub. For the first image upload, it can simply be \verb|latest|.
 
-Use the following command to push the image to docker hub.
+Use the following command to push the image to Docker Hub.
 \begin{lstlisting}
 $ docker push <user name>/<repository name>
 \end{lstlisting}
@@ -1017,11 +1018,11 @@ After creating the admin user and logging in, the status of images, containers a
 
 In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
 
-\section{Container Deployment on the Cloud}
+\section{Container Deployment in Production Environment}
 
 So far we have been discussing container development and local testing. One of the most important selling points of containerization is that it is easy to ship applications. This is because the environment that supports an application is packaged together with the application in the image, which ensures that the application can run consistently whatever the host server is. 
 
-Nevertheless, notice that when the application is pushed to production environment, some adjustments need to be made. To name a few, below is a list of probable adjustments when shipping from development to production.
+Nevertheless, when the application is pushed to production environment, some adjustments need to be made. To name a few, below is a list of probable adjustments when shipping from development to production.
 
 \begin{itemize}
 	\item Bind mounts should not be used. Use \verb|COPY| to encapsulate all the resources needed, and use volume if data persistence is required.
@@ -1029,7 +1030,7 @@ Nevertheless, notice that when the application is pushed to production environme
 	\item For multi-container applications, the containers may need to be deployed on multiple hosts.
 \end{itemize}
 
-This section discusses the deployment of containers on the cloud in production environment.
+This section discusses the deployment of containers on the cloud in production environment. Notice that for large scale applications deployment in the production environment, container orchestration tool such as Kubernetes is almost certainly necessary. Kubernetes and its cloud deployment are discussed in the later chapter and they are not considered in this section. 
 
 \subsection{Docker-Supporting Hosting Providers}
 
@@ -1037,7 +1038,7 @@ Assume that the application can run correctly on the host machine. To deploy it 
 
 Details about the cloud services providers and cloud computing are beyond the scope of this notebook. Only the services relevant to container deployment are introduced here. AWS is considered.
 
-\subsection{Container Deployment on VM}
+\subsection{EC2-Based Approach}
 
 The most intuitive way to deploy containers on AWS is to use EC2. To do that, the following steps are required.
 
@@ -1049,13 +1050,37 @@ The most intuitive way to deploy containers on AWS is to use EC2. To do that, th
 	\item Enable public access to the EC2 by publishing its IP address.
 \end{enumerate}
 
-Notice that this is not the best practice. However, for illustration purpose, we will start with this solution.
+Notice that EC2-based deployment is not the best practice as AWS and many other cloud service providers have managed container management services such as Elastic Container Service (ECS) and Elastic Kubernetes Service (EKS). However, for illustration purpose, we will start from EC2-based deployment.
 
+The key steps to launch and connect to a EC2 instance from a Linux local machine are given below.
+\begin{enumerate}
+  \item Create and configure the EC2 instance from AWS dashboard.
+  \item In the last step of EC2 instance configuration, create or select a key pair. The key pair is used later to SSH to the instance. Download the private key pair. The name of the private key pair is by default \verb|<key pair name>.pem|. 
+  \item Change the ACL of the private key pair to \verb|400| to disable public view using \texttt{chmod 400 <key pair name>.pem}.
+  \item Launch the EC2 instance from AWS dashboard. Wait until the instance state becomes ``running''. Locate the public DNS of the instance from the dashboard which usually looks like \texttt{<serial number>.<region>.compute.amazonaws.com}.
+  \item SSH to the EC2 instance using \texttt{ssh -i "<key pair name>.pem" <username>@<public dns>}.
+\end{enumerate}
+To install and start docker on the EC2 instance, use
+\begin{lstlisting}
+$ sudo yum update -y
+$ sudo yum install docker
+$ sudo systemctl start docker
+\end{lstlisting}
+To upload an image from the local machine to the EC2 instance, use Docker Hub as a bridge. The user can then launch containers on the EC2 instance the same way he would do on a local machine. Lastly, to enable public access to the EC2 from HTTP, configure the security group inbound rules attached to the EC2 instance. By default, the only allowed inbound rule is SSH using TCP protocal via port range 22 from all IP addresses. Depending on the applications running on the EC2 instance, the user may want to add more inbound rules, for example, enabling HTTP/HTTPS access via port 80.
 
+For multi-container applications, the user can upload all necessary images to Docker Hub, and on the EC2 instance simply execute a docker compose file. Notice that the docker compose file should use the images on Docker Hub instead of building any on the fly. In production environment, all the images should be pre-built.
 
+The EC2-based approach has some disadvantages compared with ECS and EKS that will be introduced in later sections. There are at least the following disadvantages.
+\begin{itemize}
+  \item Lack of robustness. EC2 belongs to the Infrastructure as a Service (IaaS) family where AWS only supports the infrastructure (in this case, the VM) and not anything running on it (in this case, docker and the containerized application). The user needs to deal with all the ``accidents'' that may break the system such as someone launching a cybor attack on the VM. This makes the solution less robust.
+  \item Difficult to scale. The total computational power of the application depends on the setup of VM which is pre-determined and cannot be easily scaled up or down on the fly.
+  \item Difficult to manage. The user needs to SSH to the VM to audit and upgrade the applications, which can become annoying.
+\end{itemize}
+This makes EC2-based container approach almost always suboptimal compared with ECS and EKS.
 
+\subsection{Managed-Service-Based Approach}
 
-
+ECS and EKS are the recommended manages service of AWS for containerized applications. EKS will be introduced in the later chapter with Kubernetes. This section discusses ECS. 
 
 
 

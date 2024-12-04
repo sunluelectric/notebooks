@@ -438,7 +438,7 @@ claimName: my-pvc
 \end{lstlisting}
 where a new tag \verb|env| is defined under template, specifications, containers. Under the \verb|env| tag, a list is defined containing names and values of the environment variables. The value must be a string, not a numerical number.
 
-\section{Container Deployment in Production Environment}
+\section{Kubernetes Deployment in Production Environment}
 
 With the tools and methodologies introduced so far, we are able to deploy containers in development environment. This is good enough for testing purpose or for small individual projects. However, when comes to enterprise tier projects or collaborative projects, there is often a CI/CD pipeline that standardize the integration and delivery of the containers in production environment. Container orchestration tools such as Kubernetes is often a must have.
 
@@ -482,7 +482,7 @@ $ docker build -t <docker-id>/<image-name>:latest -t <docker-id>/<image-name>:$G
 $ docker push <docker-id>/<image-name>:latest
 $ docker push <docker-id>/<image-name>:$GIT_SHA
 \end{lstlisting}
-Notice that in addition to \verb|:latest|, \verb|:$GIT_SHA| is used as a secondary tag. When pushing the built image to Docker hub, both \verb|:latest| and \verb|:$GIT_SHA| are pushed (although they have identical content). When setting image, the \verb|$GIT_SHA| is used to identify the image just like the version number.
+Notice that in addition to \verb|:latest|, \verb|:$GIT_SHA| is used as a secondary tag. When pushing the built image to Docker Hub, both \verb|:latest| and \verb|:$GIT_SHA| are pushed (although they have identical content). When setting image, the \verb|$GIT_SHA| is used to identify the image just like the version number.
 
 It is recommended not to remove \verb|:latest| in the building command. This is because if someone wants to pull and test the latest image in his server (without knowing the value of \verb|$GIT_SHA| for the latest commit), he is still able to do so using only the image name.
 
