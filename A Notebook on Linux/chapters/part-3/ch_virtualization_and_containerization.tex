@@ -509,91 +509,6 @@ Consider
 \end{lstlisting} 
 which mount an anonymous volume to \verb|/app/data| to protect it from being overwritten by any content in \verb|<volume or path 1>|. This is a good use case of anonymous volume.
 
-\section{Container Communication}
-
-In practice, a containerized application needs to communicate with applications running outside the container to request services such as API calls. Commonly seen use cases are as follows.
-\begin{itemize}
-	\item Containerized application requests services from the Internet.
-	\item Containerized application requests services from the host machine, for example, from a database deployed on the host machine.
-	\item Containerized application requests services from other containerized applications.
-\end{itemize}
-
-With proper port mapping using \verb|-p|, the communication with the Internet is automatically enabled. Therefore, the focus of this section is mainly on data exchange and API calls between the container and the host machine or other containers.
-
-\subsection{Communication with Host Machine}
-
-The containerized application may request services from the host machine. In this case, the application code needs to be modified to enable communications with the host machine. An example is given below.
-
-Consider a simple scenario where the containerized application needs to send a request to the host machine to trigger an API call of MongoDB. Notice that the MongoDB is installed on the host machine and not in the container.
-
-If the application were running on the host machine instead of in a container, it can communicate with the MongoDB server using a connecting string that looks like the following
-\begin{lstlisting}
-'mongodb://localhost:27017/<database name>'	
-\end{lstlisting}
-and it should be part of the application code. However, it would not work if the same code is used in the containerized application. The code needs to be modified as follows.
-\begin{lstlisting}
-'mongodb://host.docker.internal:27017/<database name>'	
-\end{lstlisting}
-where \verb|host.docker.internal| is a recognized domain by docker that refers to the host machine. Docker translates the domain to the IP address of the host machine.
-
-Notice that \verb|host.docker.internal| can be used to refer to the host machine not only with MongoDB requests, but also with other requests such as a general HTTP request.
-
-\subsection{Communication with Other Containers}
-
-Two containers running on the same machine can always talk to each other via the host machine. However, this may become inefficient in some applications. Therefore, we need to investigate on direct container-to-container communication.
-
-As a basic solution, cross container communication can be done following the example given below. Notice that this is not a common practice in production environment as it is not robust and efficient.
-
-Consider a simple scenario where there are two containers, one running the application and the other hosting a MongoDB. 
-
-The container with MongoDB deployment is started as follows.
-\begin{lstlisting}
-$ docker run -d --name mongodb mongo 	
-\end{lstlisting}
-where \verb|mongo| is the official docker image for MongoDB on Docker Hub.
-
-The IP address of the MongoDB container can be found using
-\begin{lstlisting}
-$ docker container inspect mongodb	
-\end{lstlisting}
-where \verb|mongodb| is the name of the container specified in the earlier command. In the result of the inspection, look for \verb|IPAddress| under \verb|NetworkSettings|.
-
-Then in the application code, replace \verb|localhost| in the connecting string
-\begin{lstlisting}
-'mongodb://localhost:27017/<database name>'	
-\end{lstlisting}
-with the IP address of the container.
-
-Notice that each time a container is deployed, its network settings are done by docker and they differ from machine to machine. Therefore, this basic approach only works temporarily in development environment and should not be used in the production environment.
-
-As a more established approach to realize cross container communication, docker allows the user to create container networks. All containers in a container network have reserved IP addresses assigned by docker and they can talk to each other.
-
-To create a container network, use
-\begin{lstlisting}
-$ docker network create <network name>
-\end{lstlisting}
-Then to associate an container with that container network, use \verb|--network| as follows
-\begin{lstlisting}
-& docker run --network <network name>	<image name>
-\end{lstlisting}
-If two containers are put under the same container network, they can talk to each other. 
-
-Consider the earlier example. We can create a container network using
-\begin{lstlisting}
-$ docker network create my-network
-\end{lstlisting}
-and launch MongoDB as a containerized application in the container network using
-\begin{lstlisting}
-$ docker run -d --network my-network --name mongodb mongo
-\end{lstlisting}
-In the application code, use
-\begin{lstlisting}
-'mongodb://mongodb:27017/<database name>'	
-\end{lstlisting}
-as the connecting string, and launch it in the same container network. Docker will automatically resolve \verb|mongodb| as the correct container with that container name when the application sends out the outbound request.
-
-Notice that when using container network for cross container communication, there is no need to do port match using \verb|-p|. Indeed, \verb|-p| is used only when the container needs to talk to the outside world through the host machine. Cross container communication as well as container to host machine communication happens inside the host machine, thus not requiring port mapping.
-
 \section{Docker Image} \label{ch:vac:sec:di}
 
 Images are used to create containers. An image performs like a blueprint that encapsulates all the necessary information needed to spawn a container. It includes initial configurations, requisite libraries, and other pertinent metadata. Docker images are highly portable and can be shared across various machines and platforms. This section delves deeper into the construction and functionality of docker images.
@@ -819,13 +734,96 @@ $ docker push <user name>/<repository name>
 
 Notice that when using \verb|docker run| on an image with out a specified version and the image is not stored locally, Docker will automatically search and pull the latest version of that image from the remote repository, usually Docker Hub by default. However, if the image already exists locally, Docker simply uses that image and will not automatically check the remote repository for the latest version. To update the local image, manually use \verb|docker pull| to pull the latest or specific version of the image from the remote repository.
 
-\section{Multi-Container Orchestration}
+\section{Multi-Container Deployment and Orchestration}
+
+This section discusses the deployment and orchestration of multi-container applications. Different methods to enable container-to-host and container-to-container communications are introduced. Docker compose, a useful tool to automatically configure and start containers of a multi-container application, is also introduced.
+
+\subsection{Communication}
+
+In practice, a containerized application needs to communicate with applications running outside the container to request services such as API calls. Commonly seen use cases are as follows.
+\begin{itemize}
+	\item Containerized application requests services from the Internet.
+	\item Containerized application requests services from the host machine, for example, from a database deployed on the host machine.
+	\item Containerized application requests services from other containerized applications.
+\end{itemize}
+
+With proper port mapping using \verb|-p|, the communication with the Internet is automatically enabled. Therefore, the focus of this section is mainly on data exchange and API calls between the container and the host machine or other containers.
+
+The containerized application may request services from the host machine. In this case, the application code needs to be modified to enable communications with the host machine. An example is given below.
+
+Consider a simple scenario where the containerized application needs to send a request to the host machine to trigger an API call of MongoDB. Notice that the MongoDB is installed on the host machine and not in the container.
+
+If the application were running on the host machine instead of in a container, it can communicate with the MongoDB server using a connecting string that looks like the following
+\begin{lstlisting}
+'mongodb://localhost:27017/<database name>'	
+\end{lstlisting}
+and it should be part of the application code. However, it would not work if the same code is used in the containerized application. The code needs to be modified as follows.
+\begin{lstlisting}
+'mongodb://host.docker.internal:27017/<database name>'	
+\end{lstlisting}
+where \verb|host.docker.internal| is a recognized domain by docker that refers to the host machine. Docker translates the domain to the IP address of the host machine.
+
+Notice that \verb|host.docker.internal| can be used to refer to the host machine not only with MongoDB requests, but also with other requests such as a general HTTP request.
+
+Two containers running on the same machine can always talk to each other via the host machine. However, this may become inefficient in some applications. Therefore, we need to investigate on direct container-to-container communication.
+
+As a basic solution, cross container communication can be done following the example given below. Notice that this is not a common practice in production environment as it is not robust and efficient.
+
+Consider a simple scenario where there are two containers, one running the application and the other hosting a MongoDB. 
+
+The container with MongoDB deployment is started as follows.
+\begin{lstlisting}
+$ docker run -d --name mongodb mongo 	
+\end{lstlisting}
+where \verb|mongo| is the official docker image for MongoDB on Docker Hub.
+
+The IP address of the MongoDB container can be found using
+\begin{lstlisting}
+$ docker container inspect mongodb	
+\end{lstlisting}
+where \verb|mongodb| is the name of the container specified in the earlier command. In the result of the inspection, look for \verb|IPAddress| under \verb|NetworkSettings|.
+
+Then in the application code, replace \verb|localhost| in the connecting string
+\begin{lstlisting}
+'mongodb://localhost:27017/<database name>'	
+\end{lstlisting}
+with the IP address of the container.
+
+Notice that each time a container is deployed, its network settings are done by docker and they differ from machine to machine. Therefore, this basic approach only works temporarily in development environment and should not be used in the production environment.
+
+As a more established approach to realize cross container communication, docker allows the user to create container networks. All containers in a container network have reserved IP addresses assigned by docker and they can talk to each other.
+
+To create a container network, use
+\begin{lstlisting}
+$ docker network create <network name>
+\end{lstlisting}
+Then to associate an container with that container network, use \verb|--network| as follows
+\begin{lstlisting}
+& docker run --network <network name>	<image name>
+\end{lstlisting}
+If two containers are put under the same container network, they can talk to each other. 
+
+Consider the earlier example. We can create a container network using
+\begin{lstlisting}
+$ docker network create my-network
+\end{lstlisting}
+and launch MongoDB as a containerized application in the container network using
+\begin{lstlisting}
+$ docker run -d --network my-network --name mongodb mongo
+\end{lstlisting}
+In the application code, use
+\begin{lstlisting}
+'mongodb://mongodb:27017/<database name>'	
+\end{lstlisting}
+as the connecting string, and launch it in the same container network. Docker will automatically resolve \verb|mongodb| as the correct container with that container name when the application sends out the outbound request.
+
+Notice that when using container network for cross container communication, there is no need to do port match using \verb|-p|. Indeed, \verb|-p| is used only when the container needs to talk to the outside world through the host machine. Cross container communication as well as container to host machine communication happens inside the host machine, thus not requiring port mapping.
+
+\subsection{Docker Compose}
 
 As introduced earlier, docker engine can be used to build and share images as well as start, monitor, and stop containers. It can be difficult for a user to manage containers manually when a lot of them are deployed. Container orchestrators such as Portainer and Kubernetes are helpful with managing containers. Many of these tools are able to automatically adjust the number of containers and balance their loads.
 
 Many applications nowadays are multi-service multi-container applications. This trend has made container orchestration very useful in practice.
-
-\subsection{Docker Compose}
 
 Consider building and launching a multi-container applications. Multiple \verb|docker build| and \verb|docker run| commands need to be executed in specific order, and each command coming with a long list of arguments. Doing this manually can be tedious and introduce a high chance of human error.
 
@@ -978,7 +976,7 @@ to build the images in the docker compose file without launching any container.
 
 \subsection{Portainer}
 
-Portainer is an open-source container management tool. It has a web-based dashboard user interface. Notice that Portainer itself also runs in a container.
+Portainer is an open-source container orchestrator that has a user-friendly interface and is relatively easier to use than the more powerful and famous container orchestrator Kubernetes which is introduced in the next chapter. In this section, it is used as an example, just to give the reader an idea what container orchestrators in the market may look like. The section does not go into details about Portainer.
 
 Before starting a Portainer container, it is a good practice to first create a docker volume for Portainer to store the database. Use the following command to create such docker volume.
 \begin{lstlisting}
@@ -1018,7 +1016,7 @@ After creating the admin user and logging in, the status of images, containers a
 
 In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
 
-\section{Container Deployment in Production Environment}
+\section{Container Cloud Deployment}
 
 So far we have been discussing container development and local testing. One of the most important selling points of containerization is that it is easy to ship applications. This is because the environment that supports an application is packaged together with the application in the image, which ensures that the application can run consistently whatever the host server is. 
 
@@ -1032,15 +1030,15 @@ Nevertheless, when the application is pushed to production environment, some adj
 
 This section discusses the deployment of containers on the cloud in production environment. Notice that for large scale applications deployment in the production environment, container orchestration tool such as Kubernetes is almost certainly necessary. Kubernetes and its cloud deployment are discussed in the later chapter and they are not considered in this section. 
 
-\subsection{Docker-Supporting Hosting Providers}
+\subsection{Docker Hosting Providers}
 
 Assume that the application can run correctly on the host machine. To deploy it on the Internet and allow public access, the first step is to find a docker-supporting hosting provider. There are many such providers, the most popular of which include Amazon Web Services (AWS), Microsoft Azure and Google Cloud. They are not just docker hosting providers but more general cloud services providers.
 
 Details about the cloud services providers and cloud computing are beyond the scope of this notebook. Only the services relevant to container deployment are introduced here. AWS is considered.
 
-\subsection{EC2-Based Approach}
+\subsection{VM-Based Approach}
 
-The most intuitive way to deploy containers on AWS is to use EC2. To do that, the following steps are required.
+The most intuitive way to deploy containers on AWS is to use EC2, the VM as part of AWS's IaaS solution. To do that, the following steps are required.
 
 \begin{enumerate}
 	\item Start EC2, and enable SSH access to the EC2 from the local machine.
@@ -1076,11 +1074,67 @@ The EC2-based approach has some disadvantages compared with ECS and EKS that wil
   \item Difficult to scale. The total computational power of the application depends on the setup of VM which is pre-determined and cannot be easily scaled up or down on the fly.
   \item Difficult to manage. The user needs to SSH to the VM to audit and upgrade the applications, which can become annoying.
 \end{itemize}
-This makes EC2-based container approach almost always suboptimal compared with ECS and EKS.
+This makes EC2-based container approach almost always suboptimal compared with ECS and EKS, especially if the user is not an experienced administrator.
 
 \subsection{Managed-Service-Based Approach}
 
-ECS and EKS are the recommended manages service of AWS for containerized applications. EKS will be introduced in the later chapter with Kubernetes. This section discusses ECS. 
+ECS and EKS are the recommended manages service of AWS for containerized applications. EKS will be introduced in the later chapter with Kubernetes. This section discusses ECS. Notice that when using a managed service like ECS, it is no longer the user's concern what container runtime or engine the managed service is using in the backend. The user does not need (and should not) interact with docker directly. Instead, he should use the interface ECS provides.
+
+As a prerequisite, make sure that the images to be used are already in Docker Hub. 
+
+\vspace{0.1in}
+\noindent \textbf{Single-Container Applications}
+\vspace{0.1in}
+
+Key steps to deploy containerized applications using ECS are summarized below. The user needs to configure ``container'', ``task'', ``service'' and ``cluster'' to be used for the application.
+
+Container defines how a container should be launched. In container definition, the following items need to be configured.
+\begin{itemize}
+  \item Container name.
+  \item Image path. If the image has been uploaded to Docker Hub, use \texttt{<username>/<image>:<tag>}.
+  \item Memory limit.
+  \item Port mapping.
+  \item If health check is necessary, health check related configurations such as timeout, number of retires, etc.
+  \item If the default \verb|CMD| needs to be overwritten when starting the container, the command to overwrite \verb|CMD|.
+  \item If the default \verb|WORKDIR| needs to be overwritten, the revised working directory path.
+  \item The value of environmental variables, if any.
+  \item Network configuration.
+  \item Volume configuration.
+  \item Log configuration.
+  \item \ldots
+\end{itemize}
+One can think of most of the above as the customization of \verb|docker run| command which has already been introduced in earlier sections.
+
+Task defines the server requirements that host the containers. The user needs to define task definition name, network model, compatibilities request, etc. For example, in compatibilities if ``FARGATE'' is selected, AWS runs the containers in a serverless manner, whereas if ``EC2'' is selected, AWS creates dedicated VMs to run the containers.
+
+Service plays as the ``orchestrator'' of tasks. It defines the number of tasks to be used and how load is balanced among the tasks.
+
+Finally, cluster defines the virtual private cloud (VPC) and subnets where the application should be running, as part of the network configuration in AWS architecture. Cluster definition is important if multiple applications need to be run under the same virtual network, or if the application needs to access certain resources inside certain VPC.
+
+Once all the configurations above are done properly, ECS will start the application. From the dashboard, one can get the public IP address of the task where the containers are hosted, and access the containers using that IP.
+
+To update the image, go to ``Task Definitions'', click ``Actions'', and choose ``Update Service'', ``Force New Deployment''. AWS will then retrieve the new image and restart the task. Of course, one can always start a new task, in which case EC2 will also retrieve the new image. 
+
+\vspace{0.1in}
+\noindent \textbf{Multi-Container Applications}
+\vspace{0.1in}
+
+
+On the local machine or the VM, multi-container applications can be launched easily using docker compose. ECS also supports the launch of multi-container applications. 
+
+However, ECS does not use docker compose file to start multi-container applications. One of the reasons for that is that docker compose assumes single physical machine deployment, hence supporting all the notions that the user can use to setup networks, volumes, etc. This is not the case of ECS which does not necessarily deploy everything on one host. This makes the docker compose file less relevant. Nevertheless, the docker compose file, if already exists, can be used as a blue print and the user can refer to the file when deploying containers using ECS.
+
+In ECS, if multiple containers are assigned to the same task, then they are guaranteed to run on the same machine and under the same network. In that case, the application can use \verb|localhost| to communicate with other containers, where \verb|localhost| can be taken as a docker container created for all the containers running on the task. (Recall that to enable container-to-container communication on a local machine, \verb|localhost| in the application code needs to be changed to either the IP address of the container, or the name of the container if they are in the same docker network.)
+
+
+
+
+
+
+
+
+
+
 
 
 
