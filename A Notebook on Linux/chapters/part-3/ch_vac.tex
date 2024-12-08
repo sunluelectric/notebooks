@@ -974,6 +974,48 @@ $ docker-compose build
 \end{lstlisting}
 to build the images in the docker compose file without launching any container.
 
+\subsection{Portainer}
+
+Portainer is an open-source container orchestrator that has a user-friendly interface and is relatively easier to use than the more powerful and famous container orchestrator Kubernetes which is introduced in the next chapter. In this section, it is used as an example, just to give the reader an idea what container orchestrators in the market may look like. The section does not go into details about Portainer.
+
+Before starting a Portainer container, it is a good practice to first create a docker volume for Portainer to store the database. Use the following command to create such docker volume.
+\begin{lstlisting}
+$ docker volume create portainer_data
+\end{lstlisting}
+Then run a Portainer container using
+\begin{lstlisting}
+$ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+\end{lstlisting}
+where ports 8000, 9000 and 9443 are used for hosting HTTP traffic in development environments, hosting web interface, and hosting HTTPS or SSL-secured services, respectively. The \verb|docker.sock| is the socket that enables the docker server-side daemon to communicate with its command-line interface. The image name for Portainer community edition (distinguished form the business edition) is \verb|portainer/portainer-ce|.
+
+Use \verb|https://localhost:9443| to login to the container. The following page in Fig. \ref{ch:vac:fig:portainerlogin} should pop up in the first-time login, asking the user to create and administration user.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerlogin.png}
+	\caption{Portainer login page to create admin user.} \label{ch:vac:fig:portainerlogin}
+\end{figure}
+
+After creating the admin user and logging in, the status of images, containers and many more can be monitored via the dashboard, as shown in Figs. \ref{ch:vac:fig:portainerdashboard1}, \ref{ch:vac:fig:portainerdashboard2} and \ref{ch:vac:fig:portainerdashboard3}. Notice that in Fig. \ref{ch:vac:fig:portainerdashboard3}, using the ``quick action'' buttons, the user can check the specifics of the container and interact with its console, just like using \verb|docker container inspect| and \verb|docker exec|
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard1.png}
+	\caption{Portainer dashboard overview of docker servers.} \label{ch:vac:fig:portainerdashboard1}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard2.png}
+	\caption{Portainer dashboard overview in a docker server.} \label{ch:vac:fig:portainerdashboard2}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard3.png}
+	\caption{Portainer dashboard list down of all running containers.} \label{ch:vac:fig:portainerdashboard3}
+\end{figure}
+
+In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
+
 \section{Container Cloud Deployment}
 
 So far we have been discussing container development and local testing. One of the most important selling points of containerization is that it is easy to ship applications. This is because the environment that supports an application is packaged together with the application in the image, which ensures that the application can run consistently whatever the host server is. 
@@ -1083,26 +1125,3 @@ On the local machine or the VM, multi-container applications can be launched eas
 However, ECS does not use docker compose file to start multi-container applications. One of the reasons for that is that docker compose assumes single physical machine deployment, hence supporting all the notions that the user can use to setup networks, volumes, etc. This is not the case of ECS which does not necessarily deploy everything on one host. This makes the docker compose file less relevant. Nevertheless, the docker compose file, if already exists, can be used as a blue print and the user can refer to the file when deploying containers using ECS.
 
 In ECS, if multiple containers are assigned to the same task, then they are guaranteed to run on the same machine and under the same network. In that case, the application can use \verb|localhost| to communicate with other containers, where \verb|localhost| can be taken as a docker container created for all the containers running on the task. (Recall that to enable container-to-container communication on a local machine, \verb|localhost| in the application code needs to be changed to either the IP address of the container, or the name of the container if they are in the same docker network.)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

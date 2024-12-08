@@ -513,3 +513,45 @@ We need to first install Helm from script. Helm installation used to contain two
 Access control is important on cloud platforms. In practice, user accounts are used to identify users, and service accounts to identify pods and programs. Associated role bindings are used to manage what resources can be accessed by a user or program. For example, administrative role over the entire account can be used to bind with the administrative user. The same applies to Helm. The Tiller server required some extent of administrative control over the resources in an account. In many occasions, Tiller server was given the administrative permission to access the entire account, which introduced security risks.
 
 As of Helm version 3, a major change was carried out where Tiller server was removed completely. Helm architecture is more secure and simpler today. The concerns related to Tiller's permission in the Kubernetes cluster are no longer relevant. Helm 3 of course requires permissions to use the resources, which is now managed by Kubernetes role-based access control mechanisms.
+
+\section{Alternatives to Kubernetes}
+
+Portainer is an open-source container orchestrator that has a user-friendly interface and is relatively easier to use than the more powerful and famous container orchestrator Kubernetes which is introduced in the next chapter. In this section, it is used as an example, just to give the reader an idea what container orchestrators in the market may look like. The section does not go into details about Portainer.
+
+Before starting a Portainer container, it is a good practice to first create a docker volume for Portainer to store the database. Use the following command to create such docker volume.
+\begin{lstlisting}
+$ docker volume create portainer_data
+\end{lstlisting}
+Then run a Portainer container using
+\begin{lstlisting}
+$ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+\end{lstlisting}
+where ports 8000, 9000 and 9443 are used for hosting HTTP traffic in development environments, hosting web interface, and hosting HTTPS or SSL-secured services, respectively. The \verb|docker.sock| is the socket that enables the docker server-side daemon to communicate with its command-line interface. The image name for Portainer community edition (distinguished form the business edition) is \verb|portainer/portainer-ce|.
+
+Use \verb|https://localhost:9443| to login to the container. The following page in Fig. \ref{ch:vac:fig:portainerlogin} should pop up in the first-time login, asking the user to create and administration user.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerlogin.png}
+	\caption{Portainer login page to create admin user.} \label{ch:vac:fig:portainerlogin}
+\end{figure}
+
+After creating the admin user and logging in, the status of images, containers and many more can be monitored via the dashboard, as shown in Figs. \ref{ch:vac:fig:portainerdashboard1}, \ref{ch:vac:fig:portainerdashboard2} and \ref{ch:vac:fig:portainerdashboard3}. Notice that in Fig. \ref{ch:vac:fig:portainerdashboard3}, using the ``quick action'' buttons, the user can check the specifics of the container and interact with its console, just like using \verb|docker container inspect| and \verb|docker exec|
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard1.png}
+	\caption{Portainer dashboard overview of docker servers.} \label{ch:vac:fig:portainerdashboard1}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard2.png}
+	\caption{Portainer dashboard overview in a docker server.} \label{ch:vac:fig:portainerdashboard2}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard3.png}
+	\caption{Portainer dashboard list down of all running containers.} \label{ch:vac:fig:portainerdashboard3}
+\end{figure}
+
+In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
