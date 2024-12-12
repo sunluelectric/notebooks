@@ -1,18 +1,18 @@
 \chapter{Shell} \label{ch:sb}
 
-Linux command line interface (CLI), usually known as the ``shell'' (also known as ``terminal''), is the most available, flexible and powerful tool for the users and programs to interact with the OS and perform certain actions.
+{Linux \myabb{command line interface}{CLI}, usually known as the ``\mync{shell}'' (also known as ``\mync{terminal}''), is the most available, flexible and powerful tool for the users and programs to interact with the OS and perform certain actions.
 
 Notice that the use of the shell is not compulsory for casual users when the graphical desktop is present. Still, it is strongly recommended that the users shall understand at least the basics of the shell since it is more flexible and powerful than the graphical desktop and hence can become handy time to time when configuring certain software.
 
 Linux shell will be used rapidly in the remaining of this notebook.
 
-\section{Shell as a Command Line Interface}
+\section{Shell as a CLI}
 
-Linux's default CLI, usually known as the ``shell'', was invented before the graphical tools, and it has been more powerful and flexible than the graphical tools from the first day. On those machines where no graphical desktops are installed, the use of shell is critical.
+Linux's default CLI, usually known as the shell, was invented before the graphical tools, and it has been more powerful and flexible than the graphical tools from the first day. On those machines where no graphical desktops are installed, the use of shell is critical.
 
 \subsection{Shell Types}
 
-There are different types of shells for Linux. The most commonly used shell is the ``bash shell'' which stands for ``Bourne Again Shell'', derived from the ``Bourne Shell'' used in UNIX. Unless otherwise mentioned, the shell we refer to in the remaining of the notebook is bash shell. An example of a shell that calculates Fibonacci series is given below. Notice that in practice shell is mainly used for interaction with the OS and not for software development, data processing or numerical calculation. The example is only for demonstration.
+There are different types of shells for Linux. The most commonly used shell is the ``\mync{bash}'' which stands for ``Bourne Again Shell'', derived from the ``Bourne Shell'' used in UNIX. Unless otherwise mentioned, the shell we refer to in the remaining of the notebook is bash. An example of a shell that calculates Fibonacci series is given below. Notice that in practice shell is mainly used for interaction with the OS and not for software development, data processing or numerical calculation. The example is only for demonstration.
 
 \begin{lstlisting}
 #!/usr/bin/bash
@@ -45,7 +45,7 @@ With a newly started shell, a string (usually containing username, hostname, cur
 <username>@<hostname>:~$
 \end{lstlisting}
 
-The above string is called a \textit{prompt}, indicating the start of a user command. By default, for regular users the ending of the prompt is \verb|$|, while for the root user the ending is \verb|#|. The prompt can be customized by changing the environment variable \verb|PS1|. See Sections \ref{ch:sb:subsec:shellenvvar} and \ref{ch:sb:subsec:customizeshell} for details about environment variables and shell customization methods respectively. Commonly used variables in \verb|PS1| are summarized in Table \ref{ch:sb:tab:promptvariable}.
+The above string is called a \mync{prompt}, indicating the start of a user command. By default, for regular users the ending of the prompt is \verb|$|, while for the root user the ending is \verb|#|. The prompt can be customized by changing the environment variable \verb|PS1|. See Sections \ref{ch:sb:subsec:shellenvvar} and \ref{ch:sb:subsec:customizeshell} for details about environment variables and shell customization methods respectively. Commonly used variables in \verb|PS1| are summarized in Table \ref{ch:sb:tab:promptvariable}.
 
 \begin{table}
 	\centering \caption{Commonly used variables in prompt.}\label{ch:sb:tab:promptvariable}
@@ -66,9 +66,9 @@ The above string is called a \textit{prompt}, indicating the start of a user com
 	\end{tabularx}
 \end{table}
 
-For the term ``root user'', we are referring to a special user with username and user ID (UID) ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
+For the term \mync{root user} or simply \mync{root}, we are referring to a special user with username and \myabb{User ID}{UID} ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
 
-Notice that the root user is different from a ``sudoer'', later of which is basically a regular user equipped with \textit{sudo privilege}. A sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
+Notice that the root user is different from a \mync{sudoer}, later of which is basically a regular user equipped with \mync{sudo privilege}. A sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
 \begin{lstlisting}
 <username>@<hostname>:~$ sudo su
 [sudo] password for <username>:
@@ -98,7 +98,7 @@ $ whoami
 $ grep <username> /etc/passwd
 <username>:x:<uid>:<gid>:<gecos>:<home-directory>:<shell>
 \end{lstlisting}
-In the above, \verb|whoami| is used to display the current login user's username. Command \verb|grep| is used to search content from files or folders, in this case the user name from \verb|/etc/passwd| file which stores user information. This should return the username, the password (for encrypted password, an ``x'' is returned), UID, group id (GID), user id info (GECOS), home directory and default shell location of the user.
+In the above, \verb|whoami| is used to display the current login user's username. Command \verb|grep| is used to search content from files or folders, in this case the user name from \verb|/etc/passwd| file which stores user information. This should return the username, the password (for encrypted password, an ``x'' is returned), UID, \myabb{Group ID}{GID}, user id info, home directory and default shell location of the user.
 Another command \verb|id| also returns the UID and GID information of the current user. More about commands such as \verb|grep| will be introduced in later chapters.
 
 The following commands show the date and hostname of the machine.
@@ -109,7 +109,7 @@ $ hostname
 <hostname>
 \end{lstlisting}
 
-The following command \verb|lshw| lists down hardware information in details. Sudo privilege is recommended when using this command, to give more detailed and accurate information of the system. Sometimes the displayed information can be too detailed. Use \verb|-short| argument with the command to shorten the output.
+The following command \verb|lshw| lists down hardware information in details. Notice that sudo privilege is recommended when using this command, to give more detailed and accurate information of the system. Sometimes the displayed information can be too detailed. Use \verb|-short| argument with the command to shorten the output.
 \begin{lstlisting}
 $ sudo lshw
 \end{lstlisting}
@@ -172,18 +172,20 @@ Use \verb|\| to break a single-line command into multiple rows when the command 
 
 \section{Shell Environment Variables}\label{ch:sb:subsec:shellenvvar}
 
-To execute a command by its name, the OS needs to know where the command is located at. Commonly used commands shall be included in the PATH environment of the shell, so that they can be executed anytime from any working directory. The PATH environment is a collection of directories in the system, and it is initialized automatically when the shell is started. Check the PATH environment by
+\mync{Shell Environmental Variables} are either system-defined or user-defined variables that the shell can access and keep track. Commonly used environmental variables are introduced below.
+
+It is worth introducing in the beginning one of the most important shell environmental variables, PATH. To execute a command by its name, the OS needs to know where the command is located at. Commonly used commands shall be included in PATH, an environment variable of the shell that traces the location of the built-in commands, so that they can be executed anytime from any working directory. The PATH environment variable is a collection of directories in the system, and it is initialized automatically when the shell is started. Check PATH by
 \begin{lstlisting}
 $ echo $PATH
 <directory-1>:<directory-2>:<directory-3>: ...
 \end{lstlisting}
 where \verb|echo| displays a line of text, and \verb|$PATH| is a built-in environment variable that records the PATH environment of the current shell. 
 
-The default PATH environment often contains the following directories. 
+The default PATH environment variable often contains the following directories. 
 \begin{itemize}
-\item \verb|/bin|, \verb|/usr/bin|: commonly used Linux built-in commands
-\item \verb|/sbin|, \verb|/usr/sbin|: commonly used Linux built-in commands for administrators
-\item \verb|/home/<username>/bin|: commands defined by a user
+\item \verb|/bin|, \verb|/usr/bin|: Commonly used Linux built-in commands.
+\item \verb|/sbin|, \verb|/usr/sbin|: Commonly used Linux built-in commands for administrators.
+\item \verb|/home/<username>/bin|: Commands defined by a user.
 \end{itemize}
 To determine the location of a particular command, use \verb|type| if the command can be found in the PATH environment. Alternatively, use \verb|locate|, \verb|mlocate| to search all the accessible files in the system to find a command. The syntax is demonstrated below.
 \begin{lstlisting}

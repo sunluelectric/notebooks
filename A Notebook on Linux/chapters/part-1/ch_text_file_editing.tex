@@ -2,36 +2,36 @@
 %\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{Text File Editing} \label{ch:tfe}
 
-Many text editors are supported in Linux, to name a few, \textit{Vim}, \textit{Emacs}, \textit{gedit}, \textit{Visual Studio Code}. These text editors come with different features. Some of the text editors evev provide integrated development environment (IDE) features.
+Many text editors are supported in Linux, to name a few, Vim, Emacs, gedit, Visual Studio Code. These text editors come with different features. Some of the text editors even provide \myabb{Integrated Development Environment}{IDE} features.
 
-Among the vast number of choices, \textit{Vim} is probably the most popular one. It works perfectly in a shell environment without relying on graphical desktop, thus is adopted by many Linux distributions as the built-in text editor. \textit{Vim} is introduced in this chapter, followed by a brief review of some other commonly used text editors.
+Among the vast number of choices, Vim is probably the most popular one. It works perfectly in a shell environment without relying on graphical desktop, thus is adopted by many Linux distributions as the built-in text editor. Vim is introduced in this chapter, followed by a brief review of some other commonly used text editors.
 
 \section{General Introduction to Vim}
 
-\textit{Vim}, which stands for ``\textit{Vi IMproved}'', is a free and open-source software developed by Bram Moolenaar et al. It is an expansion to the \textit{Vi} text editor to include features such as syntax highlighting, etc., and has become the default text editor of many Unix/Linux based operating systems.
+\mync{Vi IMproved}[Vim] is a free and open-source software developed by Bram Moolenaar et al. It is an expansion to the \mync{Vi} text editor to include features such as syntax highlighting, etc., and has become the default text editor of many Unix/Linux based operating systems.
 
-Some people claim \textit{Vim} to be the most powerful text file editor and IDE for programming on a Linux machine (and potentially on all computers and servers). The main reasons are as follows.
+Some people claim Vim to be the most powerful text file editor and IDE for programming on a Linux machine (and potentially on all computers and servers). The main reasons are as follows.
 \begin{itemize}
-  \item \textit{Vim} is usually built-in to Linux during the operating system installation, making it the most available and cost-effective text editor.
-  \item \textit{Vim} can work on machines where graphical desktop is not supported.
-  \item \textit{Vim} is light in size and is suitable to run even on an embedded system.
-  \item \textit{Vim} operations are done mostly via mode switch and shortcut keys; as a result, \textbf{the brain does not need to halt and wait for the hand to grab and move the mouse}, thus speeding up the text editing.
-  \item \textit{Vim} is highly flexible and can be customized according to the user's habit (for example, through \verb|~/.vimrc|), and it allows the users to define shortcut keys.
-  \item \textit{Vim} can automate repetitive operations by defining macros.
-  \item \textit{Vim} can be integrated with third-party tools which boost its features to a higher level.
+  \item Vim is usually built-in to Linux during the operating system installation, making it the most available and cost-effective text editor.
+  \item Vim can work on machines where graphical desktop is not supported.
+  \item Vim is light in size and is suitable to run even on an embedded system.
+  \item Vim operations are done mostly via mode switch and shortcut keys; as a result, \textbf{the brain does not need to halt and wait for the hand to grab and move the mouse}, thus speeding up the text editing.
+  \item Vim is highly flexible and can be customized according to the user's habit (for example, through \verb|~/.vimrc|), and it allows the users to define shortcut keys.
+  \item Vim can automate repetitive operations by defining macros.
+  \item Vim can be integrated with third-party tools which boost its features to a higher level.
 \end{itemize}
 
-\textit{Vim} can become very powerful and convenient for the user if he is very used to it. However, \textit{Vim} is not as intuitive as other text editors such as \textit{gedit}, and there might be a learning curve for the beginners.
+Vim can become very powerful and convenient for the user if he is very used to it. However, Vim is not as intuitive as other text editors such as gedit, and there might be a learning curve for the beginners.
 
-Bram Moolenaar, the original inventor of \textit{Vim}, passed away on August 3, 2023 at the age of 62. His project \textit{Vim} has been taken over by the contributors from community. 
+Bram Moolenaar, the original inventor of Vim, passed away on August 3, 2023 at the age of 62. His project Vim has been taken over by the contributors from community. 
 
 \section{Vim Modes} \label{ch:tfe:subsec:vimgeneralintro}
 
-Unlike other text editors, \textit{Vim} defines different ``modes'' during the operation, each mode has some unique features. For example, in the \textit{insert} mode, \textit{Vim} maps keyboard inputs with the text file just like an conventional text editor. In the \textit{normal} mode (this is the default mode when opening \textit{Vim}), \textit{Vim} uses useful and customizable shortcut keys to quickly navigate the document and perform operations such as cut, copy, paste, replace, search, and macro functions. In the \textit{virtual} mode, \textit{Vim} allows the user to select a block of content for further editing. In the \textit{cmdline} mode, \textit{Vim} takes order from command lines and interact with Linux to perform tasks such as save and quit.
+Unlike other text editors, Vim defines different ``modes'' during the operation, each mode has some unique features. For example, in the \textbf{insert} mode, Vim maps keyboard inputs with the text file just like an conventional text editor. In the \textbf{normal} mode (this is the default mode when opening Vim), Vim uses useful and customizable shortcut keys to quickly navigate the document and perform operations such as cut, copy, paste, replace, search, and macro functions. In the \textbf{virtual} mode, Vim allows the user to select a block of content for further editing. In the \textbf{cmdline} mode, Vim takes order from command lines and interact with Linux to perform tasks such as save and quit.
 
 The following Table \ref{ch:tfe:tab:vimmodes} summarizes the commonly used modes in Vim.
 \begin{table}
-  \centering \caption{Commonly used modes in \textit{Vim}.}\label{ch:tfe:tab:vimmodes}
+  \centering \caption{Commonly used modes in Vim.}\label{ch:tfe:tab:vimmodes}
   \begin{tabularx}{\textwidth}{lX}
     \hline
     Mode & Description \\ \hline
@@ -47,13 +47,13 @@ As a start, the following basic commands can be used to quickly create, edit and
 \begin{lstlisting}
 $ vim testvim
 \end{lstlisting}
-to create a file named ``testvim'' and open the file using \textit{Vim}. Notice that in some Linux versions, \textit{vi} might be aliased to \textit{vim} by default.
+to create a file named ``testvim'' and open the file using Vim. Notice that in some Linux versions, Vi might be aliased to Vim by default.
 
 In the opened file, use \verb|Esc| and \verb|i|/\verb|a| (insert/append) to switch between normal mode and insert mode. Notice that in the normal mode, the cursor is on a character. When using the insert command, the insertion cursor is put to the left of that character, whereas when using the append command, the insertion cursor is put to the right of that character. 
 
 In the normal mode, use \verb|h|, \verb|j|, \verb|k|, \verb|l| to navigate the position of the cursor. 
 
-Finally, in the normal mode, use \verb|:w| to save the file, and \verb|:q| to quit \textit{vim}, or use \verb|:wq| to save and quit \textit{Vim}.
+Finally, in the normal mode, use \verb|:w| to save the file, and \verb|:q| to quit Vim, or use \verb|:wq| to save and quit Vim.
 
 The above basic commands and their relationships are summarized in Fig.~\ref{ch:tfe:fig:vimbasicmodeswitching}. A flowchart to create/open, edit, save, and quit a text file using the aforementioned commands are given in Fig.~\ref{ch:tfe:fig:vimbasicoperationflowchart}.
 
@@ -66,7 +66,7 @@ The above basic commands and their relationships are summarized in Fig.~\ref{ch:
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=250pt]{chapters/part-1/figures/vimbasicoperationflowchart.png}
-\caption{A flowchart for simple creating, editing and saving of a text file using \textit{Vim}.} \label{ch:tfe:fig:vimbasicoperationflowchart}
+\caption{A flowchart for simple creating, editing and saving of a text file using Vim.} \label{ch:tfe:fig:vimbasicoperationflowchart}
 \end{figure}
 
 There are other shortcuts to switch from normal mode to insert mode. Some of them are summarized in Table \ref{ch:tfe:tab:switchtoinsert}.
@@ -88,19 +88,19 @@ There are other shortcuts to switch from normal mode to insert mode. Some of the
 
 \section{Vim Profile Configuration}
 
-With the basic operations introduced in Section \ref{ch:tfe:subsec:vimgeneralintro}, we are able to create and edit a text file as we want to, just like using any other text editor. Though at this point the advantages of using \textit{Vim} over other text editors are not obvious yet, the \textit{Vim} editor is at least useable.
+With the basic operations introduced in Section \ref{ch:tfe:subsec:vimgeneralintro}, we are able to create and edit a text file as we want to, just like using any other text editor. Though at this point the advantages of using Vim over other text editors are not obvious yet, the Vim editor is at least useable.
 
-Before introducing more advanced features of \textit{Vim}, for better user experience we can now customize the user profile to suit our individual habit. Notice that the customization is completely optional and personal. This section only introduces the idea and basic methods such as re-mapping keys and creating user-defined shortcuts. Everything introduced here are merely examples and it is completely up to the user how to design and implement his own profile.
+Before introducing more advanced features of Vim, for better user experience we can now customize the user profile to suit our individual habit. Notice that the customization is completely optional and personal. This section only introduces the idea and basic methods such as re-mapping keys and creating user-defined shortcuts. Everything introduced here are merely examples and it is completely up to the user how to design and implement his own profile.
 
-In Linux, navigate to home directory. Create the following path and file \verb|~/.vim/vimrc| or \verb|~/.vimrc|. Open the \textit{vimrc} file as a blank file using \textit{Vim}. The individual user profile can be customized here.
+In Linux, navigate to home directory. Create the following path and file \verb|~/.vim/vimrc| or \verb|~/.vimrc|. Open the \verb|vimrc| file as a blank file using Vim. The individual user profile can be customized here.
 
-There are many readily available \textit{vimrc} profiles shared in the community. Feel free to use them as a reference when creating a new profile.
+There are many readily available \verb|vimrc| profiles shared in the community. Feel free to use them as a reference when creating a new profile.
 
 \subsection{Mapping Shortcuts}
 
 It is desirable to re-map some keys to speed up the text editing. For example, by mapping \verb|jj| to \verb|Esc| in insert mode, one can switch from insert mode to normal mode more quickly (notice that consequent ``jj'' is rarely used in English). Another example coud be mapping \verb|j|, \verb|k|, \verb|i| to \verb|h|, \verb|j|, \verb|k| respectively in normal and visual modes, making the navigation more intuitive. In that case, another key needs to be mapped to \verb|i| because insert command is very useful and we do not want to lose it.
 
-The mapping of keys and keys combinations can be done as follows in \textit{vimrc}.
+The mapping of keys and keys combinations can be done as follows in \verb|vimrc|.
 \begin{lstlisting}
 inoremap jj <Esc>
 noremap j h
@@ -110,7 +110,7 @@ noremap h i
 \end{lstlisting}
 where \verb|inoremap| is used to map keys (combinations) in insert mode, and \verb|noremap| in normal and visual modes.
 
-The upper case letter \verb|S| and lower case letter \verb|s| in normal mode are originally used to delete and substitute texts, and they are rarely used due to the more powerful shortcut \verb|c| which does similar tasks. We can re-map \verb|S| to saving, and disable \verb|s|. Similarly, upper case letter \verb|Q| is mapped to quitting \textit{Vim}.
+The upper case letter \verb|S| and lower case letter \verb|s| in normal mode are originally used to delete and substitute texts, and they are rarely used due to the more powerful shortcut \verb|c| which does similar tasks. We can re-map \verb|S| to saving, and disable \verb|s|. Similarly, upper case letter \verb|Q| is mapped to quitting Vim.
 \begin{lstlisting}
 noremap s <nop>
 map S :w<CR>
@@ -120,13 +120,13 @@ where \verb|<nop>| stands for ``no operation'' and \verb|CR| stands for the ``en
 
 \subsection{Syntax and Color Scheme}
 
-By default \textit{Vim} displays white colored contents on a black background. Use the following command in \textit{vimrc} to enable syntax highlighting or change color schemes. Use \verb|:colorscheme| in cmdline mode in \textit{Vim} to check for available color schemes.
+By default Vim displays white colored contents on a black background. Use the following command in \verb|vimrc| to enable syntax highlighting or change color schemes. Use \verb|:colorscheme| in cmdline mode in Vim to check for available color schemes.
 \begin{lstlisting}
 syntax on
 colorscheme default
 \end{lstlisting}
 
-The following setups in \textit{vimrc} displays the row index and cursor line (a underline at cursor position) of the text, which can become handy during the programming. Furthermore, it sets auto-wrap of text when a single row is longer than the displaying screen.
+The following setups in \verb|vimrc| displays the row index and cursor line (a underline at cursor position) of the text, which can become handy during the programming. Furthermore, it sets auto-wrap of text when a single row is longer than the displaying screen.
 \begin{lstlisting}
 set number
 set cursorline
@@ -140,12 +140,12 @@ set wildmenu
 
 \subsection{Other Useful Setups}
 
-Use \verb|scrolloff| to make sure that when scrolling in \textit{Vim}, there are always margins lines in the top and bottom of the screen, so that the cursor is always close to the centre of the screen.
+Use \verb|scrolloff| to make sure that when scrolling in Vim, there are always margins lines in the top and bottom of the screen, so that the cursor is always close to the centre of the screen.
 \begin{lstlisting}
 set scrolloff=3
 \end{lstlisting}
 
-Enable spell check in \textit{Vim} as follows.
+Enable spell check in Vim as follows.
 \begin{lstlisting}
 map sc :set spell!<CR>
 \end{lstlisting}
@@ -153,7 +153,7 @@ where \verb|sc| can be used to quickly turn on and off the spell check function.
 
 \subsection{Plug Tools}
 
-In the Linux community, many plug tools have been created to add useful features for \textit{Vim}. As a demonstration, in this section \textit{vim-plug}, a light-size vim plugin management tool created on GitHub, is used to install selected \textit{Vim} plugins. Details about \textit{vim-plug} can be found at GitHub under \textit{junegunn/vim-plug}.
+In the Linux community, many plug tools have been created to add useful features for Vim. As a demonstration, in this section \textit{vim-plug}, a light-size vim plugin management tool created on GitHub, is used to install selected Vim plugins. Details about \textit{vim-plug} can be found at GitHub under \textit{junegunn/vim-plug}.
 
 Following the instructions given by GitHub under \textit{junegunn/vim-plug}, to use \textit{vim-plug} on Linux, the very first step is to use \textit{cURL}, a command-line tool for transferring data specified with URL syntax, to download \textit{vim-plug}. To install \textit{cURL} if it has not been installed, use
 \begin{lstlisting}
@@ -166,26 +166,26 @@ With \textit{cURL} installed, use the following in the shell to install \textit{
 $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 \end{lstlisting}
-In the very beginning of \textit{vimrc}, add the following to specify the plugins to be installed. As an example, \textit{vim-airline/vim-airline} and \textit{joshdick/onedark.vim} are to be installed, the first of which adds a status line at the bottom of the \textit{Vim} window, and the second adds a popular color scheme ``onedark''.
+In the very beginning of \verb|vimrc|, add the following to specify the plugins to be installed. As an example, \textit{vim-airline/vim-airline} and \textit{joshdick/onedark.vim} are to be installed, the first of which adds a status line at the bottom of the Vim window, and the second adds a popular color scheme ``onedark''.
 \begin{lstlisting}
 call plug#begin()
 Plug 'vim-airline/vim-airline'
 Plug 'joshdick/onedark.vim'
 call plug#end()
 \end{lstlisting}
-Finally, reload \textit{vimrc}, then run \verb|:PlugInstall| in cmdline mode to install the plugins. Use \verb|colorscheme onedark| instead of \verb|colorscheme default| in \textit{vimrc} to enjoy the onedark color scheme.
+Finally, reload \verb|vimrc|, then run \verb|:PlugInstall| in cmdline mode to install the plugins. Use \verb|colorscheme onedark| instead of \verb|colorscheme default| in \verb|vimrc| to enjoy the onedark color scheme.
 
-Notice that instead of setting up configurations permanently in \textit{vimrc}, the user can also apply a setup in cmdline mode for temporary use in an open session. A full list of \textit{vimrc} configurations used in this chapter can be found in the appendix.
+Notice that instead of setting up configurations permanently in \verb|vimrc|, the user can also apply a setup in cmdline mode for temporary use in an open session. A full list of \verb|vimrc| configurations used in this chapter can be found in the appendix.
 
-\section{Basic Operations in \textit{Vim}}
+\section{Basic Operations in Vim}
 
 In normal mode, the most frequently used operation is probably \verb|u| for undo. Other commonly used operations, such as delete, cut, copy, paste, replace and search, are mostly done in normal mode through shortcut keys. For example, \verb|dd| deletes (cuts) the entire row at the cursor and \verb|p| pastes the content in the clipboard to the cursor position. For beginners, remembering shortcut keys can be difficult. Therefore, it is suggested looking for the consistent patterns of the different commands, rather than brute-force remembering all the operations.
 
-Many \textit{Vim} shortcut keys in normal mode has the following pattern: an operator command directly followed by a motion command without space in between.
+Many Vim shortcut keys in normal mode has the following pattern: an operator command directly followed by a motion command without space in between.
 \begin{lstlisting}
 <operator><motion>
 \end{lstlisting}
-The operator command tells \textit{Vim} what to do (say, copy), and the motion command tells the applicable range of the operation (say, a row, or a word, or a character). Some operator commands may work alone without motion commands.
+The operator command tells Vim what to do (say, copy), and the motion command tells the applicable range of the operation (say, a row, or a word, or a character). Some operator commands may work alone without motion commands.
 
 \subsection{Cut, Change, Copy and Paste}
 
@@ -203,9 +203,9 @@ He is often called England's national poet and the ``Bard of Avon'' (or simply `
 \caption{A piece of text of ``William Shakespeare'', for demonstration.} \label{ch:tfe:fig:vimdemo1}
 \end{figure}
 
-Use either \verb|x| or \verb|X| to delete the character at the cursor or previous to the cursor, respectively. To delete multiple characters, one way is to press \verb|x| or \verb|X| multiple times (or hold the keys). Alternatively, it is possible for \textit{Vim} to automatically repeat the procedure. For example, \verb|20x| tells \textit{Vim} to perform \verb|x| for 20 times. The same applies for other operators or motions commands. For example, \verb|10l| executes \verb|l| for 10 times, moving the cursor to the right for 10 characters.
+Use either \verb|x| or \verb|X| to delete the character at the cursor or previous to the cursor, respectively. To delete multiple characters, one way is to press \verb|x| or \verb|X| multiple times (or hold the keys). Alternatively, it is possible for Vim to automatically repeat the procedure. For example, \verb|20x| tells Vim to perform \verb|x| for 20 times. The same applies for other operators or motions commands. For example, \verb|10l| executes \verb|l| for 10 times, moving the cursor to the right for 10 characters.
 
-Operator \verb|d|, similar with \verb|dd|, deletes the contents of the text, but it requires a motion command and can be used more flexibly. The motion shall tell \textit{Vim} the applicable range to delete/cut.
+Operator \verb|d|, similar with \verb|dd|, deletes the contents of the text, but it requires a motion command and can be used more flexibly. The motion shall tell Vim the applicable range to delete/cut.
 
 For example, \verb|dl| deletes one character to the right, i.e. deletes the character at the cursor just like \verb|x|. Likewise, \verb|dh| deletes one character to the left just like \verb|X|. Similarly, \verb|d20l| deletes 20 characters to the right, where ``20l'' as a whole plays as the motion of ``20 characters to the right''. A combination by using things like \verb|5d4l| also works and leads to the same result as $20=5\times 4$.
 
@@ -269,9 +269,9 @@ In normal mode, using \verb|f| followed by a character will navigate the cursor 
 
 \subsection{Search in the Text}
 
-In normal mode, use \verb|/<content>| to search a keyword or a phrase. The following customization in \textit{vimrc} shall give a better searching experience.
+In normal mode, use \verb|/<content>| to search a keyword or a phrase. The following customization in \verb|vimrc| shall give a better searching experience.
 
-When searching in the text for a particular word or phrase (searching in the text will be will be covered in a later of the chapter), to make the searching result highlighted, add the following line to the user profile \textit{vimrc}.
+When searching in the text for a particular word or phrase (searching in the text will be will be covered in a later of the chapter), to make the searching result highlighted, add the following line to the user profile \verb|vimrc|.
 \begin{lstlisting}
 set hlsearch
 exec "nohlsearch"
@@ -281,9 +281,9 @@ set ignorecase
 noremap = nzz
 noremap - Nzz
 \end{lstlisting}
-where \verb|hlsearch| enables highlighting all matching results in the text, and \verb|incsearch| enables highlighting texts along with typing the keyword. \textit{Vim} remembers the keyword from the previous search and may automatically highlight them in the text on a new session. This can be confusing sometimes. To tackle the issue, use command \verb|exec "nohlsearch"| (\verb|exec| in \textit{vimrc} executes a command when starting a new session) after \verb|set hlsearch| to force \textit{Vim} to clear its searching memory on a new session. Finally, to quit searching, use \verb|:nohlsearch| in cmdline mode and the highlights shall be gone. For convenience, consider mapping it with a customized shortcut key as well, for example to \verb|Space|. As a bonus, set \verb|ignorecase| to ignore case-sensitive during the searching.
+where \verb|hlsearch| enables highlighting all matching results in the text, and \verb|incsearch| enables highlighting texts along with typing the keyword. Vim remembers the keyword from the previous search and may automatically highlight them in the text on a new session. This can be confusing sometimes. To tackle the issue, use command \verb|exec "nohlsearch"| (\verb|exec| in \verb|vimrc| executes a command when starting a new session) after \verb|set hlsearch| to force Vim to clear its searching memory on a new session. Finally, to quit searching, use \verb|:nohlsearch| in cmdline mode and the highlights shall be gone. For convenience, consider mapping it with a customized shortcut key as well, for example to \verb|Space|. As a bonus, set \verb|ignorecase| to ignore case-sensitive during the searching.
 
-Keys \verb|n| and \verb|N| is used to navigate through the searching result, and \verb|zz| is used to pin cursor position in the central of the screen. They are mapped to \verb|-| and \verb|=| in \textit{vimrc}. Notice that they can also be used as motion together with delete/cut, change and copy as given in Table \ref{ch:tfe:tab:deletecut}.
+Keys \verb|n| and \verb|N| is used to navigate through the searching result, and \verb|zz| is used to pin cursor position in the central of the screen. They are mapped to \verb|-| and \verb|=| in \verb|vimrc|. Notice that they can also be used as motion together with delete/cut, change and copy as given in Table \ref{ch:tfe:tab:deletecut}.
 
 With the above setup, searching for ``he'' using \verb|/he| leads to the following result given in Fig.~\ref{ch:tfe:fig:vimdemo2}.
 \begin{figure}[htbp]
@@ -299,7 +299,7 @@ Use \verb|Ctrl+o|, \verb|Ctrl+i| to ``undo'' and ``redo'' cursor positions, resp
 
 To save as a file, use \verb|:w <new path>| in cmdline mode.
 
-In cmdline mode, use \verb|!| to interact with the shell. For example, consider a case where a read-only file needs to be edited and saved by a sudoer who forgot to start \textit{Vim} using \verb|sudo|. The common \verb|:w| will be rejected. In this case, use \verb|:w !sudo tee %| to perform the save, where \verb|tee| is a Linux command that takes standard input and writes to a file, and \verb|%| stands for the current file. In another example where an existing file's content is to be insert into the current text, navigate the cursor to the place to insert the text, and use \verb|:r !cat <filename>|.
+In cmdline mode, use \verb|!| to interact with the shell. For example, consider a case where a read-only file needs to be edited and saved by a sudoer who forgot to start Vim using \verb|sudo|. The common \verb|:w| will be rejected. In this case, use \verb|:w !sudo tee %| to perform the save, where \verb|tee| is a Linux command that takes standard input and writes to a file, and \verb|%| stands for the current file. In another example where an existing file's content is to be insert into the current text, navigate the cursor to the place to insert the text, and use \verb|:r !cat <filename>|.
 
 To convert and save the current text into an \textit{html} file, use \verb|:%TOhtml|. From there, the file can be further converted into a PDF file.
 
@@ -307,7 +307,7 @@ To convert and save the current text into an \textit{html} file, use \verb|:%TOh
 
 The use of a mouse makes selecting a block of text very intuitive. In most text editors, the selected text will be highlighted, as if the cursor expands from one character to the entire block of text. Sequentially, operations such as delete and copy can be performed on the selected text.
 
-The three visual modes of \textit{Vim}, namely ``visual'', ``visual-line'' and ``visual-block'', provide similar experience where the user can select and highlight a block of text.
+The three visual modes of Vim, namely ``visual'', ``visual-line'' and ``visual-block'', provide similar experience where the user can select and highlight a block of text.
 
 Use \verb|v| to enter the visual mode, then navigate the cursor to select a block of text. This allows the user to select text between any two characters. An example is given by Fig. \ref{ch:tfe:fig:vimvm1}. Alternatively, use \verb|V| to enter the visual-line mode where multiple lines can be easily selected, and use \verb|<ctrl>+v| to enter visual-block mode to select a rectangular block of text.
 
@@ -323,7 +323,7 @@ Alternatively, in visual-block mode after selecting a block of content, use \ver
 
 \section{Vim Macros}
 
-\textit{Vim} macros is a convenient and power tool for repetitive works. Use \verb|q| in normal mode to start and end a macro recording. The syntax follows
+Vim macros is a convenient and power tool for repetitive works. Use \verb|q| in normal mode to start and end a macro recording. The syntax follows
 \begin{lstlisting}
 q<macro-name><operations>q
 \end{lstlisting}
@@ -381,13 +381,13 @@ Repetitively using \verb|@s| proceeds with the revision. In the case the procedu
 
 \section{File Explorer and Screen Splitting}
 
-Many IDEs come with project folder navigation and screen splitting features. In these IDEs, there is often a built-in file explorer, from where the user can navigate in the file system, select a file to edit, and the IDE will split the window for the selected file. \textit{Vim} has similar features that supports file explorer and screen splitting, either via built-in functions or third-party support tools.
+Many IDEs come with project folder navigation and screen splitting features. In these IDEs, there is often a built-in file explorer, from where the user can navigate in the file system, select a file to edit, and the IDE will split the window for the selected file. Vim has similar features that supports file explorer and screen splitting, either via built-in functions or third-party support tools.
 
-In \textit{Vim}, use \verb|:Explore|, \verb|:Sexplore| or \verb|:Vexplore| (or \verb|:Ex|, \verb|:Sex|, \verb|:Vex| for short) in cmdline mode to open a file explorer, from where the user can navigate the cursor to select a file. \textit{Vim} will then open the file in a split window that allows the user to further editing the file.
+In Vim, use \verb|:Explore|, \verb|:Sexplore| or \verb|:Vexplore| (or \verb|:Ex|, \verb|:Sex|, \verb|:Vex| for short) in cmdline mode to open a file explorer, from where the user can navigate the cursor to select a file. Vim will then open the file in a split window that allows the user to further editing the file.
 
 There are many third-party plugin tools that enable convenient file explorer functions. For example, \textit{github.com/scrooloose/nerdtree}. More details can be found in the associated repository on \textit{GitHub}.
 
-Use \verb|:split| and \verb|:vsplit| for horizontal and vertical screen splitting, respectively. A second split window would show up with the same text file opened. For simplicity, these commands can be mapped in \textit{vimrc} as follows.
+Use \verb|:split| and \verb|:vsplit| for horizontal and vertical screen splitting, respectively. A second split window would show up with the same text file opened. For simplicity, these commands can be mapped in \verb|vimrc| as follows.
 \begin{lstlisting}
 noremap sj :set nosplitright<CR>:vsplit<CR>
 noremap sl :set splitright<CR>:vsplit<CR>
@@ -413,48 +413,48 @@ noremap I :res+2<CR>
 noremap K :res-2<CR>
 \end{lstlisting}
 
-\section{\textit{NeoVim}}
+\section{NeoVim}
 
-\textit{Vim} being an open-source project allows other to fork and build new projects on top of it. \textit{NeoVim} is one of those projects. Comparing with \textit{Vim} whose code is almost all from Bram Moolenaar, \textit{NeoVim} is more of a community-driven project with diversified contributors. 
+Vim being an open-source project allows other to fork and build new projects on top of it. \mync{NeoVim} is one of those projects. Comparing with Vim whose code is almost all from Bram Moolenaar, NeoVim is more of a community-driven project with diversified contributors. 
 
-A potential problem with project codes coming from a single contributor is that the code is often a bit more messy than if it were written and cross-checked by multiple contributors, and that has been the main criticism \textit{Vim} has received. \textit{NeoVim}, on the other hand, has cleaner code base. 
+A potential problem with project codes coming from a single contributor is that the code is often a bit more messy than if it were written and cross-checked by multiple contributors, and that has been the main criticism Vim has received. NeoVim, on the other hand, has cleaner code base. 
 
-It seems that \textit{NeoVim} is a more cutting-edge version of \textit{Vim} in the sense that new features usually come sooner in \textit{NeoVim} than in \textit{Vim}. \textit{NeoVim} also has a better and more native support for Lua language. It seems that the entire configuration file for \textit{NeoVim}, i.e., the counterpart of \textit{vimrc}, can be built by Lua files. \textit{Vim} is initially a single-thread application, which is fine when it is used as a text editor. However, it limits the ability of \textit{Vim} calling other shell services. The user needs to wait for the shell services to end before he can start editing the document again. \textit{NeoVim}, on the other hand, uses multi-thread framework, hence does not pose this issue. Later on \textit{Vim} added the support to allow plug-ins to trigger multi-thread processes.
+It seems that NeoVim is a more cutting-edge version of Vim in the sense that new features usually come sooner in NeoVim than in Vim. NeoVim also has a better and more native support for Lua language. It seems that the entire configuration file for NeoVim, i.e., the counterpart of \verb|vimrc|, can be built by Lua files. Vim is initially a single-thread application, which is fine when it is used as a text editor. However, it limits the ability of Vim calling other shell services. The user needs to wait for the shell services to end before he can start editing the document again. NeoVim, on the other hand, uses multi-thread framework, hence does not pose this issue. Later on Vim added the support to allow plug-ins to trigger multi-thread processes.
 
-The drawback of \textit{NeoVim} is that it being a younger and more collaborative project seems to be less stable than \textit{Vim}.
+The drawback of NeoVim is that it being a younger and more collaborative project seems to be less stable than Vim.
 
-Both \textit{Vim} and \textit{NeoVim} are in-development projects, and new commits are being update every day. 
+Both Vim and NeoVim are in-development projects, and new commits are being update every day. 
 
 \section{Other Text Editors}
 
-Apart from \textit{Vim}, many other text editors are also widely used in Linux, each with different features. For demonstration purpose, \textit{Vim} and other text editors are used to open a shell script that calculates the first 10 elements of Fibonacci series.
+Apart from Vim, many other text editors are also widely used in Linux, each with different features. For demonstration purpose, Vim and other text editors are used to open a shell script that calculates the first 10 elements of Fibonacci series.
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=4in]{chapters/part-1/figures/vim_fib.png}
-	\caption{\textit{Vim} (with user's profile customization as introduced in this chapter).}
+	\caption{Vim (with user's profile customization as introduced in this chapter).}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=4in]{chapters/part-1/figures/nano_fib.png}
-	\caption{\textit{Nano}.}
+	\caption{The nano editor.}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=4in]{chapters/part-1/figures/emacs_fib.png}
-	\caption{\textit{Emacs}.}
+	\caption{The emacs editor.}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=4in]{chapters/part-1/figures/gedit_fib.png}
-	\caption{\textit{Gedit}.}
+	\caption{The gedit editor.}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=4in]{chapters/part-1/figures/vscode_fib.png}
-	\caption{\textit{Visual Studio Code}.}
+	\caption{Visual Studio Code.}
 \end{figure}

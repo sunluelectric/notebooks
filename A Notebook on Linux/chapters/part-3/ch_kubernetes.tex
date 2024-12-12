@@ -4,7 +4,7 @@ Kubernetes is one of the most widely used container orchestration tools. Many cl
 
 \section{Kubernetes Basics}
 
-\textit{Kubernetes}, also known as \textit{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications.
+\mync{Kubernetes}, also known as \mync{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications.
 
 As a orchestration tool, Kubernetes mainly focuses on the following items:
 \begin{itemize}
@@ -16,9 +16,7 @@ From the above, Kubernetes can be seen as a more powerful practice of what docke
 
 Managed services such as ECS can also do container orchestration. However, these managed services are often proprietary and inclusive to a particular cloud service provider, making it difficult to migrate the containerized applications across platforms. Kubernetes, on the other hand, is open-source and platform-independent, hence would not pose that problem.
 
-Nowadays, many cloud service providers also support Kubernetes-based container deployment, such as Elastic Kubernetes Service (EKS) by AWS and Google Kubernetes Engine (GKE) by Google Cloud. Notice that these managed services often come with some unique features built on top of Kubernetes, making the using of Kubernetes on these platform not entirely the same as (often easier than) doing it on a local machine.
-
-Nevertheless, the majority part of this chapter focuses on introducing running Kubernetes on a local server, where \verb|kubectl| is used as the user interface to Kubernetes. Additionally, Minikube is used to host Kubernetes. Minikube is an open-source software developed by the Kubernetes community to start a VM and run a single-node Kubernetes cluster on a local machine, and it suits well for training and testing.
+Nowadays, many cloud service providers also support Kubernetes-based container deployment, such as \myabb{Elastic Kubernetes Service}{EKS} by AWS and \myabb{Google Kubernetes Engine}{GKE} by Google Cloud. Notice that these managed services often come with some unique features built on top of Kubernetes, making the using of Kubernetes on these platform not entirely the same as (often easier than) doing it on a local machine.
 
 \begin{shortbox}
 	\Boxhead{Kubernetes and Docker Engine}
@@ -32,9 +30,9 @@ Nevertheless, the majority part of this chapter focuses on introducing running K
 \subsection{Infrastructure}
 
 Figure \ref{ch:vac:fig:kubernetescluster} demonstrates the key components Kubernetes has inside its cluster.
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
-	\includegraphics[width=350pt]{chapters/part-3/figures/k8sarchitecture.png}
+	\includegraphics[width=250pt]{chapters/part-3/figures/k8sarchitecture.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
 
@@ -50,7 +48,7 @@ Key components in the master and the nodes and their functions are summarized in
 		Component & Location & Description \\
 		\hline
 		\verb|etcd| & Master & A distributed key-value pair database that stores the status of the Kubernetes cluster. The consistency of the distributed database is achieved based on Raft consensus algorithm. \\ \hline
-		API server & Master & The gateway to handle all interactions with the Kubernetes cluster. For example, \verb|kubectl| requests from the user are handled by API server. \\ \hline
+		API server & Master & The gateway to handle all interactions with the Kubernetes cluster. For example, \textit{kubectl} requests from the user are handled by API server. \\ \hline
 		Scheduler & Master & The optimizer that calculates the desired pod distributions among all nodes based on the total load and the hardware limits. Notice that scheduler is not involved into load balance directly. A separate load balancer service can be created to actually direct the traffic. \\ \hline
 		Controller Manager & Master & A set of controllers or control functions to reconcile the actual Kubernetes cluster status with what has been calculated by the scheduler and stored in \verb|etcd|. \\ \hline
 		Kubelet & Node & Local controller for the node. It ensures that all the pods assigned to the node are running, and it keeps listening to the master for further instructions. \\ \hline
@@ -67,116 +65,193 @@ Both master and nodes can run on multiple servers or VMs. For master, multiple m
 
 \subsection{Installation}
 
-The installation guidance of Kubernetes can be found at its official website \textit{kubernetes.io}. Notice that different OSs adopt different ways of installing and using Kubernetes. In this notebook only Linux OS is concerned.
+It is worth mentioning in the beginning that Kubernetes is not a single software. It is a concept or an architecture that involves many pieces of software, including at least:
+\begin{itemize}
+  \item \verb|kubectl| the CLI
+  \item \verb|kube-apiserver| the API server
+  \item \verb|etcd| the distributed key-value pair database
+  \item \verb|kube-scheduler| the scheduler
+  \item \verb|kube-controller-manager| the control manager
+  \item Kubelet
+  \item Kube Proxy
+  \item Kubernetes-supported container runtime such as \verb|containerd|
+  \item Container Network Interface (CNI) plugin such as Calico
+  \item Many more tools
+\end{itemize}
+The installation guidance of Kubernetes can be found at its official website \textit{kubernetes.io}. In a production environment, the administrator shall install and configure the above tools on the servers by himself. This gives him the flexibility of customizing the tools. However, the process can be tedious and requires experience.
 
-As introduced earlier, \textit{kubectl} is used to interact with Kubernetes. For illustration purpose we also use Minikube to setup a small Kubernetes cluster in the local machine. They can be installed separately. See following links for more details.
+In this notebook, for demonstration purpose, we will use Minikube to help build a Kubernetes cluster. Minikube is an open-source software developed by the Kubernetes community to start a VM and run a single-node Kubernetes cluster on a local machine. It automates most of the tools installation and configuration, and it is just enough for the scope of this notebook. 
+
+We will only install \textit{kubectl} and Minikube. As introduced earlier, \textit{kubectl} is used to interact with Kubernetes clusters deployed either locally or remotely. It is always recommended to have \textit{kubectl} installed on the local machine. The installation of \textit{kubectl} can be found at Kubernetes website at
 \begin{lstlisting}
 https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+\end{lstlisting}
+Minikube installation can be found at
+\begin{lstlisting}
 https://minikube.sigs.k8s.io/docs/start/
 \end{lstlisting}
 
-Notice that when both Minikube and \textit{kubectl} are installed, Minikube needs to be started before running \textit{kubectl} commands. Start Minikube using
+Once Minikube is installed, start it using
 \begin{lstlisting}
 $ minikube start
 \end{lstlisting}
-Upon the start of Minikube, use the following command to verify the successful running of \textit{kubectl}.
+When starting Minikube, it automatically detects which container engine to use, and some configurations might be required subsequently. For example, if it decides to use podman, it may require the user who started Minikube to be added to the sudoer list that can start podman without sudo password authentication. This can be done by editing the following file
+\begin{lstlisting}
+$ sudo visudo
+\end{lstlisting}
+with
+\begin{lstlisting}
+<user name> ALL=(ALL) NOPASSWD: /usr/bin/podman
+\end{lstlisting}
+appended to the file.
+
+Once Minikube is started, use the following command to verify that \textit{kubectl} has detected and connected with the Kubernetes runtime.
 \begin{lstlisting}
 $ kubectl cluster-info
 Kubernetes control plane is running at https://192.168.49.2:8443
 CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 \end{lstlisting}
 
-Notice that Minikube also comes with a built-in \verb|kubectl|. It is possible to use that \verb|kubectl| instead of installing one separately. To very the existence of the built-in \verb|kubectl|, start Minikube first and then use
+\begin{shortbox}
+\Boxhead{Minikube's Built-in \textit{kubectl}}
+
+Minikube also comes with a built-in \textit{kubectl}. It is possible to use that \textit{kubectl} instead of installing one separately. To very the existence of the built-in \textit{kubectl}, start Minikube first and then use
+
 \begin{lstlisting}
 $ minikube kubectl -- cluster-info
 Kubernetes control plane is running at https://192.168.49.2:8443
 CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 \end{lstlisting}
-where \verb|--| in the command tells the shell that all the followed arguments shall be passed to \verb|kubectl|, but not \verb|minikube|. For convenience, one may want to use alias as follows
+where \verb|--| in the command tells the shell that all the followed arguments shall be passed to \textit{kubectl}, but not \verb|minikube|. For convenience, one may want to use alias as follows
 \begin{lstlisting}
 $ alias kubectl="minikube kubectl --"
 \end{lstlisting}
 
+Although with the above been said, it is still recommended that \textit{kubectl} to be installed on the local machine, not just in the VM. 
+\end{shortbox}
+
 It is possible to run Kubernetes cluster directly on a host machine OS without VM if that machine is running Linux. However, this is not recommended for reasons pertaining to access control, security, and isolation. It is generally a better practice to deploy Kubernetes clusters in VMs.
 
-The configuration file for \verb|kubectl| is usually located at \verb|~/.kube/config|. It determines the basic setups of the \verb|kubectl| instance, such as which Kubernetes cluster \verb|kubectl| communicates with.
+The configuration file for \textit{kubectl} is usually located at \verb|~/.kube/config|. It determines the basic setups of the \textit{kubectl} instance, such as which Kubernetes cluster \textit{kubectl} communicates with.
 
-\subsection{Brief Introduction to Kubernetes Configuration}
+\subsection{Kubernetes Cluster Configuration}
 
-Kubernetes configuration files are used to guide Kubernetes on how it should manage the project. 
+Kubernetes configuration files are used to guide Kubernetes on how it should configure the cluster and run the applications. There are often multiple configuration files in an application deployment, each file corresponding with an ``object'' to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, etc. There are many types (known as ``kinds'') of objects defined by Kubernetes. Details are introduced in the remaining of this section.
 
-There are multiple configuration files in an application deployment, each file corresponding with an ``object'' to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, etc. There are many types (known as ``kinds'') of objects defined by Kubernetes. Details are introduced in the remaining of this section.
-
-As examples, commonly seen templates of Kubernetes configuration files are given below. For \verb|Pod|,
+Below is an example from the Kubernetes website. It contains the configuration of two objects.
 \begin{lstlisting}
-apiVersion: <version> # e.g., v1
-kind: Pod
-metadata:
-  name: <pod-name>
-  namespace: <namespace> # optional
-spec:
-  containers:
-    - name: <container-name>
-      image: <container-image>
-      ports:
-        - containerPort: <port>
-\end{lstlisting}
-For \verb|Deployment|,
-\begin{lstlisting}
-apiVersion: <version> # e.g., apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <deployment-name>
-  namespace: <namespace> # optional
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
-  replicas: <number-of-replicas>
+  replicas: 3
   selector:
     matchLabels:
-      app: <app-label>
+      app: nginx
   template:
     metadata:
       labels:
-        app: <app-label>
+        app: nginx
     spec:
       containers:
-        - name: <container-name>
-          image: <container-image>
-          ports:
-            - containerPort: <port>
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
 \end{lstlisting}
-For \verb|Service|,
+
 \begin{lstlisting}
-apiVersion: <version> # e.g., v1
+apiVersion: v1
 kind: Service
 metadata:
-  name: <service-name>
-  namespace: <namespace> # optional
+  name: my-service
 spec:
   selector:
-    app: <app-label>
+    app.kubernetes.io/name: MyApp
   ports:
-    - protocol: <protocol> # e.g., TCP
-      port: <service-port>
-      targetPort: <container-port>
-  type: <service-type> # e.g., ClusterIP, NodePort, LoadBalancer
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 9376
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 9377
 \end{lstlisting}
 
 Some commonly used fields used in the Kubernetes configuration files are briefly summarized below.
 \begin{itemize}
-	\item \verb|apiVersion| tells the API version.
-	
-	Kubernetes groups APIs into different collections based on their roles. For example, \verb|v1| belongs to the core API group, inside which the basic objects such as \verb|Pod| are defined. On the other hand, \verb|apps/v1| belongs to the application API group where application-relevant services such as \verb|Deployment| are defined.
-	
-	The user needs to choose the proper API version for the object type so that Kubernetes can interpret it correctly.
-	
-	\item \verb|kind| indicates the type of the object that the configuration file describes.
-	
-	\item \verb|metadata| indicates the name and labels of the object. 
-	
-	\item \verb|port|, \verb|targetPort| and \verb|nodePort| are used in \verb|kind:Service| to specify ports, where \verb|nodePort| is the port the node exposes to the external world, \verb|port| the port of the Service itself, and \verb|targetPort| the port of the pods where the message will be forwarded to.
+	\item \verb|apiVersion|: The API version of the object. Different object types are supported in different API versions.
+	\item \verb|kind|: The object type.
+	\item \verb|metadata|: The name and labels of the object. 
+	\item \verb|spec|: The specifications of the object. Different object types require different specifications. For example, Pod and Deployment objects require image name and tag, while Service object requires ports numbers. 
 \end{itemize}
 
-There are many different kinds of objects. Commonly used Kubernetes object types are summarized in Table \ref{ch:vac:tab:objtype}.
+Composing Kubernetes configuration files is a key part in Kubernetes-based application deployment, and it is essentially about configuring Kubernetes objects. More details of Kubernetes objects are not given here, but will be introduced in Section \ref{ch:vac:sec:objects}.
+
+\subsection{Kubernetes Cluster Deployment}
+
+With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. The \textit{kubectl} CLI is used to instruct Kubernetes to deploy the objects as follows.
+\begin{lstlisting}
+$ kubectl apply -f <configuration file> / <directory of configuration files>
+\end{lstlisting}
+This essentially asks the master node in the Kubernetes cluster to start taking actions following the Kubernetes configuration files, such as to inform the nodes to start creating pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
+
+It is worth mentioning that by default Kubernetes uses declarative deployment instead of imperative deployment, meaning that the developer does not need to specifically tell Kubernetes what to do in each step. The developer only tells the overall objectives, and Kubernetes master node will try to figure out the steps to realize that goal. It is possible to enforce Kubernetes master node to practice specific details via configuration files, but it is almost always recommended to use the default declarative approach with Kubernetes.
+
+To retrieve the status of a group of objects, use
+\begin{lstlisting}
+$ kubectl get <object type>
+\end{lstlisting}
+where \verb|<object type>| can be \verb|pods|, \verb|services|, etc. For more details of a specific object, use
+\begin{lstlisting}
+$ kubectl describe <object type> <object name>
+\end{lstlisting}
+for example, to check the containers running in a pod. If \verb|<object name>| is neglected, Kubernetes returns detailed information of all objects of the given object type. For a running object, use
+\begin{lstlisting}
+$ kubectl logs <object name>
+\end{lstlisting}
+to check the log file of that object.
+
+Minikube provides a web-based dashboard where the user can conveniently check the status of the cluster. Use
+\begin{lstlisting}
+$ minikube dashboard
+\end{lstlisting} 
+to start the dashboard and follow the instructions on the concole to open the dashboard.
+
+It is possible to consolidate the configuration files of objects into one configuration file. To do that, use \verb|---| to split the configurations for each object in the conjunctive configuration file as follows. It is of personal preference whether to use conjunctive configuration files or separate configuration files for all objects.
+\begin{lstlisting}
+<configurations for object 1>
+
+---
+
+<configurations for object 2>
+
+---
+
+<...>
+\end{lstlisting}
+
+\subsection{Kubernetes Cluster Configuration Update}
+
+With the help of Kubernetes declarative approach, it is possible to update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks revised configuration files, comparing them with existing running objects, and update them if necessary.
+
+It is recommended to check the status of the pods using \verb|kubectl get pods| once the cluster is updated. After the update, the pods should be restarted, and hence the ``RESTARTS'' tag shall increase. To ensure that the update is successful, use \verb|kubectl describe| to check the details of the relevant objects.
+
+Notice that there is a limitation on what can be updated to an existing Kubernetes deployment. For an existing object, only certain fields in the Kubernetes configuration files are allowed to be revised. For example, for a pod, the image can be changed while the ports cannot. Some objects types are more flexible than others when comes to object updating. The user shall choose wisely what object types to use considering what updates need to be made in future.
+
+To revert what has been applied in a Kubernetes configuration file, use
+\begin{lstlisting}
+$ kubectl delete -f <configuration file>
+\end{lstlisting}
+Kubernetes treats the above as an update and will action accordingly.
+
+\section{Kubernetes Objects} \label{ch:vac:sec:objects}
+
+This section introduces commonly used Kubernetes objects, a list of which is given in Table \ref{ch:vac:tab:objtype}.
 
 \begin{table}[!htb]
 	\centering
@@ -197,103 +272,47 @@ There are many different kinds of objects. Commonly used Kubernetes object types
 	\end{tabularx}
 \end{table}
 
-Composing Kubernetes configuration files is a key part in Kubernetes-based application deployment. This section only gives a glance of what the configuration files look like. More details are given in later sections of the chapter.
+These object types are introduced in more details in the remaining of the section.
 
-If Kubernetes is deployed on the cloud using managed services such as EKS and GKE, the Kubernetes configuration files needs to be slightly modified. Still, it is easier to migrate Kubernetes-based applications across platforms since the modification is minor than if proprietary services such as ECS were used.
+\subsection{Pod and Deployment}
 
-\subsection{Cluster Deployment}
+Pod object is the smallest and most fundamental unit in a node that Kubernetes interacts with. A pod is essentially a ``wrap'' that hosts one or multiple containers that work closely with each other. Pod contains shared resources such as volumes for all the containers it hosts. The containers in a pod can also communicate each other via \verb|localhost|. A pod has a cluster-internal IP by default.
 
-With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. The \textit{kubectl} CLI is used to instruct Kubernetes to deploy the objects as follows.
-\begin{lstlisting}
-$ kubectl apply -f <configuration file>
-\end{lstlisting}
-This essentially asks the master node in the Kubernetes cluster to start taking actions following the Kubernetes configuration files, such as to inform the nodes to start creating pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
+The user can manually start or stop a pod using \verb|kubectl|, and can also configure a pod in Kubernetes configuration files under API version \verb|v1|, kind \verb|Pod|. However, this is not recommended because Kubernetes, not the user, should manage and schedule the pods.
 
-It is worth mentioning that by default Kubernetes uses declarative deployment instead of imperative deployment, meaning that the developer does not need to specifically tell Kubernetes what to do in each step. The developer only tells the overall objectives, and Kubernetes master node will try to figure out the steps to realize that goal. It is possible to enforce Kubernetes master node to practice specific details via configuration files, but it is almost always recommended to use the default declarative approach with Kubernetes.
+as an orchestration tool Kubernetes shall schedule and scale the number of running pods as well as monitor their healthy status.
 
-To retrieve the status of a group of objects, use
-\begin{lstlisting}
-$ kubectl get <object type>
-\end{lstlisting}
-where \verb|<object type>| can be \verb|pods|, \verb|services|, etc. For more details of a specific object, use
-\begin{lstlisting}
-$ kubectl describe <object type> <object name>
-\end{lstlisting}
-for example, to check the containers running in a pod. If \verb|<object name>| is neglected, Kubernetes returns detailed information of all objects of the given object type. For a running object, use
-\begin{lstlisting}
-$ kubectl logs <object name>
-\end{lstlisting}
-to check the log file of that object.
+To tackle these problems, object \textit{deployment} is introduced. A deployment serves as the ``controller'' of identical pods. It is practically more convenient to setup pods using the deployment object instead of the pod object. 
 
-With the above been done, open a browser and use \verb|<ip>:<port>| to access the application running in the container, where \verb|<ip>| is the IP address of the VM that hosts Kubernetes, and \verb|<port>| the port configured in NodePort service under \verb|nodePort|. If Minikube is used to create the VM that hosts Kubernetes, the IP address can be found by running \verb|minikube ip|.
-
-To apply a group of configuration files all together, provide the directory name of all the configuration files to Kubernetes instead of feeding each configuration file one at a time.
-\begin{lstlisting}
-$ kubectl apply -f <directory>
-\end{lstlisting}
-and Kubernetes will try to apply all the configuration files in that directory.
-
-It is possible to consolidate the configuration files of objects into one configuration file. To do that, use \verb|---| to split the configurations for each object in the conjunctive configuration file as follows. It is of personal preference whether to use conjunctive configuration files or separate configuration files for all objects.
-\begin{lstlisting}
-<configurations-for-object-1>
----
-<configurations-for-object-2>
----
-<...>
-\end{lstlisting}
-
-\subsection{Cluster Update} \label{ch:vac:subsec:updatek8s}
-
-Without container orchestration tools such as Kubernetes, one of the most challenging tasks is to update the container for a different configuration, for example, changing the underlying image. 
-
-With the help of Kubernetes declarative approach, it is possible to update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks revised configuration files, comparing them with existing running objects, and update them if necessary.
-
-It is recommended to check the status of the pods using \verb|kubectl get pods| once the cluster is updated. After the update, the pods should be restarted, and hence the ``RESTARTS'' tag shall increase. To ensure that the update is successful, use \verb|kubectl describe| to check the details of the relevant objects.
-
-Notice that there is a limitation on what can be updated to an existing Kubernetes deployment. For an existing object, only certain fields in the Kubernetes configuration files are allowed to be revised. For example, for a pod, the image can be changed while the ports cannot. Some objects types are more flexible than others when comes to object updating. The user shall choose wisely what object types to use considering what updates need to be made in future.
-
-To revert what has been applied in a Kubernetes configuration file, use
-\begin{lstlisting}
-$ kubectl delete -f <configuration file>
-\end{lstlisting}
-Kubernetes treats the above as an update and will action accordingly.
-
-\section{Kubernetes Advanced}
-
-This section introduces advanced commonly used Kubernetes objects, tools and techniques.
-
-\subsection{Kubernetes Object: Deployment} \label{ch:vac:subsec:deployment}
-
-As introduced in Section \ref{ch:vac:subsec:updatek8s}, updating pods has some limitations. It is practically more convenient to setup pods using ``Deployment'' object instead of ``pod''. The Deployment object servers as an additional layer of Kubernetes infrastructure that manages identical pods. More details of Deployment object is introduced in this section.
-
-As an example, here is a configuration file from Kubernetes manual that deploys a Deployment object.
+As an example, a Kubernetes cluster file that deploys an deployment object is given below. Notice that deployment object is supported in API version \verb|apps/v1|.
 \begin{lstlisting}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-name: nginx-deployment
-labels:
-app: nginx
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
-replicas: 3
-selector:
-matchLabels:
-app: nginx
-template:
-metadata:
-labels:
-app: nginx
-spec:
-containers:
-- name: nginx
-image: nginx
-ports:
-- containerPort: 80
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
 \end{lstlisting}
 Some highlights are as follows.
 \begin{itemize}
-	\item \verb|replicas| gives the expected number of pods that the Deployment object manages.
-	\item \verb|matchLabels| specifies the pods with which label are to be managed by the Deployment object. In this example, the label is \verb|app: nginx|. When populating pods, the pods would have the same label, as the same label is assigned under \verb|template|, \verb|metadata|, \verb|labels|.
+	\item \verb|replicas| gives the expected number of pods that the deployment object manages.
+	\item \verb|matchLabels| specifies the pods with which label are to be managed by the deployment object. In this example, the label is \verb|app: nginx|. When populating pods, the pods would have the same label, as the same label is assigned under \verb|template|, \verb|metadata|, \verb|labels|.
 	\item \verb|template| specifies the template that is used to create the pods.
 \end{itemize}
 
@@ -306,17 +325,17 @@ For example,
 $ kubectl set image deployment/nginx-deployment nginx=nginx:1.25.1
 \end{lstlisting}
 
-\subsection{Kubernetes Object: Service} \label{ch:vac:subsec:k8snetworking}
+\subsection{Service} \label{ch:vac:subsec:k8snetworking}
 
-There are 4 service types defined in Kubernetes. So far ``NodePort'' service type has been introduced in earlier examples. More types are introduced here.
-
-A summary of different service types are given below.
+Object \textit{Service} is used to build network services in the Kubernetes cluster. There are 4 service types defined in Kubernetes, including
 \begin{itemize}
-	\item ClusterIP: Exposes the service object on a cluster-internal IP. Objects in the cluster can access to the object that a ClusterIP is pointing at.
-	\item NodePort: Assigns a static port with the cluster IP, and exposes the Service object to the internet. This is used mostly used in development environment, not in production environment.
-	\item LoadBalancer: Exposes the service object externally using an external load balancer. Kubernetes does not provide built-in load balancer.
-	\item ExternalName: Maps the service object to the contents of the \verb|externalName| field, such as a host name. This is related to cluster DNS server.
+	\item ClusterIP service: Exposes the service object on a cluster-internal IP. Objects in the cluster can access to the object that a ClusterIP is pointing at.
+	\item NodePort service: Assigns a static port with the cluster IP, and exposes the Service object to the internet. This is used mostly used in development environment, not in production environment.
+	\item LoadBalancer service: Exposes the service object externally using an external load balancer. Kubernetes does not provide built-in load balancer.
+	\item ExternalName service: Maps the service object to the contents of the \verb|externalName| field, such as a host name. This is related to cluster DNS server.
 \end{itemize}
+
+More details are introduced below.
 
 \vspace{0.1in}
 \noindent \textbf{ClusterIP}
@@ -364,7 +383,7 @@ Ingress is a more commonly used Service type than LoadBalancer to get traffic in
 
 The ingress configuration differs depending on the ingress service type and the platform. Details are not given here.
 
-\subsection{Kubernetes Object: Persistent Volume Claim, Persistent Volume, and Volume} \label{ch:vac:subsec:k8svolume}
+\subsection{Volumes} \label{ch:vac:subsec:k8svolume}
 
 Docker engine uses volumes to maintain persistent data and share data among containers. Details have been introduced in Section \ref{ch:vac:subsec:dockervolume}. Kubernetes volume framework is similar in the sense that it makes sure that the data is saved and managed by the host machine, so that when the pods or containers are shutdown or restarted, the data can be restored safely.
 
@@ -460,7 +479,7 @@ $ kubectl describe storageclass
 \end{lstlisting}
 When deploying Kubernetes on the Cloud, the developer needs to do additional configurations as there would be many storage options. Usually, each Cloud provider will have its own default storage space for Kubernetes, such as AWS Elastic Block Store for AWS.
 
-\subsection{Kubernetes Object: Secrets} \label{ch:vac:subsec:k8ssecrets}
+\subsection{Secrets} \label{ch:vac:subsec:k8ssecrets}
 
 Kubernetes Secrets object is used store confidential information, such as the database password, API key, etc. It is often a piece of information that is necessary for the containers, but the developer does not want to present as plain text in the configuration file.
 
@@ -547,11 +566,11 @@ Travis uses configuration files to setup CI/CD pipeline.
 
 \subsection{Deploy Containers}
 
-In the Travis configuration file, \verb|deploy| is used to specify the script to run when the testing is successful. A separate bash script \verb|deploy.sh| is defined for this purpose, inside which is a sequence of commands that builds and publishes images, and configures Kubernetes using \verb|kubectl|.
+In the Travis configuration file, \verb|deploy| is used to specify the script to run when the testing is successful. A separate bash script \verb|deploy.sh| is defined for this purpose, inside which is a sequence of commands that builds and publishes images, and configures Kubernetes using \textit{kubectl}.
 
-It is particularly worth mention that in \verb|deploy.sh|, when building and applying the latest version of the docker image, tagging using \verb|<image-name>:latest| alone is not going to work for the same reason explained earlier in Section \ref{ch:vac:subsec:deployment}: when the same configuration with \verb|<image-name>:latest| is applied, the system would simply acknowledge it as ``no change'' and would not actually download the latest version of the image.
+It is particularly worth mention that in \verb|deploy.sh|, when building and applying the latest version of the docker image, tagging using \verb|<image-name>:latest| alone is not going to work. This is because when the same configuration with \verb|<image-name>:latest| is applied, the system would simply acknowledge it as ``no change'' and would not actually download the latest version of the image.
 
-The walk around introduced in Section \ref{ch:vac:subsec:deployment} was to use version number in the configuration file and/or as an imperial command as follows.
+The walk introduced earlier was to use version number in the configuration file and/or as an imperial command as follows.
 \begin{lstlisting}
 $ kubectl set image deployment/<Deployment name> <container name>=<image name>:<version>
 \end{lstlisting}
@@ -633,4 +652,4 @@ After creating the admin user and logging in, the status of images, containers a
 	\caption{Portainer dashboard list down of all running containers.} \label{ch:vac:fig:portainerdashboard3}
 \end{figure}
 
-In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve.
+In summary, Portainer is an easy-to-use container management tool with clean graphical interface that a user can quickly get used to without a steep learning curve. 
