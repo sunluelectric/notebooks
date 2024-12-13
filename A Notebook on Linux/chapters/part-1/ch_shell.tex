@@ -66,7 +66,7 @@ The above string is called a \mync{prompt}, indicating the start of a user comma
 	\end{tabularx}
 \end{table}
 
-For the term \mync{root user} or simply \mync{root}, we are referring to a special user with username and \myabb{User ID}{UID} ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
+For the term \mync{root user} or simply \mync{root}, we are referring to a special user with username and \mync{User ID}[UID] ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
 
 Notice that the root user is different from a \mync{sudoer}, later of which is basically a regular user equipped with \mync{sudo privilege}. A sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
 \begin{lstlisting}

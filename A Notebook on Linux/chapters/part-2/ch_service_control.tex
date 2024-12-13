@@ -2,11 +2,11 @@
 ...
 \section{Service Control} \label{ch:sa:sec:sc}
 
-There are many services running in the background of the OS, some of which started by the OS while the other by the user. For example, \textit{Apache service} might be used when the system is hosting a webpage. Other commonly used services include keyboard related services, bluetooth services, etc.
+There are many services running in the background of the OS, some of which started by the OS while the other by the user. For example, Apache service might be used when the system is hosting a webpage. Other commonly used services include keyboard related services, bluetooth services, etc.
 
 To quickly have a glance of the running services, use
 \begin{lstlisting}
-	$ systemctl --type=service
+$ systemctl --type=service
 \end{lstlisting}
 
 These services can be managed using service managing utilities such as \verb|systemctl| and \verb|service|. Some commonly used terminologies are concluded in Table \ref{ch:sa:tab:servicecontroltools} with explanations about their differences.
@@ -26,28 +26,28 @@ In short, \verb|systemd| is the back-end service of Linux that manages the servi
 
 Use the following commands to check the status of a service, and start, stop or reboot the service.
 \begin{lstlisting}
-	$ sudo systemctl status <service name>
-	$ sudo systemctl start <service name>
-	$ sudo systemctl stop <service name>
-	$ sudo systemctl restart <service name>
+$ sudo systemctl status <service name>
+$ sudo systemctl start <service name>
+$ sudo systemctl stop <service name>
+$ sudo systemctl restart <service name>
 \end{lstlisting}
 
 Use the following commands to enable and disable a service. An enabled service automatically starts during the system boot, and a disabled service does not.
 \begin{lstlisting}
-	$ sudo systemctl enable <service name>
-	$ sudo systemctl disable <service name>
+$ sudo systemctl enable <service name>
+$ sudo systemctl disable <service name>
 \end{lstlisting}
 
 Use the following command to mask and unmask a service. A masked service cannot be started even using \verb|systemctl start|.
 \begin{lstlisting}
-	$ sudo systemctl mask <service name>
-	$ sudo systemctl unmask <service name>
+$ sudo systemctl mask <service name>
+$ sudo systemctl unmask <service name>
 \end{lstlisting}
 
 The \verb|service| command can be used in a similar manner as follows.
 \begin{lstlisting}
-	$ sudo service <service name> status
-	$ sudo service <service name> start
-	$ sudo service <service name> stop
-	$ sudo service <service name> restart
+$ sudo service <service name> status
+$ sudo service <service name> start
+$ sudo service <service name> stop
+$ sudo service <service name> restart
 \end{lstlisting}

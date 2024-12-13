@@ -4,7 +4,7 @@
 
 File management is a big portion of OS. In Linux, each device (such as a printer) is treated and managed as a file, and Linux uses a tree hierarchy to manage devices and files. This chapter introduces the filesystem hierarchy and commonly used file management commands.
 
-\section{Filesystem Hierarchy Standard} \label{ch:fm:sec:hierarchy}
+\section{Filesystem Hierarchy} \label{ch:fm:sec:hierarchy}
 
 The root directory is denoted by a single forward slash ``\verb|/|''. All sub directories or files can be located by its full path, which looks like the following
 \begin{lstlisting}
@@ -13,9 +13,9 @@ The root directory is denoted by a single forward slash ``\verb|/|''. All sub di
 \end{lstlisting}
 where the first \verb|/| in each row represents the root directory, and sequential \verb|/| represents entering a subdirectory.
 
-Upon Linux installation, a file hierarchy is created. A user can create new files under this hierarchy framework, but should not change the framework itself. The hierarchy is given in Fig. \ref{ch:fm:fig:hierarchy}. Notice that different Linux distributions may differ slightly on how the architecture looks like. The ``\verb|/|'' in the figure, as introduced, stands for the root directory, and ``\verb|root|'' in the figure is a subdirectory under \verb|/| whose directory name is ``root'' and it is used store root user related documents. They are two different directories.
+Upon Linux installation, a \mync{filesystem hierarchy} is created. A user can create new files under this hierarchy framework, but should not change the framework itself. The hierarchy is given in Fig. \ref{ch:fm:fig:hierarchy}. Notice that different Linux distributions may differ slightly on how the architecture looks like. The ``\verb|/|'' in the figure, as introduced, stands for the root directory, and ``\verb|root|'' in the figure is a subdirectory under \verb|/| whose directory name is ``root'' and it is used store root user related documents. They are two different directories.
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=250pt]{chapters/part-1/figures/linux_file_hierarchy.png}
 	\caption{An example of Linux file system hierarchy.} \label{ch:fm:fig:hierarchy}
@@ -25,7 +25,7 @@ A regular user's home directory is often located at \verb|/home/<user name>|. Wh
 
 As can be seen from Fig. \ref{ch:fm:fig:hierarchy}, the hierarchy contains quite a few pre-determined subdirectories, each serving a different purpose. For the ease of illustration, these subdirectories are roughly categorized by functionalities and accessibility shown in Fig. \ref{ch:fm:fig:directorycate}.
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-1/figures/linux_directory_cate.png}
 	\caption{A rough categorization of commonly used directories in Linux file hierarchy standard.} \label{ch:fm:fig:directorycate}
@@ -33,7 +33,7 @@ As can be seen from Fig. \ref{ch:fm:fig:hierarchy}, the hierarchy contains quite
 
 A brief introduction to the directories are summarized in Table \ref{ch:fm:tab:hierarchyintro}.
 
-\begin{table}
+\begin{table}[!htb]
   \centering \caption{Introduction to commonly used directories in Linux file hierarchy standard.}\label{ch:fm:tab:hierarchyintro}
   \begin{tabularx}{\textwidth}{lX}
     \hline
@@ -69,7 +69,7 @@ Magic numbers of a file refer to the first few bytes of a file that are unique t
 
 Some of the most widely used file exploring and managing commands are summarized in Table \ref{ch:fm:tab:commonfilecommands}. Notice that \verb|chmod| and \verb|chown| are administration related commands that change the accessibility of a directory or a file, and will be introduced in a later sections together with the Linux permission system. The rest commands are categorized and introduced in the following subsections.
 
-\begin{table}
+\begin{table}[!htb]
   \centering \caption{Commonly used commands to navigate in the Linux file system.}\label{ch:fm:tab:commonfilecommands}
   \begin{tabularx}{\textwidth}{lX}
     \hline
@@ -107,7 +107,7 @@ $ ls [<option>] [<path>]
 
 An example is given in Fig. \ref{ch:fm:fig:lscommandexample}. As shown in the example, command \verb|ls| alone shows only the name of files and subdirectories excluding hidden items and details of each item. With the additional arguments in the option field, the returns can be customized with more details displayed. For example in Fig. \ref{ch:fm:fig:lscommandexample}, the \verb|-l| argument displays the information in long listing form, which includes the owner and access control list information. More details about files and directories access control list are given in later part of this section.
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-1/figures/ls_command_example.png}
 	\caption{List down information of files and subdirectories in the current working directory.} \label{ch:fm:fig:lscommandexample}
@@ -115,7 +115,7 @@ An example is given in Fig. \ref{ch:fm:fig:lscommandexample}. As shown in the ex
 
 More information can be found in the \verb|ls| command manual which is accessible via \verb|ls --help|. Some commonly used \verb|ls| arguments are summarized in Table \ref{ch:fm:tab:lscommandargument}. It is also possible to combine the options. For example, \verb|ls -al| aggregates the effects of using \verb|ls -a| and \verb|ls -l|.
 
-\begin{table}[htbp]
+\begin{table}[!htb]
   \centering \caption{Commonly used arguments and their effects for \textit{ls} command.}\label{ch:fm:tab:lscommandargument}
   \begin{tabularx}{\textwidth}{lX}
     \hline
@@ -241,7 +241,7 @@ When performing actions such as listing, moving, copying, removing, wildcard cha
 
 \section{Access Control List} \label{ch:fm:sec:accesscontrollist}
 
-Each file or directory in the Linux OS is assigned with an owner and a permission list known as the Access Control List (ACL). ACL prevents unauthorized entities to access an item. The ACL of a file can be viewed using \verb|ls -l|. An example has been given in Fig. \ref{ch:fm:fig:lscommandexample} in the earlier section.
+Each file or directory in the Linux OS is assigned with an owner and a permission list known as the \mync{Access Control List}[ACL]. ACL prevents unauthorized entities to access an item. The ACL of a file can be viewed using \verb|ls -l|. An example has been given in Fig. \ref{ch:fm:fig:lscommandexample} in the earlier section.
 
 The first column of the output in Fig. \ref{ch:fm:fig:lscommandexample} gives the type and permission of the item. The leading \verb|d| and \verb|-| indicate subdirectory and regular file respectively. Other commonly seen indicators are \verb|l| for a symbolic link, \verb|b| for a block device, \verb|c| for a character device, \verb|s| for a socket and \verb|p| for a named pipe.
 

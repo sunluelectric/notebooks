@@ -8,14 +8,14 @@ Among the vast number of choices, Vim is probably the most popular one. It works
 
 \section{General Introduction to Vim}
 
-\mync{Vi IMproved}[Vim] is a free and open-source software developed by Bram Moolenaar et al. It is an expansion to the \mync{Vi} text editor to include features such as syntax highlighting, etc., and has become the default text editor of many Unix/Linux based operating systems.
+\mync{Vi IMproved}[Vim] is a free and open-source software developed by Bram Moolenaar et al. It is an expansion to the Vi text editor to include features such as syntax highlighting, etc., and has become the default text editor of many Unix/Linux based operating systems.
 
 Some people claim Vim to be the most powerful text file editor and IDE for programming on a Linux machine (and potentially on all computers and servers). The main reasons are as follows.
 \begin{itemize}
   \item Vim is usually built-in to Linux during the operating system installation, making it the most available and cost-effective text editor.
   \item Vim can work on machines where graphical desktop is not supported.
   \item Vim is light in size and is suitable to run even on an embedded system.
-  \item Vim operations are done mostly via mode switch and shortcut keys; as a result, \textbf{the brain does not need to halt and wait for the hand to grab and move the mouse}, thus speeding up the text editing.
+  \item Vim operations are done mostly via mode switch and shortcut keys without requirements on moving mouses, and hence the operation efficiency can be improved.
   \item Vim is highly flexible and can be customized according to the user's habit (for example, through \verb|~/.vimrc|), and it allows the users to define shortcut keys.
   \item Vim can automate repetitive operations by defining macros.
   \item Vim can be integrated with third-party tools which boost its features to a higher level.
@@ -27,9 +27,14 @@ Bram Moolenaar, the original inventor of Vim, passed away on August 3, 2023 at t
 
 \section{Vim Modes} \label{ch:tfe:subsec:vimgeneralintro}
 
-Unlike other text editors, Vim defines different ``modes'' during the operation, each mode has some unique features. For example, in the \textbf{insert} mode, Vim maps keyboard inputs with the text file just like an conventional text editor. In the \textbf{normal} mode (this is the default mode when opening Vim), Vim uses useful and customizable shortcut keys to quickly navigate the document and perform operations such as cut, copy, paste, replace, search, and macro functions. In the \textbf{virtual} mode, Vim allows the user to select a block of content for further editing. In the \textbf{cmdline} mode, Vim takes order from command lines and interact with Linux to perform tasks such as save and quit.
-
-The following Table \ref{ch:tfe:tab:vimmodes} summarizes the commonly used modes in Vim.
+Unlike other text editors, Vim defines different ``modes'' during the operation, each mode has some unique features. There are the following modes:
+\begin{itemize}
+  \item Normal
+  \item Insert
+  \item Visual
+  \item Cmdline
+\end{itemize}
+Table \ref{ch:tfe:tab:vimmodes} summarizes the commonly used modes in Vim.
 \begin{table}
   \centering \caption{Commonly used modes in Vim.}\label{ch:tfe:tab:vimmodes}
   \begin{tabularx}{\textwidth}{lX}
@@ -57,13 +62,13 @@ Finally, in the normal mode, use \verb|:w| to save the file, and \verb|:q| to qu
 
 The above basic commands and their relationships are summarized in Fig.~\ref{ch:tfe:fig:vimbasicmodeswitching}. A flowchart to create/open, edit, save, and quit a text file using the aforementioned commands are given in Fig.~\ref{ch:tfe:fig:vimbasicoperationflowchart}.
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=250pt]{chapters/part-1/figures/vimbasicmodeswitching.png}
 \caption{Mode switching between normal mode and insert mode, and basic functions associated with the modes.} \label{ch:tfe:fig:vimbasicmodeswitching}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=250pt]{chapters/part-1/figures/vimbasicoperationflowchart.png}
 \caption{A flowchart for simple creating, editing and saving of a text file using Vim.} \label{ch:tfe:fig:vimbasicoperationflowchart}
