@@ -2,15 +2,14 @@
 %\chapterauthor{Second Author}{Second Author Affiliation}
 \chapter{Process Management} \label{ch:pm}
 
-A \mync{process} refers to an instance of a computer program that is running in the system. Managing processes is one of the essential tasks of an OS. In a Windows system, the user can use the task manager, a graphical tool, to check and manage all the running processes. In a Linux system, the user can manage process in the prompt console using bash commands.
+A process refers to an instance of a computer program that is running in the system. Managing processes is one of the essential tasks of an OS. In a Windows system, the user can use the task manager, a graphical tool, to check and manage all the running processes. In a Linux system, the user can manage process in the prompt console using bash commands.
 
 \section{General Introduction to Process}
 
-A process is the fundamental unit for the OS to manage the resources used by a running program.
-
+A \mync{process}, also known as \mync{task}, represents an instance of a program or an application that is being executed on the machine. The OS manages the applications and their corresponding required resources by managing the processes.
 \subsection{Process}
 
-To improve the efficiency of the system, especially \myabb{Central Processing Unit}{CPU}, the OS allows multiple processes (also known as ``tasks'', ``jobs'') to share the computational capability and memory of the system, each thinking that it is exclusively using the all machine resources, as shown in Fig. \ref{ch:pm:fig:processflow}.
+To improve the efficiency of the system, especially \myabb{Central Processing Unit}{CPU}, the OS allows multiple processes to share the computational capability and memory of the system, each thinking that it is exclusively using the all machine resources, as shown in Fig. \ref{ch:pm:fig:processflow}.
 
 \begin{figure}[!htb]
 	\centering
@@ -18,14 +17,14 @@ To improve the efficiency of the system, especially \myabb{Central Processing Un
 	\caption{A demonstration of running multiple processes on a single-core CPU.} \label{ch:pm:fig:processflow}
 \end{figure}
 
-The status of a process is stored in its \mync{Process Control Block}[PCB]. The PCB is a special data structure used to describe the dynamic of a process. The OS manages the PCBs and control the processes accordingly. Some of the attributes of a PCB are summarized in Table \ref{ch:pm:tab:pcbcontent}.
+The status of a process is stored in its \mync{Process Control Block}[PCB]. The PCB is a special data structure used to describe the metadata and the dynamic of a process. The OS manages the PCBs and control the processes accordingly. Some of the attributes of a PCB are summarized in Table \ref{ch:pm:tab:pcbcontent}.
 
 \begin{table}[!htb]
 	\centering \caption{Some attributes of a PCB.}\label{ch:pm:tab:pcbcontent}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Name & Description \\ \hline
-		Identifier & The unique ID of the process.  \\
+		Process ID & The unique ID of the process.  \\
 		State & The state of the process, for example, running, suspended, terminated.  \\
 		Priority & Priority level in comparison with other processes. \\
 		Program Counter & A pointer to the next line of program to be executed. \\
@@ -48,7 +47,7 @@ A process usually has a relatively isolated environment, and it does not share m
 
 \subsection{Thread}
 
-A ``thread'' is like a work dispatch inside a process. There can be multiple threads in a process, as shown in Fig \ref{ch:pm:fig:threadinprocess}. Each thread has its own CPU register values and stack, but they share the same program, memory and file storage addresses.
+A \mync{thread} is like a work dispatch inside a process. There can be multiple threads in a process, as shown in Fig \ref{ch:pm:fig:threadinprocess}. Each thread has its own CPU register values and stack, but they share the same program, memory and file storage addresses.
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=200pt]{chapters/part-1/figures/threadinprocess.png}
@@ -79,7 +78,7 @@ or
 $ top
 \end{lstlisting}
 
-The major difference between these two commands is that \verb|ps| provides a snapshot (in a text format) of a list of processes, each with its name, \mync{Process ID}[PID] and owner, etc., while \verb|top| provides a dynamic and frequently refreshing display of the running processes as well as their associated resources usage. Figs \ref{ch:pm:fig:pscommand} and \ref{ch:pm:fig:topcommand} give a quick demo of how the execution of the two commands look like.
+The major difference between these two commands is that \verb|ps| provides a snapshot (in a text format) of a list of processes, each with its name, \myabb{Process ID}{PID} and owner, etc., while \verb|top| provides a dynamic and frequently refreshing display of the running processes as well as their associated resources usage. Figs \ref{ch:pm:fig:pscommand} and \ref{ch:pm:fig:topcommand} give a quick demo of how the execution of the two commands look like.
 
 \begin{figure}[!htb]
 	\centering
@@ -103,7 +102,7 @@ Some commonly used options for \verb|ps| are summarized below.
 	\item \verb|-u <username>| filter by user
 \end{itemize}
 
-\subsection{Terminate Process}
+\subsection{Terminate a Process}
 
 To kill a process, use the \verb|kill| command as follows.
 \begin{lstlisting}

@@ -1,12 +1,12 @@
 \chapter{Git}
 
-\mync{Git} is a distributed version-control system for tracking changes during the software development, and it can be used on cross platforms including Windows, Unix/Linux and MacOS. 
+Git is a distributed version-control system for tracking changes during the software development, and it can be used on cross platforms including Windows, Unix/Linux and MacOS. 
 
-This chapter introduces the basic use of Git on a local Linux machine and with a remote repository host server such as GitHub. \mync{Continuous Integration and Continuous Deployment}[CI/CD], an important concept in nowadays software development and operation, is also briefly covered. For CI/CD, \mync{GitHub Action} is introduced.
+This chapter introduces the basic use of Git on a local Linux machine and with a remote repository host server such as GitHub. \myabb{Continuous Integration and Continuous Deployment}{CI/CD}, an important concept in nowadays software development and operation, is also briefly covered. For CI/CD, GitHub Action is introduced.
 
 \section{Introduction}
 
-Git, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files. It is helpful with maintaining data integrity during the collaborative development of a software in distributed non-linear work flows. Git is free and open-source software under GNU general public license.
+\mync{Git}, created by Linus Trovalds in 2005, is a distributed version-control system for tracking changes in source code and files. It is helpful with maintaining data integrity during the collaborative development of a software in distributed non-linear work flows. Git is free and open-source software under GNU general public license.
 
 With Git, all computers participating in the software development store a copy of the full-fledged repository locally with complete history, and it can synchronize with a centralized remote server. It introduces the concept of ``\mync{branch}'', to be more precise ``master'' and ``slave'' branches to manage the concurrent development of different features of the project, where the master branch is the stable and shared repository among everyone, and the slave branches are copies of the master branch where individual features can be developed. For a slave branch, once its developed feature is approved, it can be merged back to the master branch. A demonstration is given in Fig. \ref{ch:sma:fig:gitflow}.
 \begin{figure}[htbp]
@@ -304,6 +304,6 @@ From there on, use \verb|git push| and \verb|git pull| normally.
 
 By assigning upstream branch to a local branch and \verb|git push| the local branch to the upstream, Git will update or create the remote branch accordingly. A remote branch can be deleted with a \verb|-d| flag while using \verb|git push|.
 
-\section{\textit{GitHub Actions}}
+\section{GitHub Actions}
 
-\textit{GitHub Actions} is essentially a tool that allows the user to define a pipeline of actions when something changed in the GitHub remote repository, for example a pull request is raised, a new commit is pushed, etc. \textit{Actions} is useful as part of CI/CD. More details are given in Appendix \ref{ch:cicd}.
+\mync{GitHub Actions} is a tool that allows the user to define a pipeline of actions when something changed in the GitHub remote repository, for example a pull request is raised, a new commit is pushed, etc. GitHub Actions is useful as part of CI/CD. More details are given in Appendix \ref{ch:cicd}.

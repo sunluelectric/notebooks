@@ -1,14 +1,14 @@
 \chapter{Database}
 
-Database and database manage systems (DBMS) are introduced in this and consecutive chapters. Both relational and non-relational databases are covered. Tools and languages to manipulate databases, such as structured query language (SQL) for relational databases, are introduced.
+Database and \myabb{database manage systems}{DBMS} are introduced in this and consecutive chapters. Both relational and non-relational databases are covered. Tools and languages to manipulate databases, such as \myabb{structured query language}{SQL} for relational databases, are introduced.
 
 \section{Relational Database}
 
-Database, in a broad view, refers to an organized collection of data of any format. In this sense, any file format that hosts information in a meaningful and explainable way, such as \textit{CSV}, \textit{XML} and \textit{JSON}, is a database. These file formats often work fine when the data is stored in a centralized manner and its size small.
+\mync{Database}, in a broad view, refers to an organized collection of data of any format. In this sense, any file format that hosts information in a meaningful and explainable way, such as CSV, XML and JSON, is a database. These file formats often work fine when the data is stored in a centralized manner and its size small.
 
 As the data size grows, the robustness and efficiency of storing and retrieving data become challenging, and different database models have been proposed to tackle it. Dedicated software, namely DBMS, is developed to manage and maintain the database and provide an interface for the users to create, retrieve, update and delete data. Different database models require different database engines and DBMS, and different DBMS may provide different interfaces for the users.
 
-There are many database models available in the market. The most widely seen database models can be divided into two categories, namely the relational databases (RDB) and the non-relational databases.
+There are many database models available in the market. The most widely seen database models can be divided into two categories, namely the \mync{Relational Database}[RDB] and the non-relational databases.
 
 Relational database was proposed in 1970s by IBM. Some important features of a relational database include the following.
 \begin{itemize}
@@ -17,7 +17,7 @@ Relational database was proposed in 1970s by IBM. Some important features of a r
 	\item Provide relational operations that manipulate the data in the tables, for example, joining tables together and aligning them using an attribute.
 \end{itemize}
 
-SQL, a domain-specific language, can be used in managing RDB and interfacing relational DBMS.  Most commercialized RDB management systems (RDBMS) adopt SQL as the query language. There are alternatives, but they are rarely used compared to SQL. There is a evolving standard on what operations should an RDBMS support using SQL. The latest version as of this writing is \verb|SQL:2023|.
+\mync{SQL}, a domain-specific language, can be used in managing RDB and interfacing relational DBMS.  Most commercialized \myabb{RDB management systems}{RDBMS} adopt SQL as the query language. There are alternatives, but they are rarely used compared to SQL. There is a evolving standard on what operations should an RDBMS support using SQL. The latest version as of this writing is \verb|SQL:2023|.
 
 Examples of relational databases include \textit{Oracle}, \textit{MySQL}, \textit{Microsoft SQL Server}, \textit{MariaDB}, \textit{IBM Db2}, \textit{Amazon Redshift}, \textit{Amazon Aurora} and \textit{PostgreSQL}.
 
@@ -1470,4 +1470,4 @@ Some widely used psql commands are summarized in Table \ref{ch:db:tab:psqlcomman
 	\end{tabularx}
 \end{table}
 
-SQL commands, such as creating a database, have been introduced earlier, hence is not repeated here.
+SQL commands, such as creating a database, have been introduced earlier, hence is not repeated here. 

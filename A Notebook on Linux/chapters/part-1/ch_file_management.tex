@@ -288,7 +288,7 @@ $ chmod [<option>] <new_mode> <path>
 For example, in Fig. \ref{ch:fm:fig:chmodexp}, \verb|g-w| is used to subtract ``writing'' permission from ``group'', and \verb|go+w| is used to add ``writing'' permission to `group'' and ``other'', respectively. Here, \verb|u|, \verb|g| and \verb|o| represents ``user'' (owner), ``group'' and ``other'', and \verb|r|, \verb|w| and \verb|x|, ``read'', ``write'' and ``execute'', respectively.
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=350pt]{chapters/part-1/figures/chmodexp.png}
+	\includegraphics[width=250pt]{chapters/part-1/figures/chmodexp.png}
 	\caption{Change 9-bit permission (mode) of a file.} \label{ch:fm:fig:chmodexp}
 \end{figure}
 Alternatively, 3-digit numbers such as \verb|664| as shown in Fig. \ref{ch:fm:fig:chmodexp} can also represent a permission. The first digit is associated with the permission given to the ``user'', where in this example \verb|6| (\verb|110B|) represents \verb|rw-|. Each ``1'' in the binary number is associated with a permission. The second and third digits are associated with the permission given to ``group'' and ``other'' respectively. Hence, \verb|664| would assign \verb|rw-rw-r--| to the file.
@@ -350,7 +350,7 @@ One may get confused by commands \verb|locate| and \verb|mlocate|. The two comma
 An example of using \verb|locate|/\verb|mlocate| is given in Fig. \ref{ch:fm:fig:locateexp}. It can be seen from this example that the searching is done globally and does not rely on the current working directory.
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=350pt]{chapters/part-1/figures/locateexp.png}
+	\includegraphics[width=\textwidth]{chapters/part-1/figures/locateexp.png}
 	\caption{Search for files and directories using \textit{locate}.} \label{ch:fm:fig:locateexp}
 \end{figure}
 

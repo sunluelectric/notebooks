@@ -1,18 +1,22 @@
 \chapter{Virtualization and Containerization} \label{ch:vac}
 
-Virtualization and containerization are widely appreciated technologies for distributing multiple instances of applications on single or multiple physical servers. The primary objective of these technologies is to enhance resource utilization efficiency while ensuring isolation between applications.
+Virtualization and containerization are widely appreciated technologies for distributing multiple instances of applications on single or multiple physical servers. 
+
+The primary objective of these technologies is to enhance resource utilization efficiency while ensuring isolation between applications. Containerization is also found useful in fast migration and deployment of applications on new platforms.
 
 \section{Introduction}
 
-One of the major differences between a server and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and storage, despite that the actual hardware is shared with others. This can be achieved through \textit{virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \textit{virtual machine} (VM).
+One of the major differences between a server and a PC is that the former is usually shared among multiple users or applications at the same time. Though working on the same machine, a user would usually want a private working environment not interrupted by other users. In other words, a user would want to ``virtually'' work on an independent machine with his own CPU, RAM, I/O, OS, drivers and storage, despite that the actual hardware is shared with others. 
+
+This can be achieved through \mync{virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \mync{virtual machine}[VM].
 
 Deploying a new VM generally consumes a considerably large amount of time and resources. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for each and every of them is resource-intensive and can become an unnecessary waste of resource when these applications could have shared the same OS kernel and operated within their own isolated workspace.
 
 In the above scenario, a more efficient approach is to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
 
-The technology used to deploy and manage containers is known as \textit{containerization}. A container contains all the configuration and requirement information of an application. Running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
+The technology used to deploy and manage containers is known as \mync{containerization}. A container contains all the configuration and requirement information of an application. Running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/pcvmcontainerstructure.png}
 	\caption{System architectures of PC, VM and container.} \label{ch:vac:fig:pcvmcontainersructure}
@@ -49,21 +53,21 @@ Virtualization and containerization have been studied for decades. This section 
 
 \subsection{Virtualization}
 
-In a conventional data center, multiple physical servers are deployed, and each server has a single associated application. Servers may share the same LAN and network-attached storage (NAS) for data exchanging. A big issue of this implementation is the utilization efficiency of the servers and the unevenly distributed loads: some of the servers may not be utilized efficiently, while others may be overwhelmed. To deploy a new application, a new server must be purchased, which can take months of time. With more and more servers, the management and IT cost may grow exponentially.
+In a conventional data center, multiple physical servers are deployed, and each server has a single associated application. Servers may share the same \myabb{local area network}{LAN} and \myabb{network-attached storage}{NAS} for data exchanging. A big issue of this implementation is the utilization efficiency of the servers and the unevenly distributed loads: some of the servers may not be utilized efficiently, while others may be overwhelmed. To deploy a new application, a new server must be purchased, which can take months of time. With more and more servers, the management and IT cost may grow exponentially.
 
-To solve this problem, we need a systematical and automated way of integrating the resources in a data center and re-distributed them to the applications in an efficient manner. Virtualization is one of the most important technology used in this framework. Virtualization is essentially about running a system on a ``virtualized machine'', where by saying ``virtualized'' we mean that the machine is not a physical machine, but a virtual execution environment that is emulated and managed by a special software running on the actual machine known as the ``hypervisor''. The setup should be transparent to the applications in the sense that the applications perform the same way as if it were running on a dedicated physical machine.
+To solve this problem, we need a systematical and automated way of integrating the resources in a data center and re-distributed them to the applications in an efficient manner. Virtualization is one of the most important technology used in this framework. Virtualization is essentially about running a system on a ``virtualized machine'', where by saying ``virtualized'' we mean that the machine is not a physical machine, but a virtual execution environment that is emulated and managed by a special software running on the actual machine known as the ``\mync{Virtual Machine Monitor}[VMM]'' or ``\mync{hypervisor}''. The setup should be transparent to the applications in the sense that the applications perform the same way as if it were running on a dedicated physical machine.
 
 Depending on the items to be virtualized, virtualization can be divided into the following categories.
 \begin{itemize}
-  \item Virtualization of equipment, mainly network resources and storages. This results in virtual local area network (VLAN), virtual private network (VPN), NAS and storage area network (SAN).
+  \item Virtualization of equipment, mainly network resources and storages. This results in \myabb{virtual LAN}{VLAN}, \myabb{virtual private network}{VPN}, NAS and \myabb{storage area network}{SAN}.
   \item Virtualization of operating systems. This results in the well-known VM and virtual desktop.
-  \item Virtualization of application running environments. An example is Java virtual machine (JVM) that allows Java to generate consistent result while running on different machines.
+  \item Virtualization of application running environments. An example is \myabb{Java virtual machine}{JVM} that allows Java to generate consistent result while running on different machines.
 \end{itemize}
 
 There are different virtualization architectures. Commonly seen components shared by different architectures often include
 \begin{itemize}
 	\item Host OS. The OS that resides on the physical machine, on which virtualization tools run.
-	\item Virtual Machine Monitor (VMM), also known as the hypervisor. This is a software that runs on the host OS, managing all the guest OSs, providing them interface to the host OS and the hardware.
+	\item VMM. This is a software that runs on the host OS, managing all the guest OSs, providing them interface to the host OS and the hardware.
 	\item VM, the system that runs in an virtualized isolated environment.
 \end{itemize}
 Host OS, VMM and VM relationship is shown in Fig. \ref{ch:vac:fig:acookinakitchen}.
@@ -164,6 +168,8 @@ $ sudo usermod <user name> -aG docker
 Docker installs at least two piece of software on the machine, namely docker CLI and docker server. The CLI is the interface to the user, and the server the daemon. Docker runs natively on Linux OS. If docker is installed on non-Linux system such as Windows or macOS, ``docker desktop'' is used which includes a Linux VM to host the docker daemon and run Linux-based containers.
 
 \subsection{Docker Container Management}
+
+This section discusses basic container manipulation such as launching and stopping a container.
 
 \vspace{0.1in}
 \noindent \textbf{Launch}
@@ -585,20 +591,20 @@ The commonly used keywords to be used in a Dockerfile to realize the above instr
 
 It is worth highlighting the distinction between \verb|RUN| and \verb|CMD|. The \verb|RUN| command is executed during the building of the image, which creates a virtual representation of the environment to run the service. Therefore, \verb|RUN| is used to prepare the environment, for example, to install necessary libraries. On the other hand, command \verb|CMD| simply specifies the default command to run when the container starts. It is in built together with the image, but not considered as a read-only image layer. Indeed, the contents in \verb|CMD| can even be overwritten if the user wishes to do so when \verb|docker run| executes.
 
-\begin{table}[!htbp]
+\begin{table}[!htb]
 	\centering \caption{Critical keywords used in a Dockerfile.}\label{ch:vac:tab:keywordsdockerfile}
 	\begin{tabularx}{\textwidth}{lX}
 		\hline
 		Syntax & Description \\ \hline
-		\verb|FROM <image>[:<tag>]| & Define the parent image. A Dockerfile must start with a \verb|FROM| instruction. A Dockerfile can contain multiple \verb|FROM| instructions for multi-stage build, in which case the last \verb|FROM| statement is the base image of the outcome image and the earlier \verb|FROM| instructions creates intermediate images that can be used by the outcome image. An optional \verb|:<tag>| following \verb|<image>| can be used to specify the version of the image to use as the base. By default, the latest version of the image is used. \\ 
-		\verb|RUN <command>| & Execute a shell command using \verb|/bin/sh -c|. \\ 
-		\verb|WORKDIR <path>| & Set the working directory from the point onward. This prepares the working directory for the upcoming \verb|RUN|, \verb|COPY|, etc., commands. \\ 
+		\verb|FROM <image>[:<tag>]| & Define the base image. A Dockerfile must start with a \verb|FROM| instruction. In case of multiple \verb|FROM| instructions, the last one statement is the base image and the earlier ones intermediate images. An optional \verb|:<tag>| can be used to specify the version of the base image. \\ 
+		\verb|RUN <command>| & Execute a shell command. \\ 
+		\verb|WORKDIR <path>| & Set the working directory from the point onwards. \\ 
 		\verb|ADD <src> <dest>| & Add (Copy) \verb|<src>|, either a directory/file or URL, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. \\ 
-		\verb|COPY <src> <dest>| & Copy \verb|<src>|, a directory/file, to \verb|<dest>|. An optional \verb|[--chown=<user>:<group>]| can be used to specify the owner and group of the added files. Notice that \verb|COPY| is similar with \verb|ADD|. \verb|COPY| is easier but less powerful than \verb|ADD|. It cannot handle tar or URL. \\ 
-		\verb|USER <user>| & Switch user for the instructions beyond this point. \\ 
-		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| following \verb|<port>| can be used to specify the protocol for communication. \\
+		\verb|COPY <src> <dest>| & Similar with \verb|ADD|. \verb|COPY| is easier but less powerful and cannot handle tar or URL. \\ 
+		\verb|USER <user>| & Switch user from the point onwards. \\ 
+		\verb|EXPOSE <port>| & Specifies the ports that the container shall listen to. An optional \verb|/<protocol>| can be used to specify the protocol for communication. \\
         \verb|VOLUME ["<path>"]| & Attaches an anonymous volume to the specified path inside the container. \\
-		\verb|CMD ["<exe>", "p1", ...]| & The user-script command. This is the last instruction in the Dockerfile that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The executable command name and the parameters are put into a list. This user-script can be overwritten by \texttt{docker run <image> <other commands>} when running the container. \\
+		\verb|CMD ["<exe>", "<arg>",]| & The user-script command. This is the last instruction in the Dockerfile that usually starts the APP. Notice that a Dockerfile can only contain one \verb|CMD| instruction. The user script is included in the image but not as a the read-only layer. \\
 		\hline
 	\end{tabularx}
 \end{table}

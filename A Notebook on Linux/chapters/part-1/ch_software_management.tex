@@ -24,7 +24,7 @@ The OS should support at least the following tasks.
 In Linux, software information (dependencies, version, instruction to installation, etc.) are stored in special data structures known as packages. When installing a software, the OS locates the packages and install them according to the instructions that comes with the packages. The OS also traces the software it has installed, monitors their behaviors, performs updates or uninstalls per requested by the user. Different Linux distributions may use different package formats and package management tools. The most well-known ones include:
 \begin{itemize}
 	\item RPM
-	\item \mync{Debian Package Manager}[DEB]
+	\item \myabb{Debian Package Manager}{DEB}
 \end{itemize}
 Note that RPM and DEB can refer to both the package formats and the package managing tools. There are proponents on both sides of RPM versus DEB, and both of them are very popular tools in different Linux distributions.
 
@@ -32,7 +32,7 @@ Linux kernel is also a software and needs to be monitored and updated from time 
 
 \section{RPM Package}
 
-RPM (\verb|.rpm|) is the preferred package format for Red-Hat-based distributions such as RHEL, Fedora, CentOS and Oracle Linux. It uses \verb|rpm| command to mange RPMs. In a later stage, other tools such as \verb|yum| and \verb|dnf| have been added to the library for better user experience and enhanced RPM facility. 
+\mync{RPM} (\verb|.rpm|) is the preferred package format for Red-Hat-based distributions such as RHEL, Fedora, CentOS and Oracle Linux. It uses \verb|rpm| command to mange RPMs. In a later stage, other tools such as \verb|yum| and \verb|dnf| have been added to the library for better user experience and enhanced RPM facility. 
 
 \subsection{Brief Introduction}
 
@@ -83,7 +83,7 @@ When a package is installed on the machine, its information is saved in the RPM 
 
 \subsection{Package Management Using \texttt{yum} and \texttt{dnf}}
 
-Due to the drawbacks of \verb|rpm| mentioned earlier, other tools have been developed to handle package upstream repositories and dependencies more conveniently. These tools are YUM and its next generation \mync{Dandified YUM}[DNF], with their corresponding commands \verb|yum| and \verb|dnf| respectively.
+Due to the drawbacks of \verb|rpm| mentioned earlier, other tools have been developed to handle package upstream repositories and dependencies more conveniently. These tools are YUM and its next generation \myabb{Dandified YUM}{DNF}, with their corresponding commands \verb|yum| and \verb|dnf| respectively.
 
 YUM and DNF introduce the concept of repositories, allowing RPM packages to be part of a larger software ``package tree''. It becomes the publisher's responsibility to ensure that all the dependencies of the RPM can be traced from the repositories. If a dependency is not present, YUM and DNF can search the repositories to find the dependencies and install them together. When the user wants to install an RPM that has not been downloaded onto the machine, YUM and DNF can search the repositories for the RPM, download, and install it automatically. As a result, the user does not need to manually install all the dependencies or find and download the RPM themselves. In this sense, YUM and DNF can be taken as a wrapper of \verb|rpm| that come with additional features such as repository resolution and package retrieval. They run \verb|rpm| internally once the packages have been downloaded to the machine.
 
@@ -127,7 +127,7 @@ A full list of \verb|dnf| commands and their explanations can be found elsewhere
 
 \section{DEB Package}
 
-DEB (\verb|.deb|) package is developed by Debian GNU/Linux project, and it is used by Debian and other Debian-based distributions such as Ubuntu and Linux Mint. The basic tool to install, remove and query DEB is \verb|dpkg|, but the end users often use \verb|apt*| commands to perform package management, rather than using \verb|dpkg| directly.
+\mync{DEB} (\verb|.deb|) package is developed by Debian GNU/Linux project, and it is used by Debian and other Debian-based distributions such as Ubuntu and Linux Mint. The basic tool to install, remove and query DEB is \verb|dpkg|, but the end users often use \verb|apt*| commands to perform package management, rather than using \verb|dpkg| directly.
 
 Like RPM, DEB contains both the metadata of the software known as the control files as well as the payload of the software. A control file may look like the following (example from \cite{debian2024debianpackagemanagement})
 \begin{lstlisting}

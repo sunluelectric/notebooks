@@ -158,15 +158,15 @@ where \verb|sc| can be used to quickly turn on and off the spell check function.
 
 \subsection{Plug Tools}
 
-In the Linux community, many plug tools have been created to add useful features for Vim. As a demonstration, in this section \textit{vim-plug}, a light-size vim plugin management tool created on GitHub, is used to install selected Vim plugins. Details about \textit{vim-plug} can be found at GitHub under \textit{junegunn/vim-plug}.
+In the Linux community, many plug tools have been created to add useful features for Vim. As a demonstration, in this section \mync{vim-plug}, a light-size vim plugin management tool created on GitHub, is used to install selected Vim plugins. Details about vim-plug can be found at GitHub under \textit{junegunn/vim-plug}.
 
-Following the instructions given by GitHub under \textit{junegunn/vim-plug}, to use \textit{vim-plug} on Linux, the very first step is to use \textit{cURL}, a command-line tool for transferring data specified with URL syntax, to download \textit{vim-plug}. To install \textit{cURL} if it has not been installed, use
+Following the instructions given by GitHub under \textit{junegunn/vim-plug}, to use vim-plug on Linux, the very first step is to use \verb|curl|, a command-line tool for transferring data specified with URL syntax, to download vim-plug. To install \verb|curl| if it has not been installed, use
 \begin{lstlisting}
 $ sudo yum install curl # red-hat-based distributions
 $ sudo apt install curl # debian-based distributions
 \end{lstlisting}
 
-With \textit{cURL} installed, use the following in the shell to install \textit{vim-plug}
+With \textit{cURL} installed, use the following in the shell to install vim-plug
 \begin{lstlisting}
 $ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -222,7 +222,7 @@ In addition to character-related motions \verb|h|, \verb|l| and word-related mot
 
 The operators and motions introduced so far are summarized in Tables \ref{ch:tfe:tab:deletecut} and \ref{ch:tfe:tab:motion}. Notice that motions \verb|aw|, \verb|as|, \verb|ap| are also given in the table. They are similar with their corresponding \verb|iw|, \verb|is|, \verb|ip| except that when deleting, the sequential blank space (for word and sentence) or blank row (for paragraph) will also be deleted.
 
-\begin{table}
+\begin{table}[!htb]
   \centering \caption{Commonly used operators related to delete/cut, change, copy and paste.}\label{ch:tfe:tab:deletecut}
   \begin{tabularx}{\textwidth}{lX}
     \hline
@@ -240,7 +240,7 @@ The operators and motions introduced so far are summarized in Tables \ref{ch:tfe
   \end{tabularx}
 \end{table}
 
-\begin{table}
+\begin{table}[!htb]
   \centering \caption{Commonly used motions.}\label{ch:tfe:tab:motion}
   \begin{tabularx}{\textwidth}{lX}
     \hline
@@ -308,7 +308,7 @@ In cmdline mode, use \verb|!| to interact with the shell. For example, consider 
 
 To convert and save the current text into an \textit{html} file, use \verb|:%TOhtml|. From there, the file can be further converted into a PDF file.
 
-\section{Visual Modes}
+\section{Visual Mode}
 
 The use of a mouse makes selecting a block of text very intuitive. In most text editors, the selected text will be highlighted, as if the cursor expands from one character to the entire block of text. Sequentially, operations such as delete and copy can be performed on the selected text.
 
@@ -328,7 +328,7 @@ Alternatively, in visual-block mode after selecting a block of content, use \ver
 
 \section{Vim Macros}
 
-Vim macros is a convenient and power tool for repetitive works. Use \verb|q| in normal mode to start and end a macro recording. The syntax follows
+\mync{Vim macros} allows the user to define a sequence of actions, and it is a convenient and power tool for repetitive works. Use \verb|q| in normal mode to start and end a macro recording. The syntax follows
 \begin{lstlisting}
 q<macro-name><operations>q
 \end{lstlisting}

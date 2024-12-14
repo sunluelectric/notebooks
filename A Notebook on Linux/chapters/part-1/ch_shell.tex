@@ -1,6 +1,6 @@
 \chapter{Shell} \label{ch:sb}
 
-{Linux \myabb{command line interface}{CLI}, usually known as the ``\mync{shell}'' (also known as ``\mync{terminal}''), is the most available, flexible and powerful tool for the users and programs to interact with the OS and perform certain actions.
+{Linux \myabb{command line interface}{CLI}, usually known as the ``shell'' or ``terminal'', is the most available, flexible and powerful tool for the users and programs to interact with the OS and perform certain actions.
 
 Notice that the use of the shell is not compulsory for casual users when the graphical desktop is present. Still, it is strongly recommended that the users shall understand at least the basics of the shell since it is more flexible and powerful than the graphical desktop and hence can become handy time to time when configuring certain software.
 
@@ -8,7 +8,7 @@ Linux shell will be used rapidly in the remaining of this notebook.
 
 \section{Shell as a CLI}
 
-Linux's default CLI, usually known as the shell, was invented before the graphical tools, and it has been more powerful and flexible than the graphical tools from the first day. On those machines where no graphical desktops are installed, the use of shell is critical.
+Linux's default CLI, usually known as the \mync{shell}, was invented before the graphical tools, and it has been more powerful and flexible than the graphical tools from the first day. On those machines where no graphical desktops are installed, the use of shell is critical.
 
 \subsection{Shell Types}
 
@@ -66,7 +66,7 @@ The above string is called a \mync{prompt}, indicating the start of a user comma
 	\end{tabularx}
 \end{table}
 
-For the term \mync{root user} or simply \mync{root}, we are referring to a special user with username and \mync{User ID}[UID] ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
+For the term \mync{root user} or simply \mync{root}, we are referring to a special user with username and \myabb{User ID}{UID} ``root'' and 0 respectively. This UID gives him the administration privilege over the machine, such as adding/removing users, changing ownership of files, etc. To avoid fatal damage to the entire system by human error, root user shall not be used unless absolutely necessary. For this reason, the root user's authentication is often deactivated by default (by setting its login password to invalid).
 
 Notice that the root user is different from a \mync{sudoer}, later of which is basically a regular user equipped with \mync{sudo privilege}. A sudoer can temporarily switch to root user by using \verb|sudo su| as follows.
 \begin{lstlisting}
