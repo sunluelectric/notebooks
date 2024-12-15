@@ -1,0 +1,117 @@
+\chapter{RDB Example: MySQL and MariaDB} \label{ch:db:sec:mariadb}
+
+Commonly seen DBMS examples include Oracle Database, MySQL, Microsoft SQL Server, PostgreSQL, SQLite, MariaDB, and many more. Some of them are briefly introduced in this section. Here are some examples.
+
+MariaDB and MySQL are two widely used relational DBMS. MariaDB is initially a fork of MySQL, and in this sense they share many similarities. While MySQL moves towards a dual license approach (free community license and paid enterprise license with proprietary code), MariaDB is designed to be fully open-source under GNU license, and plays as a replacement of MySQL.
+
+In general, MariaDB supports a larger varieties of data engines and new features, and it is claimed to be faster, more powerful and advanced than MySQL. However, it lacks some of the enterprise features provided by MySQL. The users can gain some of these features by using open-source plugins. The most recent new features in MySQL and MariaDB are also diverging.
+
+Some of the main features of MySQL and MariaDB are summarized as follows.
+\begin{itemize}
+	\item Good performance (very fast) in general, for a medium size database. Hence, it is popular in many web applications.
+	\item Ease of use.
+	\item Supports in-memory tables to handle read-heavy write-lite tasks.
+	\item Not very flexible, as compared to PostgreSQL where more complex data types, queries, and functions add-ons are supported.
+\end{itemize}
+
+Different databases may propose different minimum system requirements. There is no standard on how these minimum requirements are calculated. Therefore, it is often unfair to directly compare the requirements of different databases. Nevertheless, a summary table is given in Table \ref{ch:db:tab:rdbrequirements}. Notice that this is merely an estimation and can differ largely from practice.
+
+\begin{table}
+	\centering \caption{An estimation of DBMS hardware requirements.} \label{ch:db:tab:rdbrequirements}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		 & \multirow{2}{*}{OS} & \multicolumn{3}{c|}{Minimum Requirements} \\ \cline{3-5}
+		 & & CPU & RAM & Disk* \\ \hline
+		 MySQL (E) & All* & 2 core & 2 GB & 1.3 GB \\ \hline
+		 MySQL (C) & All & 1 core & 1 GB & 1.3 GB \\ \hline
+		 MariaDB & All & 1 core & 400MB & 660 MB \\ \hline
+		 PostgreSQL & All & 1 core & 1 GB & 40MB \\ \hline
+		 Firebird & All & 1 core & 12MB & 15MB \\ \hline
+	\end{tabular}
+	\begin{flushleft}
+	\footnotesize
+	$^{*}$ Some installations may come with default test database and logs. The disk usage can be reduced if those files are removed after installation. \\
+	$^{**}$ ``All'' refers to Linux, MacOS and Windows. Different platforms may have different minimum requirements. \\
+    \end{flushleft}
+\end{table}
+
+In the remaining of this section, MariaDB is used for demonstration.
+
+\section{Installation}
+
+To install MariaDB, follow the instruction on the official website. Different OS, such as RHEL and Ubuntu, may require different ways of installation. For example, on RHEL
+\begin{lstlisting}
+$ sudo yum update
+$ sudo yum install mariadb-server
+\end{lstlisting}
+and on Ubuntu,
+\begin{lstlisting}
+$ sudo apt update
+$ sudo apt install mariadb-server
+\end{lstlisting}
+Notice that MySQL can be installed instead by replacing \verb|mariadb-server| with \verb|mysql-server|. Similarly, replacing \verb|mariadb| with \verb|mysql| in the rest of this section, wherever applicable, would work for MySQL.
+
+MariaDB server can be controlled using \verb|systemctl| which is introduced in Section \ref{ch:sa:sec:sc}. For example, to start MariaDB, use
+\begin{lstlisting}
+$ sudo systemctl start mariadb.service
+\end{lstlisting}
+and to check its status, use
+\begin{lstlisting}
+$ sudo systemctl status mariadb
+\end{lstlisting}
+
+\section{MariaDB Basic Configuration}
+
+After installation of and starting MariaDB, use
+\begin{lstlisting}
+$ sudo mysql_secure_installation
+\end{lstlisting}
+to run a quick security-related configuration such as creating password for the root user, and deleting test database.
+
+Log in to MariaDB console using
+\begin{lstlisting}
+$ sudo mariadb
+\end{lstlisting}
+Notice that when \textit{sudo} privilege is used, the user should be brought to the root account of the DBMS. Without sudo privilege, a user name and a password is required to log in to the DBMS as follows.
+\begin{lstlisting}
+$ mariadb -u <user-name> -p
+Enter Password:
+\end{lstlisting}
+Depending on the setup, remote log in to the database from other machine, especially using root account, might be forbidden.
+
+\section{DBMS Console}
+
+After logging in to MariaDB console, a prompt that looks like the following would show up.
+\begin{lstlisting}
+MariaDB [(none)]>
+\end{lstlisting}
+from where an admin account can be created as follows.
+\begin{lstlisting}
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO '<user-name>'@'localhost' IDENTIFIED BY '<user-password>' WITH GRANT OPTION;
+MariaDB [(none)]> FLUSH PRIVILEGES;
+\end{lstlisting}
+By using an admin account instead of the root account in daily operations, the security risk is reduced.
+
+Notice that remote access to a database is by default forbidden. A command similar with the above is required to enable remote access. Wildcard expression can be used for the IP address, if necessary, to allow a user to access the database from multiple machines.
+
+To check existing users and their IP addresses to whom access has been granted, use
+\begin{lstlisting}
+SELECT host, user FROM mysql.user;
+\end{lstlisting}
+
+Finally, use
+\begin{lstlisting}
+MariaDB [(none)]> exit
+\end{lstlisting}
+to quite MariaDB console.
+
+\section{Run SQL File}
+
+In many occasions, instead of executing SQL commands line by line, an SQL file is prepared in advance and the DBMS is asked to execute the SQL file as a whole. In the Linux shell, execute the following command and MariaDB shall be able to execute an SQL file on the specified host, on behalf of the user, on the selected database.
+\begin{lstlisting}
+$ mariadb --host="mysql_server" --user="user_name" --database="database_name" --password="user_password" < "file.sql"
+\end{lstlisting}
+If the user already logs into the MariaDB console, use the following command instead.
+\begin{lstlisting}
+MariaDB [(none)]> source file.sql
+\end{lstlisting}

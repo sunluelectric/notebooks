@@ -1,0 +1,59 @@
+\chapter{Scripts}
+
+This appendix chapter collects the example scripts used in this notebook.
+
+\section{\textit{Vim} Configuration \texttt{vimrc} Used in Section \ref{ch:tfe}}
+
+\begin{lstlisting}
+call plug#begin()
+Plug 'vim-airline/vim-airline'
+Plug 'joshdick/onedark.vim'
+call plug#end()
+
+inoremap jj <Esc>
+noremap j h
+noremap k j
+noremap i k
+noremap h i
+
+noremap s <nop>
+noremap S :w<CR>
+noremap Q :q<CR>
+
+syntax on
+colorscheme onedark
+
+set number
+set cursorline
+set wrap
+set wildmenu
+
+set hlsearch
+exec "nohlsearch"
+set incsearch
+set ignorecase
+noremap <Space> :nohlsearch<CR>
+noremap - Nzz
+noremap = nzz
+
+noremap sj :set nosplitright<CR>:vsplit<CR>
+noremap sl :set splitright<CR>:vsplit<CR>
+noremap si :set nosplitbelow<CR>:split<CR>
+noremap sk :set splitbelow<CR>:split<CR>
+noremap <C-j> <C-w>h
+noremap <C-l> <C-w>l
+noremap <C-i> <C-w>k
+noremap <C-k> <C-w>j
+noremap J :vertical resize-2<CR>
+noremap L :vertical resize+2<CR>
+noremap I :res+2<CR>
+noremap K :res-2<CR>
+
+set scrolloff=3
+noremap sc :set spell!<CR>
+\end{lstlisting}
+
+\section{\textit{Neovim} Configuration Files}
+
+\textit{Neovim} is fork from \textit{Vim} and it has gained popularity in the past years. Just like \textit{Vim}, \textit{Neovim} can be customized by user-defined configuration files. These configuration files are usually packed into \textit{lua} file tree, where \textit{lua} is a computer programming language that \textit{Neovim} supports by nature.
+

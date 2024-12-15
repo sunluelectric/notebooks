@@ -10,11 +10,11 @@ One of the major differences between a server and a PC is that the former is usu
 
 This can be achieved through \mync{virtualization}, which enables running multiple operating systems on a single physical server in an uninterrupted and logically separated manner. The virtually independent computer of such kind is often called a \mync{virtual machine}[VM].
 
-Deploying a new VM generally consumes a considerably large amount of time and resources. This is because different VMs on the same server are separated at the OS level, with each VM requiring its own OS installation. Consider a scenario where there are hundreds of small applications (microservices), each requiring a similar but separate environment. Launching VMs for each and every of them is resource-intensive and can become an unnecessary waste of resource when these applications could have shared the same OS kernel and operated within their own isolated workspace.
+Deploying a new VM generally consumes a considerably large amount of time and resources because it virtualizes the infrastructure and the entire OS needs be installed on the newly deployed VM. It is hardly possible to launch a VM for each microservice when there are many of them. In this case, a more efficient approach is to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. The technology used to deploy and manage containers is known as \mync{containerization}.
 
-In the above scenario, a more efficient approach is to deploy a single VM and place each application in a ``container'' with its own customized drivers and configurations. A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage.
+A container is similar to a VM in the sense that it provides a degree of isolation from others, but it is typically ``lighter'' than a VM because it doesn't need to virtualize or duplicate the whole OS as VMs do. This makes containers cheaper to launch and manage. A container contains all the configuration and requirement information of an application. Running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. 
 
-The technology used to deploy and manage containers is known as \mync{containerization}. A container contains all the configuration and requirement information of an application. Running a container on different platforms would consistently generate the same expected result. This has made the sharing and rapid deployment of containers remarkably easy and convenient. The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
+The similarities and differences of personal PCs, VMs, and container applications are summarized in Fig. \ref{ch:vac:fig:pcvmcontainersructure}.
 
 \begin{figure}[!htb]
 	\centering
@@ -106,7 +106,7 @@ Notice that though container runtime is always a must-have, container engine and
 
 \section{Docker Container Basics} \label{ch:vac:sec:dc}
 
-This section introduces docker. Notice that though being famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine brand. Many tools and technologies of docker are used in container runtimes and container engines of other brands.
+This section introduces \mync{docker}. Notice that though being famous for docker container engine, docker as a company or community provides many revolutionary container related tools and services that go far beyond a container engine brand. Many tools and technologies of docker are used in container runtimes and container engines of other brands.
 
 This section focuses mostly on the introduction of docker container engine.
 
@@ -116,10 +116,8 @@ Docker engine is the most popular container engine available on the market as of
 
 But does that mean docker engine is the absolutely best and perfect container engine solution?
 
-Docker has surely revolutionized how we use containerization technology in software development and deployment, and it has been one of the most popular and beloved container engine solutions. However, it is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier podman is an alternative to docker. It supports the same interface as docker in its CLI (as if podman were an alias), and claims to have better performance and security. As a matter of fact, RHEL already started the transition from docker to podman from RHEL 8. Nowadays, installing docker on the latest versions of RHEL is possible but tedious. On the other hand, installation of podman on RHEL, if it had not been pre-installed, can be done simply by
-\begin{lstlisting}
-$ sudo dnf install podman
-\end{lstlisting}
+Docker has surely revolutionized how we use containerization technology in software development and deployment, and it has been one of the most popular and beloved container engine solutions. However, it is worth mentioning that docker engine is not the only available container engine. For example, as explained earlier \mync{podman}, developed by Red Hat, is an alternative to docker. It supports the same interface as docker in its CLI (as if podman were an alias), and claims to have better performance and security. As a matter of fact, RHEL already started the transition from docker to podman from RHEL 8. Nowadays, installing docker on the latest versions of RHEL is possible but tedious. On the contrary, podman often comes with RHEL installation.
+
 Kubernetes, a famous container orchestration, is also dropping docker support according to their statement ``docker support in the kubernetes is now deprecated and will be removed in a future release''. Some may even argue that ``containers are alive, but the role that docker plays is shrinking''. Many open-source initiatives such as podman are gaining popularity.
 
 Docker has some disadvantages indeed. For one thing, docker uses docker server (docker daemon), a single piece of software running in the backend of the system, to support all the services. This creates a single-point-of-failure in the system. Docker requires root privileges, and it starts a container on behalf of the root user. This means that the program running inside the container and the users in the docker group can potentially bypass the OS access control and gain root access, which introduces security risk. These shortages are to some extent addressed by other container engines such as podman which is daemon-less and does not necessarily need to run on root user's behalf.
@@ -130,9 +128,12 @@ As of 2023, docker is still the dominating container market engine, with a marke
 
 \subsection{Docker Installation}
 
-To install docker on a Linux machine, go to \textit{https://www.docker.com/} to look for the instruction. The installation steps differ depending on the host machine. As explained earlier, RHEL uses podman as its recommended container engine, and podman comes with RHEL installation. 
+As explained earlier, RHEL uses podman as its recommended container engine, and podman comes with RHEL installation. This notebook focuses on RHEL, and hence podman will be used in the remaining of the chapter. With podman-docker package installed, \verb|docker| and \verb|podman| can be used interchangeably. To install podman (in case it is not pre-installed) and podman-docker, simply use
+\begin{lstlisting}
+$ sudo dnf install podman podman-docker
+\end{lstlisting}
 
-In this section, consider installing docker engine on Ubuntu. Some of the key steps are summarized as follows. Remove existing docker engine, if any.
+Nevertheless, due to the popularity of docker, its installation is introduced below. Ubuntu Linux distribution is used as the host machine. Firstly, remove existing docker engine and runtime as follows.
 \begin{lstlisting}
 $ sudo apt-get remove docker docker-engine docker.io
 $ sudo apt-get remove containerd runc
@@ -164,18 +165,24 @@ Notice that to use docker commands, sudo privilege is required. To avoid typing 
 \begin{lstlisting}
 $ sudo usermod <user name> -aG docker
 \end{lstlisting}
+As for podman, it is designed to be ``rootless''. Thus, many podman commands do not require sudo privilege. Yet, there are exceptions. It is possible to change the sudoer rule as follows, so that when executing \verb|sudo podman|, the password is not required. Open sudoer rules by
+\begin{lstlisting}
+$ sudo visudoer
+\end{lstlisting}
+and add
+\begin{lstlisting}
+<sudoer user name> ALL=(ALL) NOPASSWD: /usr/bin/podman
+\end{lstlisting}
 
-Docker installs at least two piece of software on the machine, namely docker CLI and docker server. The CLI is the interface to the user, and the server the daemon. Docker runs natively on Linux OS. If docker is installed on non-Linux system such as Windows or macOS, ``docker desktop'' is used which includes a Linux VM to host the docker daemon and run Linux-based containers.
+\subsection{Container Manipulation}
 
-\subsection{Docker Container Management}
-
-This section discusses basic container manipulation such as launching and stopping a container.
+This section discusses basic container manipulation such as launching and stopping a container. This notebook focuses on RHEL where podman is used instead of docker. Since podman-docker package is installed, command \verb|docker| can be used as an alias to podman. With that in mind, the examples given in the remaining of the chapter uses \verb|docker|, but behind the screen podman is executed.
 
 \vspace{0.1in}
-\noindent \textbf{Launch}
+\noindent \textbf{Launch a Container from an Image}
 \vspace{0.1in}
 
-To create and run a container from an image, simply use
+To launch and run a container from an image, simply use
 \begin{lstlisting}
 $ docker run <configuration> <image>
 \end{lstlisting}
@@ -250,7 +257,7 @@ $ docker run <image> <revised command>
 where \verb|<revised command>| must be defined in the image, or otherwise an error will be raised.
 
 \vspace{0.1in}
-\noindent \textbf{Interaction}
+\noindent \textbf{Interact with a Container in the Backend}
 \vspace{0.1in}
 
 For a container running in the backend, use \verb|docker exec| to execute a shell command in that container as follows.
@@ -268,7 +275,7 @@ $ docker attach <container>
 to attach local standard input, output, and error streams to a running container. Similar with the previously introduced \texttt{docker exec -it} command, \texttt{docker attach} also starts the shell of the application running in the container. Use \verb|Ctrl-C| to quite the shell.
 
 \vspace{0.1in}
-\noindent \textbf{Stop and Removal}
+\noindent \textbf{Stop and Remove a Container}
 \vspace{0.1in}
 
 To stop, kill or restart a container running in the backend, use
@@ -294,7 +301,7 @@ $ docker system prune
 which removes not only exited containers but also unused network configurations, dangling images and cache.
 
 \vspace{0.1in}
-\noindent \textbf{Rename}
+\noindent \textbf{Rename a Container}
 \vspace{0.1in}
 
 To rename a container (without changing its container ID or anything else), use
@@ -303,7 +310,7 @@ $ docker rename <container-old-name> <container-new-name>
 \end{lstlisting}
 
 \vspace{0.1in}
-\noindent \textbf{Monitoring}
+\noindent \textbf{Monitor the Status of a Container}
 \vspace{0.1in}
 
 Use
@@ -335,7 +342,7 @@ $ docker logs <container>
 \end{lstlisting}
 
 \vspace{0.1in}
-\noindent \textbf{File Exchange with Host Machine}
+\noindent \textbf{Exchange Files with a Container}
 \vspace{0.1in}
 
 There are multiple ways and protocols to access the files in a container, depending on the I/O setup of the container. For a container running locally, \verb|docker cp| can be used for file transfer between the container and the host machine as follows. From container to host machine:
@@ -349,7 +356,7 @@ $ docker cp <source> <container>:<destination>
 where \verb|<source>| and \verb|<destination>| refer to the path to the source and destination, respectively, located in the host machine or the container.
 
 \vspace{0.1in}
-\noindent \textbf{Commit}
+\noindent \textbf{Commit a Container into an Image}
 \vspace{0.1in}
 
 A container is usually generated from an image. It is also possible to do vise versa, i.e., packaging a container into an image. Notice that this is generally not recommended. Images shall be created mostly from Dockerfile, as will be introduced in Section \ref{ch:vac:sec:di}.
@@ -365,7 +372,7 @@ $ docker commit -c 'CMD ["<startup command>"]' <container> <image>
 where \verb|docker commit| command saves the container's file changes or settings into a new image, which allows easier populating containers or debugging in a later stage. Notice that \verb|docker commit| does not save everything of the container into the image, and it is not the only way an image is created.
 
 \vspace{0.1in}
-\noindent \textbf{Ports Publishing}
+\noindent \textbf{Publish Ports for a Container}
 \vspace{0.1in}
 
 By default, containers do not expose any ports to the outside world. A container can be accessed only from its host machine using APIs provided by docker, such as \verb|docker cp| to transfer files and \verb|docker exec| to execute commands, but not network protocols. The user can allow public access from the internet by publishing the ports of the container using
@@ -376,7 +383,7 @@ when starting a container. To publish multiple ports, use multiple \verb|-p| fla
 
 More about containerized application connectivity to the internet, to the host machine and to other containerized applications are introduced in later sections.
 
-\subsection{An Example: Deploy a Containerized Application}
+\subsection{Containerized Application Deployment Example}
 
 An example of setting up a web server in containers from scratch is given in this section. For simplicity, everything happens on a single physical server. Only one container is used and the load balancer and the shared services are not included in the example.
 
