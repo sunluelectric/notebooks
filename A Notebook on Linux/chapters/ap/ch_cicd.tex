@@ -2,9 +2,7 @@
 
 This notebook is mainly about Linux. In this appendix chapter, the boundary of the notebook is slightly expanded to software development, which is quite often how Linux is used in practice.
 
-Continuous integration and delivery (CI/CD) is both a philosophical concept and a bunch of technology that speeds up the development, testing and deployment cycle of a software. It has become a common and beneficial practice that collaborative projects with rapid update implement the practice.
-
-This chapter introduces CI/CD as well as tools to carry out CI/CD. In particular, GitHub, a widely appreciated CI/CD integrated platform to manage and share collaborative projects, is briefly introduced. The introduction of GitHub focuses on GitHub Action, the tool GitHub uses for CI/CD.
+This chapter introduces CI/CD as well as tools to carry out CI/CD. In particular, GitHub, a widely appreciated CI/CD integrated platform to manage and share collaborative projects, is briefly introduced. The introduction of GitHub focuses on GitHub Actions, the tool GitHub uses for CI/CD.
 
 Some contents of this chapter come from \cite{honai2023cicd}.
 
@@ -32,13 +30,13 @@ The philosophy behind waterfall, as its name indicates, is to ``follow the proce
 
 With waterfall, a project can be designed, developed and deployed in a relatively efficient manner. However, there is one limitation: everything done in earlier steps cannot be changed in later steps. This sets up a high bar on both the user and the developer. For example, in step 1 ``understand requirements from the user'', the user needs to illustrate all the requirements to the developer as they cannot be modified in later steps. Similarly, in step 2 ``design the architecture'', the developer needs to optimize the design to his best, as the architecture cannot be changed later.
 
-Regrettably, with the rapid change in the market and the aggressive advent in technology today, it is challenging even for the smartest user and developer to determine all the requirements and designs in the beginning stage of the project. More likely, the requirements of the user have to change align with the market trend, and so does the design of the solution.
+Regrettably, with the rapid change in the market and the aggressive advent in technology today, it is challenging even for the smartest user and developer to determine all the requirements and designs in the beginning stage of the project. More likely, the requirements of the user have to change to adapt to the market trend, and so does the technology used in the solution.
 
 For a new feature to be added into the existing system, it is possible to simply start a new project flow for the new feature, and integrate it into the existing system later. However, integrating the new feature into the existing system can also be challenging when the design is complicated and coupled. The integration often introduces a blackout period of the system. If the system is already deployed, the customer experience would be affected by the blackout.
 
 \subsection{Agile}
 
-Agile is the counterpart of waterfall. It is proposed to tackle the aforementioned issue: rapid change of requirements and adaptations to new technology and tools. It allows continuous integration and deployment of new features into the system in a convenient and systematic way, without introducing blackout.
+Agile is the counterpart of waterfall. It is proposed to tackle the aforementioned issue: rapid change of requirements and adaptations to new technology and tools. It allows continuous integration and delivery of new features into the system in a convenient and consistent manner without introducing blackout.
 
 In agile architecture, each feature is separately modularized. Each feature, before deploying and integrating into production environment, circulates in its own ``development and testing circle'', where it can be tested and reviewed iteratively by the developers and the users audit team, as shown below in Fig. \ref{ch:cicd:fig:agile}.
 \begin{figure}[htbp]
@@ -78,7 +76,7 @@ For each sprint, sprint planning and sprint backlog are proposed that describes 
 
 \section{Continuous Integration Continuous Delivery}
 
-CI/CD is introduced in this section. As a start, pipeline is introduced. Pipeline is an important concept used in CI/CD.
+\mync{CI/CD} is both a philosophical concept and a bunch of technology that speeds up the development, testing and deployment cycle of a software. It has become a common and beneficial practice that collaborative projects with rapid update implement the practice. CI/CD is introduced in this section. As a start, pipeline is introduced. Pipeline is an important concept used in CI/CD.
 
 \subsection{Pipeline}
 

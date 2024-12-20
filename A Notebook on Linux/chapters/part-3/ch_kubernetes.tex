@@ -33,7 +33,7 @@ Figure \ref{ch:vac:fig:kubernetescluster} demonstrates the key components Kubern
 	\includegraphics[width=250pt]{chapters/part-3/figures/k8sarchitecture.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
-As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the master in yellow (also known as the control plane) interact with the user as well calculates the number of pods to be deployed for each work node. The work nodes in green, on the other hand, process the application data. The arrows in Fig. \ref{ch:vac:fig:kubernetescluster} represents the control flow. Notice that the application data flows differently and it does not pass through the master. There can be multiple master nodes (in replica mode) and worker nodes, though only one of each is shown in Fig. \ref{ch:vac:fig:kubernetescluster}.
+As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the \mync{master node} (also known as \mync{control plane}) in yellow interacts with the user and schedules the pods to be deployed for each work node. The \mync{work nodes} (also known as \textbf{nodes}, for short) in green, on the other hand, process the application data. The arrows in Fig. \ref{ch:vac:fig:kubernetescluster} represents the control flow. Notice that the application data flows differently and it does not pass through the master. There can be multiple master nodes (in replica mode) and worker nodes, though only one of each is shown in Fig. \ref{ch:vac:fig:kubernetescluster}.
 
 Key components in the master and the nodes and their functions are summarized in Table \ref{ch:vac:tab:keycomponents}.
 
@@ -54,7 +54,7 @@ Key components in the master and the nodes and their functions are summarized in
 	\end{tabularx}
 \end{table}
 
-Each node can host multiple pods. Inside each pod is a container or a group of containers that work together closely (dependently, in many cases). Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. A pod is the minimal unit that Kubernetes manages directly.
+Each node can host multiple pods. A pod object is a single container or a collection of containers for a single task, and it is also the smallest unit that Kubernetes controls directly. Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. More details about the pod object are introduced in later Section \ref{ch:vac:sec:objects}.
 
 Both master and nodes can run on multiple servers or VMs. For master, multiple master replicas can run in parallel to take care of user requests and provide database services. The ``decision makers'', i.e. the controller manager and scheduler, run only on one of the master nodes which is elected via a leader election process. Should the decision maker master fail, one of the replicas will be promoted. For nodes, multiple nodes can run together to precess information in parallel and Kubernetes manages the distribution of load among them.
 
@@ -135,20 +135,112 @@ It is possible to run Kubernetes cluster directly on a host machine OS without V
 
 The configuration file for \verb|kubectl| is usually located at \verb|~/.kube/config|. It determines the basic setups of the \verb|kubectl| instance, such as which Kubernetes cluster \verb|kubectl| communicates with.
 
-\subsection{Imperative Cluster Manipulation}
+\subsection{Kubernetes Cluster Manipulation}
 
 There are at least two ways for a user to interact with a Kubernetes cluster and deploy or manipulate services in it.
 \begin{itemize}
   \item Imperative approach: use \verb|kubectl| commands to directly start, change or stop pods and services.
-  \item Declarative approach: prepare Kubernetes configuration files that describes what the cluster should look like, and use \verb|kubectl -f| command to implement the files. Kubernetes decides how to deploy mods on servers to realize the cluster.
+  \item Declarative approach: prepare Kubernetes configuration files that describes the ``desired state'' of the Kubernetes cluster, and use \verb|kubectl -f| command to implement the files. Kubernetes decides how to deploy pods on servers to achieve the desired state.
 \end{itemize}
-The declarative approach takes advantage of the full capability of Kubernetes as a container orchestration tool, and it is usually considered a better practice. Yet, learning the imperative approach helps the user with getting familiar with \verb|kubectl|.
+The imperative approach, in some sense, destroys the purpose of Kubernetes as a container orchestration tool since the user decides the deployment of pods and services manually. On the other hand, the declarative approach takes advantage of the full capability of Kubernetes and it is usually considered a better practice. Yet, learning the imperative approach helps the user with getting familiar with \verb|kubectl| commands.
 
-This section introduces the imperative approach and the next Section \ref{ch:vac:subsec:k8sconfigurationfiles} introduces declarative approach.
+\vspace{0.1in}
+\noindent \textbf{Cluster Deployment with Imperative Approach}
+\vspace{0.1in}
 
-A pod is the smallest unit that Kubernetes directly manages. A pod can contain one or multiple containers. In the case where multiple containers run in the same pod, they share resources such as volumes. Communications between containers in the same pod can be achieved easily via \verb|localhost|. A pod also has a cluster-internal IP by default, which allows outside services to reach the pod.
+Use
+\begin{lstlisting}
+$ kubectl help
+kubectl controls the Kubernetes cluster manager.
 
-\subsection{Declarative Cluster Manipulation} \label{ch:vac:subsec:k8sconfigurationfiles}
+ Find more information at: https://kubernetes.io/docs/reference/kubectl/
+
+Basic Commands (Beginner):
+  create          Create a resource from a file or from stdin
+  expose          Take a replication controller, service, deployment or pod and expose it as a new Kubernetes service
+  run             Run a particular image on the cluster
+  set             Set specific features on objects
+
+Basic Commands (Intermediate):
+  explain         Get documentation for a resource
+  get             Display one or many resources
+  edit            Edit a resource on the server
+  delete          Delete resources by file names, stdin, resources and names, or by resources and label selector
+
+Deploy Commands:
+  rollout         Manage the rollout of a resource
+  scale           Set a new size for a deployment, replica set, or replication controller
+  autoscale       Auto-scale a deployment, replica set, stateful set, or replication controller
+
+Cluster Management Commands:
+  certificate     Modify certificate resources
+  cluster-info    Display cluster information
+  top             Display resource (CPU/memory) usage
+  cordon          Mark node as unschedulable
+  uncordon        Mark node as schedulable
+  drain           Drain node in preparation for maintenance
+  taint           Update the taints on one or more nodes
+
+Troubleshooting and Debugging Commands:
+  describe        Show details of a specific resource or group of resources
+  logs            Print the logs for a container in a pod
+  attach          Attach to a running container
+  exec            Execute a command in a container
+  port-forward    Forward one or more local ports to a pod
+  proxy           Run a proxy to the Kubernetes API server
+  cp              Copy files and directories to and from containers
+  auth            Inspect authorization
+  debug           Create debugging sessions for troubleshooting workloads and nodes
+  events          List events
+
+Advanced Commands:
+  diff            Diff the live version against a would-be applied version
+  apply           Apply a configuration to a resource by file name or stdin
+  patch           Update fields of a resource
+  replace         Replace a resource by file name or stdin
+  wait            Experimental: Wait for a specific condition on one or many resources
+  kustomize       Build a kustomization target from a directory or URL
+
+Settings Commands:
+  label           Update the labels on a resource
+  annotate        Update the annotations on a resource
+  completion      Output shell completion code for the specified shell (bash, zsh, fish, or powershell)
+
+Subcommands provided by plugins:
+
+Other Commands:
+  api-resources   Print the supported API resources on the server
+  api-versions    Print the supported API versions on the server, in the form of "group/version"
+  config          Modify kubeconfig files
+  plugin          Provides utilities for interacting with plugins
+  version         Print the client and server version information
+
+Usage:
+  kubectl [flags] [options]
+\end{lstlisting}
+to view the entire list of \verb|kubectl| supported commands. Only commonly used ones to deploy and remove objects are introduced here.
+
+Use
+\begin{lstlisting}
+$ kubectl create <object type> <object name> --<argument>
+\end{lstlisting}
+to create and deploy an object, and use
+\begin{lstlisting}
+$ kubectl get <object type>
+\end{lstlisting}
+to view deployed objects of certain type. Notice that in \verb|kubectl get| is usually followed by the plural form of the object type. An example is given below.
+\begin{lstlisting}
+$ kubectl create deployment my-deployment --image=hello-world
+$ kubectl get deployments
+\end{lstlisting} 
+
+
+
+
+
+\vspace{0.1in}
+\noindent \textbf{Cluster Deployment with Declarative Approach}
+\vspace{0.1in}
 
 Kubernetes configuration files are used to guide Kubernetes on how it should configure the cluster and run the applications. There are often multiple configuration files in an application deployment, each file corresponding with an ``object'' to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, etc. There are many types (known as ``kinds'') of objects defined by Kubernetes. Details are introduced in the remaining of this section.
 
@@ -213,6 +305,10 @@ $ kubectl apply -f <configuration file> / <directory of configuration files>
 This essentially asks the master node in the Kubernetes cluster to start taking actions following the Kubernetes configuration files, such as to inform the nodes to start creating pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
 
 It is worth mentioning that by default Kubernetes uses declarative deployment instead of imperative deployment, meaning that the developer does not need to specifically tell Kubernetes what to do in each step. The developer only tells the overall objectives, and Kubernetes master node will try to figure out the steps to realize that goal. It is possible to enforce Kubernetes master node to practice specific details via configuration files, but it is almost always recommended to use the default declarative approach with Kubernetes.
+
+\vspace{0.1in}
+\noindent \textbf{Kubernetes Cluster Status Check}
+\vspace{0.1in}
 
 To retrieve the status of a group of objects, use
 \begin{lstlisting}
@@ -284,17 +380,20 @@ This section introduces commonly used Kubernetes objects, a list of which is giv
 
 These object types are introduced in more details in the remaining of the section.
 
-\subsection{Pod and Deployment}
+\subsection{Pod}
 
-Pod object is the smallest and most fundamental unit in a node that Kubernetes interacts with. A pod is essentially a ``wrap'' that hosts one or multiple containers that work closely with each other. Pod contains shared resources such as volumes for all the containers it hosts. The containers in a pod can also communicate each other via \verb|localhost|. A pod has a cluster-internal IP by default.
+\mync{Pod} object is the smallest and most fundamental unit in a node that Kubernetes interacts with. A pod is essentially a ``wrap'' that hosts one or multiple containers that work closely with each other. Pod contains shared resources such as volumes for all the containers it hosts. The containers in a pod can also communicate each other via \verb|localhost|. A pod has a cluster-internal IP by default.
 
-The user can manually start or stop a pod using \verb|kubectl|, and can also configure a pod in Kubernetes configuration files under API version \verb|v1|, kind \verb|Pod|. However, this is not recommended because Kubernetes, not the user, should manage and schedule the pods.
+Just like a container, pods are designed to be ephemeral. Kubernetes can start and stop them depending on the load and the traffic coming into the cluster, and when they are removed, their data vanishes. Of course there are many ways to persist the data, for example by directing the data into a volume or a database.
 
-as an orchestration tool Kubernetes shall schedule and scale the number of running pods as well as monitor their healthy status.
+The user can deploy pods using either \verb|kubectl| command imperatively or in Kubernetes configuration files declaratively. However, the user would not do so in practice, as it destroys the purpose of using Kubernetes.
 
-To tackle these problems, object \textit{deployment} is introduced. A deployment serves as the ``controller'' of identical pods. It is practically more convenient to setup pods using the deployment object instead of the pod object. 
+\subsection{Deployment}
 
-As an example, a Kubernetes cluster file that deploys an deployment object is given below. Notice that deployment object is supported in API version \verb|apps/v1|.
+It is more often that the user would want to deploy Deployment objects instead of pods. A \mync{Deployment} object serves as the ``controller'' of one or a group of identical pods, and it can strategically scale up or down the number of pods. With a new release of an application, the associated deployment can be updated. If a bug is detected in the new release, the Deployment can also be rolled back. The Deployment is a good example of declarative approach where the user specifies a desired state instead of the deployment procedures.
+
+
+As an example, a Kubernetes cluster file that deploys an Deployment object is given below. Notice that deployment object is supported in API version \verb|apps/v1|.
 \begin{lstlisting}
 apiVersion: apps/v1
 kind: Deployment
@@ -565,6 +664,8 @@ The example used in this section to demonstrate Kubernetes CI/CD on a cloud plat
 Many cloud platforms nowadays have a very good support of Kubernetes. The deployment of containers using Kubernetes can be done via their UIs easily. The developer needs to decide the resources to be used for the deployment. The more nodes and more power machine, the higher the charge. In most cases, the developer does not need to start a VM and install Kubernetes on it by himself. The cloud provider shall have dedicated Kubernetes engine service that would automatically configure the VM per required.
 
 \subsection{Configure CI/CD}
+
+\myabb{Continuous integration and continuous delivery}{CI/CD} is a widely appreciated workflow in modern software development. More about CI/CD is given in Appendix \ref{ch:cicd}.
 
 Travis CI is a continuous integration service tool written. It can be deployed on the cloud and linked to a Github repository and a CI/CD platform such as a Kubernetes cluster on Google Cloud Platform.
 

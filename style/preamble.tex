@@ -1,3 +1,60 @@
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\ExplSyntaxOn
+% Define sequences to track used concepts and abbreviations
+\seq_new:N \g_used_concepts_seq
+\seq_new:N \g_used_abbreviations_seq
+
+% Unified command for concepts with optional abbreviation
+\NewDocumentCommand{\mync}{m o}
+ {
+  % Check if the concept has already been introduced
+  \seq_if_in:NnTF \g_used_concepts_seq {#1}
+   {
+    % If already introduced, raise an error
+    \GenericError{}{The concept "#1" is already defined.}{Please check your usage.}{}
+   }
+   {
+    % If not introduced, add to the list
+    \seq_gput_right:Nn \g_used_concepts_seq {#1}
+    
+    % Check if an abbreviation is provided
+    \IfValueTF {#2}
+     {
+      % If abbreviation is provided, check for abbreviation conflicts
+      \seq_if_in:NnTF \g_used_abbreviations_seq {#2}
+       {
+        \GenericError{}{The abbreviation "#2" is already defined.}{Please check your usage.}{}
+       }
+       {
+        % Add the abbreviation and print the full name with abbreviation
+        \seq_gput_right:Nn \g_used_abbreviations_seq {#2}
+        \textbf{#1}~(#2)
+       }
+     }
+     {
+      % If no abbreviation, print only the concept in bold
+      \textbf{#1}
+     }
+   }
+ }
+
+% Command for abbreviations
+\NewDocumentCommand{\myabb}{m m}
+ {
+  % Check if the full name has already been used
+  \seq_if_in:NnTF \g_used_abbreviations_seq {#1}
+   {
+    % If already used, raise an error
+    \GenericError{}{The abbreviation for "#1" is already defined.}{Please check your usage.}{}
+   }
+   {
+    % If not used, add the abbreviation to the list
+    \seq_gput_right:Nn \g_used_abbreviations_seq {#1}
+    #1~(#2)
+   }
+ }
+\ExplSyntaxOff 
+
 \newtheorem{theorem}{Theorem}
 \newtheorem{exercise}{Exercise}[chapter]
 \newtheorem{example}{Example}

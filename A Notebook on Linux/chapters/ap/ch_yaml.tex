@@ -1,17 +1,17 @@
 \chapter{A Brief Introduction to YAML} \label{ch:yaml}
 
-YAML is widely used as configuration files and workflow description files. Under the scope of this notebook, YAML is used at least in \textit{GitHub Actions} and \textit{Kubernetes}. A brief introduction to YAML and its syntax is given here.
+YAML is widely used as configuration files and workflow description files. Under the scope of this notebook, YAML is used at least in GitHub Actions and Kubernetes. A brief introduction to YAML and its syntax is given here.
 
 \section{Overview}
 
-YAML is a human-readable data serialization language widely used for writing configuration files. The name YAML was initially interpreted as ``Yet Another Markup Language'' because the motivation for the authors to develop YAML was to simplify XML. However, in the later stage the authors pointed out that YAML is more of a data serialization language (like JSON) than a markup language. Hence, it is now more often known as the recursive acronym ``YAML Ain't Markup Language''.
+\mync{YAML} is a human-readable data serialization language widely used for writing configuration files. The name YAML was initially interpreted as ``Yet Another Markup Language'' because the motivation for the authors to develop YAML was to simplify XML. However, later on the authors pointed out that YAML is more of a data serialization language (like JSON) than a markup language. Hence, it is now more often known as the recursive acronym ``YAML Ain't Markup Language''.
 
 \begin{mdframed}
 \Boxhead{Markup VS Serialization Languages}
 
 Markup languages focus on the marking up of various elements in a text document. In the early days, the editor of a book often needed to put marks on the manuscripts to show where each line should go, etc., before sending it to the publisher. These marks inspired markup languages, and hence the name.
 
-Data serialization languages, on the other hand, focus on using texts to represent data structures. Data serialization languages like JSON and YAML are able represent ``objects'' such as Python dictionaries, JavaScript objects, etc., using its textual syntax. Data serialization languages are useful as they maintain the data structures, allowing a machine to decode easily. Therefore, they are widely used in configuration files, data storage, and machine-to-machine data transfer.
+Data serialization languages, on the other hand, focus on using texts to represent data structures. Data serialization languages like JSON and YAML are able to represent ``objects'' such as Python dictionaries, JavaScript objects, etc., using its textual syntax. Data serialization languages are useful as they maintain the data structures, allowing a machine to decode the objects easily. Therefore, they are widely used in configuration files and for data storage, and machine-to-machine data transfer.
 
 It is possible that markup and serialization languages overlaps in some applications. For example, XML, a typical markup language, can also be used to serialize data.
 
@@ -57,7 +57,7 @@ where object \verb|object name| contains 3 key-value pairs. The third key \verb|
 
 \subsection{List}
 
-It is possible that the value of a key being a list of items. See the example below. Be careful with the indentation when items in the list are nested objects.
+In addition to object and nested object, the value can also be list. See the example below. Be careful with the indentation when items in the list are nested objects.
 \begin{lstlisting}
 <list1>:
   - <item1>
@@ -78,7 +78,7 @@ It is possible that the value of a key being a list of items. See the example be
     <item3 key1>: <item3 value2>
     <item3 key1>: <item3 value3>
 \end{lstlisting}
-In the example above, the value of \verb|<list1>| is simply a list of 3 items, \verb|<item1>|, \verb|<item2>|, \verb|<item3>|. The value of \verb|<list2>| is a list of 3 key-value pairs in the form \verb|<itemN key>: <itemN value>|. The value of \verb|<list3>| is a list of 3 objects, each object containing 3 key-value pairs, in the form of \verb|<itemN keyM>: <itemN valueM>|.
+In the example above, the value of \verb|<list1>| is a list of 3 variables. The value of \verb|<list2>| is a list of 3 key-value pairs in the form \verb|<itemN key>: <itemN value>|. The value of \verb|<list3>| is a list of 3 nested objects, each object containing 3 key-value pairs, in the form of \verb|<itemN keyM>: <itemN valueM>|.
 
 Items in a list in YAML do not need to have the same data type or object structure.
 
@@ -107,8 +107,7 @@ It is possible to have a list of only one item. Examples are given below.
     <item4 key2>: <item4 value2>
     <item4 key3>: <item4 value2>
 \end{lstlisting}
-In the above example, all 4 lists, \verb|<list1>| to \verb|<list4>|, have 1 items. The first two lists \verb|<list1>| and \verb|<list2>| have primitive items \verb|<item1>| and \verb|<item2>| respectively. List \verb|<list3>| has one item which is a key-value pair. List \verb|<list4>| has one item which is an object that contains 3 key-value pairs.
-
+In the above example, each list \verb|<list1>| to \verb|<list4>| has 1 item. The first two lists \verb|<list1>| and \verb|<list2>| have primitive items \verb|<item1>| and \verb|<item2>| respectively. List \verb|<list3>| has one item which is a key-value pair. List \verb|<list4>| has one item which is an object that contains 3 key-value pairs.
 
 \subsection{Multi-line String}
 
@@ -128,44 +127,28 @@ run: |
 \end{lstlisting}
 where a bash command \verb|ls -la > files.txt| is stored as the value of key \verb|run|.
 
-Do not confuse a multi-line string with a wrapped single-line string. For example,
-\begin{lstlisting}
-<key>: |
-  abc
-  def
-  ghi
-\end{lstlisting}
-is different from
-\begin{lstlisting}
-<key>: abcdefghi
-\end{lstlisting}
-This is because when \texttt{|} is used, YAML automatically adds line break characters between different rows.
-
-To express the wrap of a single string, use \verb|>| instead of \texttt{|} as follows.
+Do not confuse a multi-line string with a long single-line string written in multiple lines for the convenience of reading. This is because when \texttt{|} is used, YAML automatically adds line break characters between different rows. To express the wrap of a single string, use \verb|>| instead of \texttt{|} as follows.
 \begin{lstlisting}
 <key>: >
   abc
   def
-  ghi
 \end{lstlisting}
 which is equivalent with
 \begin{lstlisting}
-<key>: abc def ghi
+<key>: abc def
 \end{lstlisting}
-because \verb|>| adds a space instead of a line break character to each row.
-
-Notice that both \texttt{|} and \verb|>|, if used alone, will generate a line breaker in the end of the entire text. If no such line breaker is designed, use \texttt{|-} and \verb|>-| instead.
-
-To express a very long continuous string without even a space, consider using
+because \verb|>| adds a space instead of a line break character to each row. To express a very long continuous string without even a space, consider using
 \begin{lstlisting}
 <key>: "abc\
-  def\
-  ghi"
+  def"
 \end{lstlisting}
 which is equivalent to
 \begin{lstlisting}
-<key>: abcdefghi
+<key>: abcdef
 \end{lstlisting}
+
+Notice that both \texttt{|} and \verb|>|, will generate a line breaker in the end of the entire text. If no such line breaker is designed, use \texttt{|-} and \verb|>-| instead.
+
 Sometimes for better readability, one may consider storing long strings into lists, then concatenate them later using the program that takes in the YAML file.
 
 \section{Commonly Seen YAML Use Cases}
@@ -173,8 +156,8 @@ Sometimes for better readability, one may consider storing long strings into lis
 YAML has gained its popularity among configuration files, especially when containers, cloud service and CI/CD are involved. Some commonly seen services that support YAML are given below. This is only a small portion of all the services and programs that use YAML.
 
 \begin{itemize}
-	\item \textit{GitHub Actions} configuration files. \textit{GitHub Actions} uses YAML as the workflow configuration files.
-	\item \textit{Kubernetes} configuration files. \textit{Kubernetes} pods, images, services, deployments, etc., have to be configured by the developer using YAML.
+	\item GitHub Actions configuration files. GitHub Actions uses YAML as the workflow configuration files.
+	\item Kubernetes configuration files. Kubernetes pods, images, services, deployments, etc., have to be configured by the developer using YAML.
 	\item AWS CloudFormation. AWS CloudFormation is the manuscript using which AWS can start and configure a service automatically so that the user does not need to do everything using the dashboard. It is useful when the user needs to run similar and repetitive services. The AWS CloudFormation instruction file is written in YAML.
 	\item Azure pipeline, and many other CI/CD services. Many CI/CD services uses YAML for the configuration of pipelines.
 \end{itemize} 
