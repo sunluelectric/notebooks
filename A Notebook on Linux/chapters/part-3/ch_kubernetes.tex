@@ -4,26 +4,24 @@ Kubernetes is one of the most widely used container orchestration tools. Many cl
 
 \section{Kubernetes Basics}
 
-\mync{Kubernetes}, also known as \mync{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, scaling, and management of containerized applications.
+\mync{Kubernetes}, also known as \mync{k8s}, is an open-source container orchestration system originally developed by Google. It automates the deployment, health screening and scaling of containers for containerized applications.
 
-As a orchestration tool, Kubernetes mainly focuses on the following items:
+As an orchestration tool, Kubernetes mainly focuses on the following tasks:
 \begin{itemize}
 	\item Monitor the status of the containers, and restart / replace broken ones.
-	\item Balance the load among containers.
-	\item Scale up and down the number of containers based on the total load.
+	\item Balance the load assigned to the containers.
+	\item Strategically scale up and down the number of containers based on the total load.
 \end{itemize}
-From the above, Kubernetes can be seen as a more powerful practice of what docker compose tries to do. It comes with additional features such as support on multi-server deployment.
+From the above, Kubernetes can be seen as a more powerful practice of what docker compose tries to do. It comes with additional features such as the support on multi-server deployment.
 
-Managed services such as ECS can also do container orchestration. However, these managed services are often proprietary and inclusive to a particular cloud service provider, making it difficult to migrate the containerized applications across platforms. Kubernetes, on the other hand, is open-source and platform-independent, hence would not pose that problem.
+Managed services such as ECS can also do container orchestration. However, these managed services are often proprietary and inclusive to a particular cloud service provider. With such proprietary services, it is difficult to migrate the applications across platforms or to local premises. Kubernetes, on the other hand, is open-source and platform-independent, hence would not pose that problem.
 
-Nowadays, many cloud service providers also support Kubernetes-based container deployment, such as \myabb{Elastic Kubernetes Service}{EKS} by AWS and \myabb{Google Kubernetes Engine}{GKE} by Google Cloud. Notice that these managed services often come with some unique features built on top of Kubernetes, making the using of Kubernetes on these platform not entirely the same as (often easier than) doing it on a local machine.
+Nowadays, many cloud service providers also support Kubernetes-based container deployment solutions such as \myabb{Elastic Kubernetes Service}{EKS} by AWS and \myabb{Google Kubernetes Engine}{GKE} by Google Cloud. They are also managed services to some extend and each platform usually have some unique features, but in general the application can be migrated across platforms without too much difficulty.
 
 \begin{shortbox}
 	\Boxhead{Kubernetes and Docker Engine}
 	
-	Kubernetes as a container orchestration tool used to be built on top of docker engine. It used a special program \verb|dockershim| to talk to the underlying docker engine.
-	
-	Recently, docker support has been deprecated in Kubernetes. Consequently, \verb|dockershim| has also been removed.
+	Kubernetes was built on top of docker engine. It used a special program \verb|dockershim| to talk to the underlying docker engine. Recently, however, docker support has been deprecated in Kubernetes. Consequently, \verb|dockershim| has also been removed. Now Kubernetes directly talks with container runtimes.
 \end{shortbox}
 
 
@@ -35,8 +33,7 @@ Figure \ref{ch:vac:fig:kubernetescluster} demonstrates the key components Kubern
 	\includegraphics[width=250pt]{chapters/part-3/figures/k8sarchitecture.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
-
-As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the master in yellow (also known as the control plane) interact with the user as well calculates the number of pods to be deployed for each work node. The work nodes in green, on the other hand, process the application data. The arrows in Fig. \ref{ch:vac:fig:kubernetescluster} represents the control flow. Notice that the application data flows differently and it does not pass through the master.
+As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the master in yellow (also known as the control plane) interact with the user as well calculates the number of pods to be deployed for each work node. The work nodes in green, on the other hand, process the application data. The arrows in Fig. \ref{ch:vac:fig:kubernetescluster} represents the control flow. Notice that the application data flows differently and it does not pass through the master. There can be multiple master nodes (in replica mode) and worker nodes, though only one of each is shown in Fig. \ref{ch:vac:fig:kubernetescluster}.
 
 Key components in the master and the nodes and their functions are summarized in Table \ref{ch:vac:tab:keycomponents}.
 
@@ -48,7 +45,7 @@ Key components in the master and the nodes and their functions are summarized in
 		Component & Location & Description \\
 		\hline
 		\verb|etcd| & Master & A distributed key-value pair database that stores the status of the Kubernetes cluster. The consistency of the distributed database is achieved based on Raft consensus algorithm. \\ \hline
-		API server & Master & The gateway to handle all interactions with the Kubernetes cluster. For example, \textit{kubectl} requests from the user are handled by API server. \\ \hline
+		API server & Master & The gateway to handle all interactions with the Kubernetes cluster. For example, \verb|kubectl| requests from the user are handled by API server. \\ \hline
 		Scheduler & Master & The optimizer that calculates the desired pod distributions among all nodes based on the total load and the hardware limits. Notice that scheduler is not involved into load balance directly. A separate load balancer service can be created to actually direct the traffic. \\ \hline
 		Controller Manager & Master & A set of controllers or control functions to reconcile the actual Kubernetes cluster status with what has been calculated by the scheduler and stored in \verb|etcd|. \\ \hline
 		Kubelet & Node & Local controller for the node. It ensures that all the pods assigned to the node are running, and it keeps listening to the master for further instructions. \\ \hline
@@ -57,15 +54,15 @@ Key components in the master and the nodes and their functions are summarized in
 	\end{tabularx}
 \end{table}
 
-It is worth mentioning that many services, such as ClusterIP, NodePort, LoadBalancer and Ingress Controllers, though being cluster-level services, run in worker nodes, not in the master. 
+Each node can host multiple pods. Inside each pod is a container or a group of containers that work together closely (dependently, in many cases). Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. A pod is the minimal unit that Kubernetes manages directly.
 
-Each node can host multiple pods. Inside each pod is a container or a group of containers that work together closely (dependently, in many cases). Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. A pod should be the minimal unit  that can deliver a basic function.
+Both master and nodes can run on multiple servers or VMs. For master, multiple master replicas can run in parallel to take care of user requests and provide database services. The ``decision makers'', i.e. the controller manager and scheduler, run only on one of the master nodes which is elected via a leader election process. Should the decision maker master fail, one of the replicas will be promoted. For nodes, multiple nodes can run together to precess information in parallel and Kubernetes manages the distribution of load among them.
 
-Both master and nodes can run on multiple servers or VMs. For master, multiple master replicas can run in parallel to take care of user requests and provide database services. The ``decision makers'', i.e. the controller manager and scheduler, run only on one of the master nodes which is elected via a leader election process. Should the decision maker master fail, one of the other masters will be promoted. For nodes, multiple nodes can run together to precess information in parallel and Kubernetes manages the distribution of load among them.
+It is worth mentioning that many services cluster-level services such as ClusterIP, NodePort, LoadBalancer and Ingress Controllers, though being cluster-level, run in worker nodes but not in the master. 
 
 \subsection{Installation}
 
-It is worth mentioning in the beginning that Kubernetes is not a single software. It is a concept or an architecture that involves many pieces of software, including at least:
+Kubernetes is not a single piece of software but more an architecture that involves many pieces of software such as:
 \begin{itemize}
   \item \verb|kubectl| the CLI
   \item \verb|kube-apiserver| the API server
@@ -76,13 +73,13 @@ It is worth mentioning in the beginning that Kubernetes is not a single software
   \item Kube Proxy
   \item Kubernetes-supported container runtime such as \verb|containerd|
   \item Container Network Interface (CNI) plugin such as Calico
-  \item Many more tools
+  \item \ldots
 \end{itemize}
 The installation guidance of Kubernetes can be found at its official website \textit{kubernetes.io}. In a production environment, the administrator shall install and configure the above tools on the servers by himself. This gives him the flexibility of customizing the tools. However, the process can be tedious and requires experience.
 
-In this notebook, for demonstration purpose, we will use Minikube to help build a Kubernetes cluster. Minikube is an open-source software developed by the Kubernetes community to start a VM and run a single-node Kubernetes cluster on a local machine. It automates most of the tools installation and configuration, and it is just enough for the scope of this notebook. 
+In this notebook, for demonstration purpose, we will use Minikube to help build a Kubernetes cluster. Minikube is an open-source software developed by the Kubernetes community to start a VM and run a single-node Kubernetes cluster on a local machine. It automates most of the tools installations and configurations which is in favour of the scope of this notebook. 
 
-We will only install \textit{kubectl} and Minikube. As introduced earlier, \textit{kubectl} is used to interact with Kubernetes clusters deployed either locally or remotely. It is always recommended to have \textit{kubectl} installed on the local machine. The installation of \textit{kubectl} can be found at Kubernetes website at
+We still need to install Minikube and also \verb|kubectl|. As introduced earlier, \verb|kubectl| is used to interact with Kubernetes clusters deployed either locally or remotely. It is always recommended to have \verb|kubectl| installed on the local machine wherever the Kubernetes cluster is deployed. The installation of \verb|kubectl| can be found at Kubernetes website at
 \begin{lstlisting}
 https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 \end{lstlisting}
@@ -95,17 +92,21 @@ Once Minikube is installed, start it using
 \begin{lstlisting}
 $ minikube start
 \end{lstlisting}
-When starting Minikube, it automatically detects which container engine to use, and some configurations might be required subsequently. For example, if it decides to use podman, it may require the user who started Minikube to be added to the sudoer list that can start podman without sudo password authentication. This can be done by editing the following file
+When starting Minikube, it automatically detects which container engine to use, and some configurations might be required subsequently.
+
+When running Minikube, it uses existing VM engines such as VirtualBox, or container engines such as docker and podman installed on the local machine to start a VM or container that hosts Kubernetes. Therefore, it will need to execute the VM tools or the container engines. In naive RHEL, Minikube needs to execute podman. Some of the commands Minikube need to run require sudo privilege, and as a result, it requires \verb|NOPASSWD| configuration to start the Kubernetes cluster correctly. 
+
+This can be done as follows. Open the sudoer configuration file by
 \begin{lstlisting}
 $ sudo visudo
 \end{lstlisting}
-with
+and append
 \begin{lstlisting}
 <user name> ALL=(ALL) NOPASSWD: /usr/bin/podman
 \end{lstlisting}
-appended to the file.
+to the file.
 
-Once Minikube is started, use the following command to verify that \textit{kubectl} has detected and connected with the Kubernetes runtime.
+Once Minikube is started, \verb|kubectl| installed on the local machine should be able to detect the Kubernetes running inside. Sse the following command to verify that \verb|kubectl| has detected and connected with the Kubernetes runtime.
 \begin{lstlisting}
 $ kubectl cluster-info
 Kubernetes control plane is running at https://192.168.49.2:8443
@@ -113,28 +114,41 @@ CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/se
 \end{lstlisting}
 
 \begin{shortbox}
-\Boxhead{Minikube's Built-in \textit{kubectl}}
+\Boxhead{Minikube's Built-in \texttt{kubectl}}
 
-Minikube also comes with a built-in \textit{kubectl}. It is possible to use that \textit{kubectl} instead of installing one separately. To very the existence of the built-in \textit{kubectl}, start Minikube first and then use
+Minikube also comes with a built-in \verb|kubectl|. It is possible to use that \verb|kubectl| instead of installing one separately. To very the existence of the built-in \verb|kubectl|, start Minikube first and then use
 
 \begin{lstlisting}
 $ minikube kubectl -- cluster-info
 Kubernetes control plane is running at https://192.168.49.2:8443
 CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 \end{lstlisting}
-where \verb|--| in the command tells the shell that all the followed arguments shall be passed to \textit{kubectl}, but not \verb|minikube|. For convenience, one may want to use alias as follows
+where \verb|--| in the command tells the shell that all the followed arguments shall be passed to \verb|kubectl| inside Minikube, but not \verb|minikube| itself. For convenience, one may want to use alias as follows
 \begin{lstlisting}
 $ alias kubectl="minikube kubectl --"
 \end{lstlisting}
 
-Although with the above been said, it is still recommended that \textit{kubectl} to be installed on the local machine, not just in the VM. 
+With the above been said, it is still recommended that \verb|kubectl| to be installed on the local machine, not just in the VM. 
 \end{shortbox}
 
 It is possible to run Kubernetes cluster directly on a host machine OS without VM if that machine is running Linux. However, this is not recommended for reasons pertaining to access control, security, and isolation. It is generally a better practice to deploy Kubernetes clusters in VMs.
 
-The configuration file for \textit{kubectl} is usually located at \verb|~/.kube/config|. It determines the basic setups of the \textit{kubectl} instance, such as which Kubernetes cluster \textit{kubectl} communicates with.
+The configuration file for \verb|kubectl| is usually located at \verb|~/.kube/config|. It determines the basic setups of the \verb|kubectl| instance, such as which Kubernetes cluster \verb|kubectl| communicates with.
 
-\subsection{Kubernetes Cluster Configuration}
+\subsection{Imperative Cluster Manipulation}
+
+There are at least two ways for a user to interact with a Kubernetes cluster and deploy or manipulate services in it.
+\begin{itemize}
+  \item Imperative approach: use \verb|kubectl| commands to directly start, change or stop pods and services.
+  \item Declarative approach: prepare Kubernetes configuration files that describes what the cluster should look like, and use \verb|kubectl -f| command to implement the files. Kubernetes decides how to deploy mods on servers to realize the cluster.
+\end{itemize}
+The declarative approach takes advantage of the full capability of Kubernetes as a container orchestration tool, and it is usually considered a better practice. Yet, learning the imperative approach helps the user with getting familiar with \verb|kubectl|.
+
+This section introduces the imperative approach and the next Section \ref{ch:vac:subsec:k8sconfigurationfiles} introduces declarative approach.
+
+A pod is the smallest unit that Kubernetes directly manages. A pod can contain one or multiple containers. In the case where multiple containers run in the same pod, they share resources such as volumes. Communications between containers in the same pod can be achieved easily via \verb|localhost|. A pod also has a cluster-internal IP by default, which allows outside services to reach the pod.
+
+\subsection{Declarative Cluster Manipulation} \label{ch:vac:subsec:k8sconfigurationfiles}
 
 Kubernetes configuration files are used to guide Kubernetes on how it should configure the cluster and run the applications. There are often multiple configuration files in an application deployment, each file corresponding with an ``object'' to be created. Notice that an object is not necessarily a container. It can be a pod, a replica controller, a service, etc. There are many types (known as ``kinds'') of objects defined by Kubernetes. Details are introduced in the remaining of this section.
 
@@ -192,9 +206,7 @@ Some commonly used fields used in the Kubernetes configuration files are briefly
 
 Composing Kubernetes configuration files is a key part in Kubernetes-based application deployment, and it is essentially about configuring Kubernetes objects. More details of Kubernetes objects are not given here, but will be introduced in Section \ref{ch:vac:sec:objects}.
 
-\subsection{Kubernetes Cluster Deployment}
-
-With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. The \textit{kubectl} CLI is used to instruct Kubernetes to deploy the objects as follows.
+With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. The \verb|kubectl| CLI is used to instruct Kubernetes to deploy the objects as follows.
 \begin{lstlisting}
 $ kubectl apply -f <configuration file> / <directory of configuration files>
 \end{lstlisting}
@@ -234,8 +246,6 @@ It is possible to consolidate the configuration files of objects into one config
 
 <...>
 \end{lstlisting}
-
-\subsection{Kubernetes Cluster Configuration Update}
 
 With the help of Kubernetes declarative approach, it is possible to update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks revised configuration files, comparing them with existing running objects, and update them if necessary.
 
@@ -471,7 +481,7 @@ There are different types of access modes:
 
 The developer can specify the place for Kubernetes PVs. This is usually the hard drive on a local server, a virtual storage space in the VM. Use the following command to check Kubernetes possible choice of storage.
 \begin{lstlisting}
-	$ kubectl get storageclass
+$ kubectl get storageclass
 \end{lstlisting}
 and
 \begin{lstlisting}
@@ -566,7 +576,7 @@ Travis uses configuration files to setup CI/CD pipeline.
 
 \subsection{Deploy Containers}
 
-In the Travis configuration file, \verb|deploy| is used to specify the script to run when the testing is successful. A separate bash script \verb|deploy.sh| is defined for this purpose, inside which is a sequence of commands that builds and publishes images, and configures Kubernetes using \textit{kubectl}.
+In the Travis configuration file, \verb|deploy| is used to specify the script to run when the testing is successful. A separate bash script \verb|deploy.sh| is defined for this purpose, inside which is a sequence of commands that builds and publishes images, and configures Kubernetes using \verb|kubectl|.
 
 It is particularly worth mention that in \verb|deploy.sh|, when building and applying the latest version of the docker image, tagging using \verb|<image-name>:latest| alone is not going to work. This is because when the same configuration with \verb|<image-name>:latest| is applied, the system would simply acknowledge it as ``no change'' and would not actually download the latest version of the image.
 
