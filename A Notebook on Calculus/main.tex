@@ -1,8 +1,6 @@
 % ---
 % sunlu
 % ---
-\input{../style/documentclass.tex}
-\input{../style/packages.tex}
 \input{../style/preamble.tex}
 
 \makeindex
@@ -19,65 +17,51 @@
 \input{../frontmatter/dedication.tex}
 \tableofcontents
 \input{../frontmatter/foreword.tex}
-\include{frontmatter/preface}
+\input{frontmatter/preface.tex}
 \listoffigures
 \listoftables
 
-\mainmatter
+\mainmatter\_
 
-\input{chapters/part-1/pt}
+\part{Limit, Derivative and Integral}
 
-\input{chapters/part-2/pt}
+\include{chapters/part-1/ch_limit}
 
-\input{chapters/part-3/pt}
+\include{chapters/part-1/ch_derivative}
 
-\input{chapters/part-4/pt}
+\include{chapters/part-1/ch_integral}
 
-\input{chapters/part-5/pt}
+\include{chapters/part-1/ch_applications} 
 
-\bibliographystyle{plain}
-\bibliography{reference}
+\part{Multivariable Function, Partial Derivative and Multiple Integral}
 
-\printindex
+\include{chapters/part-2/ch_multivariable_func}
 
-\end{document}
-=======
-% ---
-% sunlu
-% ---
-\input{../style/documentclass.tex}
-\input{../style/packages.tex}
-\input{../style/preamble.tex}
+\include{chapters/part-2/ch_partial_derivative}
 
-\makeindex
+\include{chapters/part-2/ch_multiple_integral}
 
-\begin{document}
+\include{chapters/part-2/ch_applications} 
 
-\frontmatter
+\part{Differential Equation}
 
-\title{A Notebook on Calculus}
-\author{Lu Sun, and many more.}
+\include{chapters/part-3/ch_ordinary_diffeq}
 
-\maketitle
+\include{chapters/part-3/ch_partial_diffeq}
 
-\input{../frontmatter/dedication.tex}
-\tableofcontents
-\input{../frontmatter/foreword.tex}
-\include{frontmatter/preface}
-\listoffigures
-\listoftables
+\include{chapters/part-3/ch_applications} 
 
-\mainmatter
+\part{Functional and Calculus of Variations}
 
-\input{chapters/part-1/pt}
+\include{chapters/part-4/ch_functional} 
 
-\input{chapters/part-2/pt}
+\part{Numerical Analysis}
 
-\input{chapters/part-3/pt}
+\include{chapters/part-5/ch_brief_intro}
 
-\input{chapters/part-4/pt}
+\include{chapters/part-5/ch_one_variable_eq}
 
-\input{chapters/part-5/pt}
+\include{chapters/part-5/ch_interpolation} 
 
 \bibliographystyle{plain}
 \bibliography{reference}
