@@ -33,7 +33,7 @@ Figure \ref{ch:vac:fig:kubernetescluster} demonstrates the key components Kubern
 	\includegraphics[width=250pt]{chapters/part-3/figures/k8sarchitecture.png}
 	\caption{Kubernetes cluster and its key components.} \label{ch:vac:fig:kubernetescluster}
 \end{figure}
-As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the \mync{master node} (also known as \mync{control plane}) in yellow interacts with the user and schedules the pods to be deployed for each work node. The \mync{work nodes} (also known as \textbf{nodes}, for short) in green, on the other hand, process the application data. The arrows in Fig. \ref{ch:vac:fig:kubernetescluster} represents the control flow. Notice that the application data flows differently and it does not pass through the master. There can be multiple master nodes (in replica mode) and worker nodes, though only one of each is shown in Fig. \ref{ch:vac:fig:kubernetescluster}.
+As shown in Fig. \ref{ch:vac:fig:kubernetescluster}, Kubernetes manages containers in a centralized ``master-worker'' manner, where the \mync{master node} (also known as \mync{control plane}) in yellow interacts with the user and schedules the Pods to be deployed for each work node. The \mync{work nodes} (also known as \textbf{nodes}, for short) in green, on the other hand, process the application data. The arrows in Fig. \ref{ch:vac:fig:kubernetescluster} represents the control flow. Notice that the application data flows differently and it does not pass through the master. There can be multiple master nodes (in replica mode) and worker nodes, though only one of each is shown in Fig. \ref{ch:vac:fig:kubernetescluster}.
 
 Key components in the master and the nodes and their functions are summarized in Table \ref{ch:vac:tab:keycomponents}.
 
@@ -46,15 +46,15 @@ Key components in the master and the nodes and their functions are summarized in
 		\hline
 		\verb|etcd| & Master & A distributed key-value pair database that stores the status of the Kubernetes cluster. The consistency of the distributed database is achieved based on Raft consensus algorithm. \\ \hline
 		API server & Master & The gateway to handle all interactions with the Kubernetes cluster. For example, \verb|kubectl| requests from the user are handled by API server. \\ \hline
-		Scheduler & Master & The optimizer that calculates the desired pod distributions among all nodes based on the total load and the hardware limits. Notice that scheduler is not involved into load balance directly. A separate load balancer service can be created to actually direct the traffic. \\ \hline
+		Scheduler & Master & The optimizer that calculates the desired Pod distributions among all nodes based on the total load and the hardware limits. Notice that scheduler is not involved into load balance directly. A separate load balancer service can be created to actually direct the traffic. \\ \hline
 		Controller Manager & Master & A set of controllers or control functions to reconcile the actual Kubernetes cluster status with what has been calculated by the scheduler and stored in \verb|etcd|. \\ \hline
-		Kubelet & Node & Local controller for the node. It ensures that all the pods assigned to the node are running, and it keeps listening to the master for further instructions. \\ \hline
+		Kubelet & Node & Local controller for the node. It ensures that all the Pods assigned to the node are running, and it keeps listening to the master for further instructions. \\ \hline
 		Kube Proxy & Node & The internet service provider in the node. \\
 		\hline
 	\end{tabularx}
 \end{table}
 
-Each node can host multiple pods. A pod object is a single container or a collection of containers for a single task, and it is also the smallest unit that Kubernetes controls directly. Notice that in Kubernetes, containers never run directly in a node. They are always grouped into pods. More details about the pod object are introduced in later Section \ref{ch:vac:sec:objects}.
+Each node can host multiple Pods. A Pod object is a single container or a collection of containers for a single task, and it is also the smallest unit that Kubernetes controls directly. Notice that in Kubernetes, containers never run directly in a node. They are always grouped into Pods. More details about the Pod object are introduced in later Section \ref{ch:vac:sec:objects}.
 
 Both master and nodes can run on multiple servers or VMs. For master, multiple master replicas can run in parallel to take care of user requests and provide database services. The ``decision makers'', i.e. the controller manager and scheduler, run only on one of the master nodes which is elected via a leader election process. Should the decision maker master fail, one of the replicas will be promoted. For nodes, multiple nodes can run together to precess information in parallel and Kubernetes manages the distribution of load among them.
 
@@ -139,8 +139,8 @@ The configuration file for \verb|kubectl| is usually located at \verb|~/.kube/co
 
 There are at least two ways for a user to interact with a Kubernetes cluster and deploy or manipulate services in it.
 \begin{itemize}
-  \item Imperative approach: use \verb|kubectl| commands to directly start, change or stop pods and services.
-  \item Declarative approach: prepare Kubernetes configuration files that describes the ``desired state'' of the Kubernetes cluster, and use \verb|kubectl -f| command to implement the files. Kubernetes decides how to deploy pods on servers to achieve the desired state.
+  \item Imperative approach: use \verb|kubectl| commands to directly start, change or stop Pods and services.
+  \item Declarative approach: prepare Kubernetes configuration files that describes the ``desired state'' of the Kubernetes cluster, and use \verb|kubectl -f| command to implement the files. Kubernetes decides how to deploy Pods on servers to achieve the desired state.
 \end{itemize}
 Both approaches are introduced as follows. 
 
@@ -148,7 +148,7 @@ Both approaches are introduced as follows.
 \noindent \textbf{Cluster Deployment with Imperative Approach}
 \vspace{0.1in}
 
-The imperative approach, in some sense, destroys the purpose of Kubernetes as a container orchestration tool since the user decides the deployment of pods and services manually. On the other hand, the declarative approach takes advantage of the full capability of Kubernetes and it is usually considered a better practice. Yet, learning the imperative approach helps the user with getting familiar with \verb|kubectl| commands. In this section, imperative approach and its relevant generally used \verb|kubectl| commands are briefly introduced.
+The imperative approach, in some sense, destroys the purpose of Kubernetes as a container orchestration tool since the user decides the deployment of Pods and services manually. On the other hand, the declarative approach takes advantage of the full capability of Kubernetes and it is usually considered a better practice. Yet, learning the imperative approach helps the user with getting familiar with \verb|kubectl| commands. In this section, imperative approach and its relevant generally used \verb|kubectl| commands are briefly introduced.
 
 Use the following to view the entire list of \verb|kubectl| supported commands.
 \begin{lstlisting}
@@ -236,13 +236,13 @@ $ kubectl get deployments
 \end{lstlisting}
 Deployment object is deployed in the above example. More about Deployment object will be given in later Section \ref{ch:vac:sec:objects}. It is one of the most commonly used Kubernetes objects and serves well as an example to illustrate imperative approach. Notice that the image assigned to the deployment, in the above example \texttt{hello-world}, needs to be reachable by Kubernetes. In this example, the image is to be deployed by the Kubernetes cluster deployed in the Minikube environment, and hence any image locally built in the host machine will not be reachable. The image has to be stored on an online registry.
 
-The deployed pods will be default have a cluster-level internal IP. There are the following problems with this internal IP: it is dynamic, and it is not accessible from outside the cluster. To expose the IP and port, a separate Service object needs to be used as follows.
+The deployed Pods will be default have a cluster-level internal IP. There are the following problems with this internal IP: it is dynamic, and it is not accessible from outside the cluster. To expose the IP and port, a separate Service object needs to be used as follows.
 \begin{lstlisting}
 $ kubectl expose deployment <deployment name> --type=<service type>
 \end{lstlisting}
 where Service object type can be \verb|ClusterIP|, \verb|NodePort|, \verb|LoadBalancer|, etc. More about Service object will be given in later Section \ref{ch:vac:sec:objects}.
 
-To scale up and down the number of pods in a Deployment object, use
+To scale up and down the number of Pods in a Deployment object, use
 \begin{lstlisting}
 $ kubectl scale --replicas=<number> deployment <deployment name>
 \end{lstlisting}
@@ -319,11 +319,11 @@ Some commonly used fields used in the Kubernetes configuration files are briefly
 \end{itemize}
 More details of the configuration file composing of each type of Kubernetes object are introduced in later Section \ref{ch:vac:sec:objects}. 
 
-With the image and the configuration files ready, the next step is to deploy the nodes, pods, and containers. The \verb|kubectl| CLI is used to instruct Kubernetes to deploy the objects as follows.
+With the image and the configuration files ready, the next step is to deploy the nodes, Pods, and containers. The \verb|kubectl| CLI is used to instruct Kubernetes to deploy the objects as follows.
 \begin{lstlisting}
 $ kubectl apply -f <configuration file> / <files directory>
 \end{lstlisting}
-This essentially asks the master node in the Kubernetes cluster to start taking actions following the Kubernetes configuration files, such as to inform the nodes to start creating pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
+This essentially asks the master node in the Kubernetes cluster to start taking actions following the Kubernetes configuration files, such as to inform the nodes to start creating Pods and containers. The master node also keeps monitoring the status of each work node, to make sure that everything is running as planned. If there is a container failure, etc., the master node will guide the associated note to restart the container.
 
 It is possible to consolidate the configuration files of objects into one configuration file. To do that, use \verb|---| to split the configurations for each object in the conjunctive configuration file as follows. It is of personal preference whether to use conjunctive configuration files or separate configuration files for all objects.
 \begin{lstlisting}
@@ -337,9 +337,9 @@ The order of the configurations appears in the file usually does not matter. How
 
 With the help of Kubernetes declarative approach, it is possible to update the cluster simply by revising the configuration files, and pass them to Kubernetes as if the cluster is to be deployed for the first time. Kubernetes automatically checks revised configuration files, comparing them with existing running objects, and update them if necessary.
 
-It is recommended to check the status of the pods using \verb|kubectl get pods| once the cluster is updated. After the update, the pods should be restarted, and hence the ``RESTARTS'' tag shall increase. To ensure that the update is successful, use \verb|kubectl describe| to check the details of the relevant objects.
+It is recommended to check the status of the Pods using \verb|kubectl get pods| once the cluster is updated. After the update, the Pods should be restarted, and hence the ``RESTARTS'' tag shall increase. To ensure that the update is successful, use \verb|kubectl describe| to check the details of the relevant objects.
 
-Notice that there is a limitation on what can be updated to an existing Kubernetes deployment. For an existing object, only certain fields in the Kubernetes configuration files are allowed to be revised. For example, for a pod, the image can be changed while the ports cannot. Some objects types are more flexible than others when comes to object updating. The user shall choose wisely what object types to use considering what updates need to be made in future.
+Notice that there is a limitation on what can be updated to an existing Kubernetes deployment. For an existing object, only certain fields in the Kubernetes configuration files are allowed to be revised. For example, for a Pod, the image can be changed while the ports cannot. Some objects types are more flexible than others when comes to object updating. The user shall choose wisely what object types to use considering what updates need to be made in future.
 
 To revert what has been applied in a Kubernetes configuration file, use
 \begin{lstlisting}
@@ -362,7 +362,7 @@ where \verb|<object type>| can be \verb|pods|, \verb|services|, etc. For more de
 \begin{lstlisting}
 $ kubectl describe <object type> <object name>
 \end{lstlisting}
-for example, to check the containers running in a pod. If \verb|<object name>| is neglected, Kubernetes returns detailed information of all objects of the given object type. For a running object, use
+for example, to check the containers running in a Pod. If \verb|<object name>| is neglected, Kubernetes returns detailed information of all objects of the given object type. For a running object, use
 \begin{lstlisting}
 $ kubectl logs <object name>
 \end{lstlisting}
@@ -372,7 +372,7 @@ Minikube provides a web-based dashboard where the user can conveniently check th
 \begin{lstlisting}
 $ minikube dashboard
 \end{lstlisting} 
-to start the dashboard and follow the instructions on the concole to open the dashboard. The dashboard gives the detailed information of running objects in the Kubernetes cluster, such as the healthy status of pods, the cluster-level internal IP of objects, etc.
+to start the dashboard and follow the instructions on the concole to open the dashboard. The dashboard gives the detailed information of running objects in the Kubernetes cluster, such as the healthy status of Pods, the cluster-level internal IP of objects, etc.
 
 
 Kubernetes treats the above as an update and will action accordingly.
@@ -388,12 +388,12 @@ This section introduces commonly used Kubernetes objects, a list of which is giv
 		\hline
 		Object Type & Description \\
 		\hline
-		Pod & Represents a single instance of a process running in the cluster. A pod contains one or multiple containers that work closely to deliver a basic function. It is the smallest unit of process in Kubernetes. \\ \hline
-		Deployment & Manages the deployment and scaling of a set of identical pods, ensuring the desired number of replicas are running and providing rolling updates for seamless application upgrades. \\ \hline
-		Service & Enables network access to the node or to a set of pods using a stable IP address and DNS name. It provides load balancing across multiple pod replicas and allows external traffic to be directed to the appropriate pods. \\ \hline
-		ConfigMap & Stores configuration data in key-value pairs, which can be consumed by pods as environment variables, command-line arguments, or mounted as files. \\ \hline
-		Secret & Similar to a ConfigMap, but specifically designed to store sensitive data, such as passwords, API keys, and TLS certificates. Secrets are encrypted at rest and can be mounted into pods as files or exposed as environment variables. \\ \hline
-		PersistentVolume & Provides a way to provision and manage persistent storage resources in a cluster. It decouples the storage from the underlying infrastructure and allows data to persist beyond the lifecycle of individual pods. \\ \hline
+		Pod & Represents a single instance of a process running in the cluster. A Pod contains one or multiple containers that work closely to deliver a basic function. It is the smallest unit of process in Kubernetes. \\ \hline
+		Deployment & Manages the deployment and scaling of a set of identical Pods, ensuring the desired number of replicas are running and providing rolling updates for seamless application upgrades. \\ \hline
+		Service & Enables network access to the node or to a set of Pods using a stable IP address and DNS name. It provides load balancing across multiple Pod replicas and allows external traffic to be directed to the appropriate Pods. \\ \hline
+		ConfigMap & Stores configuration data in key-value pairs, which can be consumed by Pods as environment variables, command-line arguments, or mounted as files. \\ \hline
+		Secret & Similar to a ConfigMap, but specifically designed to store sensitive data, such as passwords, API keys, and TLS certificates. Secrets are encrypted at rest and can be mounted into Pods as files or exposed as environment variables. \\ \hline
+		PersistentVolume & Provides a way to provision and manage persistent storage resources in a cluster. It decouples the storage from the underlying infrastructure and allows data to persist beyond the lifecycle of individual Pods. \\ \hline
 		PersistentVolumeClaim & Requests a specific amount of storage from a PersistentVolume. It acts as a request for a specific storage resource and provides an abstraction layer for managing persistent storage in a cluster. \\ \hline
 		Ingress & Manages external access to services within a cluster. It acts as a reverse proxy and exposes HTTP and HTTPS routes to route traffic to the appropriate services based on hostnames, paths, or other rules. \\
 		\hline
@@ -404,13 +404,13 @@ These object types are introduced in more details in the remaining of the sectio
 
 \subsection{Pod Object}
 
-\mync{Pod} object is the smallest and most fundamental unit in a node that Kubernetes interacts with. A pod is essentially a ``wrap'' that hosts one or multiple containers that work closely with each other. Pod contains shared resources such as volumes for all the containers it hosts. The containers in a pod can also communicate each other via \verb|localhost|. A pod has a cluster-internal IP by default.
+\mync{Pod} object is the smallest and most fundamental unit in a node that Kubernetes interacts with. A Pod is essentially a ``wrap'' that hosts one or multiple containers that work closely with each other. Pod contains shared resources such as volumes for all the containers it hosts. The containers in a Pod can also communicate each other via \verb|localhost|. A Pod has a cluster-internal IP by default.
 
-Just like a container, pods are designed to be ephemeral. Kubernetes can start and stop them depending on the load and the traffic coming into the cluster, and when they are removed, their data vanishes. Of course there are many ways to persist the data, for example by directing the data into a volume or a database.
+Just like a container, Pods are designed to be ephemeral. Kubernetes can start and stop them depending on the load and the traffic coming into the cluster, and when they are removed, their data vanishes. Of course there are many ways to persist the data, for example by directing the data into a volume or a database.
 
-The user can deploy pods using either \verb|kubectl| command imperatively or in Kubernetes configuration files declaratively. However, the user would not do so in practice, as it destroys the purpose of using Kubernetes.
+The user can deploy Pods using either \verb|kubectl| command imperatively or in Kubernetes configuration files declaratively. However, the user would not do so in practice, as it destroys the purpose of using Kubernetes.
 
-A pod is assigned with a cluster-level internal IP by default, and that IP can be used for communications inside the Kubernetes cluster. It has the following problems though, making the IP address difficult to use:
+A Pod is assigned with a cluster-level internal IP by default, and that IP can be used for communications inside the Kubernetes cluster. It has the following problems though, making the IP address difficult to use:
 \begin{itemize}
   \item The IP address is internal the cluster, hence useless to entities outside the container.
   \item Even for communications inside the cluster, the IP address is not convenient to use since it is dynamic.
@@ -418,13 +418,13 @@ A pod is assigned with a cluster-level internal IP by default, and that IP can b
 
 \subsection{Deployment Object}
 
-It is more often that the user would want to deploy Deployment objects instead of pods. A \mync{Deployment} object serves as the ``controller'' of one or a group of identical pods, and it serves as a good example to illustrate declarative approach where the user specifies a desired state and the Deployment object carries out the necessary procedures to realize that state. A Deployment object can do at least the following for the pods it manages:
+It is more often that the user would want to deploy Deployment objects instead of Pods. A \mync{Deployment} object serves as the ``controller'' of one or a group of identical Pods, and it serves as a good example to illustrate declarative approach where the user specifies a desired state and the Deployment object carries out the necessary procedures to realize that state. A Deployment object can do at least the following for the Pods it manages:
 \begin{itemize}
-  \item Start and stop the pods strategically at different word nodes.
-  \item Monitor the healthy status of the pods and strategically restart them when necessary.
-  \item Scale up and down the number of pods.
-  \item Balance the loads that go into each pod.
-  \item Update or roll back the pods.
+  \item Start and stop the Pods strategically at different word nodes.
+  \item Monitor the healthy status of the Pods and strategically restart them when necessary.
+  \item Scale up and down the number of Pods.
+  \item Balance the loads that go into each Pod.
+  \item Update or roll back the Pods.
 \end{itemize}
 
 As an example, a Kubernetes cluster file that deploys an Deployment object is given below. Notice that Deployment object is supported in API version \verb|apps/v1|.
@@ -450,30 +450,29 @@ spec:
           image: nginx
           ports:
             - containerPort: 80
-
 \end{lstlisting}
 Some highlights under \verb|spec| are introduced below.
 \begin{itemize}
-	\item \verb|replicas|: the number of pods under the Deployment object should maintain. The value can be zero if no pods need to be deployed initially.
-	\item \verb|selector.matchLabels|: a set of labels, which if a pod possesses, will be monitored and likely managed by the Deployment object.
-	\item \verb|template|: the template that describes the pods this Deployment object creates, including:
+	\item \verb|replicas|: the number of Pods under the Deployment object should maintain. The value can be zero if no Pods need to be deployed initially.
+	\item \verb|selector.matchLabels|: a set of labels, which if a Pod possesses, will be monitored and likely managed by the Deployment object.
+	\item \verb|template|: the template that describes the Pods this Deployment object creates, including:
     \begin{itemize}
-      \item \verb|metadata.labels|: the labels the pods will inherit.
+      \item \verb|metadata.labels|: the labels the Pods will inherit.
       \item \verb|spec.containers|: the containers details, such as name, image, port, etc.
     \end{itemize}
 \end{itemize}
-Notice that a Deployment object can deploy only identical pods from the same template. If different types of pods need to be deployed, different Deployment objects are required. However, under one pod, there can be multiple containers populated from different images. Notice that \texttt{template.spec.containers} contains a list of containers, each with its name, image, ports, etc. Append that list if multiple containers are required under the same pod.
+Notice that a Deployment object can deploy only identical Pods from the same template. If different types of Pods need to be deployed, different Deployment objects are required. However, under one Pod, there can be multiple containers populated from different images. Notice that \texttt{template.spec.containers} contains a list of containers, each with its name, image, ports, etc. Append that list if multiple containers are required under the same Pod.
 
 An alternative to \texttt{selector.matchLabels} is \texttt{selector.matchExpressions}, the later of which provides a more powerful and flexible way of mapping labels. More details of \texttt{selector.matchExpressions} is not introduced in this notebook, as \texttt{selector.matchLabels} should serve well in most scenarios.
 
 \begin{shortbox}
 \Boxhead{Labels in \texttt{selector} and \texttt{template}}
 
-It may feel redundant that the same labels appear twice under both \texttt{selector.matchLabels} and \texttt{template.metadata.labels}. This sense of redundancy often stems from the assumption that a Deployment object should watch (and only watch) the pods it creates.
+It may feel redundant that the same labels appear twice under both \texttt{selector.matchLabels} and \texttt{template.metadata.labels}. This sense of redundancy often stems from the assumption that a Deployment object should watch (and only watch) the Pods it creates.
 
-In reality, multiple controllers can ``monitor'' the same pods, potentially for metrics, auditing, or other read-only operations. A Pod has exactly one owner which is the controller that creates the pod, but it can be monitored by other controllers or tools via label selector.
+In reality, multiple controllers can ``monitor'' the same Pods, potentially for metrics, auditing, or other read-only operations. A Pod has exactly one owner which is the controller that creates the Pod, but it can be monitored by other controllers or tools via label selector.
 
-By splitting \texttt{selector.matchLabels} and \texttt{template.metadata.labels} instead of automatically inheriting one from the other, Kubernetes provides flexibility in how pods and Deployment objects are architected. Additional labels can be added in the template to support other purposes—like monitoring, cost allocation or environment tagging without affecting the Deployment’s fundamental ownership of those Pods.
+By splitting \texttt{selector.matchLabels} and \texttt{template.metadata.labels} instead of automatically inheriting one from the other, Kubernetes provides flexibility in how Pods and Deployment objects are architected. Additional labels can be added in the template to support other purposes—like monitoring, cost allocation or environment tagging without affecting the Deployment’s fundamental ownership of those Pods.
 
 \end{shortbox}
 
@@ -485,7 +484,7 @@ The image in the specified container will be updated. Notice that the new image 
 
 \subsection{Service Object} \label{ch:vac:subsec:k8snetworking}
 
-A \mync{Service} object is used to build network services in a Kubernetes cluster. As introduced earlier, though objects such as pods will be automatically assigned with cluster-level internal IPs, they are close to useless in practice. Service objects can be used to build a more useful and robust network infrastructure for a Kubernetes cluster.
+A \mync{Service} object is used to build network services in a Kubernetes cluster. As introduced earlier, though objects such as Pods will be automatically assigned with cluster-level internal IPs, they are close to useless in practice. Service objects can be used to build a more useful and robust network infrastructure for a Kubernetes cluster.
 
 There are 4 subtypes of Service objects, including
 \begin{itemize}
@@ -529,20 +528,147 @@ Ingress is a more commonly used Service type than LoadBalancer to get traffic in
 
 The ingress configuration differs depending on the ingress service type and the platform. Details are not given here.
 
-\subsection{Volume Object} \label{ch:vac:subsec:k8svolume}
+\subsection{Ephemeral Volume}
 
-Volumes are handy tools to persist data in containers so that it would not vanish when the container is terminated. Container volumes are used to persist data for locally running containers managed by container engines and the details have been introduced in Section \ref{ch:vac:subsec:dockervolume}.
+Volumes are handy tools to persist data so that it will not vanish when containers shut down. Container volumes have been introduced in Section \ref{ch:vac:subsec:dockervolume}, where they are useful for users deploying containers locally with a container engine like Docker or Podman.
 
-For similar purpose, Kubernetes introduces Volume object to persist state and data of containers. The Volume object will then add container volumes as desired, and attach them to the specified containers. More details are introduced as follows.
+For a similar purpose, Kubernetes also supports volumes. However, there are notable differences between how Kubernetes and local container engines implement volumes. For example, while a local container engine mounts volumes into containers, Kubernetes mounts volumes into Pods. More details are introduced in this section.
 
-There are three types of Volume objects as follows.
+There are two types of volumes in Kubernetes. Examples of each type are also given.
 \begin{itemize}
-  \item Kubernetes Volume: A volume tied to the pod. It survives container failure, but will not survive if the pod fails or being removed.
-  \item Kubernetes \mync{Persistent Volume}[PV]: A volume tied to the host machine. It survives even if the Kubernetes cluster is stopped.
-  \item Kubernetes \mync{Persistent Volume Claim}[PVC]: It is a ``claim'' or ``request'' of PV initiated from a pod or a container. Kubernetes will try to map PVC with existing PV, or dynamically provision PV for the claim.
-\end{itemize} 
+  \item \mync{Ephemeral Volume}: A volume defined inline within a Pod specification. It vanishes when the Pod is removed. The volume can be used to share information among multiple containers in the same Pod. These volumes do not exist as standalone Kubernetes objects, but part of the Pod's \verb|spec.volumes|.
+      \begin{itemize}
+        \item emptyDir: An initially empty directory what can be used for containers to share information. It also persists data when the container (not Pod) crashes, and help it to regain the lost information when the container is restarted.
+      \end{itemize}
+  \item \mync{Persistent Volume}[PV]: A standalone Kubernetes object representing a piece of storage. It does not vanish even if the associated Pods are removed, depending on its reclaim policy. A PV can be mounted to Pods as persistent storage and enables data sharing across Pod restarts or among multiple Pods.
+\end{itemize}
+A Pod can issue a \mync{Persistent Volume Claim}[PVC], which is not a volume by itself but rather a request for storage. Kubernetes will then look for existing PVs meeting the PVC's requirements, or if dynamic provisioning is enabled, create a new PV that satisfies the claim.
 
-Docker engine uses volumes to maintain persistent data and share data among containers. Details have been introduced in Section \ref{ch:vac:subsec:dockervolume}. Kubernetes volume framework is similar in the sense that it makes sure that the data is saved and managed by the host machine, so that when the pods or containers are shutdown or restarted, the data can be restored safely.
+Ephemeral volumes are introduced in this section, and PVs, in the next section.
+
+Below is an example of deploying emptyDir, a commonly used ephemeral volume \cite{kubernetes2024volumes}. As introduced earlier, an ephemeral volume is claimed as part of the Pod specifications, and it follows the Pod's life cycle. 
+\begin{lstlisting}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+    - image: registry.k8s.io/test-webserver
+      name: test-container
+      volumeMounts:
+        - mountPath: /cache
+          name: cache-volume
+  volumes:
+    - name: cache-volume
+      emptyDir:
+        sizeLimit: 500Mi
+\end{lstlisting}
+
+Ephemeral volumes can also be used with Deployment object. An example is given below.
+\begin{lstlisting}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /cache
+              name: cache-volume
+      volumes:
+        - name: cache-volume
+          emptyDir: {}
+\end{lstlisting}
+Notice that the volume is defined under the Pods specifications the same way as in the earlier Pod object configuration example. The size limit is removed. In this example, 3 replicas Pods will be deployed and each of them will have its own emptyDir ephemeral volume. 
+
+These emptyDir ephemeral volumes, though under the same Deployment object, are not shared across Pods. Consequently, if user requests happen to land on different Pods (for example, because the container in the original Pod crashed and needed restarting, making that Pod temporarily unavailable), there is no way for the new Pod to retrieve information stored on the first Pod's local emptyDir. This means user-specific data left on the first Pod will remain inaccessible to the other Pods, especially if there is no mechanism for session persistence or ``sticky sessions''. This can be an issue with multiple replica Pods applications.
+
+For the pods running on the same node to be able to share information, consider using hostPath instead. The hostPath is essentially a volume mounts from the host node's filesystem into the Pods. The data in hostPath persists even if the Pods are removed or replaced. A path on the node needs to be specified. An example is given below.
+\begin{lstlisting}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /cache
+              name: cache-volume
+      volumes:
+        - name: cache-volume
+          hostPath:
+            path: /data # path in the host machine
+            type: DirectoryOrCreate # policy
+\end{lstlisting}
+where \texttt{DirectoryOrCreate} means the path is a directory, and if it does not exist, create that directory. 
+
+It is a bit tricky whether to consider hostPath ephemeral volume or PV. On one hand, it does persist data when the pods crash. On the other hand, it is defined under Pod specifications just like bind mount for container volume persistence, but not as stand alone Kubernetes objects. Besides, just like bind mount, hostPath is usually not the recommended way of persisting data in production environment. Comparing with other PV solutions, hostPath has restrictions such as relying on the node's file system, cannot share information across nodes, and high potential security risk, etc.
+
+It is also worth mentioning that in a production environment, Kubernetes nodes may themselves be virtual machines. Consequently, their filesystems can be transient and far less reliable than physical hosts. If a node is removed from the cluster, intentionally or due to failure, any data stored in its hostPath volume will be lost. This makes hostPath almost always useless when comes to cloud-based deployment.
+
+\subsection{Persistent Volume}
+
+Unlike ephemeral volumes defined in the specs of Pods and Deployment objects, PVs are independently defined Kubernetes objects and are Pod- and node-independent. Pods and Deployments can then use PVCs to claim the PVs. Notice that PVCs can also be used to provision PVs if no existing PVs meet the requirements. Details are introduced in this section.
+
+Before introducing the Kubernetes managed PV, it is worth mentioning that many cloud providers provide storage solutions, for example, AWS's \myabb{Elastic Block Store}{EBS}, \myabb{Elastic File System}{EFS}, etc. Kubernetes provides a universal interface known as the \mync{Container Storage Interface}[CSI] which can be used to connect to these storage systems. Obviously, these storage systems are Pod- and node-independent and will persist regardless of the status of the Kubernetes cluster. They are considered third-party PVs.
+
+Examples of configuring AWS's EBS as Kubernetes PV can be found at \cite{aws2024csiebsexamples}, where CSI is used to back up the connectivity. One of the examples is pasted below. The prerequisite is to install \texttt{aws-ebs-csi-driver} and to have an AWS account with an EBS volume created.
+\begin{lstlisting}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: test-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  csi:
+    driver: ebs.csi.aws.com
+    fsType: ext4
+    volumeHandle: {EBS volume ID}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: topology.kubernetes.io/zone
+              operator: In
+              values:
+                - {availability zone}
+\end{lstlisting}
+
+
 
 An example of claiming Kubernetes PV and PVC is given below. In the remaining part of this section, we will be mostly using PVC instead of PV.
 \begin{lstlisting}
@@ -768,13 +894,13 @@ Many cloud platform providers including Google Cloud Platform provides services 
 
 \subsection{Helm}
 
-To install a software in a Kubernetes pod, the most intuitive way is to commit the installation in the image, and call the image in the Kubernetes configuration file. For commonly used services such as \verb|ingress-nginx|, its installation configuration file is available online as part of the manual. It essentially starts and initializes a branch of Kubernetes objects to enable the service.
+To install a software in a Kubernetes Pod, the most intuitive way is to commit the installation in the image, and call the image in the Kubernetes configuration file. For commonly used services such as \verb|ingress-nginx|, its installation configuration file is available online as part of the manual. It essentially starts and initializes a branch of Kubernetes objects to enable the service.
 
 Helm is designed as an alternative to manage software installation in Kubernetes clusters. In many occasions, it is more convenient (or even only possible) to use Helm to install a software. More details are given in \textit{github.com/helm/helm}.
 
 We need to first install Helm from script. Helm installation used to contain two parts, the CLI (referred as Helm client) and the server (referred as Tiller server). We could then use Helm CLI to install other third-party software and tools.
 
-Access control is important on cloud platforms. In practice, user accounts are used to identify users, and service accounts to identify pods and programs. Associated role bindings are used to manage what resources can be accessed by a user or program. For example, administrative role over the entire account can be used to bind with the administrative user. The same applies to Helm. The Tiller server required some extent of administrative control over the resources in an account. In many occasions, Tiller server was given the administrative permission to access the entire account, which introduced security risks.
+Access control is important on cloud platforms. In practice, user accounts are used to identify users, and service accounts to identify Pods and programs. Associated role bindings are used to manage what resources can be accessed by a user or program. For example, administrative role over the entire account can be used to bind with the administrative user. The same applies to Helm. The Tiller server required some extent of administrative control over the resources in an account. In many occasions, Tiller server was given the administrative permission to access the entire account, which introduced security risks.
 
 As of Helm version 3, a major change was carried out where Tiller server was removed completely. Helm architecture is more secure and simpler today. The concerns related to Tiller's permission in the Kubernetes cluster are no longer relevant. Helm 3 of course requires permissions to use the resources, which is now managed by Kubernetes role-based access control mechanisms.
 
