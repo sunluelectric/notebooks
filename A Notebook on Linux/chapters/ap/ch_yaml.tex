@@ -111,23 +111,16 @@ In the above example, each list \verb|<list1>| to \verb|<list4>| has 1 item. The
 
 \subsection{Multi-line String}
 
-Sometimes the value to be stored in YAML can be a long or multi-line string, for example, a command. Use \texttt{|} to indicate a multi-line string. An example is given below.
+To save multi-line strings as the value of a key, use \texttt{|} as follows.
 \begin{lstlisting}
 <key>: |
-  this is the first line of a string
-  this is the second line of a string
-  this is the third line of a string
+  this is the first line
+  this is the second line
+  this is the third line
 \end{lstlisting}
-A practical example is given below.
-\begin{lstlisting}
-run: |
-  ls \
-  -la \
-  > files.txt
-\end{lstlisting}
-where a bash command \verb|ls -la > files.txt| is stored as the value of key \verb|run|.
+This allows file-like saving, i.e., saving the content of a file as it is in the YAML file. When using file-like saving with \texttt{|}, a line break is added automatically at the end of each line.
 
-Do not confuse a multi-line string with a long single-line string written in multiple lines for the convenience of reading. This is because when \texttt{|} is used, YAML automatically adds line break characters between different rows. To express the wrap of a single string, use \verb|>| instead of \texttt{|} as follows.
+Do not confuse multi-line strings with a long single-line string that is wrapped in YAML for interpretation convenience. To express the wrap of a single string, use \verb|>| instead of \texttt{|} as follows.
 \begin{lstlisting}
 <key>: >
   abc
@@ -137,19 +130,19 @@ which is equivalent with
 \begin{lstlisting}
 <key>: abc def
 \end{lstlisting}
-because \verb|>| adds a space instead of a line break character to each row. To express a very long continuous string without even a space, consider using
+Notice that when \verb|>| is used, a space instead of a line breaker is added automatically at the end of each line, making the value a long single-line string instead of a multi-line string.
+
+In the case where the space is not needed in the long single-line string, use \verb|\| at the end of each line as follows. In this way, YAML interpret it as a simple line wrap.
 \begin{lstlisting}
-<key>: "abc\
-  def"
+<key>: abc\
+  def
 \end{lstlisting}
 which is equivalent to
 \begin{lstlisting}
 <key>: abcdef
 \end{lstlisting}
 
-Notice that both \texttt{|} and \verb|>|, will generate a line breaker in the end of the entire text. If no such line breaker is designed, use \texttt{|-} and \verb|>-| instead.
-
-Sometimes for better readability, one may consider storing long strings into lists, then concatenate them later using the program that takes in the YAML file.
+Notice that both \texttt{|} and \verb|>| will generate a line breaker in the end of the entire text. If no such line breaker is designed, use \texttt{|-} and \verb|>-| instead.
 
 \section{Commonly Seen YAML Use Cases}
 

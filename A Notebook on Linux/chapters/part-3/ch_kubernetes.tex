@@ -285,7 +285,7 @@ Kubernetes configuration files describe the desired final status of the Kubernet
 \end{itemize}
 These advantages are critical especially in large-scale projects when there are multiple Kubernetes objects in the cluster.
 
-The details of Kubernetes objects and Kubernetes configuration files composing are introduced in later Sections \ref{ch:vac:sec:objects} and \ref{ch:vac:sec:kubernetesconfiguration}. In this section, a simple example is used to illustrate the basic commands for the declarative approach. Below is an example from the Kubernetes website. It contains the configuration of two objects.
+The details of Kubernetes objects are introduced in later Section \ref{ch:vac:sec:objects}. In this section, a simple example is used to illustrate the basic commands for the declarative approach. Below is an example from the Kubernetes website. It contains the configuration of two objects.
 \begin{lstlisting}
 apiVersion: apps/v1
 kind: Deployment
@@ -377,10 +377,14 @@ to start the dashboard and follow the instructions on the concole to open the da
 
 Kubernetes treats the above as an update and will action accordingly.
 
-\section{Kubernetes Objects} \label{ch:vac:sec:objects}
+\section{Basic Kubernetes Objects} \label{ch:vac:sec:objects}
 
-This section introduces commonly used Kubernetes objects, a list of which is given in Table \ref{ch:vac:tab:objtype}.
+Kubernetes supports a long list of objects, and the list is growing along with Kubernetes version. The list can be displayed by
+\begin{lstlisting}
+$ kubectl api-resources
+\end{lstlisting}
 
+It is hardly possible to cover all the Kubernetes objects in this notebook. This section only introduces the commonly used basic Kubernetes objects summarized in Table \ref{ch:vac:tab:objtype}.
 \begin{table}[!htb]
 	\centering
 	\caption{Commonly used Kubernetes object types.} \label{ch:vac:tab:objtype}
@@ -392,15 +396,10 @@ This section introduces commonly used Kubernetes objects, a list of which is giv
 		Deployment & Manages the deployment and scaling of a set of identical Pods, ensuring the desired number of replicas are running and providing rolling updates for seamless application upgrades. \\ \hline
 		Service & Enables network access to the node or to a set of Pods using a stable IP address and DNS name. It provides load balancing across multiple Pod replicas and allows external traffic to be directed to the appropriate Pods. \\ \hline
 		ConfigMap & Stores configuration data in key-value pairs, which can be consumed by Pods as environment variables, command-line arguments, or mounted as files. \\ \hline
-		Secret & Similar to a ConfigMap, but specifically designed to store sensitive data, such as passwords, API keys, and TLS certificates. Secrets are encrypted at rest and can be mounted into Pods as files or exposed as environment variables. \\ \hline
-		PersistentVolume & Provides a way to provision and manage persistent storage resources in a cluster. It decouples the storage from the underlying infrastructure and allows data to persist beyond the lifecycle of individual Pods. \\ \hline
-		PersistentVolumeClaim & Requests a specific amount of storage from a PersistentVolume. It acts as a request for a specific storage resource and provides an abstraction layer for managing persistent storage in a cluster. \\ \hline
-		Ingress & Manages external access to services within a cluster. It acts as a reverse proxy and exposes HTTP and HTTPS routes to route traffic to the appropriate services based on hostnames, paths, or other rules. \\
+		Volume & Provides a way to provision and manage persistent storage resources in a cluster. \\
 		\hline
 	\end{tabularx}
 \end{table}
-
-These object types are introduced in more details in the remaining of the section.
 
 \subsection{Pod Object}
 
@@ -482,6 +481,17 @@ $ kubectl set image deployment/<deployment name> <container name>=<image name: t
 \end{lstlisting}
 The image in the specified container will be updated. Notice that the new image will be downloaded only if it has a different tag. This encourages the developer to update the tag formally when publishing images.
 
+Some optional yet useful configurations that Deployment object supports are briefly introduced as follows.
+
+The \verb|livenessProbe| under \verb|spec.containers| of Deployment objects allows the user to define how the healthiness of the container shall be monitored. For example, the user can define a watch dog by asking the container to send an HTTP get request to certain port at certain frequency, and so on. Notice that Kubernetes has default liveness probe mechanism. Still, the flexibility where the user can override it with a custom probe is appreciated.
+
+By default, the Deployment object will pull the images when
+\begin{itemize}
+  \item The image is not saved in the locally, in which case Kubernetes has to pull the image.
+  \item The \verb|:latest| tag is used with the image, in which case Kubernetes will pull the image each time before launching the containers.
+\end{itemize}
+The \texttt{spec.containers.imagePullPolicy} of Deployment objects can be used to change the policy of pulling the image. For example, if \texttt{imagePullPolicy: Always} is used, the Deployment project will always pull the image before starting the containers.
+
 \subsection{Service Object} \label{ch:vac:subsec:k8snetworking}
 
 A \mync{Service} object is used to build network services in a Kubernetes cluster. As introduced earlier, though objects such as Pods will be automatically assigned with cluster-level internal IPs, they are close to useless in practice. Service objects can be used to build a more useful and robust network infrastructure for a Kubernetes cluster.
@@ -499,7 +509,7 @@ A Service object configuration file may look like the following.
 apiVersion: v1
 kind: Service
 metadata:
-  name: client-cluster-ip-service
+  name: client-service
 spec:
   selector:
     app: nginx
@@ -507,7 +517,7 @@ spec:
     - protocol: 'TCP'
       port: <port>
       targetPort: <port>
-  type: ClusterIP # ClusterIP, NodePort or LoadBalancer
+  type: ClusterIP
 \end{lstlisting}
 Some highlights are introduced below.
 \begin{itemize}
@@ -516,19 +526,103 @@ Some highlights are introduced below.
   \item \verb|spec.ports.targetPort|: port exposed by the containers to the ClusterIP Service object.
 \end{itemize}
 
-\subsection{Ingress Object}
+\subsection{ConfigMap Object}
 
-Ingress is a more commonly used Service type than LoadBalancer to get traffic into the Kubernetes containers. There are different types of Ingress, for example, Nginx Ingress by \textit{github.com/kubernetes/ingress-nginx}. A demonstrative example of ingress service realization is given in Fig. \ref{ch:vac:fig:ingress_service}. In this implementation framework, the configuration file (mainly a set of routing rules) of the object is used to define an ``Ingress Controller'' which manages the runtime that controls inbound traffic. In some applications such as \textit{kubernetes/ingress-nginx}, the ingress controller and the runtime are integrated together.
+\mync{ConfigMap object}, as its name suggests, is used to create a configuration map.
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=350pt]{chapters/part-3/figures/ingress_service.png}
-	\caption{An example of ingress service framework.} \label{ch:vac:fig:ingress_service}
-\end{figure}
+Before diving into ConfigMap object, a closely related to concept, Kubernetes environment variable, is introduced as follows. \mync{Kubernetes environment variable} refers a list of key-value pairs defined in the Kubernetes configuration file. The processes started by the Kubernetes configuration file can then access these environment variables.
 
-The ingress configuration differs depending on the ingress service type and the platform. Details are not given here.
+For example, consider deploying a Deployment object as follows.
+\begin{lstlisting}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: my-app-image
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+              subPath: data-from-container
+          env:
+            - name: <name1>
+              value: <value1>
+            - name: <name2>
+              value: <value2>
+      volumes:
+          - name: data-volume
+            persistentVolumeClaim:
+              claimName: my-pvc
+\end{lstlisting}
+where under the \texttt{spec.template.spec.containers.env} tag, a list is defined containing key-value pairs of the environment variables. The applications can then access these variables. For example, if the source code of the application is in Python, the variables can be accessed by
+\begin{lstlisting}
+import os
+os.environ['MYCUSTOMVAR']
+\end{lstlisting}
+The syntax differs per programming language.
 
-\subsection{Ephemeral Volume}
+In the above example, the environment variables are integrated with the configuration file of the Deployment object, which can sometimes be inconvenient as it makes the file more complicated than it should have been. ConfigMap object tackles the this issue by allowing the user to define a dedicated Kubernetes object that stores the configuration parameters.
+
+A ConfigMap object can be defined as follows. The example is taken from \cite{kubernetes2024doc}.
+\begin{lstlisting}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigmap
+data:
+  <var1>: <value1>
+  <var2>: <value2>
+\end{lstlisting}
+It can be seen from the example that a ConfigMap is nothing but a collection of key-value pairs. The name of the configuration file, in this example \texttt{game-demo}, can be included in the Pod or Deployment object configuration files as follows.
+\begin{lstlisting}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: env-configmap
+spec:
+  containers:
+    - name: envars-test-container
+      image: nginx
+      env:
+        - name: CONFIGMAP_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: <var1>
+\end{lstlisting}
+Just like in the case of integrating environment variables, \verb|env| is defined. The difference is that instead of 
+\begin{lstlisting}
+env:
+  - name: <name1>
+    value: <value1>
+\end{lstlisting}
+which specifically lists the values,
+\begin{lstlisting}
+env:
+  - name: <name1>
+    valueFrom:
+      configMapKeyRef:
+        name: myconfigmap
+        key: <var1>
+\end{lstlisting}
+is used where the ConfigMap object is attached under \verb|valueFrom|. By this setup, the value of \verb|<var1>| which has been defined in the ConfigMap, in this example \verb|<value1>|, will be assigned to \verb|<name1>|.
+
+As a special case of configuration information storage, Kubernetes uses \mync{Secrets object} to save sensitive data. It provides different ways for the program to access confidential information without the user hard coding passwords into the configuration files. Details about Secrets object can be found at \cite{kubernetes2024doc}.  
+
+\subsection{Ephemeral Volume} \label{subsec:ephemeral_volume}
 
 Volumes are handy tools to persist data so that it will not vanish when containers shut down. Container volumes have been introduced in Section \ref{ch:vac:subsec:dockervolume}, where they are useful for users deploying containers locally with a container engine like Docker or Podman.
 
@@ -546,7 +640,7 @@ A Pod can issue a \mync{Persistent Volume Claim}[PVC], which is not a volume by 
 
 Ephemeral volumes are introduced in this section, and PVs, in the next section.
 
-Below is an example of deploying emptyDir, a commonly used ephemeral volume \cite{kubernetes2024volumes}. As introduced earlier, an ephemeral volume is claimed as part of the Pod specifications, and it follows the Pod's life cycle. 
+Below is an example of deploying emptyDir, a commonly used ephemeral volume \cite{kubernetes2024doc}. As introduced earlier, an ephemeral volume is claimed as part of the Pod specifications, and it follows the Pod's life cycle. 
 \begin{lstlisting}
 apiVersion: v1
 kind: Pod
@@ -633,15 +727,101 @@ spec:
 \end{lstlisting}
 where \texttt{DirectoryOrCreate} means the path is a directory, and if it does not exist, create that directory. 
 
-It is a bit tricky whether to consider hostPath ephemeral volume or PV. On one hand, it does persist data when the pods crash. On the other hand, it is defined under Pod specifications just like bind mount for container volume persistence, but not as stand alone Kubernetes objects. Besides, just like bind mount, hostPath is usually not the recommended way of persisting data in production environment. Comparing with other PV solutions, hostPath has restrictions such as relying on the node's file system, cannot share information across nodes, and high potential security risk, etc.
+It is a bit tricky whether to consider hostPath as an ephemeral volume or PV. The reasons are given below.
+\begin{itemize}
+	\item Ephemeral volume
+	\begin{itemize}
+		\item It can be claimed as Pod or Deployment specs instead of a standalone PV.
+		\item It has many restrictions compared with other PVs. For instance, it is tied to a single node and cannot be used for cross-node data persistence or sharing. This destroys the purpose of Kubernetes to some extent.
+		\item When the node is restarted (this can happen in the Kubernetes context because nodes are often VMs), the data disappears.
+		\item For the above reasons, hostPath is rarely used in production environment.
+	\end{itemize}
+	\item PV
+	\begin{itemize}
+		\item It is Pod-independent and can survive Pod failure.
+		\item It can also be claimed as standalone Kubernetes object. But of course, this does not clear its restrictions.
+	\end{itemize}
+\end{itemize}
+In this section, hostPath is introduced as an ephemeral volume. In the next Section \ref{subsec:persistentvolume}, hostPath will be introduced again as a PV, and it will be claimed as a standalone Kubernetes object and consumed by PVC.
 
-It is also worth mentioning that in a production environment, Kubernetes nodes may themselves be virtual machines. Consequently, their filesystems can be transient and far less reliable than physical hosts. If a node is removed from the cluster, intentionally or due to failure, any data stored in its hostPath volume will be lost. This makes hostPath almost always useless when comes to cloud-based deployment.
+\subsection{Persistent Volume} \label{subsec:persistentvolume}
 
-\subsection{Persistent Volume}
+Unlike ephemeral volumes defined in the specs of Pods and Deployment objects, PVs are independently defined Kubernetes objects and are Pod-independent. Pods and Deployments can then use PVCs to claim the PVs. Notice that PVCs can also be used to provision PVs if no existing PVs meet the requirements. Details are introduced in this section.
 
-Unlike ephemeral volumes defined in the specs of Pods and Deployment objects, PVs are independently defined Kubernetes objects and are Pod- and node-independent. Pods and Deployments can then use PVCs to claim the PVs. Notice that PVCs can also be used to provision PVs if no existing PVs meet the requirements. Details are introduced in this section.
+Kubernetes supports many PV types. For example, hostPath which has been introduced earlier in Section \ref{subsec:ephemeral_volume} can also be claimed as a standalone Kubernetes PV object as follows. The example is taken from \cite{kubernetes2024doc}.
+\begin{lstlisting}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+\end{lstlisting}
+Notice that \texttt{storageClassName}
 
-Before introducing the Kubernetes managed PV, it is worth mentioning that many cloud providers provide storage solutions, for example, AWS's \myabb{Elastic Block Store}{EBS}, \myabb{Elastic File System}{EFS}, etc. Kubernetes provides a universal interface known as the \mync{Container Storage Interface}[CSI] which can be used to connect to these storage systems. Obviously, these storage systems are Pod- and node-independent and will persist regardless of the status of the Kubernetes cluster. They are considered third-party PVs.
+Different PVs support different access modes. A list of commonly used access modes are summarized in Table \ref{tab:access_modes_pv}. In the case of hostPath, ``ReadWriteOnce'' can be used.
+\begin{table}[!htb]
+	\centering \caption{Commonly used access modes for PVs.}\label{tab:access_modes_pv}
+	\begin{tabularx}{\textwidth}{lX}
+	\hline
+	Access Mode & Description \\
+	\hline
+	ReadWriteOnce & The volume can be mounted as read-write by multiple Pods on a single node. \\
+	ReadOnlyMany & The volume can be mounted as read-only by multiple Pods on multiple nodes. \\
+	ReadWriteMany & The volume can be mounted as read-write by multiple Pods on multiple nodes. \\
+	\hline
+	\end{tabularx}
+\end{table}
+
+An example of a PVC is given below. The hostPath PV introduced in the earlier example meets the requirement of this PVC. Notice that it is possible to tie a PVC with a PV, in which case the PV name can be claimed in the PVC under \verb|spec.volumeName|. However, this is not the case in the example below. Instead of specifying a particular PV, it specifies the required resources and let Kubernetes decide which PV to use.
+\begin{lstlisting}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+\end{lstlisting}
+It is worth mentioning that multiple PVCs can land on the same PV, in which case the PVCs share the resources the PV has. For that, the PV should be ``powerful enough'' to support all the PVCs at the same time.
+
+Finally, a Pod can add a PVC to \verb|spec.volumes| as follows.
+\begin{lstlisting}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-pv-pod
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+  containers:
+    - name: task-pv-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage
+\end{lstlisting}
+
+When implementing the configurations, the user shall apply PV, then PVC, then Pod or Deployment objects that use the PVC.
+
+In addition to the Kubernetes naive PV types, many cloud providers provide storage solutions, for example, AWS's \myabb{Elastic Block Store}{EBS}, \myabb{Elastic File System}{EFS}, etc. Kubernetes provides a universal interface known as the \mync{Container Storage Interface}[CSI] which can be used to connect to these storage systems. Obviously, these storage systems are Pod- and node-independent and will persist regardless of the status of the Kubernetes cluster. They are considered third-party PVs.
 
 Examples of configuring AWS's EBS as Kubernetes PV can be found at \cite{aws2024csiebsexamples}, where CSI is used to back up the connectivity. One of the examples is pasted below. The prerequisite is to install \texttt{aws-ebs-csi-driver} and to have an AWS account with an EBS volume created.
 \begin{lstlisting}
@@ -668,241 +848,219 @@ spec:
                 - {availability zone}
 \end{lstlisting}
 
+\section{Connectivity}
 
+This section explores common connectivity challenges in Kubernetes, including Pod-internal, Cluster-internal, and external communication. In the earlier Section \ref{ch:vac:subsec:k8snetworking}, Service object has been introduced as part of the building blocks of Kubernetes connectivity. In this section, Service object is revisited with more details introduced. Other relevant Kubernetes objects such as Ingress object are also introduced.
 
-An example of claiming Kubernetes PV and PVC is given below. In the remaining part of this section, we will be mostly using PVC instead of PV.
+Notice that in production environment, third-party technologies such as RabbitMQ (a messaging system not covered in this notebook) might be used to enhance the communication between components. This section, however, focuses on the native solutions of Kubernetes.
+
+\subsection{Pod-Internal Communication}
+
+Assume that two applications are running inside the same pod but in two different containers, and each of them exposes a different port. In their source code, they can reach to each other via \verb|localhost| followed by the exposed port of the other container. For example, of the application wants to send an HTTP request to the other application in the other container, it can use
 \begin{lstlisting}
-# persistent-volume.yaml
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-name: my-pv
-spec:
-storageClassName: standard
-capacity:
-storage: 10Gi
-accessModes:
-- ReadWriteOnce
-hostPath:
-path: /data/my-pv
----
-# persistent-volume-claim.yaml
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-name: my-pvc
-spec:
-storageClassName: standard
-accessModes:
-- ReadWriteOnce
-resources:
-requests:
-storage: 5Gi
+'http://localhost:<port>/<content>'
 \end{lstlisting}
-To check the PV objects, use \verb|$ kubectl get pv| and \verb|$ kubectl get pvc|.
+as the input argument to the command.
 
-To add the above Kubernetes PVC to a Kubernetes Deployment, add volumes information to the specs as given in the following example.
+A better practice is to use environmental variables to pass the address to the source code. For example in JavaScript, consider
+\begin{lstlisting}
+`http://${process.env.TARGET_ADDRESS}:80/<content>`
+\end{lstlisting}
+and in the Kubernetes configuration file that launches the Deployment, under \verb|containers|, use
+\begin{lstlisting}
+containers:
+  - name: <application>
+    image: <application image>:latest
+    env:
+      - name: TARGET_ADDRESS
+        value: localhost
+\end{lstlisting}
+
+\subsection{Cluster-Internal Communication}
+
+Cluster-internal communication or Pod-to-Pod communication cannot be done in the same straight forward manner as Pod-internal communication. This is because Kubernetes by default assumes that the Pods in the cluster are distributed everywhere, not necessarily on the same node. As a result, applications running in another Pod cannot be reached with fixed IP or default domain such as \verb|localhost|.
+
+In the case of Cluster-internal communication, we need to use Service object, in particular, ClusterIP Service object to establish the communication. ClusterIP Service object has been introduced in Section \ref{ch:vac:subsec:k8snetworking}. Here an example is used to demonstrate the association of a ClusterIP Service object to an application, as a recap.
+
+In the Kubernetes configuration file of the application, assign a label to the Pod to be deployed. Later, ClusterIP Service object can refer to this label for the Pod. For example, in the Development object below \texttt{app: nginx} is assigned to the 
 \begin{lstlisting}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-name: my-app-deployment
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
-replicas: 1
-selector:
-matchLabels:
-app: my-app
-template:
-metadata:
-labels:
-app: my-app
-spec:
-containers:
-- name: my-app-container
-image: my-app-image
-ports:
-- containerPort: 8080
-volumeMounts:
-- name: data-volume
-mountPath: /data
-subPath: data-from-container
-volumes:
-- name: data-volume
-persistentVolumeClaim:
-claimName: my-pvc
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx # this is the label
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
 \end{lstlisting}
-where \verb|volumes| defines which Kubernetes PVC is used, and \verb|volumeMounts| tells how it is mounted in the container. The \verb|mountPath| is the path in the container whose data is mounted by the volume. If a \verb|subPath| is given, a sub-folder of its specified name will be created in the host machine in the volume to contain the data.
-
-There are different types of access modes:
-\begin{itemize}
-	\item \verb|ReadWriteOnce|: Allow one node to read and write at a time.
-	\item \verb|ReadOnlyMany|: Allow many nodes to read at a time.
-	\item \verb|ReadWriteMany|: Allow many nodes to read and write at a time.
-\end{itemize}
-
-The developer can specify the place for Kubernetes PVs. This is usually the hard drive on a local server, a virtual storage space in the VM. Use the following command to check Kubernetes possible choice of storage.
+In the Kubernetes configuration file of the ClusterIP Service object, use the label in the \verb|selector| as follows.
 \begin{lstlisting}
-$ kubectl get storageclass
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: 'TCP'
+      port: <port>
+      targetPort: <port>
+  type: ClusterIP
+\end{lstlisting}
+With the above been done, all the request sent to the ClusterIP Service object will be automatically forwarded to the application. Any application in the Kubernetes cluster who wants to reach the application shall now reach the ClusterIP Service object instead.
+
+When a Service object such as the aforementioned ClusterIP Service object is created, an environment variable is automatically created by Kubernetes which can be conveniently used to reach the that object. The name of the object is derived from the Service name. In this example, the ClusterIP Service name is
+\begin{lstlisting}
+client-service
+\end{lstlisting}
+And hence the environment variable name is
+\begin{lstlisting}
+CLIENT_SERVICE
+\end{lstlisting}
+which capitalizes all the characters and replace dash \verb|-| with underscore \verb|_|. The source code of the source application can then use this environment variable to reach the target application, for example with JaveScript,
+\begin{lstlisting}
+`http://${process.env.CLIENT_SERVICE}:80/<content>`
+\end{lstlisting}
+
+Notice that the environment variable with Service object is generated automatically. Therefore, there is no need for the user to declare that variable under \verb|env|. One thing to notice is that the environment variable is available only with Kubernetes. Hence when switching back to a local container engine, the changes made in the source code, 
+\begin{lstlisting}
+`http://${process.env.CLIENT_SERVICE}:80/<content>`
+\end{lstlisting}
+will raise an error that says \verb|CLIENT_SERVICE| is undefined.
+
+An alternative and more convenient approach is to use a cluster-internal \myabb{Domain Name System}{DNS} server. In the late versions of Kubernetes, CoreDNS \cite{coredns2025corends}, a fast and flexible DNS server, is automatically shipped and ready-to-use.
+
+To use the DNS inside the cluster, simply adopt back to the environment variable approach we used in Pod-internal communication
+\begin{lstlisting}
+`http://${process.env.TARGET_ADDRESS}:80/<content>`
 \end{lstlisting}
 and
 \begin{lstlisting}
-$ kubectl describe storageclass
-\end{lstlisting}
-When deploying Kubernetes on the Cloud, the developer needs to do additional configurations as there would be many storage options. Usually, each Cloud provider will have its own default storage space for Kubernetes, such as AWS Elastic Block Store for AWS.
-
-\subsection{Secrets} \label{ch:vac:subsec:k8ssecrets}
-
-Kubernetes Secrets object is used store confidential information, such as the database password, API key, etc. It is often a piece of information that is necessary for the containers, but the developer does not want to present as plain text in the configuration file.
-
-Secrets are not created from configuration files, which is the recommended way of creating other Kubernetes objects. Instead, it is created from one-time imperative command, inside which the confidential information needs to be told to Kubernetes. Use the following command to create a Secret object.
-\begin{lstlisting}
-$ kubectl create secret <type-of-secret> <secret-name> --from-literal <key>=<value>
-\end{lstlisting}
-There are 3 types of Secrets: \verb|generic|, \verb|docker-registry| and \verb|tls|.
-
-\section{Advanced Kubernetes Cluster Configuration} \label{ch:vac:sec:kubernetesconfiguration}
-
-This section discusses in more details the composing of the Kubernetes cluster configuration files.
-
-\subsection{A Glance of Useful Configurations}
-
-The more familiar the user is with the supported configurations of each Kubernetes object, the more likely he can leverage on the maximum capability of Kubernetes cluster. To this point, the basic configurations of commonly seen Kubernetes objects, such as \verb|spec.containers| for Deployment objects and \verb|spec.ports| for Service objects, have been introduced. This section discusses some more advanced configurations that the user may find useful in practice.
-
-The \verb|livenessProbe| under \verb|spec.containers| of Deployment objects allows the user to define how the healthiness of the container shall be monitored. For example, the user can define a watch dog by asking the container to send an HTTP get request to certain port at certain frequency, and so on. Notice that Kubernetes has default liveness probe mechanism. Still, the flexibility where the user can override it with a custom probe is appreciated.
-
-By default, the Deployment object will pull the images when
-\begin{itemize}
-  \item The image is not saved in the locally, in which case Kubernetes has to pull the image.
-  \item The \verb|:latest| tag is used with the image, in which case Kubernetes will pull the image each time before launching the containers.
-\end{itemize}
-The \texttt{spec.containers.imagePullPolicy} of Deployment objects can be used to change the policy of pulling the image. For example, if \texttt{imagePullPolicy: Always} is used, the Deployment project will always pull the image before starting the containers.
-
-\subsection{Environmental Variables}
-
-Kubernetes environment variables are used to pass or share information among Deployments. Depending on the features of the information, such as whether it is a constant global configuration or a dynamic value, whether it is plain text or confidential encoding, etc., it might be handled differently.
-
-To define constant environment variables in containers, simply specify them in the Deployment configuration file as given in the example below.
-
-\begin{lstlisting}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-name: my-app-deployment
-spec:
-replicas: 1
-selector:
-matchLabels:
-app: my-app
-template:
-metadata:
-labels:
-app: my-app
-spec:
 containers:
-- name: my-app-container
-image: my-app-image
-ports:
-- containerPort: 8080
-volumeMounts:
-- name: data-volume
-mountPath: /data
-subPath: data-from-container
-env:
-- name: <name1>
-value: <value1>
-- name: <name2>
-value: <value2>
-- name: <name3>
-valueFrom:
-secretKeyRef:
-name: <secret-name>
-key: <key>
-volumes:
-- name: data-volume
-persistentVolumeClaim:
-claimName: my-pvc
+  - name: <application>
+    image: <application image>:latest
+    env:
+      - name: TARGET_ADDRESS
+        value: "<service name>.<namespace>"
 \end{lstlisting}
-where a new tag \verb|env| is defined under template, specifications, containers. Under the \verb|env| tag, a list is defined containing names and values of the environment variables. The value must be a string, not a numerical number.
+but instead of using \verb|localhost| as the case of Pod-internal communcation, use \texttt{"<service name>.<namespace>"}, where \verb|<namespace>| is by default \verb|default|. So in this example,
+\begin{lstlisting}
+containers:
+  - name: <application>
+    image: <application image>:latest
+    env:
+      - name: TARGET_ADDRESS
+        value: "client-service.default"
+\end{lstlisting}
 
-\section{Kubernetes Deployment in Production Environment}
+In Kubernetes, namespaces provide a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. More about namespace can be found at \cite{kubernetes2024doc}.
 
-With the tools and methodologies introduced so far, we are able to deploy containers in development environment. This is good enough for testing purpose or for small individual projects. However, when comes to enterprise tier projects or collaborative projects, there is often a CI/CD pipeline that standardize the integration and delivery of the containers in production environment. Container orchestration tools such as Kubernetes is often a must have.
+\subsection{External Communication}
 
-This section briefly introduces the steps to develop and deploy containers in production environment with Kubernetes. Figure \ref{ch:vac:fig:prodenvworkflow} gives an example of overview of what such deployment may look like. Notice that this example is more towards a community project but not an enterprise project.
+For the communication between Pods and outside world, it is recommended to use the LoadBalancer Service object as follows. The use of LoadBalancer Service object is similar with that of ClusterIP Service object, with \texttt{spec.type} changed to LoadBalancer.
+\begin{lstlisting}
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: 'TCP'
+      port: <port>
+      targetPort: <port>
+  type: LoadBalancer
+\end{lstlisting}
 
-\begin{figure}[htbp]
+Notice that Kubernetes does not ship with a default load balancer and the LoadBalancer Service object merely provides an interface for third-party load balancer often issued by the cloud service provider. Despite not providing the load balancer implementation, this approach effectively bridges the boundary of the Kubernetes cluster for external access.
+
+An external client will connect to the public IP or DNS name provided by the external load balancer on \verb|<port>|, and Kubernetes forwards that traffic to \verb|<targetPort>| on the Pod. The external IP is not determined by the Service configuration file but assigned by the environment that provisions the load balancer. For example, if the Kubernetes is deployed by Minikube, then
+\begin{lstlisting}
+$ minikube service <service name>
+\end{lstlisting}
+where \texttt{service name} being the name of theLoadBalancer Service object should return its public IP address. When deploying the service on a cloud service provider, the IP can be made static and a global domain name can be assigned for that IP address.
+
+\subsection{Ingress Object}
+
+Kubernetes Ingress object manages layer 7 (HTTP/HTTPS) routing. It is protocol-aware and allows the user to setup routing rules based on URIs, hostnames, paths, etc. It works with ingress controllers such as NGINX Ingress Controller (\textit{github.com/kubernetes/ingress-nginx}) to route the load to the nodes.
+
+A demonstrative example of ingress service realization is given in Fig. \ref{ch:vac:fig:ingress_service}. In this implementation framework, the configuration file, mainly consists of routing rules, is used to define an the ingress controller which manages the runtime that controls inbound traffic. In some applications such as NGINX Ingress Controller, the ingress controller and the runtime are integrated together.
+
+\begin{figure}[!htb]
 	\centering
-	\includegraphics[width=350pt]{chapters/part-3/figures/prodenvworkflow.png}
-	\caption{An example workflow of creating a production environment with Kubernetes.} \label{ch:vac:fig:prodenvworkflow}
+	\includegraphics[width=350pt]{chapters/part-3/figures/ingress_service.png}
+	\caption{An example of ingress service framework.} \label{ch:vac:fig:ingress_service}
 \end{figure}
 
-The example used in this section to demonstrate Kubernetes CI/CD on a cloud platform in production environment is taken from \cite{stephen2023docker}. Following \cite{stephen2023docker}, Google Cloud Platform is used as the cloud platform provider.
-
-\subsection{Setup Cloud Account}
-
-Many cloud platforms nowadays have a very good support of Kubernetes. The deployment of containers using Kubernetes can be done via their UIs easily. The developer needs to decide the resources to be used for the deployment. The more nodes and more power machine, the higher the charge. In most cases, the developer does not need to start a VM and install Kubernetes on it by himself. The cloud provider shall have dedicated Kubernetes engine service that would automatically configure the VM per required.
-
-\subsection{Configure CI/CD}
-
-\myabb{Continuous integration and continuous delivery}{CI/CD} is a widely appreciated workflow in modern software development. More about CI/CD is given in Appendix \ref{ch:cicd}.
-
-Travis CI is a continuous integration service tool written. It can be deployed on the cloud and linked to a Github repository and a CI/CD platform such as a Kubernetes cluster on Google Cloud Platform.
-
-To run Travis, a machine supporting Ruby programming language is required. For that, a separate container with Ruby installation is deployed to run Travis. Use Github credentials to login to Travis, so that it can link to the Github repositories.
-
-Travis has built-in file encryption function. This function is mainly used to encrypt login credentials and service account credentials (in this example, the service account information to link to Kubernetes clusters on Google Cloud Platform) locally, so that later the unencrypted original credential files can be deleted, and only the encrypted credentials uploaded to the Github repository. When encrypting a file, Travis will also guide the user on how to call the encrypt information in the build script.
-
-Travis uses configuration files to setup CI/CD pipeline.
-
-\subsection{Deploy Containers}
-
-In the Travis configuration file, \verb|deploy| is used to specify the script to run when the testing is successful. A separate bash script \verb|deploy.sh| is defined for this purpose, inside which is a sequence of commands that builds and publishes images, and configures Kubernetes using \verb|kubectl|.
-
-It is particularly worth mention that in \verb|deploy.sh|, when building and applying the latest version of the docker image, tagging using \verb|<image-name>:latest| alone is not going to work. This is because when the same configuration with \verb|<image-name>:latest| is applied, the system would simply acknowledge it as ``no change'' and would not actually download the latest version of the image.
-
-The walk introduced earlier was to use version number in the configuration file and/or as an imperial command as follows.
+Below is an example of a Ingress object configuration file from \cite{kubernetes2024doc}.
 \begin{lstlisting}
-$ kubectl set image deployment/<Deployment name> <container name>=<image name>:<version>
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-example
+  rules:
+  - http:
+      paths:
+      - path: /testpath
+        pathType: Prefix
+        backend:
+          service:
+            name: test
+            port:
+              number: 80
 \end{lstlisting}
-so what when the version name changes, Kubernetes would notice the differences and apply the new image. When working with CI/CD using \textit{Git}, this can be further automated. Just use the \verb|$GIT_SHA| as part of the tag as follows.
+
+\section{Kubernetes Cloud Deployment}
+
+Many cloud service providers provide support for Kubernetes deployment. Recall from earlier that AWS supports ECS as the default managed container service. While being very powerful and flexible, the problem with ECS is that it is difficult to migrate across platforms because ECS is proprietary. Once ECS is used, the application is tied to AWS unless the user wishes to setup the configurations all over again on other platforms.
+
+AWS EKS, on the other hand, allows the user to deploy a Kubernetes-based cluster using AWS resources. It allows more flexible migration of the cluster across different platforms. The Kubernetes cluster created and managed by EKS is known as a EKS cluster.
+
+\subsection{Setup and Connect to EKS Cluster}
+
+The following has to be configured when setting up EKS.
+
+\begin{itemize}
+  \item Select Kubernetes version.
+  \item Select cluster service role which tells AWS resources the EKS cluster can access, such as database, EC2, Container Registry, etc. 
+  \item Configure AWS \myabb{Virtual Private Cloud}{VPC}, the AWS network service.
+  \item Configure logging.
+\end{itemize}
+
+Make sure that AWS CLI is installed on the local machine. Login to the AWS account from the AWS CLI. Once the EKS cluster is setup and active, the user can modify the \verb|kubectl| configuration file which can be found at \texttt{~/.kube/config} so that it points to the EKS cluster. This can be done using AWS CLI as follows.
 \begin{lstlisting}
-$ docker build -t <docker-id>/<image-name>:latest -t <docker-id>/<image-name>:$GIT_SHA -f <dockerfile> <save-directory>
-$ docker push <docker-id>/<image-name>:latest
-$ docker push <docker-id>/<image-name>:$GIT_SHA
+$ aws eks update-kubeconfig --region <region name> --name <eks cluster name>
 \end{lstlisting}
-Notice that in addition to \verb|:latest|, \verb|:$GIT_SHA| is used as a secondary tag. When pushing the built image to Docker Hub, both \verb|:latest| and \verb|:$GIT_SHA| are pushed (although they have identical content). When setting image, the \verb|$GIT_SHA| is used to identify the image just like the version number.
 
-It is recommended not to remove \verb|:latest| in the building command. This is because if someone wants to pull and test the latest image in his server (without knowing the value of \verb|$GIT_SHA| for the latest commit), he is still able to do so using only the image name.
+\subsection{Configure Node}
 
-Notice that \verb|$GIT_SHA| is not a built-in environment variable. The developer needs to set that environmental variable manually in the configuration YAML file as follows. It is possible to replace \verb|$GIT_SHA| with a different name.
-\begin{lstlisting}
-env:
-global:
-- GIT_SHA=$(git rev-parse HEAD)
-\end{lstlisting}
-With the above setup, \verb|$GIT_SHA| can be used in \verb|deploy.sh| as an environmental variable.
-
-\subsection{Manage Secrets}
-
-Notice that when CI/CD tool is tied to the cloud platform provider, service account authentication is required. It is a good habit to NOT to put the authentication information in the CI/CD configuration file as plain text, or to upload the unencrypted file that contains the authentication information to the public workspace. It is possible that some CI/CD tools provide encryption tools that can be used to encrypt the authentication file. In such case, the developer may need to install the required CLI for that CI/CD tool.
-
-In Section \ref{ch:vac:subsec:k8ssecrets}, it has been introduced that Kubernetes uses Secrets object to encrypt secret files. The encrypted secret files can then be safely published online. In the Kubernetes configuration file, an environmental variable can be created to call the secret information.
-
-Many cloud platform providers including Google Cloud Platform provides services to manage secrets.
-
-\subsection{Helm}
-
-To install a software in a Kubernetes Pod, the most intuitive way is to commit the installation in the image, and call the image in the Kubernetes configuration file. For commonly used services such as \verb|ingress-nginx|, its installation configuration file is available online as part of the manual. It essentially starts and initializes a branch of Kubernetes objects to enable the service.
-
-Helm is designed as an alternative to manage software installation in Kubernetes clusters. In many occasions, it is more convenient (or even only possible) to use Helm to install a software. More details are given in \textit{github.com/helm/helm}.
-
-We need to first install Helm from script. Helm installation used to contain two parts, the CLI (referred as Helm client) and the server (referred as Tiller server). We could then use Helm CLI to install other third-party software and tools.
-
-Access control is important on cloud platforms. In practice, user accounts are used to identify users, and service accounts to identify Pods and programs. Associated role bindings are used to manage what resources can be accessed by a user or program. For example, administrative role over the entire account can be used to bind with the administrative user. The same applies to Helm. The Tiller server required some extent of administrative control over the resources in an account. In many occasions, Tiller server was given the administrative permission to access the entire account, which introduced security risks.
-
-As of Helm version 3, a major change was carried out where Tiller server was removed completely. Helm architecture is more secure and simpler today. The concerns related to Tiller's permission in the Kubernetes cluster are no longer relevant. Helm 3 of course requires permissions to use the resources, which is now managed by Kubernetes role-based access control mechanisms.
+In the AWS dashboard, the user needs to configure nodes. This includes at least the following setups.
+\begin{itemize}
+  \item Select node roles, for example, to allow nodes to use AWS EC2 and Container Registry.
+  \item Select OS for the nodes.
+  \item Select EC2 instance type and disk size which will be configured for the nodes.
+  \item Select minimum and maximum number of nodes.
+  \item Configure AWS VPC for the nodes.
+\end{itemize}
 
 \section{Alternatives to Kubernetes}
 
