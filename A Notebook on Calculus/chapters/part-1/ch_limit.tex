@@ -10,9 +10,9 @@ A motivating example of the limit of a sequence is given in Section \ref{ch1subs
 
 \subsection{A Motivating Example} \label{ch1subsec:sequencemotivatingexample}
 
-We use $\{a_n\}$ to denote a sequence. In $\{a_n\}$, the positive integer $n$ is the index of the elements in the sequence, where $a_1$ represents the first element of $\{a_n\}$, and $a_2$ the second element, and so on. A sequence has at least one element, i.e. the first element $a_1$. It may have finite elements, in which case it is called a \mync{finite sequence}. Or, it may have infinite elements, in which case it is called an \mync{infinite sequence}. In this notebook, we are mostly interested in the infinite sequence.
+We use $\{a_n\}$ to denote a \mync{sequence}. In $\{a_n\}$, the positive integer $n$ is the index of the elements in the sequence, where $a_1$ represents the first element of $\{a_n\}$, and $a_2$ the second element, and so on. A sequence has at least one element, i.e. the first element $a_1$. It may have finite elements, in which case it is called a \mync{finite sequence}. Or, it may have infinite elements, in which case it is called an \mync{infinite sequence}. In this notebook, we are mostly interested in the infinite sequence.
 
-A motivating example is given in below to illustrate the limit of an infinite sequence.
+A motivating example is given below to illustrate the limit of an infinite sequence.
 
 \begin{shortbox}
 \Boxhead{A Motivating Example}
@@ -23,14 +23,12 @@ Consider an infinite sequence $\{a_n\}$ whose elements are recursively calculate
   a_n &=& a_{n-1} + \left(\dfrac{1}{2}\right)^{n-1}. \label{ch1eq:motivatingexamplerecursive}
 \end{eqnarray}
 
-Q1: Calculate $a_n$ for any arbitrary $n$.
+Q1: Calculate the feasible domain of $n$ such that $a_n\geq 1.95$.
 
-Q2: Calculate the feasible domain of $n$ such that $a_n\geq 1.95$.
-
-Q3: Calculate the feasible domain of $n$ such that $a_n\geq 2$.
+Q2: Calculate the feasible domain of $n$ such that $a_n\geq 2$.
 \end{shortbox}
 
-The old school way of solving Q1 is rather simple: use a table to list down different $n$ and its corresponding $a_n$. The value of $a_n$ can be manually calculated for small $n$, as shown in Table \ref{chi1table:smallan}. In theory, this table can continue on and on, thus calculating $a_n$ for any arbitrary $n$. From Table \ref{chi1table:smallan}, for any $n\geq6$, $a_n \geq 1.95$.
+The old school way of solving the questions is rather simple: use a table to list down different $n$ and its corresponding $a_n$. The value of $a_n$ can be manually calculated for small $n$, as shown in Table \ref{chi1table:smallan}. In theory, this table can continue on and on, thus calculating $a_n$ for any arbitrary $n$. From Table \ref{chi1table:smallan}, for any $n\geq6$, $a_n \geq 1.95$.
 
 \begin{table}[ht]
 \tabletitle{Calculate $a_n$ for any arbitrary $n$ in the motivating example.} \label{chi1table:smallan}
@@ -47,7 +45,7 @@ $\vdots$ & $\vdots$ & $\vdots$ \\ \hline
 \end{tabular}
 \end{table}
 
-To find out the feasible range of $n$ such that $a_n \geq 2$, we can start by building a larger table, say Table \ref{chi1table:largean}. From Table \ref{chi1table:largean}, it can been seen that as $n$ grows larger and larger, the increment $a_n - a_{n-1} = \left(\frac{1}{2}\right)^{n-1}$ becomes smaller and smaller, and the increment is just hardly enough to top $a_n$ to $2$.
+To find out the feasible range of $n$ such that $a_n \geq 2$, we can start by investigating a larger table, say Table \ref{chi1table:largean}. From Table \ref{chi1table:largean}, it can been seen that as $n$ grows larger and larger, the increment $a_n - a_{n-1} = \left(\frac{1}{2}\right)^{n-1}$ becomes smaller and smaller, and the increment is just hardly enough to top $a_n$ to $2$.
 
 \begin{table}[ht]
 \tabletitle{Calculate $a_n$ for any arbitrary $n$ in the motivating example, but longer table.} \label{chi1table:largean}
@@ -102,7 +100,7 @@ The following features can be observed for sequence $\{a_n\}$ from both \eqref{e
   \item The sequence can get ``as close to $2$ as we like'', in the sense that for any value smaller than 2, however close to 2 it is (say, 1.9999), $a_n$ will at some point exceeds that value and get even closer to 2, for large enough $n$.
 \end{itemize}
 
-This existence of sequence $\{a_n\}$ reveals an important but not intuitive fact that it is possible to find a monotonically increasing yet bounded sequence. Another way to look at it is that it is possible to add infinite number of positive values together, yet the result is a finite value. From the fact that $\{a_n\}$ gets as close to a certain value as possible when $n$ gets large enough, the limit of sequence is defined, as introduced in the next Section \ref{ch1subsec:definationoflimitofsequence}.
+This existence of sequence $\{a_n\}$ reveals an important but not intuitive fact: it is possible to find a monotonically increasing yet bounded sequence. Another way to look at it is that it is possible to add infinite number of positive values together, yet the result is a finite value. From the fact that $\{a_n\}$ gets as close to a certain value as possible when $n$ gets large enough, the limit of sequence is defined, as introduced in the next Section \ref{ch1subsec:definationoflimitofsequence}.
 
 \subsection{Limit of a Sequence} \label{ch1subsec:definationoflimitofsequence}
 
@@ -120,7 +118,7 @@ or
 \begin{eqnarray}
   a_n \rightarrow L  & \textup{as} & n \rightarrow \infty, \nonumber
 \end{eqnarray}
-and in this case we say ``sequence $\{a_n\}$ is convergent'' and ``sequence $\{a_n\}$ converges to $L$ as $n$ approaches infinity''.
+and in this case we say ``sequence $\{a_n\}$ is convergent'' and ``sequence $\{a_n\}$ converges to $L$ (as $n$ approaches infinity)''.
 \end{VF}
 
 If a infinite sequence has a limit, it is known as a \mync{convergent sequence}. Otherwise, it is known as a \mync{divergent sequence}. The sequence $\{a_n\}$ in \eqref{eq:ch1:analyticalvresult} is an example of a convergent sequence that converges to $2$. We can easily prove this using the definition of the limit of a sequence as follows.
@@ -143,19 +141,23 @@ As a special case of divergent sequences, if $\{a_n\}$ becomes unbounded as $n$ 
 \textbf{Definition of sequence diverging to infinity}:
 \\
 \\
-\noindent For a sequence $\{a_n\}$, if for any arbitrary positive value $M$, there is always a corresponding integer $N$, such that if $n>N$, $|a_n|>M$, we say ``$\{a_n\}$ diverges to infinity''. This is denote it by
+\noindent For a sequence $\{a_n\}$, if for any arbitrary positive value $M$ (however large it is), there is always a corresponding integer $N$, such that if $n>N$, $|a_n|>M$, we say ``$\{a_n\}$ diverges to infinity''. This is denote it by
 \begin{eqnarray}
   \lim_{n\rightarrow \infty}a_n &=& \infty. \nonumber
 \end{eqnarray}
 \end{VF}
 
-Another sequence $\{s_n\}$ where $s_n=\sum_{i=1}^{n}a_n$ is used to denote the sum of the first $n$ elements in the infinite sequence $\{a_n\}$. Apparently, for infinite sequence $\{a_n\}$, $\{s_n\}$ is also an infinite sequence which may or may not converge depending on $\{a_n\}$. As $n$ approaches infinity, $\{s_n\}$ approaches $\sum_{i=1}^{\infty} a_n$, which is called the infinite sum of the series $\{a_n\}$.
+Sequence $\{s_n\}$ where $s_n=\sum_{i=1}^{n}a_n$ is used to denote the sum of the first $n$ elements in the infinite sequence $\{a_n\}$. Apparently, for infinite sequence $\{a_n\}$, $\{s_n\}$ is also an infinite sequence which may or may not converge depending on $\{a_n\}$. The limit of $\{s_n\}$ is given by
+\begin{eqnarray}
+  \lim_{n\rightarrow\infty}s_n &=& \sum_{i=1}^{\infty} a_n \nonumber
+\end{eqnarray}
+if $\{s_n\}$ converges and $\sum_{i=1}^{\infty} a_n$ exists. Otherwise if $\{s_n\}$ diverges, that would also implies that $\sum_{i=1}^{\infty} a_n$ does not exist.
 
 \subsection{Calculation of the Limit of a Sequence} \label{chisubsec:proofofsequenceconvergence}
 
-As the first step in the calculation of the limit of a sequence, the convergence of the sequence needs to be proved. In other words, we need to prove the existence of the limit before calculating it. This section mainly focuses on the proof of convergence of a sequence. Usually, after proving the convergence, the limit can be obtained by either using numerical methods, or calculating the limit of the function $a_n$ as a function of $n$. More details of calculating the limit of a function are given in later Section \ref{ch1sec:limitofafunction}.
+As the first step in the calculation of the limit of a sequence, the convergence of the sequence needs to be proved. In other words, we need to prove the existence of the limit before calculating it. This section mainly focuses on the proof of convergence of a sequence. Usually, after proving the convergence, the limit can be obtained by either using numerical methods or calculating the limit of the function $a_n=f(n)$ as a function of $n$. More details of calculating the limit of a function are given in later Section \ref{ch1sec:limitofafunction}.
 
-Generally speaking, there is no consistent way of proving the convergence/divergence of an infinite sequence except using the definition, and sometimes the proof can be very difficult or even impossible. For some commonly seen sequences, their limits of sequence and infinite sums are summarized in the following Table \ref{chi1table:sequencexample}.
+Generally speaking, there is no consistent way of proving the convergence or divergence of an infinite sequence except using the definition, and sometimes the proof can be very difficult or even impossible. For some commonly seen sequences, their limits of sequence and infinite sums are summarized in the following Table \ref{chi1table:sequencexample}.
 \begin{table}[!htb]
 \caption{Convergence of commonly seen $\{a_n\}$ and $\{s_n\}$. Variable $c$, $r$ are constants.} \label{chi1table:sequencexample}
 \begin{tabular}{lllcc}\hline
@@ -171,7 +173,7 @@ Others & $n^{-1}$ & --- & $0$ & $\infty$ \\
 \footnotesize{``$\infty$'' stands for ``diverges to infinity''.}
 \end{table}
 
-If an interested sequence falls into one of the above categories, or somewhat similar to the above categories, or can be expressed as a compound sequence derived from the above categories, then its convergence / divergence might be proved a bit easier. For example, if $c_n = a_n + b_n$, and both ${a_n}$ and ${b_n}$ converge, then
+If an interested sequence falls into one of the above categories, or somewhat similar to the above categories, or can be expressed as a compound sequence derived from the above categories, then its convergence or divergence might be proved a bit easier. For example, if $c_n = a_n + b_n$, and both ${a_n}$ and ${b_n}$ converge, then
 \begin{eqnarray}
   \lim_{n \rightarrow \infty}c_n &=& \lim_{n \rightarrow \infty}a_n + \lim_{n \rightarrow \infty}b_n. \nonumber
 \end{eqnarray} This can be proved using the definition of the limitation of the sequence.
@@ -184,7 +186,7 @@ then $\{a_n\}$ and $\{b_n\}$ must behave the same in terms of convergence, meani
 
 It is intuitive and not difficult to prove that for $\{s_n\}$ to converge, i.e. $\lim_{n\rightarrow\infty}s_n = s$, it is necessary (but not sufficient) for its corresponding $\{a_n\}$ to converge to zero, i.e. $\lim_{n\rightarrow\infty}a_n = 0$. Do notice that it is possible to have a divergent $\{s_n\}$ even if $a_n$ converges to zero. An example is the harmonic series given in Table \ref{chi1table:sequencexample} where $a_n = n^{-1}$. 
 
-The famous \mync{monotone convergence theorem for sequence} can become handy when proving the convergence of a sequence. It is given below.
+The famous \mync{monotone convergence theorem for sequence} given below can become handy when proving the convergence of a sequence.
 \begin{VF}
 \textbf{Monotone Convergence Theorem for Sequence}:
 \\
@@ -204,7 +206,7 @@ From the monotone convergence theorem, we know that for a sequence $\{a_n\}$, if
                      0 & a_n \geq 0
                    \end{array}\right.. \nonumber
 \end{eqnarray}
-Apparently, both $a_n^+$ and $a_n^-$ are non-negative. Therefore, both $\sum_na_n^+$ and $\sum_na_n^-$ are monotonically increasing non-negative sequences. We also know that both of them are bounded because $\sum_{n}|a_n| = \sum_{n}a_n^+ + \sum_{n}a_n^-$ is bounded. Therefore, both $\sum_na_n^+$ and $\sum_na_n^-$ must be convergent according to the monotone convergence theorem. This implies that $\sum_n a_n = \sum_n a_n^+ - \sum_n a_n^-$ must also be a convergent sequence as it is the sum of two convergent sequences.
+Apparently, both $a_n^+$ and $a_n^-$ are non-negative. Therefore, both $\sum_na_n^+$ and $\sum_na_n^-$ are monotonically increasing non-negative sequences. We also know that both of them are bounded because $\sum_{n}|a_n| = \sum_{n}a_n^+ + \sum_{n}a_n^-$ is bounded. Therefore, both $\sum_na_n^+$ and $\sum_na_n^-$ must be convergent according to the monotone convergence theorem. This implies that $\sum a_n = \sum a_n^+ - \sum a_n^-$ must also be a convergent sequence as it is the sum of two convergent sequences.
 
 Sequence $a_n$ with bounded $\sum_{i=1}^{\infty}|a_n|$ is known as an \mync{absolutely convergent sequence}. An absolutely convergent sequence $a_n$ must have a bounded infinite sum $\sum_{i=1}^{\infty}a_n$, but it might be not true wise versa.
 
@@ -243,7 +245,7 @@ For Q1, the plot of $y$ as a function of $x$ is given in Fig \ref{ch1fig:fxsimpl
 \caption{Plot of $y$ as a function of $x$ in the motivating example.} \label{ch1fig:fxsimpleexample}
 \end{figure}
 
-For Q3, we need to rewrite ``$x$ is in a small ``neighbourhood'' of $1$, but $x \neq 1$'' in a bit more precise manner. An intuitive way is to define a small ``threshold area'' near $x=1$, say, $-\delta < x-1 < \delta, x \neq 1$ with $\delta$ being a very small positive value. Notice that $x=1$ is not concerned and the value of $y$ near $x=1$ has nothing to do with $y$ at $x=1$.
+For Q3, we need to rewrite ``$x$ is in a small neighbourhood of $1$, but $x \neq 1$'' in a bit more precise manner. An intuitive way is to define a small ``threshold area'' near $x=1$, say, $-\delta < x-1 < \delta, x \neq 1$ with $\delta$ being a very small positive value. Notice that $x=1$ is not concerned and the value of $y$ near $x=1$ has nothing to do with $y$ at $x=1$.
 
 Next, we can calculate $y$ subject to $-\delta < x-1 < \delta, x \neq 1$. Clearly, the range of $y$ relates to the choice of $\delta$. Substituting $-\delta < x-1 < \delta, x \neq 1$ into \eqref{ch1eq:fxsimple} gives $0 < y < \delta^2$. With $\delta$ being chosen smaller and smaller, the range of $y$ would become smaller and smaller, and $y$ will eventually approach $0$ (although $y$ cannot be precisely $0$).
 
@@ -251,7 +253,7 @@ This discussion is essentially a study of $y$ when $x$ is ``as close as we like 
 \begin{itemize}
   \item The value of $y$ when $x$ is ``as close as we like to $1$'' does not rely on the value of $y$ at $x = 1$.
   \item The value of $y$ when $x$ is ``as close as we like to $1$'' floats in a small range depending on the size of the ``neighbourhood'' of $1$ where $x$ residents. The size of the ``neighbourhood'' is quantified by $\delta$ in this example. Thus, the range of $y$ is related to the choice of $\delta$.
-  \item With a proper choice of $\delta$, the value of $y$ can be as close as we like to $0$ since $0 < y < \delta^2$. For example, to achieve $0 < y < 10^{-6}$, simply choose $\delta = 10^{-3}$ for the neighbourhood of $x$ around $1$.
+  \item With a proper choice of $\delta$, the value of $y$ can be as ``close as we like to $0$''.
 \end{itemize}
 The above features give a brief idea of limit of a function. In the example, $y$ can be made as close as we like to $0$ simply by making $x$ close enough to $1$ by choosing a small $\delta$.
 
@@ -335,16 +337,18 @@ or
 
 In special cases where the function is unbounded, the limit of the function does not exist and we can use $\lim_{x\rightarrow a}f(x) =  \infty$ and $\lim_{x\rightarrow \pm \infty}f(x) = \infty$ to represent the cases.
 
-\subsection{Calculation of the Limit of the Function} \label{ch1subsec:calculationlimitfunction}
+\subsection{Calculation of the Limit of a Function} \label{ch1subsec:calculationlimitfunction}
 
 The calculation of the limit of many commonly seen elementary functions are often obvious and easy. This is because these functions are often continuous in the domain, and for a continuous function the limit $\lim_{x\rightarrow a}f(x)$ can be obtained by simply substituting $x=a$ into the function. The limit $\lim_{x\rightarrow \infty}f(x)$ might be slightly difficult but mostly can be obtained from the definition.
 
-Some examples are given below in Table \ref{chi1table:limitoffunction}.
+Some examples are given below in Table \ref{chi1table:limitoffunction}. For the case of rational function, if $p(a) \neq 0$, $\lim_{x\rightarrow a}\frac{q(x)}{p(x)} = \frac{q(a)}{p(a)}$. If $p(a)=0$, $\lim_{x\rightarrow a}\frac{q(x)}{p(x)}$ depends on the order and coefficients of $q(x)$ and $p(x)$ and may not exist. The limit $\lim_{x\rightarrow \infty}\frac{q(x)}{p(x)}$ depends on the order and coefficients of $q(x)$ and $p(x)$ and may not exist.
 
-\begin{table}[ht]
-\tabletitle{Limit of commonly seen elementary functions.} \label{chi1table:limitoffunction}
+
+\begin{table}[!htb]
+\centering\caption{Limit of commonly seen elementary functions.} \label{chi1table:limitoffunction}
 \begin{tabular}{llll}
-\tch{Category} & \tch{$f(x)$} & \tch{$\lim_{x\rightarrow a}f(x)$} & \tch{$\lim_{x\rightarrow \infty}f(x)$} \\ \hline
+\hline
+Category & \tch{$f(x)$} & \tch{$\lim_{x\rightarrow a}f(x)$} & \tch{$\lim_{x\rightarrow \infty}f(x)$} \\ \hline
 Polynomial & $p(x)$ & $p(a)$ & $\infty$ \\
 Root & $\sqrt{x}$ & $\sqrt{a}$ for $a>0$ & $\infty$ \\
 Rational & $\dfrac{q(x)}{p(x)}$ & depends & depends \\
@@ -354,9 +358,11 @@ Trigonometric & $\textup{sin}(x)$, $\textup{cos}(x)$ & $\textup{sin}(a)$, $\text
 Logarithm & $\textup{log}_e(x)$ & $\textup{log}_e(a)$ for $a>0$ & $\infty$ \\ \hline
 \end{tabular}
 
-\footnotesize{``$\infty$'' stands for ``unbounded''; \\
-For the case of rational function, if $p(a) \neq 0$, $\lim_{x\rightarrow a}\frac{q(x)}{p(x)} = \frac{q(a)}{p(a)}$. If $p(a)=0$, $\lim_{x\rightarrow a}\frac{q(x)}{p(x)}$ depends on the order and coefficients of $q(x)$ and $p(x)$ and may not exist. The limit $\lim_{x\rightarrow \infty}\frac{q(x)}{p(x)}$ depends on the order and coefficients of $q(x)$ and $p(x)$ and may not exist.
-}
+\begin{flushleft}
+\footnotesize
+``$\infty$'' stands for ``unbounded''.
+\end{flushleft}
+
 \end{table}
 
 It is worth mentioning a few typical cases where a given function $f(x)$ does not have a limit and/or is not continuous.
@@ -382,7 +388,7 @@ Apparently, $\lim_{x\rightarrow 0^-}f(x)$ or $\lim_{x\rightarrow 0^+}f(x)$ does 
 
 Case 3: function $f(x)$ has one-sided limits $\lim_{x\rightarrow 0^-}f(x)$ and $\lim_{x\rightarrow 0^+}f(x)$, but $\lim_{x\rightarrow 0^-}f(x) \neq \lim_{x\rightarrow 0^+}f(x)$. For example, consider
 \begin{eqnarray}
-  f(x) &=& \textup{sign} = \left\{\begin{array}{cc}
+  f(x) &=& \textup{sign}(x) = \left\{\begin{array}{cc}
                                     1 & x > 0 \\
                                     0 & x = 0 \\
                                     -1 & x < 0
@@ -396,10 +402,29 @@ Some commonly used tricks are as follows. For $g(x)=f_1(x) + f_2(x)$, if the lim
 \end{eqnarray}
 The same is true for the cases $g(x)=f_1(x)f_2(x)$ and $g(x)=\frac{f_1(x)}{f_2(x)}$, subject to $\lim_{x \rightarrow a}f_2(x) \neq 0$ when it is the denominator. And it holds true for $x \rightarrow \pm \infty$ as well.
 
-In the case of $g(x)=\frac{f_1(x)}{f_2(x)}$ and $\lim_{x \rightarrow a}f_2(x) = 0$, the discussion is more complicated. Sometimes, \textit{L\textprime H\^opital's rule} can become handy. The proof of L\textprime H\^opital's rule requires solid calculus foundation and is out of the scope of this notebook. Generally speaking, for $g(x)=\frac{f_1(x)}{f_2(x)}$ with $\lim_{x\rightarrow a}f_1(x) = 0$, $\lim_{x\rightarrow a}f_2(x) = 0$, and $f_1(x)$, $f_2(x)$ being both continuous and differentiable at $x=a$, and $\lim_{x\rightarrow a}f_2^\prime(x) \neq 0$, it is possible to calculate $\lim_{x\rightarrow a}g(x)$ using \eqref{ch1eq:lhopital} if its right side exists.
+In the case of $g(x)=\frac{f_1(x)}{f_2(x)}$ and $\lim_{x \rightarrow a}f_2(x) = 0$, the discussion is more complicated. Sometimes, \textit{L\textprime H\^opital's rule} can become handy. 
+
+\begin{VF}
+\textbf{L\textprime H\^opital's rule}:
+\\
+\\
+\noindent For $g(x)=\frac{f_1(x)}{f_2(x)}$
+\begin{eqnarray}
+  g(x) &=& \frac{f_1(x)}{f_2(x)} \nonumber
+\end{eqnarray}
+if the following criteria are satisfied:
+\begin{itemize}
+  \item Both $\lim_{x\rightarrow a}f_1(x) = 0$ and $\lim_{x\rightarrow a}f_2(x) = 0$.
+  \item Both $f_1(x)$, $f_2(x)$ are continuous and differentiable at $x=a$.
+  \item The derivative of the denominator $\lim_{x\rightarrow a}f_2^\prime(x) \neq 0$.
+\end{itemize}
+then $\lim_{x\rightarrow a}g(x)$ can be calculated using \eqref{ch1eq:lhopital}, provided that the right side of \eqref{ch1eq:lhopital} exists.
 \begin{eqnarray}
   \lim_{x\rightarrow a}g(x) = \lim_{x\rightarrow a} \dfrac{f_1^\prime(x)}{f_2^\prime(x)}. \label{ch1eq:lhopital}
 \end{eqnarray}
-where $f^\prime(x)$ is the derivative of $f(x)$. The explanation to derivative and differential is given in a later chapter.
+where $f^\prime(x)$ is the derivative of $f(x)$.
+\end{VF}
+
+The derivative of a function $f(x)$ will be introduced in the next Chapter \ref{ch:derivative}. The proof of L\textprime H\^opital's rule requires solid calculus foundation and is out of the scope of this notebook.
 
 The limit of an infinite sequence is linked to the limit of the associated function at $x\rightarrow\infty$. For example, for sequence $\left\{a_n\right\}$, if $a_n=f(n)$ and $\lim_{n\rightarrow\infty}f(n)=L$, then $\lim_{n\rightarrow\infty}a_n=L$.

@@ -1,6 +1,6 @@
 %\chapterauthor{Author Name}{Author Affiliation}
 %\chapterauthor{Second Author}{Second Author Affiliation}
-\chapter{Derivative}
+\chapter{Derivative} \label{ch:derivative}
 
 Consider a continuous function $f(x)$ defined in $\left[a,b\right]$. In this chapter the ratio of change of $f(x)$ versus $x$ is quantitively derived and studied.
 
@@ -24,7 +24,7 @@ Q2: Describe $\Delta y$ given a small deviation $\Delta x$ at $x=0$, and describ
 Q3: Describe the ratio $\frac{\Delta y}{\Delta x}$ at any $x$ when $\Delta x \rightarrow 0$.
 \end{shortbox}
 
-As a first step, plot $y$ as a function of $x$ from \eqref{ch2eq:motivatingexamplefx} in Fig.\ref{ch2fig:fxsimpleexample} for convenient analysis.
+As a first step, plot $y$ as a function of $x$ from \eqref{ch2eq:motivatingexamplefx} in Fig. \ref{ch2fig:fxsimpleexample} for convenient analysis.
 \begin{figure}
 \centering
 \includegraphics[width=250pt]{chapters/part-1/figures/fig_derivative_motiexp.eps}
@@ -127,7 +127,7 @@ To summarize \eqref{ch2eq:simpleexpratio1} and \eqref{ch2eq:simpleexpratio2}
 \end{eqnarray}
 which can be interpreted as the slope of tangent of curve $y=f(x)$ at different $x$ in Fig. \ref{ch2fig:fxsimpleexample}.
 
-This motivating example shows that for a function $y=f(x)$, the ratio $\lim_{\Delta x \rightarrow 0}\frac{f(x + \Delta x)}{\Delta x}$ may change for different $x$, and sometimes may not even exist. The limit  $\lim_{\Delta x \rightarrow 0}\frac{f(x + \Delta x)}{\Delta x}$ itself is also a function of $x$, which we call \textit{the derivative of $f(x)$}.
+This motivating example shows that for a function $y=f(x)$, the ratio $\lim_{\Delta x \rightarrow 0}\frac{f(x + \Delta x)}{\Delta x}$ may change for different $x$, and sometimes may not even exist. The limit  $\lim_{\Delta x \rightarrow 0}\frac{f(x + \Delta x)}{\Delta x}$ itself is also a function of $x$, which we call the \mync{derivative} of $f(x)$.
 
 \section{Derivative of a Function}
 
@@ -149,7 +149,7 @@ If $y=f(x)$, equation \eqref{ch2eq:definitionderivative} can also be written as
 % \nonumber % Remove numbering (before each equation)
   \left.\dfrac{dy}{dx}\right|_{x=a} &=& f^\prime(a), \nonumber
 \end{eqnarray}
-where $\frac{dy}{dx}$ can be taken as an alternative denotation of $f^\prime(x)$, and $\frac{d}{dx}$ is called the \textit{differentiation operator}.
+where $\frac{dy}{dx}$ can be taken as an alternative denotation of $f^\prime(x)$, and $\frac{d}{dx}$ is called the \mync{differentiation operator}.
 \end{VF}
 
 It is easy to prove that a necessary condition for a function $f(x)$ to be differentiable at $x=a$ is that $f(x)$ is continuous at $x=a$.
@@ -158,25 +158,22 @@ It is easy to prove that a necessary condition for a function $f(x)$ to be diffe
 
 The derivative of commonly seen functions are concluded in the following Table \ref{chi2table:commonderivative}.
 
-\begin{table}
-%\noautomaticrules
-\tabletitle{Derivative of commonly seen functions.} \label{chi2table:commonderivative}
-\begin{tabular}{lll}
+\begin{table}[!htb]
+\centering\caption{Derivative of commonly seen functions.} \label{chi2table:commonderivative}
+\begin{tabular}{ccc}
+\hline
 \tch{$f(d)$} & \tch{$f^\prime(x)$} & Comments  \\ \hline
 $c$ & $0$ & \\
 $x^n$ & $nx^{n-1}$ & $n\neq0$ \\
 $\textup{sin}(x)$ & $\textup{cos}(x)$ & \\
 $\textup{cos}(x)$ & $-\textup{sin}(x)$ & \\
 $a^x$ & $a^x\textup{ln}a$ & $a>0$ \\
-$\textup{log}_ax$ & $\dfrac{1}{\textup{ln}a}\dfrac{1}{x}$ & $a, x > 0$ \\
+$e^x$ & $e^x$ & A special case of $a^x$ \\
+$\textup{log}_ax$ & $\frac{1}{\textup{ln}a}\frac{1}{x}$ & $a, x > 0$ \\ 
+$\textup{ln}x$ & $\frac{1}{x}$ & A special case of $\textup{log}_ax$ \\
+\hline
 \end{tabular}
 \end{table}
-
-As two very commonly seen special cases of $a^x$ and $\textup{log}_ax$ in Table \ref{chi2table:commonderivative},
-\begin{eqnarray}
-    \dfrac{d}{dx}e^x &=& e^x, \nonumber \\
-    \dfrac{d}{dx}\textup{ln}x &=& \dfrac{1}{x}. \nonumber
-\end{eqnarray}
 
 With both $f_1(x)$ and $f_2(x)$ differentiable,
 \begin{eqnarray}
@@ -185,7 +182,7 @@ With both $f_1(x)$ and $f_2(x)$ differentiable,
      \dfrac{d}{dx}\left(\dfrac{f_1(x)}{f_2(x)}\right) &=& \dfrac{ f_2(x)\dfrac{d}{dx}f_1(x) - f_1(x)\dfrac{d}{dx}f_2(x)}{\left(\dfrac{d}{dx}f_2(x)\right)^2}. \nonumber
 \end{eqnarray}
 
-If $f = f(x)$ and $g = g(f)$, $\frac{dg}{dx}$ can be calculated using \textit{chain rule for composite function} as
+If $f = f(x)$ and $g = g(f)$, $\frac{dg}{dx}$ can be calculated using \mync{chain rule for composite function} as
 \begin{eqnarray}
      \dfrac{dg}{dx} &=& \dfrac{d}{df}g(f)\dfrac{d}{dx}f(x). \nonumber
 \end{eqnarray}

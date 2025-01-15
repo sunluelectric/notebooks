@@ -181,9 +181,9 @@ is not continuous or differentiable at any $x$, and it is not Riemann integrable
 
 Some commonly seen indefinite integral is given in Table \ref{chi3table:commonintegrals}. When calculating indefinite integral, there is always an arbitrary constant $c$ in the result, as the constant in $F(x)$ does not affect the derivative $f(x)$.
 \begin{table}
-%\noautomaticrules
-\tabletitle{Indefinite integral of commonly seen functions.} \label{chi3table:commonintegrals}
+\centering\caption{Indefinite integral of commonly seen functions.} \label{chi3table:commonintegrals}
 \begin{tabular}{lll}
+\hline
 \tch{$f(x)$} & \tch{$F(x) = \int f(x)dx$} & Comments  \\ \hline
 $a$ & $ax + c$ & \\
 $x^n$ & $\dfrac{1}{n+1}x^{n+1}$ + c & $n\neq -1$ \\
@@ -234,7 +234,7 @@ Notice that sometimes $F(b)-F(a)$ is also denoted by $\left.F(x)\right|_a^b$.
 As illustrated in the motivating example in Section \ref{ch3section:motivatingexample}, for $a<b$, $\int_a^b f(x)dx$ can be interpreted as the accumulated area between $y=f(x)$ and $y=0$, within boundary $x=a$ and $x=b$.
 
 When $f(x)\geq 0$, $\int_a^b f(x)dx \geq 0$ is the area surrounded by $y=f(x)$, $y=0$, $x=a$ and $x=b$. When $f(x)\leq0$, $\int_a^b f(x)dx \leq 0$ is the negative of the area. Otherwise, $\int_a^b f(x)dx$ is the difference of area above and below $y=0$ as shown in Fig. \ref{ch3fig:explainintegrial}.
-\begin{figure}
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=250pt]{chapters/part-1/figures/explainintegrial.eps}
 \caption{Plot of $f(x) = \textup{sin}(x) + 0.5$ from $0$ to $2\pi$. The area above $y=0$ is surrounded by the red dashed line, and the area below $y=0$ by the blue dashed line. The definite integral $\int_0^{2\pi}f(x)dx$ in this case is the red area subtracting the blue area.} \label{ch3fig:explainintegrial}
