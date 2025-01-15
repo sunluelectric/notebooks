@@ -729,14 +729,14 @@ where \texttt{DirectoryOrCreate} means the path is a directory, and if it does n
 
 It is a bit tricky whether to consider hostPath as an ephemeral volume or PV. The reasons are given below.
 \begin{itemize}
-	\item Ephemeral volume
+	\item hostPath is Ephemeral volume because:
 	\begin{itemize}
 		\item It can be claimed as Pod or Deployment specs instead of a standalone PV.
 		\item It has many restrictions compared with other PVs. For instance, it is tied to a single node and cannot be used for cross-node data persistence or sharing. This destroys the purpose of Kubernetes to some extent.
 		\item When the node is restarted (this can happen in the Kubernetes context because nodes are often VMs), the data disappears.
 		\item For the above reasons, hostPath is rarely used in production environment.
 	\end{itemize}
-	\item PV
+	\item hostPath is PV because:
 	\begin{itemize}
 		\item It is Pod-independent and can survive Pod failure.
 		\item It can also be claimed as standalone Kubernetes object. But of course, this does not clear its restrictions.
@@ -1035,7 +1035,7 @@ Many cloud service providers provide support for Kubernetes deployment. Recall f
 
 AWS EKS, on the other hand, allows the user to deploy a Kubernetes-based cluster using AWS resources. It allows more flexible migration of the cluster across different platforms. The Kubernetes cluster created and managed by EKS is known as a EKS cluster.
 
-\subsection{Setup and Connect to EKS Cluster}
+\subsection{Setup and Connect to EKS Cluster} \label{subsec:setupeks}
 
 The following has to be configured when setting up EKS.
 
@@ -1050,19 +1050,50 @@ Make sure that AWS CLI is installed on the local machine. Login to the AWS accou
 \begin{lstlisting}
 $ aws eks update-kubeconfig --region <region name> --name <eks cluster name>
 \end{lstlisting}
+With the above, \verb|kubectl| will talk to the EKS cluster but not the local Kubernetes clusters such as the one in Minikube.
 
-\subsection{Configure Node}
+\subsection{Configure Node Group}
 
-In the AWS dashboard, the user needs to configure nodes. This includes at least the following setups.
+In the AWS dashboard under the EKS cluster just created, the user needs to configure nodes by adding node groups. This includes at least the following setups.
 \begin{itemize}
-  \item Select node roles, for example, to allow nodes to use AWS EC2 and Container Registry.
+  \item Attach roles to the node group, for example, to allow nodes to use AWS \myabb{Elastic Compute Cloud}{EC2} and Container Registry.
   \item Select OS for the nodes.
   \item Select EC2 instance type and disk size which will be configured for the nodes.
   \item Select minimum and maximum number of nodes.
   \item Configure AWS VPC for the nodes.
 \end{itemize}
 
-\section{Alternatives to Kubernetes}
+It can be seen from the above that node configuration is essentially EC2 configuration. Once these EC2 instances are started, the user can view there status from the AWS dashboard under EC2. However, these EC2 instances shall be managed by EKS entirely and the user should not login to them. EKS should install Kubernetes components upon starting these EC2 instances.
+
+\subsection{Apply Kubernetes Configuration Files}
+
+The Kubernetes configuration files does not need to be uploaded to the cloud. The user can use \verb|kubectl| to apply the configurations to the EKS cluster. Notice that \verb|kubectl| should link to the EKS cluster but not a local Kubernetes cluster such as Minikube. The configuration of \verb|kubectl| to link to the EKS cluster has been introduced earlier in Section \ref{subsec:setupeks}.
+
+At this stage, AWS container registry has not been enabled, so make sure that all the images used in the EKS cluster are from Docker Hub.
+
+\subsection{Use Volumes}
+
+Volumes such as emptyDir and hostPath have been introduced in earlier Sections \ref{subsec:ephemeral_volume} and \ref{subsec:persistentvolume}. They are not useful in the context of EKS cluster.Volume type emptyDir is ephemeral and tied with a Pod, and it is not much useful with the EKS cluster in the production environment where Pods can get started and removed frequently. Volume hostPath can only apply to single node applications which is often not the case with EKS cluster.
+
+With EKS cluster, it is more common to use AWS storage such as EBS, EFS to persist data. CSI is used to link EKS cluster with those storages. PVC is used in the Kubernetes configuration files to claim storage for the applications.
+
+Details of attaching the third-party storage systems such as EFS to Kubernetes services such as EKS are not introduced in details here mainly because the procedures differ from platform to platform. The user should check the user manual for the specific service he wants to use. In general, the user needs to do the following:
+\begin{itemize}
+  \item Create the storage system with the cloud service provider.
+  \item Configure firewall settings and security groups so that the Kubernetes cluster can reach the storage system.
+  \item Install necessary drives locally so that \verb|kubectl| supports the storage system related functions.
+  \item Create a PV object with a Kubernetes configuration file. Include the storage system specifications such as IP address and drivers in the configuration file, usually under \texttt{spec.csi}. More details are given in \cite{kubernetes2024doc}.
+  \item Create a PVC object corresponding with the PV.
+\end{itemize}
+With the above been done, the EKS cluster objects can use the PVC to persist data.
+
+\section{Kubernetes IDE and Alternatives}
+
+While powerful, Kubernetes and \verb|kubectl| CLI are not beginner friendly. The followings are possible to tackle this issue.
+\begin{itemize}
+  \item User Kubernetes IDE, which provides a more user-friendly Kubernetes control graphical interface. Examples include LENS \cite{lens2025homepace}. 
+  \item User alternative container orchestration tools which are often less flexible and complicated but more user-friendly.
+\end{itemize}
 
 Portainer is an open-source container orchestrator that has a user-friendly interface and is relatively easier to use than the more powerful and famous container orchestrator Kubernetes which is introduced in the next chapter. In this section, it is used as an example, just to give the reader an idea what container orchestrators in the market may look like. The section does not go into details about Portainer.
 
@@ -1077,26 +1108,26 @@ $ docker run -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --name portainer --restar
 where ports 8000, 9000 and 9443 are used for hosting HTTP traffic in development environments, hosting web interface, and hosting HTTPS or SSL-secured services, respectively. The \verb|docker.sock| is the socket that enables the docker server-side daemon to communicate with its command-line interface. The image name for Portainer community edition (distinguished form the business edition) is \verb|portainer/portainer-ce|.
 
 Use \verb|https://localhost:9443| to login to the container. The following page in Fig. \ref{ch:vac:fig:portainerlogin} should pop up in the first-time login, asking the user to create and administration user.
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/portainerlogin.png}
 	\caption{Portainer login page to create admin user.} \label{ch:vac:fig:portainerlogin}
 \end{figure}
 
-After creating the admin user and logging in, the status of images, containers and many more can be monitored via the dashboard, as shown in Figs. \ref{ch:vac:fig:portainerdashboard1}, \ref{ch:vac:fig:portainerdashboard2} and \ref{ch:vac:fig:portainerdashboard3}. Notice that in Fig. \ref{ch:vac:fig:portainerdashboard3}, using the ``quick action'' buttons, the user can check the specifics of the container and interact with its console, just like using \verb|docker container inspect| and \verb|docker exec|
-\begin{figure}[htbp]
+After creating the admin user and logging in, the status of images, containers and many more can be monitored via the dashboard, as shown in Figs. \ref{ch:vac:fig:portainerdashboard1}, \ref{ch:vac:fig:portainerdashboard2} and \ref{ch:vac:fig:portainerdashboard3}. Notice that in Fig. \ref{ch:vac:fig:portainerdashboard3}, using the ``quick action'' buttons, the user can check the specifics of the container and interact with its console, just like using \verb|docker container inspect| and \verb|docker exec|.
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard1.png}
 	\caption{Portainer dashboard overview of docker servers.} \label{ch:vac:fig:portainerdashboard1}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard2.png}
 	\caption{Portainer dashboard overview in a docker server.} \label{ch:vac:fig:portainerdashboard2}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=350pt]{chapters/part-3/figures/portainerdashboard3.png}
 	\caption{Portainer dashboard list down of all running containers.} \label{ch:vac:fig:portainerdashboard3}
